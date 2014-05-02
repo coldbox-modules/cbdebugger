@@ -194,36 +194,38 @@ Description :
 	<!--- render the debug log --->
 	<cffunction name="renderDebugLog" access="public" hint="Return the debug log." output="false" returntype="Any">
 		<cfset var renderedDebugging = "">
-		<cfset var event = controller.getRequestService().getContext()>
-		<cfset var rc = event.getCollection()>
-		<cfset var prc = event.getCollection(private=true)>
-		<cfset var loc = structnew()>
+		<cfif getDebugMode()>
+			<cfset var event = controller.getRequestService().getContext()>
+			<cfset var rc = event.getCollection()>
+			<cfset var prc = event.getCollection(private=true)>
+			<cfset var loc = structnew()>
 
-		<!--- Setup Local Variables --->
-		<cfset var debugStartTime = GetTickCount()>
-		<cfset var thisCollection = "">
-		<cfset var thisCollectionType = "">
-		<cfset var debugTimers = getTimers()>
-		<cfset var loadedModules = arrayNew(1)>
-		<cfset var moduleSettings = structnew()>
+			<!--- Setup Local Variables --->
+			<cfset var debugStartTime = GetTickCount()>
+			<cfset var thisCollection = "">
+			<cfset var thisCollectionType = "">
+			<cfset var debugTimers = getTimers()>
+			<cfset var loadedModules = arrayNew(1)>
+			<cfset var moduleSettings = structnew()>
 
-		<!--- Debug Rendering Type --->
-		<cfset var renderType = "main">
+			<!--- Debug Rendering Type --->
+			<cfset var renderType = "main">
 
-		<!--- URL Base --->
-		<cfset var URLBase = event.getsesBaseURL()>
+			<!--- URL Base --->
+			<cfset var URLBase = event.getsesBaseURL()>
 
-		<!--- Modules Stuff --->
-		<cfset loadedModules = controller.getModuleService().getLoadedModules()>
-		<cfset moduleSettings = controller.getSetting("modules")>
+			<!--- Modules Stuff --->
+			<cfset loadedModules = controller.getModuleService().getLoadedModules()>
+			<cfset moduleSettings = controller.getSetting("modules")>
 
-		<!--- URL Base --->
-		<cfif NOT event.isSES()>
-			<cfset URLBase = listlast(cgi.script_name,"/")>
+			<!--- URL Base --->
+			<cfif NOT event.isSES()>
+				<cfset URLBase = listlast(cgi.script_name,"/")>
+			</cfif>
+
+			<!--- Render debuglog --->
+			<cfsavecontent variable="renderedDebugging"><cfinclude template="/coldbox/system/includes/Debug.cfm"></cfsavecontent>
 		</cfif>
-
-		<!--- Render debuglog --->
-		<cfsavecontent variable="renderedDebugging"><cfinclude template="/coldbox/system/includes/Debug.cfm"></cfsavecontent>
 
 		<cfreturn renderedDebugging>
 	</cffunction>
