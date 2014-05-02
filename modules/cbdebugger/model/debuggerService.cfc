@@ -250,6 +250,15 @@ Description :
 		<cfreturn profilerContents>
 	</cffunction>
 
+	<cffunction name="renderCachePanel" access="public" hint="Renders the execution profilers." output="false" returntype="Any">
+			<cfsavecontent variable="cachepanel">
+				<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
+								  cacheFactory="#controller.getCacheBox()#">
+			</cfsavecontent>
+
+		<cfreturn cachepanel>
+	</cffunction>
+
 	<!--- Get set the cookie name --->
 	<cffunction name="getCookieName" access="public" output="false" returntype="any" hint="Get cookieName">
 		<cfreturn instance.cookieName/>

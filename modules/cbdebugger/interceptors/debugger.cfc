@@ -15,6 +15,7 @@ component {
 
 	public function postProcess(event, interceptData) {
 		debuggerService.timerEnd(variables.instance.processHash);
+		request.fwExecTime = getTickCount() - request.fwExecTime;
 		interceptorService.processState("beforeDebuggerPanel");
 		var debugHTML = debuggerService.renderDebugLog();
 		interceptorService.processState("afterDebuggerPanel");
@@ -25,6 +26,19 @@ component {
 
 	//setup all the timers
 	public function preProcess(event, interceptData) {
+		var debugPanel = event.getValue("debugPanel","");
+		switch(debugPanel){
+			case "profiler":
+				writeOutput(debuggerService.renderProfiler());
+			break;
+
+			default:
+				writeOutput(debuggerService.renderCachePanel());
+			break;
+		}
+		if (len(debugPanel)){
+			abort;
+		}
 		variables.instance.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
 	}
 
