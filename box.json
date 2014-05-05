@@ -1,0 +1,22 @@
+{
+	"name" 		: "Debugger",
+	"author" 	: "Curt Gratz <gratzc@compknowhow.com",
+	"version"	: "1.0.0",
+	"slug"		: "debugger",
+	"directory"	: "/modules",
+	"type"		: "modules",
+	"engines"	: [
+		{ "type" : "railo", "version" : ">3.1" },
+		{ "type" : "adobe", "version" : ">9.0" },
+		{ "type" : "coldbox", "version" : ">3.5" }
+	],
+	"testbox" 	: {
+		"runner" : {
+			"cf10" 	: "http://cf10cboxdev.jfetmac/codedepot/cbox-debugger/test/runner.cfm",
+			"railo" : "http://railocboxdev.jfetmac/codedepot/cbox-debugger/test/runner.cfm"
+		}
+	},
+	"devdependencies" : {
+		"testbox" : ">1.1"
+	}
+}
