@@ -19,6 +19,7 @@ component {
 		interceptorService.processState("beforeDebuggerPanel");
 		var debugHTML = debuggerService.renderDebugLog();
 		interceptorService.processState("afterDebuggerPanel");
+		debuggerService.recordProfiler();
 		appendToBuffer(debugHTML);
 
 	}
