@@ -18,6 +18,8 @@ WELCOME TO THE DEBUGGER MODULE
 ********************************************************************************
 Created & copyright by Curt Gratz (Computer Know How) & Luis Majano (Ortus Solutions, Corp)
 
+This module will enhance your application with debugger capabilities
+
 ********************************************************************************
 LICENSE
 ********************************************************************************

@@ -224,7 +224,7 @@ Description :
 			</cfif>
 
 			<!--- Render debuglog --->
-			<cfsavecontent variable="renderedDebugging"><cfinclude template="/coldbox/system/includes/Debug.cfm"></cfsavecontent>
+			<cfsavecontent variable="renderedDebugging"><cfinclude template="/cbdebugger/includes/Debug.cfm"></cfsavecontent>
 		</cfif>
 
 		<cfreturn renderedDebugging>
@@ -245,7 +245,7 @@ Description :
 			<cfset URLBase = listlast(cgi.script_name,"/")>
 		</cfif>
 
-		<cfsavecontent variable="profilerContents"><cfinclude template="/coldbox/system/includes/panels/ProfilerPanel.cfm"></cfsavecontent>
+		<cfsavecontent variable="profilerContents"><cfinclude template="/cbdebugger/includes/panels/ProfilerPanel.cfm"></cfsavecontent>
 
 		<cfreturn profilerContents>
 	</cffunction>
@@ -369,6 +369,16 @@ Description :
     <cffunction name="resetTracers" output="false" access="public" returntype="void" hint="Reset all Tracers">
     	<cfset instance.tracers = arrayNew(1)>
     </cffunction>
+
+    <cffunction name="getInetHost" access="public" returntype="string" output="false" hint="Get the hostname of the executing machine.">
+		<cfscript>
+			try{
+				return createObject("java", "java.net.InetAddress").getLocalHost().getHostName();
+			} catch( any e ){
+				return "localhost";
+			}
+		</cfscript>
+	</cffunction>
 
 <!------------------------------------------- PRIVATE ------------------------------------------->
 

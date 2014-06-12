@@ -1,14 +1,16 @@
 {
-	"name" 		: "Debugger",
+	"name" 		: "ColdBox Debugger",
 	"author" 	: "Curt Gratz <gratzc@compknowhow.com",
 	"version"	: "1.0.0",
-	"slug"		: "debugger",
+	"slug"		: "coldbox-debugger",
 	"directory"	: "/modules",
 	"type"		: "modules",
 	"engines"	: [
 		{ "type" : "railo", "version" : ">3.1" },
-		{ "type" : "adobe", "version" : ">9.0" },
-		{ "type" : "coldbox", "version" : ">3.5" }
+		{ "type" : "adobe", "version" : ">9.0" }
+	],
+	"contributors"		: [
+		"Brad Wood <bdw429s@gmail.com>", "Luis Majano <lmajano@ortussolutions.com>"
 	],
 	"testbox" 	: {
 		"runner" : {
@@ -17,6 +19,6 @@
 		}
 	},
 	"devdependencies" : {
-		"testbox" : ">1.1"
+		"testbox" : ">2.0"
 	}
 }

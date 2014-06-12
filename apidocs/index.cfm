@@ -1,14 +1,14 @@
 <cfparam name="url.version" default="0">
-<cfparam name="url.path" 	default="#expandPath( "./Debugger-APIDocs" )#">
+<cfparam name="url.path" 	default="#expandPath( "./ColdBoxDebugger-APIDocs" )#">
 <cfscript>
-	docName = "Debugger-APIDocs";
-	base = expandPath( "/debugger" );
+	docName = "ColdBoxDebugger-APIDocs";
+	base = expandPath( "/cbdebugger" );
 
 	colddoc 	= new ColdDoc();
-	strategy 	= new colddoc.strategy.api.HTMLAPIStrategy( url.path, "Debugger v#url.version#" );
+	strategy 	= new colddoc.strategy.api.HTMLAPIStrategy( url.path, "ColdBox Debugger v#url.version#" );
 	colddoc.setStrategy( strategy );
 
-	colddoc.generate( inputSource=base, outputDir=url.path, inputMapping="debugger" );
+	colddoc.generate( inputSource=base, outputDir=url.path, inputMapping="cbdebugger" );
 </cfscript>
 
 <!---

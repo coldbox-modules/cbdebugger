@@ -1,6 +1,6 @@
 ********************************************************************************
 INSTRUCTIONS
 ********************************************************************************
-Just drop into your modules folder or use the box-cli to install
+Just drop into your modules folder or use CommandBox to install
 
-box install debugger
+box install coldbox-debugger
