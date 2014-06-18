@@ -22,15 +22,16 @@ component {
 
 		// Custom Declared Interceptors
 		interceptors = [
-			{class="#moduleMapping#.interceptors.debugger",name="debugger@cbDebugger"}
+			{ class="#moduleMapping#.interceptors.Debugger",name="debugger@cbDebugger" }
 		];
 
 		//default debugmode to false
-		if(controller.getSetting( 'debugMode' ,false, '' ) == '') {
+		if( controller.getSetting( 'debugMode' ,false, '' ) == '' ){
 			parentSettings.debugMode = false;
 		}
+
 		//default the password to something so we are secure by default
-		if(controller.getSetting( 'debugPassword' ,false, '' ) == '') {
+		if( controller.getSetting( 'debugPassword' ,false, '' ) == '' ){
 			parentSettings.debugPassword = hash( getCurrentTemplatePath() );
 		}
 

@@ -370,6 +370,7 @@ Description :
     	<cfset instance.tracers = arrayNew(1)>
     </cffunction>
 
+	<!--- get Inet Host --->
     <cffunction name="getInetHost" access="public" returntype="string" output="false" hint="Get the hostname of the executing machine.">
 		<cfscript>
 			try{
