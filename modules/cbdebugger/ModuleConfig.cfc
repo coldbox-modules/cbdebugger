@@ -1,5 +1,8 @@
 /**
-ColdBox Debugger Module
+*********************************************************************************
+* Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
+* www.coldbox.org | www.luismajano.com | www.ortussolutions.com
+********************************************************************************
 */
 component {
 
@@ -8,21 +11,21 @@ component {
 	this.author 			= "Curt Gratz";
 	this.webURL 			= "http://www.coldbox.org";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "1.0.0";
+	this.version			= "1.0.0.@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
 	this.layoutParentLookup = true;
 	// Module Entry Point
-	this.entryPoint			= "cbDebugger";
+	this.entryPoint			= "cbdebugger";
 	// CF Mapping
-	this.cfMapping			= "cbDebugger";
+	this.cfMapping			= "cbdebugger";
 
 	function configure(){
 
 		// Custom Declared Interceptors
 		interceptors = [
-			{ class="#moduleMapping#.interceptors.Debugger",name="debugger@cbDebugger" }
+			{ class="#moduleMapping#.interceptors.Debugger", name="debugger@cbdebugger" }
 		];
 
 		//default debugmode to false
@@ -56,8 +59,10 @@ component {
 		structAppend(parentSettings.debuggerSettings, controller.getConfigSettings().coldboxConfig.getPropertyMixin("debugger","variables",structnew()), true);
 
 		//map our models
-		binder.map("debuggerService@cbDebugger").to("#moduleMapping#.model.debuggerService");
-		binder.map("debuggerConfig@cbDebugger").to("#moduleMapping#.model.debuggerConfig");
+		binder.map( "debuggerService@cbDebugger" )
+			.to( "#moduleMapping#.models.DebuggerService" );
+		binder.map( "debuggerConfig@cbDebugger" )
+			.to( "#moduleMapping#.models.DebuggerConfig" );
 
 	}
 }
