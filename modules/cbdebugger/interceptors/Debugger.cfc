@@ -16,6 +16,9 @@ component {
 
 	// Before we capture.
 	function onRequestCapture(event, interceptData){
+		// init tracker
+		request.cbdebugger = {};
+		// get reference
 		var rc = event.getCollection();
 
 		// Debug Mode Checks
@@ -81,12 +84,12 @@ component {
 
 	//setup all the timers
 	public function preProcess(event, interceptData) {
-		variables.instance.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
 	}
 
 	// post processing
 	public function postProcess(event, interceptData) {
-		debuggerService.timerEnd( variables.instance.processHash );
+		debuggerService.timerEnd( request.cbdebugger.processHash );
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		interceptorService.processState("beforeDebuggerPanel");
 		var debugHTML = debuggerService.renderDebugLog();
@@ -96,46 +99,46 @@ component {
 	}
 
 	public function preEvent(event, interceptData) {
-		variables.instance.eventHash = debuggerService.timerStart("[preEvent to postEvent] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.eventhash = debuggerService.timerStart("[preEvent to postEvent] for #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postEvent(event, interceptData) {
-		debuggerService.timerEnd(variables.instance.eventHash);
+		debuggerService.timerEnd(request.cbdebugger.eventhash);
 	}
 
 	public function preLayout(event, interceptData) {
-		variables.instance.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postLayout(event, interceptData) {
-		debuggerService.timerEnd(variables.instance.layoutHash);
+		debuggerService.timerEnd(request.cbdebugger.layoutHash);
 	}
 
 	public function preRender(event, interceptData) {
-		variables.instance.renderHash = debuggerService.timerStart("[preRender to postRender] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.renderHash = debuggerService.timerStart("[preRender to postRender] for #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postRender(event, interceptData) {
-		debuggerService.timerEnd(variables.instance.renderHash);
+		debuggerService.timerEnd(request.cbdebugger.renderHash);
 	}
 
 	public function preViewRender(event, interceptData) {
-		variables.instance.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postViewRender(event, interceptData) {
-		debuggerService.timerEnd(variables.instance.renderViewHash);
+		debuggerService.timerEnd( request.cbdebugger.renderViewHash );
 	}
 
 	public function beforeInstanceCreation(event,interceptData){
 		if( variables.debuggerConfig.wireboxCreationProfiler ){
-			instance[interceptData.mapping.getName()] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
+			request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
 		}
 	}
 
 	public function afterInstanceCreation(event, interceptData){
 		if( variables.debuggerConfig.wireboxCreationProfiler ){
-			debuggerService.timerEnd(instance[interceptData.mapping.getName()]);
+			debuggerService.timerEnd( request.cbdebugger[ interceptData.mapping.getName() ]);
 		}
 	}
 

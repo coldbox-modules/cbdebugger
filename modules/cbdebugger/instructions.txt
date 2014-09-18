@@ -5,7 +5,8 @@ Just drop into your modules folder or use CommandBox to install
 
 box install cbdebugger
 
-This will also allow you to use several settings in your parent application or
+This will activate the debugger in your application and render out at the end of
+a request.  This will also allow you to use several settings in your parent application or
 you can modify the settings in the ModuleConfig if desired. We recommend placing your
 debugger settings in your main ColdBox.cfc configuration file.
 
@@ -34,3 +35,12 @@ debuggerSettings = {
 	showRCSnapshots = false,
 	wireboxCreationProfiler=false
 };
+
+The module will also register two model objects for you:
+
+* debuggerService@cbdebugger
+* timer@cbdebugger
+
+The Debugger Service can be used a-la-carte for your debugging purposes.
+The Timer object will allow you to time code execution and send the results to the 
+debugger panel.
