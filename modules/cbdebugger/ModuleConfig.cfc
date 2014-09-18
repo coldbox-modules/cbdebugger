@@ -62,12 +62,6 @@ component {
 		};
 		structAppend(parentSettings.debuggerSettings, controller.getConfigSettings().coldboxConfig.getPropertyMixin("debugger","variables",structnew()), true);
 
-		//map our models
-		binder.map( "debuggerService@cbDebugger" )
-			.to( "#moduleMapping#.models.DebuggerService" );
-		binder.map( "debuggerConfig@cbDebugger" )
-			.to( "#moduleMapping#.models.DebuggerConfig" );
-
 	}
 
 	function onLoad(){
