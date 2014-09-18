@@ -5,7 +5,7 @@ component {
 
 	// DI
 	property name="interceptorService"	inject="coldbox:interceptorService";
-	property name="debuggerService" 	inject="id:debuggerService@cbDebugger";
+	property name="debuggerService" 	inject="debuggerService@cbdebugger";
 
 	// Configure Interceptor
 	function configure() {
@@ -18,6 +18,7 @@ component {
 	function onRequestCapture(event, interceptData){
 		// init tracker
 		request.cbdebugger = {};
+		request.fwExecTime = getTickCount();
 		// get reference
 		var rc = event.getCollection();
 
