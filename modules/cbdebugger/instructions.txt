@@ -3,4 +3,34 @@ INSTRUCTIONS
 ********************************************************************************
 Just drop into your modules folder or use CommandBox to install
 
-box install coldbox-debugger
+box install cbdebugger
+
+This will also allow you to use several settings in your parent application or
+you can modify the settings in the ModuleConfig if desired. We recommend placing your
+debugger settings in your main ColdBox.cfc configuration file.
+
+// activate debugger for everybody
+coldbox.debugmode = boolean
+
+// setup a password to activate the panel
+coldbox.debugPassword = string
+
+// Debugger Settings
+debuggerSettings = {
+	enableDumpVar = true,
+	persistentRequestProfiler = true,
+	maxPersistentRequestProfilers = 10,
+	maxRCPanelQueryRows = 50,
+	showTracerPanel = true,
+	expandedTracerPanel = true,
+	showInfoPanel = true,
+	expandedInfoPanel = true,
+	showCachePanel = true,
+	expandedCachePanel = false,
+	showRCPanel = true,
+	expandedRCPanel = false,
+	showModulesPanel = true,
+	expandedModulesPanel = false,
+	showRCSnapshots = false,
+	wireboxCreationProfiler=false
+};

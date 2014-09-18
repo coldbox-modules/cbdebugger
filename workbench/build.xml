@@ -114,14 +114,14 @@
     
     <!-- Get Dependencies -->
 	<target name="getDependencies" description="Get all the necessary dependencies for the build process using: box.repo.url">
-		<!-- Download Dependency via box task-->
+		<!-- Download Dependency via box task
  		<box-dependency artifactID="javaloader" 
  						groupID="ortussolutions/coldbox-modules" 
  						version="${javaloader.version}"
  						extension="zip"
  						destination="modules/javaloader"
  						unzip="true"
- 						removeZip="true"/>
+ 						removeZip="true"/>-->
 	</target>
 
 </project>
