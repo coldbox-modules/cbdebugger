@@ -35,13 +35,16 @@
 			//Error/Exception Handling
 			exceptionHandler		= "",
 			onInvalidEvent			= "",
-			customErrorTemplate		= "",
+			customErrorTemplate		= "/coldbox/system/includes/BugReport.cfm",
 
 			//Application Aspects
 			handlerCaching 			= false,
 			eventCaching			= false,
 			proxyReturnCollection 	= false,
-			debugMode = true
+
+			// Debugger
+			debugMode = true,
+			debugPassword = ""
 		};
 
 		//Debugger Settings
@@ -50,9 +53,9 @@
 			persistentRequestProfilers = true,
 			maxPersistentRequestProfilers = 10,
 			maxRCPanelQueryRows = 50,
-			showRCSnapshots = false,
+			showRCSnapshots = true,
 			//Panels
-			showTracerPanel = false,
+			showTracerPanel = true,
 			expandedTracerPanel = false,
 			showInfoPanel = true,
 			expandedInfoPanel = true,
@@ -60,7 +63,7 @@
 			expandedCachePanel = false,
 			showRCPanel = true,
 			expandedRCPanel = false,
-			showModulesPanel = false,
+			showModulesPanel = true,
 			expandedModulesPanel = false
 		};
 

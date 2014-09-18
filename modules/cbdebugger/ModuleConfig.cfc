@@ -29,13 +29,16 @@ component {
 		];
 
 		//default debugmode to false
-		if( controller.getSetting( 'debugMode' ,false, '' ) == '' ){
+		if( controller.getSetting( name='debugMode', defaultValue='' ) eq '' ){
 			parentSettings.debugMode = false;
 		}
 
 		//default the password to something so we are secure by default
-		if( controller.getSetting( 'debugPassword' ,false, '' ) == '' ){
+		if( controller.getSetting( name='debugPassword', defaultValue='cb:null' ) eq "cb:null" ){
 			parentSettings.debugPassword = hash( getCurrentTemplatePath() );
+		} else {
+			// hash the password into memory
+			parentSettings.debugPassword = hash( controller.getSetting( name="debugPassword" ) );
 		}
 
 		//default debugging settings
@@ -54,7 +57,8 @@ component {
 			expandedRCPanel = false,
 			showModulesPanel = true,
 			expandedModulesPanel = false,
-			showRCSnapshots = false
+			showRCSnapshots = false,
+			wireboxCreationProfiler=false
 		};
 		structAppend(parentSettings.debuggerSettings, controller.getConfigSettings().coldboxConfig.getPropertyMixin("debugger","variables",structnew()), true);
 
@@ -64,5 +68,11 @@ component {
 		binder.map( "debuggerConfig@cbDebugger" )
 			.to( "#moduleMapping#.models.DebuggerConfig" );
 
+	}
+
+	function onLoad(){
+		// set debug mode?
+		wirebox.getInstance( "debuggerService@cbDebugger" )
+			.setDebugMode( controller.getSetting( "debugMode" ) );
 	}
 }

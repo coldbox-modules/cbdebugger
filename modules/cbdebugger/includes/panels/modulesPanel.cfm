@@ -2,7 +2,7 @@
 <div class="fw_titles"  onClick="fw_toggle('fw_modules')" >
 &nbsp;ColdBox Modules
 </div>
-<div class="fw_debugContent<cfif getDebuggerConfig().getExpandedModulesPanel()>View</cfif>" id="fw_modules">
+<div class="fw_debugContent<cfif instance.debuggerConfig.expandedModulesPanel>View</cfif>" id="fw_modules">
 
 	<div>
 		<!--- Module Commands --->

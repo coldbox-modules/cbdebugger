@@ -27,7 +27,7 @@ Description :
 	<meta http-equiv="refresh" content="#url.frequency#">
 	</cfif>
 	<!--- Include Header --->
-	<cfinclude template="/coldbox/system/includes/DebugHeader.cfm">
+	<cfinclude template="/cbdebugger/includes/DebugHeader.cfm">
 </head>
 <body>
 
@@ -36,7 +36,7 @@ Description :
 	<!--- **************************************************************--->
 	<!--- TRACER STACK--->
 	<!--- **************************************************************--->
-	<cfinclude template="/coldbox/system/includes/panels/TracersPanel.cfm">
+	<cfinclude template="/cbdebugger/includes/panels/TracersPanel.cfm">
 
 	<!--- Start Rendering the Execution Profiler panel  --->
 	<div class="fw_titles">&nbsp;ColdBox Execution Profiler Report</div>
@@ -57,7 +57,7 @@ Description :
 		  Profilers in stack
 		</div>
 		<div class="fw_debugContentCell">
-		  #profilersCount# / #getDebuggerConfig().getmaxPersistentRequestProfilers()#
+		  #profilersCount# / #instance.debuggerConfig.maxPersistentRequestProfilers#
 		</div>
 
 		<p>Below you can see the incoming request profilers. Click on the desired profiler to view its execution report.</p>
@@ -75,7 +75,7 @@ Description :
 				<th width="10%" align="center" >Execution Time</th>
 				<th >Framework Method</th>
 				<!--- Show RC Snapshots if active --->
-				<cfif instance.debuggerConfig.getShowRCSnapshots()>
+				<cfif instance.debuggerConfig.showRCSnapshots>
 				<th width="75" align="center" >RC Snapshot</th>
 				<th width="75" align="center" >PRC Snapshot</th>
 				</cfif>
@@ -97,7 +97,7 @@ Description :
 						<td align="center" >#Time# ms</td>
 						<td ><span class="#color#">#Method#</span></td>
 						<!--- Show RC Snapshots if active --->
-						<cfif instance.debuggerConfig.getShowRCSnapshots()>
+						<cfif instance.debuggerConfig.showRCSnapshots>
 				 		<td align="center" >
 							<cfif len(rc)><a href="javascript:fw_poprc('fw_poprc_#id#')">View</a><cfelse>...</cfif>
 						</td>
@@ -107,7 +107,7 @@ Description :
 						</cfif>
 					 </tr>
 					<!--- Show RC Snapshots if active --->
-					<cfif instance.debuggerConfig.getShowRCSnapshots()>
+					<cfif instance.debuggerConfig.showRCSnapshots>
 					<tr id="fw_poprc_#id#" class="hideRC">
 					  	<td colspan="5" style="padding:5px;" wrap="true">
 						  	<div style="overflow:auto;width:98%; height:150px;padding:5px">

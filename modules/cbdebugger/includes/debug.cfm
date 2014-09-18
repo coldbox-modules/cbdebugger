@@ -26,12 +26,12 @@ Description :
 	<!--- **************************************************************--->
 	<!--- DEBUGGING PANEL --->
 	<!--- **************************************************************--->
-	<cfif getDebuggerConfig().getShowInfoPanel()>
+	<cfif instance.debuggerConfig.showInfoPanel>
 	<div class="fw_titles" onClick="fw_toggle('fw_info')" >
 		&nbsp;ColdBox Debugging Information
 	</div>
 
-	<div class="fw_debugContent<cfif getDebuggerConfig().getExpandedInfoPanel()>View</cfif>" id="fw_info">
+	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedInfoPanel>View</cfif>" id="fw_info">
 
 		<div>
 			<form name="fw_reinitcoldbox" id="fw_reinitcoldbox" action="#URLBase#" method="POST">
@@ -39,7 +39,7 @@ Description :
 				<input type="button" value="Reinitialize Framework" name="reinitframework" style="font-size:10px"
 					   title="Reinitialize the framework."
 					   onClick="fw_reinitframework(#iif(controller.getSetting('ReinitPassword').length(),'true','false')#)">
-				<cfif getDebuggerConfig().getPersistentRequestProfiler()>
+				<cfif instance.debuggerConfig.persistentRequestProfiler>
 				&nbsp;
 				<input type="button" value="Open Profiler Monitor" name="profilermonitor" style="font-size:10px"
 					   title="Open the profiler monitor in a new window."
@@ -160,7 +160,7 @@ Description :
 			<th width="10%" align="center" >Execution Time</th>
 			<th >Framework Method</th>
 			<!--- Show RC Snapshots if active --->
-			<cfif instance.debuggerConfig.getShowRCSnapshots()>
+			<cfif instance.debuggerConfig.showRCSnapshots>
 			<th width="75" align="center" >RC Snapshot</th>
 			<th width="75" align="center" >PRC Snapshot</th>
 			</cfif>
@@ -184,7 +184,7 @@ Description :
 					<td align="center" >#debugTimers.Time# ms</td>
 					<td ><span class="#color#">#debugTimers.Method#</span></td>
 					<!--- Show RC Snapshots if active --->
-					<cfif instance.debuggerConfig.getShowRCSnapshots()>
+					<cfif instance.debuggerConfig.showRCSnapshots>
 					<td align="center" >
 						<cfif len(debugTimers.rc)><a href="javascript:fw_poprc('fw_poprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
 					</td>
@@ -194,7 +194,7 @@ Description :
 					</cfif>
 				  </tr>
 				  <!--- Show RC Snapshots if active --->
-				  <cfif instance.debuggerConfig.getShowRCSnapshots()>
+				  <cfif instance.debuggerConfig.showRCSnapshots>
 				  <tr id="fw_poprc_#debugTimers.id#" class="hideRC">
 				  	<td colspan="5" style="padding:5px;" wrap="true">
 					  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
@@ -229,10 +229,10 @@ Description :
 <!--- **************************************************************--->
 <!--- CACHE PANEL --->
 <!--- **************************************************************--->
-	<cfif getDebuggerConfig().getShowCachePanel()>
+	<cfif instance.debuggerConfig.showCachePanel>
 		<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
 				  cacheFactory="#controller.getCacheBox()#"
-				  expandedPanel="#getDebuggerConfig().getExpandedCachePanel()#">
+				  expandedPanel="#instance.debuggerConfig.expandedCachePanel#">
 	</cfif>
 <!--- **************************************************************--->
 <!--- DUMP VAR --->
@@ -255,17 +255,17 @@ Description :
 <!--- **************************************************************--->
 <!--- ColdBox Modules --->
 <!--- **************************************************************--->
-	<cfif getDebuggerConfig().getShowModulesPanel()>
+	<cfif instance.debuggerConfig.showModulesPanel>
 		<cfinclude template="panels/modulesPanel.cfm">
 	</cfif>
 <!--- **************************************************************--->
 <!--- Request Collection Debug --->
 <!--- **************************************************************--->
-	<cfif getDebuggerConfig().getShowRCPanel()>
+	<cfif instance.debuggerConfig.showRCPanel>
 	<div class="fw_titles"  onClick="fw_toggle('fw_reqCollection')" >
 	&nbsp;ColdBox Request Structures
 	</div>
-	<div class="fw_debugContent<cfif getDebuggerConfig().getExpandedRCPanel()>View</cfif>" id="fw_reqCollection">
+	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedRCPanel>View</cfif>" id="fw_reqCollection">
 		<!--- Public Collection --->
 		<cfset thisCollection = rc>
 		<cfset thisCollectionType = "Public">
