@@ -14,7 +14,7 @@ And hope maketh not ashamed; because the love of God is shed abroad in our heart
 Holy Ghost which is given unto us. ." Romans 5:5
 
 ********************************************************************************
-WELCOME TO THE DEBUGGER MODULE
+WELCOME TO THE COLDBOX DEBUGGER MODULE
 ********************************************************************************
 Created & copyright by Curt Gratz (Computer Know How) & Luis Majano (Ortus Solutions, Corp)
 
@@ -30,14 +30,13 @@ IMPORTANT LINKS
 ********************************************************************************
 Source
 - https://github.com/ColdBox/cbox-debugger
-- http://www.coldbox.org/forgebox/debugger
+- http://www.coldbox.org/forgebox/cbdebugger
 
 ********************************************************************************
 SYSTEM REQUIREMENTS
 ********************************************************************************
-- Railo 3.2 and above
-- ColdFusion MX 9 and above
-- ColdBox 3.5 and above
+- Railo 4+
+- ColdFusion 9+
 
 ----
 

@@ -3,44 +3,100 @@
 */
 component {
 
-	property name="interceptorService" inject="coldbox:interceptorService";
-	property name="debuggerService" inject="id:debuggerService@cbDebugger";
-	property name="controller" inject="coldbox";
+	// DI
+	property name="interceptorService"	inject="coldbox:interceptorService";
+	property name="debuggerService" 	inject="id:debuggerService@cbDebugger";
 
 	// Configure Interceptor
-	void function configure() {
+	function configure() {
 		variables.instance = {};
+		variables.debuggerConfig 	= controller.getSetting( "DebuggerSettings" );
+		variables.debuggerPassword 	= controller.getSetting( "debugPassword" );
 	}
 
+	// Before we capture.
+	function onRequestCapture(event, interceptData){
+		var rc = event.getCollection();
 
-	public function postProcess(event, interceptData) {
-		debuggerService.timerEnd(variables.instance.processHash);
-		request.fwExecTime = getTickCount() - request.fwExecTime;
-		interceptorService.processState("beforeDebuggerPanel");
-		var debugHTML = debuggerService.renderDebugLog();
-		interceptorService.processState("afterDebuggerPanel");
-		debuggerService.recordProfiler();
-		appendToBuffer(debugHTML);
+		// Debug Mode Checks
+		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ){
+			if ( NOT len( variables.debuggerPassword ) ){
+				debuggerService.setDebugMode( rc.debugMode );
+			}
+			else if ( structKeyExists( rc, "debugPassword" ) AND CompareNoCase( variables.debuggerPassword, hash( rc.debugPassword ) ) eq 0 ){
+				debuggerService.setDebugMode( rc.debugMode );
+			}
+		}
 
+		// verify in debug mode
+		if( debuggerService.getDebugMode() ){
+			// call debug commands
+			debuggerCommands( arguments.event );
+			// panel rendering
+			var debugPanel = event.getValue( "debugPanel", "" );
+			switch( debugPanel ){
+				case "profiler": {
+					writeOutput( debuggerService.renderProfiler() );
+					break;
+				}
+				default : {
+					writeOutput( debuggerService.renderCachePanel() );
+					break;
+				}
+			}
+			// turn off debugger and stop
+			if( len( debugPanel ) ){
+				include "/cbdebugger/includes/debugoutput.cfm";
+				abort;
+			}
+		}
 	}
 
+	/**
+	* Debugger Commands
+	*/
+	private function debuggerCommands( event ){
+		var command = event.getTrimValue( "cbox_command","" );
+
+		// Verify command
+		if( NOT len( command ) ){ return; }
+
+		// Commands
+		switch( command ){
+			// Module Commands
+			case "reloadModules"  : { controller.getModuleService().reloadAll(); break;}
+			case "unloadModules"  : { controller.getModuleService().unloadAll(); break;}
+			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
+			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
+			default: return;
+		}
+
+		// relocate to correct panel
+		if( event.getValue("debugPanel","") eq "" ){
+			setNextEvent( URL="#listlast(cgi.script_name,"/")#", addtoken=false );
+		} else {
+			setNextEvent( URL="#listlast(cgi.script_name,"/")#?debugpanel=#event.getValue('debugPanel','')#", addtoken=false );
+		}
+	}
 
 	//setup all the timers
 	public function preProcess(event, interceptData) {
-		var debugPanel = event.getValue("debugPanel","");
-		switch(debugPanel){
-			case "profiler":
-				writeOutput(debuggerService.renderProfiler());
-			break;
 
-			default:
-				writeOutput(debuggerService.renderCachePanel());
-			break;
-		}
-		if (len(debugPanel)){
-			abort;
-		}
 		variables.instance.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
+	}
+
+	// post processing
+	public function postProcess(event, interceptData) {
+		debuggerService.timerEnd( variables.instance.processHash );
+		request.fwExecTime = getTickCount() - request.fwExecTime;
+
+		interceptorService.processState("beforeDebuggerPanel");
+		var debugHTML = debuggerService.renderDebugLog();
+		interceptorService.processState("afterDebuggerPanel");
+
+		debuggerService.recordProfiler();
+
+		appendToBuffer( debugHTML );
 	}
 
 	public function preEvent(event, interceptData) {
@@ -76,11 +132,15 @@ component {
 	}
 
 	public function beforeInstanceCreation(event,interceptData){
-		instance[interceptData.mapping.getName()] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
+		if( variables.debuggerConfig.wireboxCreationProfiler ){
+			instance[interceptData.mapping.getName()] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
+		}
 	}
 
 	public function afterInstanceCreation(event, interceptData){
-		debuggerService.timerEnd(instance[interceptData.mapping.getName()]);
+		if( variables.debuggerConfig.wireboxCreationProfiler ){
+			debuggerService.timerEnd(instance[interceptData.mapping.getName()]);
+		}
 	}
 
 

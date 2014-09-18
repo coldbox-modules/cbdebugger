@@ -11,11 +11,11 @@ Date     :	September 25, 2005
 Description :
 	Debugging template for the application
 ----------------------------------------------------------------------->
-<cfif getDebuggerConfig().getShowTracerPanel() and arrayLen(getTracers())>
+<cfif instance.debuggerConfig.showTracerPanel and arrayLen(getTracers())>
 	<cfset TracerArray = getTracers()>
 	<cfoutput>
 	<div class="fw_titles" onClick="fw_toggle('fw_tracer')">&nbsp;ColdBox Tracer Messages </div>
-	<div class="fw_debugContent<cfif getDebuggerConfig().getExpandedTracerPanel()>View</cfif>" id="fw_tracer">
+	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedTracerPanel>View</cfif>" id="fw_tracer">
 		<cfloop from="1" to="#arrayLen(TracerArray)#" index="i">
 			<div class="fw_tracerMessage">
 

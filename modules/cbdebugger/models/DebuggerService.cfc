@@ -10,15 +10,14 @@ Description :
  This is the service that powers the ColdBox Debugger.
 
 ----------------------------------------------------------------------->
-<cfcomponent output="false" hint="This is the service that powers the ColdBox Debugger." extends="coldbox.system.web.services.BaseService">
+<cfcomponent output="false" hint="This is the service that powers the ColdBox Debugger." extends="coldbox.system.web.services.BaseService" singleton>
 <!------------------------------------------- CONSTRUCTOR ------------------------------------------->
 
-	<cffunction name="init" access="public" output="false" returntype="debuggerService" hint="Constructor">
+	<cffunction name="init" access="public" output="false" returntype="DebuggerService" hint="Constructor">
 		<cfargument name="controller" 	 inject="coldbox">
-		<cfargument name="debuggerConfig" 	 inject="debuggerConfig@cbDebugger">
 		<cfscript>
-
-			variables.controller = controller;
+			// setup controller
+			variables.controller = arguments.controller;
 
 			// Set the unique cookie name per ColdBox application
 			instance.cookieName = "coldbox_debugmode_#controller.getAppHash()#";
@@ -32,13 +31,11 @@ Description :
 			instance.maxTracers = 75;
 			// Runtime
 			instance.jvmRuntime = createObject("java", "java.lang.Runtime");
-
-			instance.debugMode = controller.getSetting("debugMode");
-			instance.debugPassword = controller.getSetting("debugPassword");
-
-			arguments.debuggerConfig.populate( controller.getSetting("DebuggerSettings") );
-
-			setDebuggerConfig(debuggerConfig);
+			// run modes
+			instance.debugMode = controller.getSetting( "debugMode" );
+			instance.debugPassword = controller.getSetting( "debugPassword" );
+			// config
+			instance.debuggerConfig = controller.getSetting( "DebuggerSettings" );
 
 			// Initialize secret key
 			rotateSecretKey();
@@ -114,7 +111,7 @@ Description :
 				QuerySetCell(qTimers, "Timestamp", now());
 
 				// RC Snapshot
-				if ( NOT findnocase("rendering",timerInfo.label) AND instance.DebuggerConfig.getShowRCSnapshots() ){
+				if ( NOT findnocase("rendering",timerInfo.label) AND instance.debuggerConfig.showRCSnapshots ){
 					// Save collection
 					QuerySetCell(qTimers, "RC", htmlEditFormat(left(context.getCollection().toString(),5000)) );
 					QuerySetCell(qTimers, "PRC", htmlEditFormat(left(context.getCollection(private=true).toString(),5000)) );
@@ -277,15 +274,6 @@ Description :
 		<cfset instance.secretKey = arguments.secretKey/>
 	</cffunction>
 
-	<!--- Configuration Bean --->
-	<cffunction name="getDebuggerConfig" access="public" output="false" returntype="any" hint="Get DebuggerConfig: coldbox.system.web.config.DebuggerConfig">
-		<cfreturn instance.DebuggerConfig/>
-	</cffunction>
-	<cffunction name="setDebuggerConfig" access="public" output="false" returntype="void" hint="Set DebuggerConfig">
-		<cfargument name="DebuggerConfig" type="any" required="true"/>
-		<cfset instance.DebuggerConfig = arguments.DebuggerConfig/>
-	</cffunction>
-
 	<!--- Persistent Profilers --->
 	<cffunction name="getProfilers" access="public" output="false" returntype="array" hint="Get Profilers">
 		<cfreturn instance.profilers/>
@@ -315,10 +303,10 @@ Description :
 		<cfscript>
 			var newRecord = structnew();
 
-			if( NOT getDebuggerConfig().getPersistentRequestProfiler() ){ return; }
+			if( NOT instance.debuggerConfig.persistentRequestProfiler ){ return; }
 
 			// size check
-			if( ArrayLen( instance.profilers ) gte getDebuggerConfig().getmaxPersistentRequestProfilers() ){
+			if( ArrayLen( instance.profilers ) gte instance.debuggerConfig.maxPersistentRequestProfilers ){
 				popProfiler();
 			}
 
