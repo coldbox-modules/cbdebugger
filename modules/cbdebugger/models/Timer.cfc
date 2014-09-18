@@ -13,7 +13,7 @@ Modification History:
 			 output="false"
 			 singleton>
 
-	<cfproperty name="debuggerService" 	inject="id:debuggerService@cbDebugger">
+	<cfproperty name="debuggerService" 	inject="debuggerService@cbdebugger">
 
 <!------------------------------------------- CONSTRUCTOR ------------------------------------------->
 

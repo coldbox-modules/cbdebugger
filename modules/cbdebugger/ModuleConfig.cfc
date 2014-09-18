@@ -20,6 +20,10 @@ component {
 	this.entryPoint			= "cbdebugger";
 	// CF Mapping
 	this.cfMapping			= "cbdebugger";
+	// Model Namespace
+	this.modelNamespace		= "cbdebugger";
+	// Auto Map Models Directory
+	this.autoMapModels		= true;
 
 	function configure(){
 
