@@ -81,7 +81,6 @@ component {
 
 	//setup all the timers
 	public function preProcess(event, interceptData) {
-
 		variables.instance.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
 	}
 
@@ -89,13 +88,10 @@ component {
 	public function postProcess(event, interceptData) {
 		debuggerService.timerEnd( variables.instance.processHash );
 		request.fwExecTime = getTickCount() - request.fwExecTime;
-
 		interceptorService.processState("beforeDebuggerPanel");
 		var debugHTML = debuggerService.renderDebugLog();
 		interceptorService.processState("afterDebuggerPanel");
-
 		debuggerService.recordProfiler();
-
 		appendToBuffer( debugHTML );
 	}
 
