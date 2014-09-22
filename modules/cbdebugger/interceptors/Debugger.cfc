@@ -138,11 +138,12 @@ component {
 	}
 
 	public function afterInstanceCreation(event, interceptData){
-		if( variables.debuggerConfig.wireboxCreationProfiler ){
+		// so many checks, due to chicken and the egg problems
+		if( variables.debuggerConfig.wireboxCreationProfiler
+			and structKeyExists( request, "cbdebugger" )
+			and structKeyExists( request.cbdebugger, interceptData.mapping.getName() ) ){
 			debuggerService.timerEnd( request.cbdebugger[ interceptData.mapping.getName() ]);
 		}
 	}
-
-
 
 }
