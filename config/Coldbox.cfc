@@ -64,7 +64,8 @@
 			showRCPanel = true,
 			expandedRCPanel = false,
 			showModulesPanel = true,
-			expandedModulesPanel = false
+			expandedModulesPanel = false,
+			wireboxCreationProfiler=true
 		};
 
 		// custom settings
