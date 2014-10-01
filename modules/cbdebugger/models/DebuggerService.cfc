@@ -10,7 +10,9 @@ Description :
  This is the service that powers the ColdBox Debugger.
 
 ----------------------------------------------------------------------->
-<cfcomponent output="false" hint="This is the service that powers the ColdBox Debugger." extends="coldbox.system.web.services.BaseService" singleton>
+<cfcomponent output="false" extends="coldbox.system.web.services.BaseService" accessors="true" singleton>
+
+
 <!------------------------------------------- CONSTRUCTOR ------------------------------------------->
 
 	<cffunction name="init" access="public" output="false" returntype="DebuggerService" hint="Constructor">
@@ -301,8 +303,7 @@ Description :
 	<cffunction name="pushProfiler" access="public" returntype="void" hint="Push a profiler record" output="false" >
 		<cfargument name="profilerRecord" required="true" type="query" hint="The profiler query for this request">
 		<cfscript>
-			var newRecord = structnew();
-
+			// are persistent profilers activated
 			if( NOT instance.debuggerConfig.persistentRequestProfiler ){ return; }
 
 			// size check
@@ -311,18 +312,21 @@ Description :
 			}
 
 			// New Profiler
-			newRecord.datetime = now();
-			newRecord.ip = cgi.REMOTE_ADDR;
-			newRecord.timers = arguments.profilerRecord;
-
-			ArrayAppend( instance.profilers,newRecord);
+			ArrayAppend( instance.profilers, {
+				dateTime 	= now(),
+				ip		 	= getLocalhostIP(),
+				timers	 	= arguments.profilerRecord,
+				requestData = getHTTPRequestData(),
+				statusCode	= getPageContext().getResponse().getStatus(),
+				contentType = getPageContext().getResponse().getContentType()
+			} );
 		</cfscript>
 	</cffunction>
 
 	<!--- Pop a profiler --->
 	<cffunction name="popProfiler" access="public" returntype="void" hint="Pop a profiler record" output="false" >
 		<cfscript>
-			ArrayDeleteAt( instance.profilers,1);
+			ArrayDeleteAt( instance.profilers, 1 );
 		</cfscript>
 	</cffunction>
 
@@ -362,9 +366,9 @@ Description :
     <cffunction name="getInetHost" access="public" returntype="string" output="false" hint="Get the hostname of the executing machine.">
 		<cfscript>
 			try{
-				return createObject("java", "java.net.InetAddress").getLocalHost().getHostName();
+				return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 			} catch( any e ){
-				return "localhost";
+				return cgi.http_host;
 			}
 		</cfscript>
 	</cffunction>

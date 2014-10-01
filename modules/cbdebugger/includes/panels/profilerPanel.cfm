@@ -66,65 +66,112 @@ Description :
 			<cfset refLocal.thisProfiler = profilers[x]>
 			<div class="fw_profilers" onClick="fw_toggle('fw_executionprofile_#x#')">&nbsp;#dateformat(refLocal.thisProfiler.datetime,"mm/dd/yyyy")# #timeformat(refLocal.thisProfiler.datetime,"hh:mm:ss.l tt")# (#refLocal.thisProfiler.ip#)</div>
 			<div class="fw_debugContent" id="fw_executionprofile_#x#">
-			<!--- **************************************************************--->
-			<!--- Method Executions --->
-			<!--- **************************************************************--->
-			<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
-			  <tr>
-			  	<th width="13%" align="center" >Timestamp</th>
-				<th width="10%" align="center" >Execution Time</th>
-				<th >Framework Method</th>
-				<!--- Show RC Snapshots if active --->
-				<cfif instance.debuggerConfig.showRCSnapshots>
-				<th width="75" align="center" >RC Snapshot</th>
-				<th width="75" align="center" >PRC Snapshot</th>
-				</cfif>
-			  </tr>
-				  <cfloop query="refLocal.thisProfiler.timers">
-					  <cfif findnocase("rendering", method)>
-					  	<cfset color = "fw_redText">
-					  <cfelseif findnocase("interception",method)>
-					  	<cfset color = "fw_blackText">
-					  <cfelseif findnocase("runEvent", method)>
-					  	<cfset color = "fw_blueText">
-					  <cfelseif findnocase("pre",method) or findnocase("post",method)>
-					  	<cfset color = "fw_purpleText">
-					  <cfelse>
-					  	<cfset color = "fw_greenText">
-					  </cfif>
-					<tr <cfif currentrow mod 2 eq 0>class="even"</cfif>>
-					  	<td align="center" >#TimeFormat(timestamp,"hh:MM:SS.l tt")#</td>
-						<td align="center" >#Time# ms</td>
-						<td ><span class="#color#">#Method#</span></td>
-						<!--- Show RC Snapshots if active --->
-						<cfif instance.debuggerConfig.showRCSnapshots>
-				 		<td align="center" >
-							<cfif len(rc)><a href="javascript:fw_poprc('fw_poprc_#id#')">View</a><cfelse>...</cfif>
+
+
+				<!--- **************************************************************--->
+				<!--- Request Data --->
+				<!--- **************************************************************--->
+				<h2>Request</h2>
+				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+					<tr>
+						<th width="200">HTTP Method:</th>
+						<td>#refLocal.thisProfiler.requestData.method#</td>
+					</tr>
+					<tr>
+						<th width="200">HTTP Content:</th>
+						<td style="overflow: auto; max-width:300px; max-height: 300px">
+							<cfif isSimpleValue( refLocal.thisProfiler.requestData.content )>
+								#refLocal.thisProfiler.requestData.content#
+							<cfelse>
+								<cfdump var="#refLocal.thisProfiler.requestData.content#">
+							</cfif>
 						</td>
-						<td align="center" >
-							<cfif len(prc)><a href="javascript:fw_poprc('fw_popprc_#id#')">View</a><cfelse>...</cfif>
-						</td>
-						</cfif>
-					 </tr>
+					</tr>
+					<cfloop collection="#refLocal.thisProfiler.requestData.headers#" item="thisHeader" >
+						<tr>
+							<th width="200">Header-#thisHeader#:</th>
+							<td style="overflow-y: auto; max-width:300px">
+								#replace( refLocal.thisProfiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
+							</td>
+						</tr>
+					</cfloop>
+				</table>
+
+				<!--- **************************************************************--->
+				<!--- Response Data --->
+				<!--- **************************************************************--->
+				<h2>Response</h2>
+				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+					<tr>
+						<th width="200">Status Code:</th>
+						<td>#refLocal.thisProfiler.statusCode#</td>
+					</tr>
+					<tr>
+						<th width="200">Content Type:</th>
+						<td>#refLocal.thisProfiler.contentType#</td>
+					</tr>
+				</table>
+
+				<!--- **************************************************************--->
+				<!--- Method Executions --->
+				<!--- **************************************************************--->
+				<h2>Executions</h2>
+				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+				  <tr>
+				  	<th width="13%" align="center" >Timestamp</th>
+					<th width="10%" align="center" >Execution Time</th>
+					<th >Framework Method</th>
 					<!--- Show RC Snapshots if active --->
 					<cfif instance.debuggerConfig.showRCSnapshots>
-					<tr id="fw_poprc_#id#" class="hideRC">
-					  	<td colspan="5" style="padding:5px;" wrap="true">
-						  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-							  #replacenocase(rc,",",chr(10) & chr(13),"all")#
-							</div>
-						</td>
-			  		  </tr>
-			  		 <tr id="fw_popprc_#id#" class="hideRC">
-				  	    <td colspan="5" style="padding:5px;" wrap="true">
-					  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-						  #replacenocase(prc,",",chr(10) & chr(13),"all")#
-						</div>
-					   </td>
-		  		    </tr>
+					<th width="75" align="center" >RC Snapshot</th>
+					<th width="75" align="center" >PRC Snapshot</th>
 					</cfif>
-				  </cfloop>
-			</table>
+				  </tr>
+					  <cfloop query="refLocal.thisProfiler.timers">
+						  <cfif findnocase("rendering", method)>
+						  	<cfset color = "fw_redText">
+						  <cfelseif findnocase("interception",method)>
+						  	<cfset color = "fw_blackText">
+						  <cfelseif findnocase("runEvent", method)>
+						  	<cfset color = "fw_blueText">
+						  <cfelseif findnocase("pre",method) or findnocase("post",method)>
+						  	<cfset color = "fw_purpleText">
+						  <cfelse>
+						  	<cfset color = "fw_greenText">
+						  </cfif>
+						<tr <cfif currentrow mod 2 eq 0>class="even"</cfif>>
+						  	<td align="center" >#TimeFormat(timestamp,"hh:MM:SS.l tt")#</td>
+							<td align="center" >#Time# ms</td>
+							<td ><span class="#color#">#Method#</span></td>
+							<!--- Show RC Snapshots if active --->
+							<cfif instance.debuggerConfig.showRCSnapshots>
+					 		<td align="center" >
+								<cfif len(rc)><a href="javascript:fw_poprc('fw_poprc_#id#')">View</a><cfelse>...</cfif>
+							</td>
+							<td align="center" >
+								<cfif len(prc)><a href="javascript:fw_poprc('fw_popprc_#id#')">View</a><cfelse>...</cfif>
+							</td>
+							</cfif>
+						 </tr>
+						<!--- Show RC Snapshots if active --->
+						<cfif instance.debuggerConfig.showRCSnapshots>
+						<tr id="fw_poprc_#id#" class="hideRC">
+						  	<td colspan="5" style="padding:5px;" wrap="true">
+							  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
+								  #replacenocase(rc,",",chr(10) & chr(13),"all")#
+								</div>
+							</td>
+				  		  </tr>
+				  		 <tr id="fw_popprc_#id#" class="hideRC">
+					  	    <td colspan="5" style="padding:5px;" wrap="true">
+						  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
+							  #replacenocase(prc,",",chr(10) & chr(13),"all")#
+							</div>
+						   </td>
+			  		    </tr>
+						</cfif>
+					  </cfloop>
+				</table>
 			</div>
 		</cfloop>
 
