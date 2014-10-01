@@ -76,10 +76,31 @@ Description :
 		</div>
 
 		<div class="fw_debugTitleCell">
-		  Server Instance:
+			Server Instance:
 		</div>
 		<div class="fw_debugContentCell">
-	    #getInetHost()#
+	    	#getInetHost()# (#getLocalHostIP()#)
+		</div>
+
+		<div class="fw_debugTitleCell">
+			HTTP Response:
+		</div>
+		<div class="fw_debugContentCell">
+	    	statusCode=#getPageContext().getResponse().getStatus()#;contentType=#getPageContext().getResponse().getContentType()#
+		</div>
+
+		<div class="fw_debugTitleCell">
+			HTTP Method:
+		</div>
+		<div class="fw_debugContentCell">
+	    	#getHTTPRequestData().method#
+		</div>
+
+		<div class="fw_debugTitleCell">
+			HTTP Headers:
+		</div>
+		<div>
+	    	<cfdump expand="false" label="HTTP Headers (click to expand)" var="#getHTTPRequestData().headers#">
 		</div>
 
 		<div class="fw_debugTitleCell">
