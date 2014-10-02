@@ -37,13 +37,14 @@ component {
 			debuggerCommands( arguments.event );
 			// panel rendering
 			var debugPanel = event.getValue( "debugPanel", "" );
+
 			switch( debugPanel ){
-				case "profiler": {
+				case "profiler" : {
 					writeOutput( debuggerService.renderProfiler() );
 					break;
 				}
-				default : {
-					writeOutput( debuggerService.renderCachePanel() );
+				case "cache" : {
+					//writeOutput( debuggerService.renderCachePanel() );
 					break;
 				}
 			}
@@ -62,26 +63,29 @@ component {
 
 	// post processing
 	public function postProcess(event, interceptData) {
+
 		// end the request timer
 		debuggerService.timerEnd( request.cbdebugger.processHash );
 		request.fwExecTime = getTickCount() - request.fwExecTime;
+		// record the profilers
+		debuggerService.recordProfiler();
 
 		// announce before Debugger Panel
 		interceptorService.processState( "beforeDebuggerPanel" );
 
-		// render out the debugger
-		var debugHTML = debuggerService.renderDebugLog();
+		// Only render if enabled, if no renderdata, and if not ajax call
+		if( isDebuggerRendering() AND
+		 	structIsEmpty( event.getRenderData() ) AND
+		 	!event.isAjax()
+		){
+			// render out the debugger
+			var debugHTML = debuggerService.renderDebugLog();
+			// render out the debugger to output
+			appendToBuffer( debugHTML );
+		}
 
 		// announce after the debugger panel
 		interceptorService.processState( "afterDebuggerPanel", { debugHTML = debugHTML } );
-
-		// record the profilers
-		debuggerService.recordProfiler();
-
-		// render out the debugger to output
-		if( isDebuggerRendering() ){
-			appendToBuffer( debugHTML );
-		}
 	}
 
 	public function preEvent(event, interceptData) {
