@@ -63,6 +63,7 @@ component {
 
 	// post processing
 	public function postProcess(event, interceptData) {
+		var debugHTML = "";
 
 		// end the request timer
 		debuggerService.timerEnd( request.cbdebugger.processHash );
@@ -79,7 +80,7 @@ component {
 		 	!event.isAjax()
 		){
 			// render out the debugger
-			var debugHTML = debuggerService.renderDebugLog();
+			debugHTML = debuggerService.renderDebugLog();
 			// render out the debugger to output
 			appendToBuffer( debugHTML );
 		}
