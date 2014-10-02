@@ -9,8 +9,7 @@ component {
 
 	// Configure Interceptor
 	function configure() {
-		variables.instance = {};
-		variables.debuggerConfig 	= controller.getSetting( "DebuggerSettings" );
+		variables.debuggerConfig 	= controller.getSetting( "debuggerSettings" );
 		variables.debuggerPassword 	= controller.getSetting( "debugPassword" );
 	}
 
@@ -56,33 +55,6 @@ component {
 		}
 	}
 
-	/**
-	* Debugger Commands
-	*/
-	private function debuggerCommands( event ){
-		var command = event.getTrimValue( "cbox_command","" );
-
-		// Verify command
-		if( NOT len( command ) ){ return; }
-
-		// Commands
-		switch( command ){
-			// Module Commands
-			case "reloadModules"  : { controller.getModuleService().reloadAll(); break;}
-			case "unloadModules"  : { controller.getModuleService().unloadAll(); break;}
-			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
-			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
-			default: return;
-		}
-
-		// relocate to correct panel
-		if( event.getValue("debugPanel","") eq "" ){
-			setNextEvent( URL="#listlast(cgi.script_name,"/")#", addtoken=false );
-		} else {
-			setNextEvent( URL="#listlast(cgi.script_name,"/")#?debugpanel=#event.getValue('debugPanel','')#", addtoken=false );
-		}
-	}
-
 	//setup all the timers
 	public function preProcess(event, interceptData) {
 		request.cbdebugger.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
@@ -90,13 +62,26 @@ component {
 
 	// post processing
 	public function postProcess(event, interceptData) {
+		// end the request timer
 		debuggerService.timerEnd( request.cbdebugger.processHash );
 		request.fwExecTime = getTickCount() - request.fwExecTime;
-		interceptorService.processState("beforeDebuggerPanel");
+
+		// announce before Debugger Panel
+		interceptorService.processState( "beforeDebuggerPanel" );
+
+		// render out the debugger
 		var debugHTML = debuggerService.renderDebugLog();
-		interceptorService.processState("afterDebuggerPanel");
+
+		// announce after the debugger panel
+		interceptorService.processState( "afterDebuggerPanel", { debugHTML = debugHTML } );
+
+		// record the profilers
 		debuggerService.recordProfiler();
-		appendToBuffer( debugHTML );
+
+		// render out the debugger to output
+		if( isDebuggerRendering() ){
+			appendToBuffer( debugHTML );
+		}
 	}
 
 	public function preEvent(event, interceptData) {
@@ -143,6 +128,35 @@ component {
 			and structKeyExists( request, "cbdebugger" )
 			and structKeyExists( request.cbdebugger, interceptData.mapping.getName() ) ){
 			debuggerService.timerEnd( request.cbdebugger[ interceptData.mapping.getName() ]);
+		}
+	}
+
+	/************************************** PRIVATE METHODS *********************************************/
+
+	/**
+	* Debugger Commands
+	*/
+	private function debuggerCommands( event ){
+		var command = event.getTrimValue( "cbox_command","" );
+
+		// Verify command
+		if( NOT len( command ) ){ return; }
+
+		// Commands
+		switch( command ){
+			// Module Commands
+			case "reloadModules"  : { controller.getModuleService().reloadAll(); break;}
+			case "unloadModules"  : { controller.getModuleService().unloadAll(); break;}
+			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
+			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
+			default: return;
+		}
+
+		// relocate to correct panel
+		if( event.getValue( "debugPanel", "" ) eq "" ){
+			setNextEvent( URL="#listlast(cgi.script_name,"/")#", addtoken=false );
+		} else {
+			setNextEvent( URL="#listlast(cgi.script_name,"/")#?debugpanel=#event.getValue('debugPanel','')#", addtoken=false );
 		}
 	}
 
