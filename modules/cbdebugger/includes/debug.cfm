@@ -82,12 +82,16 @@ Description :
 	    	#getInetHost()# (#getLocalHostIP()#)
 		</div>
 
+		<cfif structKeyExists( server, "railo" )>
 		<div class="fw_debugTitleCell">
 			HTTP Response:
 		</div>
 		<div class="fw_debugContentCell">
-	    	statusCode=#getPageContext().getResponse().getStatus()#;contentType=#getPageContext().getResponse().getContentType()#
+
+				statusCode=#getPageContext().getResponse().getStatus()#;
+	    	contentType=#getPageContext().getResponse().getContentType()#
 		</div>
+	    </cfif>
 
 		<div class="fw_debugTitleCell">
 			HTTP Method:

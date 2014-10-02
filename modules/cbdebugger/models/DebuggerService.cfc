@@ -312,14 +312,21 @@ Description :
 			}
 
 			// New Profiler
-			ArrayAppend( instance.profilers, {
+			var newRecord = {
 				dateTime 	= now(),
 				ip		 	= getLocalhostIP(),
 				timers	 	= arguments.profilerRecord,
 				requestData = getHTTPRequestData(),
-				statusCode	= getPageContext().getResponse().getStatus(),
-				contentType = getPageContext().getResponse().getContentType()
-			} );
+				statusCode	= 0,
+				contentType	= ""
+			};
+			// stupid Adobe CF does not support status and content type from response implementation
+			if( structKeyExists( server, "railo" ) ){
+				newRecord.statusCode	= getPageContext().getResponse().getStatus();
+				newRecord.contentType 	= getPageContext().getResponse().getContentType();
+			}
+			// add it to profilers
+			ArrayAppend( instance.profilers, newRecord );
 		</cfscript>
 	</cffunction>
 

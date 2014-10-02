@@ -100,8 +100,10 @@ Description :
 				<!--- **************************************************************--->
 				<!--- Response Data --->
 				<!--- **************************************************************--->
+				<cfif structKeyExists( server, "railo" )>
 				<h2>Response</h2>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+
 					<tr>
 						<th width="200">Status Code:</th>
 						<td>#refLocal.thisProfiler.statusCode#</td>
@@ -111,6 +113,7 @@ Description :
 						<td>#refLocal.thisProfiler.contentType#</td>
 					</tr>
 				</table>
+				</cfif>
 
 				<!--- **************************************************************--->
 				<!--- Method Executions --->

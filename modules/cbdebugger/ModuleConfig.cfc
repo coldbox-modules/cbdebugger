@@ -26,6 +26,8 @@ component {
 	this.autoMapModels		= true;
 
 	function configure(){
+		// Mixin our own methods on handlers, interceptors and views via the ColdBox UDF Library File setting
+		arrayAppend( controller.getSetting( "ApplicationHelper" ), "#moduleMapping#/models/Mixins.cfm" );
 
 		// Custom Declared Interceptors
 		interceptors = [
