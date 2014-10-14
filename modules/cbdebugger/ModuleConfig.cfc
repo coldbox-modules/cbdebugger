@@ -11,7 +11,7 @@ component {
 	this.author 			= "Curt Gratz";
 	this.webURL 			= "http://www.coldbox.org";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "1.0.0.@build.number@";
+	this.version			= "1.0.0+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
@@ -42,7 +42,7 @@ component {
 		//default the password to something so we are secure by default
 		if( controller.getSetting( name='debugPassword', defaultValue='cb:null' ) eq "cb:null" ){
 			parentSettings.debugPassword = hash( getCurrentTemplatePath() );
-		} else {
+		} else if ( len( controller.getSetting( name="debugPassword" ) ) ) {
 			// hash the password into memory
 			parentSettings.debugPassword = hash( controller.getSetting( name="debugPassword" ) );
 		}

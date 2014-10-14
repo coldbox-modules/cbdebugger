@@ -70,7 +70,8 @@ component extends="coldbox.system.Interceptor"{
 		// record the profilers
 		debuggerService.recordProfiler();
 		// Only render if enabled, if no renderdata, and if not ajax call
-		if( isDebuggerRendering() AND
+		if( debuggerService.getDebugMode() AND
+		 	isDebuggerRendering() AND
 		 	structIsEmpty( event.getRenderData() ) AND
 		 	!event.isAjax()
 		){
