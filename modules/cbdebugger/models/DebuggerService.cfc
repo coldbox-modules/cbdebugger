@@ -222,8 +222,14 @@ Description :
 				<cfset URLBase = listlast(cgi.script_name,"/")>
 			</cfif>
 
+			<!--- Pre Panel --->
+			<cfset controller.getInterceptorService().processState( "beforeDebuggerPanel" )>
+
 			<!--- Render debuglog --->
 			<cfsavecontent variable="renderedDebugging"><cfinclude template="/cbdebugger/includes/Debug.cfm"></cfsavecontent>
+
+			<!--- Post Panel --->
+			<cfset controller.getInterceptorService().processState( "afterDebuggerPanel" )>
 		</cfif>
 
 		<cfreturn renderedDebugging>

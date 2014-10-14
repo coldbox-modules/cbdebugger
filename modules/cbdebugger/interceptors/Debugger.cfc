@@ -1,10 +1,9 @@
 /**
 * Coldbox Debugger Interecptor
 */
-component {
+component extends="coldbox.system.Interceptor"{
 
 	// DI
-	property name="interceptorService"	inject="coldbox:interceptorService";
 	property name="debuggerService" 	inject="debuggerService@cbdebugger";
 
 	// Configure Interceptor
@@ -70,10 +69,6 @@ component {
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record the profilers
 		debuggerService.recordProfiler();
-
-		// announce before Debugger Panel
-		interceptorService.processState( "beforeDebuggerPanel" );
-
 		// Only render if enabled, if no renderdata, and if not ajax call
 		if( isDebuggerRendering() AND
 		 	structIsEmpty( event.getRenderData() ) AND
@@ -84,9 +79,6 @@ component {
 			// render out the debugger to output
 			appendToBuffer( debugHTML );
 		}
-
-		// announce after the debugger panel
-		interceptorService.processState( "afterDebuggerPanel", { debugHTML = debugHTML } );
 	}
 
 	public function preEvent(event, interceptData) {
