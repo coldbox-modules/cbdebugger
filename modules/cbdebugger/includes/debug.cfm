@@ -28,7 +28,7 @@ Description :
 	<!--- **************************************************************--->
 	<cfif instance.debuggerConfig.showInfoPanel>
 	<div class="fw_titles" onClick="fw_toggle('fw_info')" >
-		&nbsp;ColdBox Debugging Information
+		&nbsp;ColdBox Debugger v#controller.getSetting( "modules" ).cbdebugger.version#
 	</div>
 
 	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedInfoPanel>View</cfif>" id="fw_info">
@@ -262,7 +262,7 @@ Description :
 <!--- **************************************************************--->
 <!--- DUMP VAR --->
 <!--- **************************************************************--->
-	<cfif controller.getSetting("DebuggerSettings").EnableDumpVar>
+	<cfif controller.getSetting("debugger").EnableDumpVar>
 		<cfif structKeyExists(rc,"dumpvar")>
 		<!--- Dump Var --->
 		<div class="fw_titles" onClick="fw_toggle('fw_dumpvar')">&nbsp;Dumpvar</div>

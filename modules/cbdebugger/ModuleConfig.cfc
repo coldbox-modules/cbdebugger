@@ -25,30 +25,62 @@ component {
 	// Auto Map Models Directory
 	this.autoMapModels		= true;
 
+	/**
+	* Module Registration
+	*/
 	function configure(){
 		// Mixin our own methods on handlers, interceptors and views via the ColdBox UDF Library File setting
 		arrayAppend( controller.getSetting( "ApplicationHelper" ), "#moduleMapping#/models/Mixins.cfm" );
+	}
 
-		// Custom Declared Interceptors
-		interceptors = [
-			{ class="#moduleMapping#.interceptors.Debugger", name="debugger@cbdebugger" }
-		];
-
-		//default debugmode to false
-		if( controller.getSetting( name='debugMode', defaultValue='' ) eq '' ){
-			parentSettings.debugMode = false;
-		}
+	/**
+	* Load the module
+	*/
+	function onLoad(){
+		var settings = controller.getConfigSettings();
+		// parse parent settings
+		parseParentSettings();
 
 		//default the password to something so we are secure by default
-		if( controller.getSetting( name='debugPassword', defaultValue='cb:null' ) eq "cb:null" ){
-			parentSettings.debugPassword = hash( getCurrentTemplatePath() );
-		} else if ( len( controller.getSetting( name="debugPassword" ) ) ) {
+		if( settings.debugger.debugPassword eq "cb:null" ){
+			settings.debugger.debugPassword = hash( getCurrentTemplatePath() );
+		} else if ( len( settings.debugger.debugPassword ) ) {
 			// hash the password into memory
-			parentSettings.debugPassword = hash( controller.getSetting( name="debugPassword" ) );
+			settings.debugger.debugPassword = hash( settings.debugger.debugPassword );
 		}
 
-		//default debugging settings
-		parentSettings.debuggerSettings = {
+		// set debug mode?
+		wirebox.getInstance( "debuggerService@cbDebugger" )
+			.setDebugMode( settings.debugger.debugMode );
+
+		// Register the interceptor, it has to be here due to loading of configuration files.
+		controller.getInterceptorService()
+			.registerInterceptor( 
+			interceptorClass="#moduleMapping#.interceptors.Debugger",
+			interceptorName="debugger@cbdebugger"
+		);
+	}
+
+	/**
+	* Unloading
+	*/
+	function onUnload(){
+		// unregister interceptor
+		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
+	}
+
+	/**
+	* parse parent settings
+	*/
+	private function parseParentSettings(){
+		var oConfig 		= controller.getSetting( "ColdBoxConfig" );
+		var configStruct 	= controller.getConfigSettings();
+		var debuggerDSL 	= oConfig.getPropertyMixin( "debugger", "variables", structnew() );
+
+		//defaults
+		configStruct.debugger = {
+			debugMode = false,
+			debugPassword = "cb:null",
 			enableDumpVar = true,
 			persistentRequestProfiler = true,
 			maxPersistentRequestProfilers = 10,
@@ -66,13 +98,8 @@ component {
 			showRCSnapshots = false,
 			wireboxCreationProfiler=false
 		};
-		structAppend(parentSettings.debuggerSettings, controller.getConfigSettings().coldboxConfig.getPropertyMixin("debugger","variables",structnew()), true);
 
-	}
-
-	function onLoad(){
-		// set debug mode?
-		wirebox.getInstance( "debuggerService@cbDebugger" )
-			.setDebugMode( controller.getSetting( "debugMode" ) );
+		// incorporate settings
+		structAppend( configStruct.debugger, debuggerDSL, true );
 	}
 }

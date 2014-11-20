@@ -23,7 +23,7 @@
 			missingTemplateHandler	= "",
 
 			//Extension Points
-			UDFLibraryFile 				= "",
+			ApplicationHelper 				= "",
 			coldboxExtensionsLocation 	= "",
 			modulesExternalLocation		= [],
 			pluginsExternalLocation 	= "",
@@ -40,15 +40,15 @@
 			//Application Aspects
 			handlerCaching 			= false,
 			eventCaching			= false,
-			proxyReturnCollection 	= false,
+			proxyReturnCollection 	= false
 
-			// Debugger
-			debugMode = true,
-			debugPassword = ""
 		};
 
 		//Debugger Settings
 		debugger = {
+			// Debugger
+			debugMode = true,
+			debugPassword = "",
 			enableDumpVar = false,
 			persistentRequestProfilers = true,
 			maxPersistentRequestProfilers = 10,

@@ -33,12 +33,12 @@ Description :
 			instance.maxTracers = 75;
 			// Runtime
 			instance.jvmRuntime = createObject("java", "java.lang.Runtime");
-			// run modes
-			instance.debugMode = controller.getSetting( "debugMode" );
-			instance.debugPassword = controller.getSetting( "debugPassword" );
 			// config
-			instance.debuggerConfig = controller.getSetting( "DebuggerSettings" );
-
+			instance.debuggerConfig = controller.getSetting( "debugger" );
+			// run modes
+			instance.debugMode 		= instance.debuggerConfig.debugMode;
+			instance.debugPassword 	= instance.debuggerConfig.debugPassword;
+			
 			// Initialize secret key
 			rotateSecretKey();
 
@@ -258,12 +258,12 @@ Description :
 	<cffunction name="renderCachePanel" access="public" hint="Renders the execution profilers." output="false" returntype="Any">
 			<cfsavecontent variable="cachepanel">
 				<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
-								  cacheFactory="#controller.getCacheBox()#">
+						  cacheFactory="#controller.getCacheBox()#">
 			</cfsavecontent>
 
 		<cfreturn cachepanel>
 	</cffunction>
-
+	
 	<!--- Get set the cookie name --->
 	<cffunction name="getCookieName" access="public" output="false" returntype="any" hint="Get cookieName">
 		<cfreturn instance.cookieName/>
