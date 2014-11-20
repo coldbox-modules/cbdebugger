@@ -3,13 +3,12 @@
 */
 component extends="coldbox.system.Interceptor"{
 
-	// DI
-	property name="debuggerService" 	inject="debuggerService@cbdebugger";
-
-	// Configure Interceptor
-	function configure() {
-		variables.debuggerConfig 	= controller.getSetting( "debuggerSettings" );
-		variables.debuggerPassword 	= controller.getSetting( "debugPassword" );
+	/**
+	* Configure
+	*/
+	function configure(){
+		variables.debuggerService 	= getInstance( "debuggerService@cbdebugger" );
+		variables.debuggerConfig 	= controller.getSetting( "debugger" );
 	}
 
 	// Before we capture.
@@ -22,10 +21,10 @@ component extends="coldbox.system.Interceptor"{
 
 		// Debug Mode Checks
 		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ){
-			if ( NOT len( variables.debuggerPassword ) ){
+			if ( NOT len( variables.debuggerConfig.debugPassword ) ){
 				debuggerService.setDebugMode( rc.debugMode );
 			}
-			else if ( structKeyExists( rc, "debugPassword" ) AND CompareNoCase( variables.debuggerPassword, hash( rc.debugPassword ) ) eq 0 ){
+			else if ( structKeyExists( rc, "debugPassword" ) AND CompareNoCase( variables.debuggerConfig.debugPassword, hash( rc.debugPassword ) ) eq 0 ){
 				debuggerService.setDebugMode( rc.debugMode );
 			}
 		}
@@ -42,8 +41,8 @@ component extends="coldbox.system.Interceptor"{
 					writeOutput( debuggerService.renderProfiler() );
 					break;
 				}
-				case "cache" : {
-					//writeOutput( debuggerService.renderCachePanel() );
+				case "cache" : case "cacheReport" : case "cacheContentReport" : {
+					writeOutput( debuggerService.renderCachePanel() );
 					break;
 				}
 			}
@@ -62,7 +61,11 @@ component extends="coldbox.system.Interceptor"{
 
 	// post processing
 	public function postProcess(event, interceptData) {
-		var debugHTML = "";
+		var debugHTML 	= "";
+		var command 	= event.getTrimValue( "cbox_command","" );
+
+		// Verify if we have a command, if we do just exit
+		if( len( command ) ){ return; }
 
 		// end the request timer
 		debuggerService.timerEnd( request.cbdebugger.processHash );
@@ -136,6 +139,7 @@ component extends="coldbox.system.Interceptor"{
 	*/
 	private function debuggerCommands( event ){
 		var command = event.getTrimValue( "cbox_command","" );
+		var results = "";
 
 		// Verify command
 		if( NOT len( command ) ){ return; }
@@ -147,6 +151,16 @@ component extends="coldbox.system.Interceptor"{
 			case "unloadModules"  : { controller.getModuleService().unloadAll(); break;}
 			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
 			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
+			// Caching Reporting Commands
+			case "expirecache"       :    		 
+			case "reapcache"  	  	 :	 
+			case "delcacheentry"  	 :	 
+			case "expirecacheentry"  : 	 
+			case "clearallevents" 	 :	 
+			case "clearallviews"  	 :	 
+			case "cacheBoxReapAll"	 :	 
+			case "cacheBoxExpireAll" :	 
+			case "gc"			 	 : { debuggerService.renderCachePanel(); break; }
 			default: return;
 		}
 
