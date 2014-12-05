@@ -26,11 +26,12 @@ Description :
 		<cfscript>
 			// Init supertype
 			super.init(argumentCollection=arguments);
-
-			variables.debuggerService = getColdBox().getWireBox().getInstance( "debuggerService@cbdebugger" );
-
 			return this;
 		</cfscript>
+	</cffunction>
+	
+	<cffunction name="onRegistration" access="public">
+		<cfset variables.debuggerService = getColdBox().getWireBox().getInstance( "debuggerService@cbdebugger" )>
 	</cffunction>
 
 	<!--- Log Message --->
