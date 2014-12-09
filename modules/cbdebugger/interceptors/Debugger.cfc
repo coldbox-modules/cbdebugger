@@ -41,7 +41,7 @@ component extends="coldbox.system.Interceptor"{
 					writeOutput( debuggerService.renderProfiler() );
 					break;
 				}
-				case "cache" : case "cacheReport" : case "cacheContentReport" : {
+				case "cache" : case "cacheReport" : case "cacheContentReport" : case "cacheViewer" : {
 					writeOutput( debuggerService.renderCachePanel() );
 					break;
 				}
