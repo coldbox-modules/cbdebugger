@@ -56,7 +56,7 @@ component extends="coldbox.system.Interceptor"{
 
 	//setup all the timers
 	public function preProcess(event, interceptData) {
-		request.cbdebugger.processHash = debuggerService.timerStart("[preProcess to postProcess] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.processHash = debuggerService.timerStart( "[preProcess to postProcess] for #arguments.event.getCurrentEvent()#" );
 	}
 
 	// post processing
@@ -68,7 +68,7 @@ component extends="coldbox.system.Interceptor"{
 		if( len( command ) ){ return; }
 
 		// end the request timer
-		debuggerService.timerEnd( request.cbdebugger.processHash );
+		debuggerService.timerEnd( isNull( request.cbdebugger.processHash ) ? '' : request.cbdebugger.processHash );
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record the profilers
 		debuggerService.recordProfiler();
@@ -86,7 +86,7 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preEvent(event, interceptData) {
-		request.cbdebugger.eventhash = debuggerService.timerStart("[preEvent to postEvent] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.eventhash = debuggerService.timerStart( "[preEvent to postEvent] for #arguments.event.getCurrentEvent()#" );
 	}
 
 	public function postEvent(event, interceptData) {
@@ -94,7 +94,7 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preLayout(event, interceptData) {
-		request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.layoutHash = debuggerService.timerStart( "[preLayout to postLayout] for #arguments.event.getCurrentEvent()#" );
 	}
 
 	public function postLayout(event, interceptData) {
@@ -102,7 +102,7 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preRender(event, interceptData) {
-		request.cbdebugger.renderHash = debuggerService.timerStart("[preRender to postRender] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.renderHash = debuggerService.timerStart( "[preRender to postRender] for #arguments.event.getCurrentEvent()#" );
 	}
 
 	public function postRender(event, interceptData) {
@@ -110,16 +110,24 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preViewRender(event, interceptData) {
-		request.cbdebugger.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.renderViewHash = debuggerService.timerStart( "Rendering View: #interceptData.view# from event: #arguments.event.getCurrentEvent()#" );
 	}
 
 	public function postViewRender(event, interceptData) {
 		debuggerService.timerEnd( request.cbdebugger.renderViewHash );
 	}
 
+	public function preLayoutRender(event, interceptData) {
+		request.cbdebugger.layoutHash = debuggerService.timerStart( "Rendering Layout: #interceptData.layout# from event: #arguments.event.getCurrentEvent()#" );
+	}
+	
+	public function postLayoutRender(event, interceptData) {
+		debuggerService.timerEnd(request.cbdebugger.layoutHash);
+	}
+
 	public function beforeInstanceCreation(event,interceptData){
 		if( variables.debuggerConfig.wireboxCreationProfiler ){
-			request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
+			request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart( "Wirebox instance creation of #interceptData.mapping.getName()#" );
 		}
 	}
 

@@ -82,7 +82,7 @@ Description :
 	    	#getInetHost()# (#getLocalHostIP()#)
 		</div>
 
-		<cfif structKeyExists( server, "railo" )>
+		<cfif findNoCase( "railo,lucee", server.coldfusion.productname )>
 		<div class="fw_debugTitleCell">
 			HTTP Response:
 		</div>

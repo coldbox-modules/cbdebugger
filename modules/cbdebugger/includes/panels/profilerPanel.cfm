@@ -100,7 +100,7 @@ Description :
 				<!--- **************************************************************--->
 				<!--- Response Data --->
 				<!--- **************************************************************--->
-				<cfif structKeyExists( server, "railo" )>
+				<cfif findNoCase( "railo,lucee", server.coldfusion.productname )>
 				<h2>Response</h2>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 

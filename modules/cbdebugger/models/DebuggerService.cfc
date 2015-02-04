@@ -327,7 +327,7 @@ Description :
 				contentType	= ""
 			};
 			// stupid Adobe CF does not support status and content type from response implementation
-			if( structKeyExists( server, "railo" ) ){
+			if ( findNoCase( "railo,lucee", server.coldfusion.productname ) ){
 				newRecord.statusCode	= getPageContext().getResponse().getStatus();
 				newRecord.contentType 	= getPageContext().getResponse().getContentType();
 			}
