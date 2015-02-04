@@ -11,7 +11,7 @@ component {
 	this.author 			= "Curt Gratz";
 	this.webURL 			= "http://www.coldbox.org";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "1.0.1+@build.number@";
+	this.version			= "1.1.0+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
@@ -69,9 +69,9 @@ component {
 		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
 		
 		// Remove application helper
-		var appHelperArray = controller.getSetting( "ApplicationHelper" );
-		var mixinToRemove = "#moduleMapping#/models/Mixins.cfm";
-		var mixinIndex = arrayFindNoCase( appHelperArray, mixinToRemove );
+		var appHelperArray 	= controller.getSetting( "ApplicationHelper" );
+		var mixinToRemove 	= "#moduleMapping#/models/Mixins.cfm";
+		var mixinIndex 		= arrayFindNoCase( appHelperArray, mixinToRemove );
 		
 		// If the mixin is in the array
 		if( mixinIndex ) {
