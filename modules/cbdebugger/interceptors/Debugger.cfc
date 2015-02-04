@@ -86,42 +86,50 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preEvent(event, interceptData) {
-		request.cbdebugger.eventhash = debuggerService.timerStart("[preEvent to postEvent] for #arguments.event.getCurrentEvent()#");
-	}
+    request.cbdebugger.eventhash = debuggerService.timerStart("[preEvent to postEvent] for #arguments.event.getCurrentEvent()#");
+  }
 
-	public function postEvent(event, interceptData) {
-		debuggerService.timerEnd(request.cbdebugger.eventhash);
-	}
+  public function postEvent(event, interceptData) {
+    debuggerService.timerEnd(request.cbdebugger.eventhash);
+  }
 
-	public function preLayout(event, interceptData) {
-		request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
-	}
+  public function preLayout(event, interceptData) {
+    request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
+  }
 
-	public function postLayout(event, interceptData) {
-		debuggerService.timerEnd(request.cbdebugger.layoutHash);
-	}
+  public function postLayout(event, interceptData) {
+    debuggerService.timerEnd(request.cbdebugger.layoutHash);
+  }
 
-	public function preRender(event, interceptData) {
-		request.cbdebugger.renderHash = debuggerService.timerStart("[preRender to postRender] for #arguments.event.getCurrentEvent()#");
-	}
+  public function preRender(event, interceptData) {
+    request.cbdebugger.renderHash = debuggerService.timerStart("[preRender to postRender] for #arguments.event.getCurrentEvent()#");
+  }
 
-	public function postRender(event, interceptData) {
-		debuggerService.timerEnd(request.cbdebugger.renderHash);
-	}
+  public function postRender(event, interceptData) {
+    debuggerService.timerEnd(request.cbdebugger.renderHash);
+  }
 
-	public function preViewRender(event, interceptData) {
-		request.cbdebugger.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for #arguments.event.getCurrentEvent()#");
-	}
+  public function preLayoutRender(event, interceptData) {
+    request.cbdebugger.layoutHash = debuggerService.timerStart("Rendering Layout: #interceptData.layout# from event: #arguments.event.getCurrentEvent()#");
+  }
 
-	public function postViewRender(event, interceptData) {
-		debuggerService.timerEnd( request.cbdebugger.renderViewHash );
-	}
+  public function postLayoutRender(event, interceptData) {
+    debuggerService.timerEnd(request.cbdebugger.layoutHash);
+  }
 
-	public function beforeInstanceCreation(event,interceptData){
-		if( variables.debuggerConfig.wireboxCreationProfiler ){
-			request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
-		}
-	}
+  public function preViewRender(event, interceptData) {
+    request.cbdebugger.renderViewHash = debuggerService.timerStart("Rendering #IIF(interceptData.cache,'"cached"','""')# view: #interceptData.view# from event: #arguments.event.getCurrentEvent()#");
+  }
+
+  public function postViewRender(event, interceptData) {
+    debuggerService.timerEnd( request.cbdebugger.renderViewHash );
+  }
+
+  public function beforeInstanceCreation(event,interceptData){
+    if( variables.debuggerConfig.wireboxCreationProfiler ){
+      request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart("Wirebox instance creation of #interceptData.mapping.getName()#");
+    }
+  }
 
 	public function afterInstanceCreation(event, interceptData){
 		// so many checks, due to chicken and the egg problems
@@ -152,14 +160,14 @@ component extends="coldbox.system.Interceptor"{
 			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
 			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
 			// Caching Reporting Commands
-			case "expirecache"       :    		 
-			case "reapcache"  	  	 :	 
-			case "delcacheentry"  	 :	 
-			case "expirecacheentry"  : 	 
-			case "clearallevents" 	 :	 
-			case "clearallviews"  	 :	 
-			case "cacheBoxReapAll"	 :	 
-			case "cacheBoxExpireAll" :	 
+			case "expirecache"       :
+			case "reapcache"  	  	 :
+			case "delcacheentry"  	 :
+			case "expirecacheentry"  :
+			case "clearallevents" 	 :
+			case "clearallviews"  	 :
+			case "cacheBoxReapAll"	 :
+			case "cacheBoxExpireAll" :
 			case "gc"			 	 : { debuggerService.renderCachePanel(); break; }
 			default: return;
 		}
