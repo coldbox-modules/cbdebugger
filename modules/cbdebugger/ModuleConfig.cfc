@@ -67,6 +67,19 @@ component {
 	function onUnload(){
 		// unregister interceptor
 		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
+		
+		// Remove application helper
+		var appHelperArray = controller.getSetting( "ApplicationHelper" );
+		var mixinToRemove = "#moduleMapping#/models/Mixins.cfm";
+		var mixinIndex = arrayFindNoCase( appHelperArray, mixinToRemove );
+		
+		// If the mixin is in the array
+		if( mixinIndex ) {
+			// Remove it
+			arrayDeleteAt( appHelperArray, mixinIndex );
+			// Arrays passed by value in Adobe CF
+			controller.setSetting( "ApplicationHelper", appHelperArray );
+		}
 	}
 
 	/**
