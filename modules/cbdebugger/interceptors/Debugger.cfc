@@ -94,7 +94,7 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preLayout(event, interceptData) {
-		request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.layoutHash = debuggerService.timerStart("[preLayout to postLayout] for Layout #interceptData.layout# #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postLayout(event, interceptData) {
@@ -110,7 +110,7 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	public function preViewRender(event, interceptData) {
-		request.cbdebugger.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for #arguments.event.getCurrentEvent()#");
+		request.cbdebugger.renderViewHash = debuggerService.timerStart("[preViewRender to postViewRender] for view #interceptData.view# #arguments.event.getCurrentEvent()#");
 	}
 
 	public function postViewRender(event, interceptData) {
@@ -152,14 +152,14 @@ component extends="coldbox.system.Interceptor"{
 			case "reloadModule"   : { controller.getModuleService().reload( event.getValue( "module", "" ) ); break;}
 			case "unloadModule"   : { controller.getModuleService().unload( event.getValue( "module", "" ) ); break;}
 			// Caching Reporting Commands
-			case "expirecache"       :    		 
-			case "reapcache"  	  	 :	 
-			case "delcacheentry"  	 :	 
-			case "expirecacheentry"  : 	 
-			case "clearallevents" 	 :	 
-			case "clearallviews"  	 :	 
-			case "cacheBoxReapAll"	 :	 
-			case "cacheBoxExpireAll" :	 
+			case "expirecache"       :
+			case "reapcache"  	  	 :
+			case "delcacheentry"  	 :
+			case "expirecacheentry"  :
+			case "clearallevents" 	 :
+			case "clearallviews"  	 :
+			case "cacheBoxReapAll"	 :
+			case "cacheBoxExpireAll" :
 			case "gc"			 	 : { debuggerService.renderCachePanel(); break; }
 			default: return;
 		}
