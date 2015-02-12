@@ -204,7 +204,7 @@ Description :
 				  <cfelse>
 				  	<cfset color = "fw_greenText">
 				  </cfif>
-				  <tr <cfif currentrow mod 2 eq 0>class="even"</cfif>>
+				  <tr <cfif debugTimers.currentrow mod 2 eq 0>class="even"</cfif>>
 				  	<td align="center" >#TimeFormat(debugTimers.timestamp,"hh:MM:SS.l tt")#</td>
 					<td align="center" >#debugTimers.Time# ms</td>
 					<td ><span class="#color#">#debugTimers.Method#</span></td>
