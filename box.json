@@ -20,7 +20,7 @@
     "changelog":"",
     "type":"",
     "keywords":[
-        
+
     ],
     "private":false,
     "engines":[
@@ -43,7 +43,7 @@
         }
     ],
     "contributors":[
-        
+
     ],
     "dependencies":{
         "relax":"1.7",
@@ -58,7 +58,7 @@
         "testbox":"testbox"
     },
     "ignore":[
-        
+
     ],
     "testbox":{
         "runner":[
@@ -67,7 +67,7 @@
             }
         ],
         "labels":[
-            
+
         ],
         "reporter":"",
         "reporterResults":"",
@@ -79,11 +79,11 @@
             "recurse":true
         },
         "watchers":[
-            
+
         ],
         "notify":{
             "emails":[
-                
+
             ],
             "growl":"",
             "url":""
