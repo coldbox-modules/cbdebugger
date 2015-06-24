@@ -1,5 +1,5 @@
 {
-    "name":"",
+    "name":"ColdBox Debugger Sample Application",
     "version":"1.0.0.0000",
     "author":"",
     "location":"",
@@ -13,14 +13,14 @@
         "url":""
     },
     "bugs":"",
-    "slug":"",
+    "slug":"cbdebugger-sample-app",
     "shortDescription":"",
     "description":"",
     "instructions":"",
     "changelog":"",
     "type":"",
     "keywords":[
-        
+
     ],
     "private":false,
     "engines":[
@@ -43,19 +43,22 @@
         }
     ],
     "contributors":[
-        
+
     ],
     "dependencies":{
-        "relax":"1.7"
+        "relax":"1.7",
+        "coldbox":"4.1.0+00002"
     },
     "devDependencies":{
-        
+        "testbox":"2.0.0"
     },
     "installPaths":{
-        "relax":"modules/relax"
+        "relax":"modules/relax",
+        "coldbox":"coldbox",
+        "testbox":"testbox"
     },
     "ignore":[
-        
+
     ],
     "testbox":{
         "runner":[
@@ -64,7 +67,7 @@
             }
         ],
         "labels":[
-            
+
         ],
         "reporter":"",
         "reporterResults":"",
@@ -76,11 +79,11 @@
             "recurse":true
         },
         "watchers":[
-            
+
         ],
         "notify":{
             "emails":[
-                
+
             ],
             "growl":"",
             "url":""
