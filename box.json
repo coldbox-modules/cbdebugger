@@ -46,13 +46,16 @@
         
     ],
     "dependencies":{
-        "relax":"1.7"
+        "relax":"1.7",
+        "coldbox":"4.1.0+00002"
     },
     "devDependencies":{
-        
+        "testbox":"2.0.0"
     },
     "installPaths":{
-        "relax":"modules/relax"
+        "relax":"modules/relax",
+        "coldbox":"coldbox",
+        "testbox":"testbox"
     },
     "ignore":[
         
