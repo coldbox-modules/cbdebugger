@@ -1,5 +1,7 @@
 CHANGELOG
 =========
+##1.2.0
+
 ##1.1.0
 * https://ortussolutions.atlassian.net/browse/CCM-14 Issue with unloading modules
 * https://ortussolutions.atlassian.net/browse/CCM-25 Lucee support
