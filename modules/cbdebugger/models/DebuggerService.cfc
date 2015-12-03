@@ -226,7 +226,7 @@ Description :
 			<cfset controller.getInterceptorService().processState( "beforeDebuggerPanel" )>
 
 			<!--- Render debuglog --->
-			<cfsavecontent variable="renderedDebugging"><cfinclude template="/cbdebugger/includes/Debug.cfm"></cfsavecontent>
+			<cfsavecontent variable="renderedDebugging"><cfinclude template="/cbdebugger/includes/debug.cfm"></cfsavecontent>
 
 			<!--- Post Panel --->
 			<cfset controller.getInterceptorService().processState( "afterDebuggerPanel" )>
@@ -250,7 +250,7 @@ Description :
 			<cfset URLBase = listlast(cgi.script_name,"/")>
 		</cfif>
 
-		<cfsavecontent variable="profilerContents"><cfinclude template="/cbdebugger/includes/panels/ProfilerPanel.cfm"></cfsavecontent>
+		<cfsavecontent variable="profilerContents"><cfinclude template="/cbdebugger/includes/panels/profilerPanel.cfm"></cfsavecontent>
 
 		<cfreturn profilerContents>
 	</cffunction>

@@ -4,6 +4,8 @@ CHANGELOG
 * Fix unscoped currentrow which was throwing an error when debugging was enabled.
 * Removed reference to missing images in CSS
 * Updated build scripts
+* How to turn off debugger for tests, it does this automatically now.
+* filename cases don't match #5 on certain includes
 
 ##1.1.0
 * https://ortussolutions.atlassian.net/browse/CCM-14 Issue with unloading modules

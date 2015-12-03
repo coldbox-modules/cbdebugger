@@ -27,7 +27,7 @@ Description :
 	<meta http-equiv="refresh" content="#url.frequency#">
 	</cfif>
 	<!--- Include Header --->
-	<cfinclude template="/cbdebugger/includes/DebugHeader.cfm">
+	<cfinclude template="/cbdebugger/includes/debugHeader.cfm">
 </head>
 <body>
 
@@ -36,7 +36,7 @@ Description :
 	<!--- **************************************************************--->
 	<!--- TRACER STACK--->
 	<!--- **************************************************************--->
-	<cfinclude template="/cbdebugger/includes/panels/TracersPanel.cfm">
+	<cfinclude template="/cbdebugger/includes/panels/tracersPanel.cfm">
 
 	<!--- Start Rendering the Execution Profiler panel  --->
 	<div class="fw_titles">&nbsp;ColdBox Execution Profiler Report</div>
