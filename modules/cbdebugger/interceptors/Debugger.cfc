@@ -72,11 +72,12 @@ component extends="coldbox.system.Interceptor"{
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record the profilers
 		debuggerService.recordProfiler();
-		// Only render if enabled, if no renderdata, and if not ajax call
+		// Only render if enabled, if no renderdata, and if not ajax call and not in testing mode
 		if( debuggerService.getDebugMode() AND
 		 	isDebuggerRendering() AND
 		 	structIsEmpty( event.getRenderData() ) AND
-		 	!event.isAjax()
+		 	!event.isAjax() AND
+		 	!findNoCase( "MockController", getMetadata( controller ).name )
 		){
 			// render out the debugger
 			debugHTML = debuggerService.renderDebugLog();
