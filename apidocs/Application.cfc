@@ -10,6 +10,7 @@ component{
 
 	this.mappings[ "/docbox" ]  		= API_ROOT & "docbox";
 	this.mappings[ "/root" ] 			= rootPath;
-	this.mappings[ "/cbdebugger" ] 	= rootPath & "modules/cbdebugger/models";
+	this.mappings[ "/coldbox" ]  		= rootPath & "coldbox";
+	this.mappings[ "/cbdebugger" ] 		= rootPath & "modules/cbdebugger/models";
 
 }

@@ -127,6 +127,7 @@
 		<exec executable="box" dir="${dir.apidocs}">
 			<arg line="server stop" />
 		</exec>
+		<delete file="${dir.build}/docbox.html" />
 		<!-- Zip API Docs -->
 		<zip destfile="${dir.exports}/${project.name}-apidocs-${project.version}.zip" basedir="${dir.api}"></zip>
  	</target>
