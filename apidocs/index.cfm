@@ -1,14 +1,13 @@
 <cfparam name="url.version" default="0">
-<cfparam name="url.path" 	default="#expandPath( "./CBDebugger-APIDocs" )#">
+<cfparam name="url.path" 	default="#expandPath( "./cbdebugger-APIDocs" )#">
 <cfscript>
-	docName = "CBDebugger-APIDocs";
-	base = expandPath( "/cbdebugger" );
-
-	colddoc 	= new ColdDoc();
-	strategy 	= new colddoc.strategy.api.HTMLAPIStrategy( url.path, "CBDebugger v#url.version#" );
-	colddoc.setStrategy( strategy );
-
-	colddoc.generate( inputSource=base, outputDir=url.path, inputMapping="cbdebugger" );
+	docName = "cbdebugger-APIDocs";
+	base 	= expandPath( "/cbdebugger" );
+	docbox 	= new docbox.DocBox( properties = {
+		projectTitle 	= "cbdebugger v#url.version#",
+		outputDir 		= url.path
+	} );
+	docbox.generate( source=base, mapping="cbdebugger" );
 </cfscript>
 
 <!---

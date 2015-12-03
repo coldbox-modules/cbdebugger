@@ -1,50 +1,9 @@
 {
-    "name":"ColdBox Debugger Sample Application",
-    "version":"1.0.0.0000",
-    "author":"",
-    "location":"",
-    "directory":"",
-    "createPackageDirectory":true,
-    "packageDirectory":"",
-    "homepage":"",
-    "documentation":"",
-    "repository":{
-        "type":"",
-        "url":""
-    },
-    "bugs":"",
-    "slug":"cbdebugger-sample-app",
-    "shortDescription":"",
-    "description":"",
-    "instructions":"",
-    "changelog":"",
-    "type":"",
-    "keywords":[
-
-    ],
+    "name":"CBDebugger Builder",
+    "version":"1.0.0",
+    "slug" : "cbdebugger-shell",
     "private":false,
-    "engines":[
-        {
-            "type":"railo",
-            "version":">=4.1.x"
-        },
-        {
-            "type":"adobe",
-            "version":">=10.0.0"
-        }
-    ],
-    "defaultEngine":"",
     "defaultPort":0,
-    "projectURL":"",
-    "license":[
-        {
-            "type":"",
-            "url":""
-        }
-    ],
-    "contributors":[
-
-    ],
     "dependencies":{
         "relax":"1.7",
         "coldbox":"4.1.0+00002"
@@ -56,37 +15,5 @@
         "relax":"modules/relax",
         "coldbox":"coldbox",
         "testbox":"testbox"
-    },
-    "ignore":[
-
-    ],
-    "testbox":{
-        "runner":[
-            {
-                "default":""
-            }
-        ],
-        "labels":[
-
-        ],
-        "reporter":"",
-        "reporterResults":"",
-        "bundles":[
-            ""
-        ],
-        "directory":{
-            "mapping":"",
-            "recurse":true
-        },
-        "watchers":[
-
-        ],
-        "notify":{
-            "emails":[
-
-            ],
-            "growl":"",
-            "url":""
-        }
     }
 }

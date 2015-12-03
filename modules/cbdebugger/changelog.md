@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 ##1.2.0
+* Fix unscoped currentrow which was throwing an error when debugging was enabled.
+* Removed reference to missing images in CSS
+* Updated build scripts
 
 ##1.1.0
 * https://ortussolutions.atlassian.net/browse/CCM-14 Issue with unloading modules
