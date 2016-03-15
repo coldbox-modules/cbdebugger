@@ -1,10 +1,10 @@
 {
 	"name" 		: "ColdBox Debugger",
-	"version"	: "1.2.0",
-	"author" 	: "Curt Gratz <gratzc@compknowhow.com",
+	"author" 	: "Ortus Solutions <info@ortussolutions.com",
+	"version"	: "@version.number@+@build.number@",
 	"slug"		: "cbdebugger",
 	"type"		: "modules",
-	"homepage"	: "http://www.coldbox.org",
+	"homepage"	: "https://github.com/ColdBox/cbox-debugger",
 	"documentation"		: "https://github.com/ColdBox/cbox-debugger",
 	"repository"		: { "type" : "git", "url" : "https://github.com/ColdBox/cbox-debugger" },
 	"shortDescription"	: "The official ColdBox 4 debugger module",
@@ -12,23 +12,15 @@
 		{ "type" : "Apache2", "url" : "http://www.apache.org/licenses/LICENSE-2.0.html" } 
 	],
 	"contributors"		: [
-		"Brad Wood <bdw429s@gmail.com>", "Luis Majano <lmajano@ortussolutions.com>"
+		"Curt Gratz <gratzc@compknowhow.com", "Brad Wood <bdw429s@gmail.com>", "Luis Majano <lmajano@ortussolutions.com>"
 	],
 	"engines"	: [
 		{ "type" : "lucee", "version" : ">4.5" },
 		{ "type" : "adobe", "version" : ">9.02" }
 	],
-	"testbox" 	: {
-		"runner" : {
-			"cf10" 	: "http://cf10cboxdev.jfetmac/codedepot/cbox-debugger/test/runner.cfm",
-			"railo" : "http://railocboxdev.jfetmac/codedepot/cbox-debugger/test/runner.cfm"
-		}
-	},
 	"ignore":[
         "**/.*",
-        "test",
         "tests",
-        "apidocs",
         "*/.md"
     ]
 }

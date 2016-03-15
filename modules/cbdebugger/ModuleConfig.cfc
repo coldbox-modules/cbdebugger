@@ -1,17 +1,16 @@
 /**
-*********************************************************************************
 * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-* www.coldbox.org | www.luismajano.com | www.ortussolutions.com
-********************************************************************************
+* www.ortussolutions.com
+* ---
 */
 component {
 
 	// Module Properties
 	this.title 				= "ColdBox Debugger";
 	this.author 			= "Curt Gratz";
-	this.webURL 			= "http://www.coldbox.org";
+	this.webURL 			= "http://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "1.2.0+@build.number@";
+	this.version			= "@version.number@+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
