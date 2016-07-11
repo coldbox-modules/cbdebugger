@@ -114,4 +114,13 @@ component {
 		// incorporate settings
 		structAppend( configStruct.debugger, debuggerDSL, true );
 	}
+	
+	// This appender is part of a module, so we need to register it after the modules have been loaded.
+	function afterConfigurationLoad() {
+	    var logbox = controller.getLogBox();
+		var config = logbox.getConfig();
+		config.appender( 'tracer', 'cbdebugger.includes.appenders.ColdBoxTracerAppender' );
+		config.root( 0, 4, '*' );
+		logbox.configure( config );
+	}
 }
