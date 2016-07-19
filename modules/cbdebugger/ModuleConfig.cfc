@@ -7,7 +7,7 @@ component {
 
 	// Module Properties
 	this.title 				= "ColdBox Debugger";
-	this.author 			= "Curt Gratz";
+	this.author 			= "Curt Gratz - Ortus Solutions";
 	this.webURL 			= "http://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
 	this.version			= "@version.number@+@build.number@";
@@ -123,7 +123,7 @@ component {
 	
 	    // Register the appender with the root loggger, and turn the logger on.
 	    var root = logBox.getRootLogger();
-	    root.addAppender( appenders['tracer'] );
+	    root.addAppender( appenders[ 'tracer' ] );
 	    root.setLevelMax( 4 );
 	    root.setLevelMin( 0 );
 	}
