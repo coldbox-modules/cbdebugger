@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ColdBox/cbox-debugger.svg?branch=master)](https://travis-ci.org/ColdBox/cbox-debugger)
+[![Build Status](https://travis-ci.org/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.org/coldbox-modules/cbox-debugger)
 
 #WELCOME TO THE COLDBOX DEBUGGER MODULE
 This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
