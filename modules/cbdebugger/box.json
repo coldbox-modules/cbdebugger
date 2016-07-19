@@ -1,6 +1,7 @@
 {
 	"name" 		: "ColdBox Debugger",
 	"author" 	: "Ortus Solutions <info@ortussolutions.com",
+	"location"	: "http://downloads.ortussolutions.com.s3.amazonaws.com/ortussolutions/coldbox-modules/cbdebugger/@version.number@/cbdebugger-@version.number@.zip",
 	"version"	: "@version.number@+@build.number@",
 	"slug"		: "cbdebugger",
 	"type"		: "modules",
