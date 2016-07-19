@@ -9,7 +9,7 @@ Apache License, Version 2.0.
 ##IMPORTANT LINKS
 - https://github.com/ColdBox/cbox-debugger
 - http://www.coldbox.org/forgebox/view/cbdebugger
-- [ChangeLog](changelog.md)
+- [Changelog](changelog.md)
 
 ##SYSTEM REQUIREMENTS
 - Lucee 4.5+
