@@ -7,7 +7,7 @@ component {
 
 	// Module Properties
 	this.title 				= "ColdBox Debugger";
-	this.author 			= "Curt Gratz";
+	this.author 			= "Curt Gratz - Ortus Solutions";
 	this.webURL 			= "http://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
 	this.version			= "@version.number@+@build.number@";
@@ -113,5 +113,22 @@ component {
 
 		// incorporate settings
 		structAppend( configStruct.debugger, debuggerDSL, true );
+	}
+	
+	// This appender is part of a module, so we need to register it after the modules have been loaded.
+	function afterConfigurationLoad() {
+	    var logBox = controller.getLogBox();
+	    // Only 4.3
+	    if( !findNoCase( "4.3", controller.getSetting( "version", true ) ) ){
+	    	return;
+	    }
+	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdBoxTracerAppender' );
+    	var appenders = logBox.getAppendersMap( 'tracer' );
+    	// Register the appender with the root loggger, and turn the logger on.
+	    var root = logBox.getRootLogger();
+	    root.addAppender( appenders[ 'tracer' ] );
+	    root.setLevelMax( 4 );
+	    root.setLevelMin( 0 );
+	
 	}
 }

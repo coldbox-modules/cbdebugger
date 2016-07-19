@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 
+## 1.4.0
+# ColdBox Tracer Appender added by Default by Eric Peterson
+
 ## 1.3.0
 * Travis integration
 * DocBox update

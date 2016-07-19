@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/ColdBox/cbox-debugger.svg?branch=master)](https://travis-ci.org/ColdBox/cbox-debugger)
+
 #WELCOME TO THE COLDBOX DEBUGGER MODULE
 This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
@@ -7,6 +9,7 @@ Apache License, Version 2.0.
 ##IMPORTANT LINKS
 - https://github.com/ColdBox/cbox-debugger
 - http://www.coldbox.org/forgebox/view/cbdebugger
+- [Changelog](changelog.md)
 
 ##SYSTEM REQUIREMENTS
 - Lucee 4.5+
