@@ -122,7 +122,7 @@ component {
 	    if( !findNoCase( "4.3", controller.getSetting( "version", true ) ) ){
 	    	return;
 	    }
-	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdBoxTracerAppender' );
+	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );
     	var appenders = logBox.getAppendersMap( 'tracer' );
     	// Register the appender with the root loggger, and turn the logger on.
 	    var root = logBox.getRootLogger();
