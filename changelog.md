@@ -1,8 +1,13 @@
 CHANGELOG
 =========
 
+## 1.5.0
+* Case-Sensitive filesystems fix
+* Updated travis builds
+* Unified workbench approach
+
 ## 1.4.0
-# ColdBox Tracer Appender added by Default by Eric Peterson
+* ColdBox Tracer Appender added by Default by Eric Peterson
 
 ## 1.3.0
 * Travis integration

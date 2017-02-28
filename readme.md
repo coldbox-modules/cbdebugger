@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ColdBox/cbox-debugger.svg?branch=master)](https://travis-ci.org/ColdBox/cbox-debugger)
+[![Build Status](https://travis-ci.org/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.org/coldbox-modules/cbox-debugger)
 
 #WELCOME TO THE COLDBOX DEBUGGER MODULE
 This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
@@ -86,14 +86,14 @@ boolean function isDebuggerRendering()
 
 ## LogBox Appender
 
-This module also comes with a LogBox appender called `cbdebugger.includes.appenders.ColdBoxTracerAppender` so your application can log to the debugger's tracer.  You won't be able to configure the appender in your main LogBox configuration since modules aren't loaded until after LogBox is already created.  What you can do though is add the appender programmatically to LogBox using the `afterConfigurationLoad` interception point.  Here's an example of what that might look like:
+This module also comes with a LogBox appender called `cbdebugger.includes.appenders.ColdboxTracerAppender` so your application can log to the debugger's tracer.  You won't be able to configure the appender in your main LogBox configuration since modules aren't loaded until after LogBox is already created.  What you can do though is add the appender programmatically to LogBox using the `afterConfigurationLoad` interception point.  Here's an example of what that might look like:
 
 
 ```js
 // This appender is part of a module, so we need to register it after the modules have been loaded.
 function afterConfigurationLoad() {
     var logBox = controller.getLogBox();
-    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdBoxTracerAppender' );
+    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );
     var appenders = logBox.getAppendersMap( 'tracer' );
     
     // Register the appender with the root loggger, and turn the logger on.

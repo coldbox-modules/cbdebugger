@@ -10,7 +10,7 @@ component {
 	this.author 			= "Curt Gratz - Ortus Solutions";
 	this.webURL 			= "http://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "@version.number@+@build.number@";
+	this.version			= "@build.version@+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
@@ -122,7 +122,7 @@ component {
 	    if( !findNoCase( "4.3", controller.getSetting( "version", true ) ) ){
 	    	return;
 	    }
-	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdBoxTracerAppender' );
+	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );
     	var appenders = logBox.getAppendersMap( 'tracer' );
     	// Register the appender with the root loggger, and turn the logger on.
 	    var root = logBox.getRootLogger();

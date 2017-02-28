@@ -15,7 +15,7 @@ Description :
 			 hint="An appender that interfaces with the ColdBox Tracer Panel">
 
 	<!--- Init --->
-	<cffunction name="init" access="public" returntype="ColdBoxTracerAppender" hint="Constructor" output="false" >
+	<cffunction name="init" access="public" returntype="ColdboxTracerAppender" hint="Constructor" output="false" >
 		<!--- ************************************************************* --->
 		<cfargument name="name" 		required="true" hint="The unique name for this appender."/>
 		<cfargument name="properties" 	required="false" default="#structnew()#" hint="A map of configuration properties for the appender"/>
