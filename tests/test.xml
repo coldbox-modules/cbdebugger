@@ -132,6 +132,37 @@ PLEASE NOTE THAT YOU MUST ALTER THE RUNNER'S URL ACCORDING TO YOUR ENVIRONMENT.
         <fail if="test.failed"/>
 	</target>
 
+	<target name="runEngine" depends="init" description="Generic run method for alternate CFML engines">  
+		
+		<macrodef name="propertycopy">
+		  <attribute name="name"/>
+		  <attribute name="from"/>
+		  <sequential>
+		    <property name="@{name}" value="${@{from}}"/>
+		  </sequential>
+		</macrodef>
+
+		<property name="runnerPath" value="url.runners.${engine}"/>
+		<propertycopy name="urlRunner" from="${runnerPath}"/>
+
+		<get dest="${report.dir}/results.txt" 
+			 src="${urlRunner}&amp;directory=${test.directory}&amp;recurse=${test.recurse}&amp;reporter=${test.reporter}&amp;labels=${test.labels}&amp;reportPath=${report.dir}&amp;propertiesSummary=true&amp;directoryExcludes=${test.directoryExcludes}&amp;cfid=123&amp;cftoken=123" 
+			 verbose="true"
+			 ignoreerrors="true"/>
+
+        <!-- Read Result Properties -->
+        <property file="${report.dir}/TEST.properties"/>
+        <!-- Echo them out -->
+        <echoproperties regex="^(test|total).*"/>
+        <!-- Echo actual results -->
+        <loadresource property="testresults">
+	       <file file="${report.dir}/results.txt"/>
+	    </loadresource>
+	    <echo message="${testresults}"/>
+        <!-- Fail build if they failed -->
+        <fail if="test.failed"/>
+	</target>
+
 	<target name="run-junit" depends="init" description="Run our tests and produce ANT JUnit reports">  
 
 		<!-- Directory Runner 
