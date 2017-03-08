@@ -1,6 +1,6 @@
 {
     "name":"cbdebugger Builder",
-    "version":"1.0.0",
+    "version":"1.5.0",
     "slug":"cbdebugger-shell",
     "private":false,
     "defaultPort":0,
@@ -15,5 +15,11 @@
         "testbox":"testbox",
         "coldbox":"coldbox",
         "workbench":"workbench"
+    },
+    "testbox":{
+        "runner":"http://localhost:49616"
+    },
+    "scripts":{
+        "postVersion":"recipe workbench/bump.boxr"
     }
 }
