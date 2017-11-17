@@ -1,6 +1,9 @@
 CHANGELOG
 =========
 
+## 1.6.0 
+* ColdBox 5 Support
+
 ## 1.5.0
 * Case-Sensitive filesystems fix
 * Updated travis builds

@@ -12,12 +12,10 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	// Before we capture.
-	function onRequestCapture(event, interceptData){
+	function onRequestCapture( event, interceptData, rc, prc ){
 		// init tracker
 		request.cbdebugger = {};
 		request.fwExecTime = getTickCount();
-		// get reference
-		var rc = event.getCollection();
 
 		// Debug Mode Checks
 		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ){
@@ -55,12 +53,12 @@ component extends="coldbox.system.Interceptor"{
 	}
 
 	//setup all the timers
-	public function preProcess(event, interceptData) {
+	public function preProcess( event, interceptData, rc, prc ){
 		request.cbdebugger.processHash = debuggerService.timerStart( "[preProcess to postProcess] for #arguments.event.getCurrentEvent()#" );
 	}
 
 	// post processing
-	public function postProcess(event, interceptData) {
+	public function postProcess( event, interceptData, rc, prc, buffer ){
 		var debugHTML 	= "";
 		var command 	= event.getTrimValue( "cbox_command","" );
 
@@ -82,57 +80,57 @@ component extends="coldbox.system.Interceptor"{
 			// render out the debugger
 			debugHTML = debuggerService.renderDebugLog();
 			// render out the debugger to output
-			appendToBuffer( debugHTML );
+			buffer.append( debugHTML );
 		}
 	}
 
-	public function preEvent(event, interceptData) {
+	public function preEvent( event, interceptData, rc, prc ){
 		request.cbdebugger.eventhash = debuggerService.timerStart( "[preEvent to postEvent] for #arguments.event.getCurrentEvent()#" );
 	}
 
-	public function postEvent(event, interceptData) {
+	public function postEvent( event, interceptData, rc, prc ){
 		debuggerService.timerEnd(request.cbdebugger.eventhash);
 	}
 
-	public function preLayout(event, interceptData) {
+	public function preLayout( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = debuggerService.timerStart( "[preLayout to postLayout] for #arguments.event.getCurrentEvent()#" );
 	}
 
-	public function postLayout(event, interceptData) {
+	public function postLayout( event, interceptData, rc, prc ){
 		debuggerService.timerEnd(request.cbdebugger.layoutHash);
 	}
 
-	public function preRender(event, interceptData) {
+	public function preRender( event, interceptData, rc, prc ){
 		request.cbdebugger.renderHash = debuggerService.timerStart( "[preRender to postRender] for #arguments.event.getCurrentEvent()#" );
 	}
 
-	public function postRender(event, interceptData) {
+	public function postRender( event, interceptData, rc, prc ){
 		debuggerService.timerEnd(request.cbdebugger.renderHash);
 	}
 
-	public function preViewRender(event, interceptData) {
+	public function preViewRender( event, interceptData, rc, prc ){
 		request.cbdebugger.renderViewHash = debuggerService.timerStart( "Rendering View: #interceptData.view# from event: #arguments.event.getCurrentEvent()#" );
 	}
 
-	public function postViewRender(event, interceptData) {
+	public function postViewRender( event, interceptData, rc, prc ){
 		debuggerService.timerEnd( request.cbdebugger.renderViewHash );
 	}
 
-	public function preLayoutRender(event, interceptData) {
+	public function preLayoutRender( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = debuggerService.timerStart( "Rendering Layout: #interceptData.layout# from event: #arguments.event.getCurrentEvent()#" );
 	}
 	
-	public function postLayoutRender(event, interceptData) {
+	public function postLayoutRender( event, interceptData, rc, prc ){
 		debuggerService.timerEnd(request.cbdebugger.layoutHash);
 	}
 
-	public function beforeInstanceCreation(event,interceptData){
+	public function beforeInstanceCreation( event, interceptData,rc, prc ){
 		if( variables.debuggerConfig.wireboxCreationProfiler ){
 			request.cbdebugger[ interceptData.mapping.getName( ) ] = debuggerService.timerStart( "Wirebox instance creation of #interceptData.mapping.getName()#" );
 		}
 	}
 
-	public function afterInstanceCreation(event, interceptData){
+	public function afterInstanceCreation( event, interceptData, rc, prc ){
 		// so many checks, due to chicken and the egg problems
 		if( variables.debuggerConfig.wireboxCreationProfiler
 			and structKeyExists( request, "cbdebugger" )
