@@ -1,6 +1,6 @@
 {
     "name":"cbdebugger Builder",
-    "version":"1.5.0",
+    "version":"1.6.0",
     "slug":"cbdebugger-shell",
     "private":false,
     "defaultPort":0,
@@ -13,8 +13,8 @@
     },
     "installPaths":{
         "workbench":"workbench",
-        "testbox":"testbox",
-        "coldbox":"coldbox"
+        "testbox":"testbox/",
+        "coldbox":"coldbox/"
     },
     "testbox":{
         "runner":"http://localhost:49616"
