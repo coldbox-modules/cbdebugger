@@ -1,19 +1,25 @@
 {
     "name":"cbdebugger Builder",
-    "version":"1.0.0",
+    "version":"1.6.0",
     "slug":"cbdebugger-shell",
     "private":false,
     "defaultPort":0,
     "dependencies":{
-        "coldbox":"^4.3.0",
-        "workbench":"git+https://github.com/Ortus-Solutions/unified-workbench.git"
+        "workbench":"git+https://github.com/Ortus-Solutions/unified-workbench.git",
+        "coldbox":"^4.3.0+188"
     },
     "devDependencies":{
-        "testbox":"2.3.0+00044"
+        "testbox":"^2.5.0+107"
     },
     "installPaths":{
-        "testbox":"testbox",
-        "coldbox":"coldbox",
-        "workbench":"workbench"
+        "workbench":"workbench",
+        "testbox":"testbox/",
+        "coldbox":"coldbox/"
+    },
+    "testbox":{
+        "runner":"http://localhost:49616"
+    },
+    "scripts":{
+        "postVersion":"recipe workbench/bump.boxr"
     }
 }
