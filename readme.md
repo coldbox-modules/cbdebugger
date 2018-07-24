@@ -1,22 +1,22 @@
 [![Build Status](https://travis-ci.org/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.org/coldbox-modules/cbox-debugger)
 
-#WELCOME TO THE COLDBOX DEBUGGER MODULE
+# WELCOME TO THE COLDBOX DEBUGGER MODULE
 This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
-##LICENSE
+## LICENSE
 Apache License, Version 2.0.
 
-##IMPORTANT LINKS
+## IMPORTANT LINKS
 - https://github.com/ColdBox/cbox-debugger
 - http://www.coldbox.org/forgebox/view/cbdebugger
 - [Changelog](changelog.md)
 
-##SYSTEM REQUIREMENTS
+## SYSTEM REQUIREMENTS
 - Lucee 4.5+
 - Railo 4+ (Deprecated)
 - ColdFusion 9+
 
-#INSTRUCTIONS
+# INSTRUCTIONS
 
 Just drop into your **modules** folder or use CommandBox to install
 
@@ -110,7 +110,7 @@ function afterConfigurationLoad() {
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
 www.coldbox.org | www.luismajano.com | www.ortussolutions.com
 ********************************************************************************
-####HONOR GOES TO GOD ABOVE ALL
+#### HONOR GOES TO GOD ABOVE ALL
 Because of His grace, this project exists. If you don't like this, then don't read it, its not for you.
 
 >"Therefore being justified by faith, we have peace with God through our Lord Jesus Christ:
@@ -120,5 +120,5 @@ And patience, experience; and experience, hope:
 And hope maketh not ashamed; because the love of God is shed abroad in our hearts by the 
 Holy Ghost which is given unto us. ." Romans 5:5
 
-###THE DAILY BREAD
+### THE DAILY BREAD
  > "I am the way, and the truth, and the life; no one comes to the Father, but by me (JESUS)" Jn 14:1-12
