@@ -1,25 +1,27 @@
 {
-    "name":"cbdebugger Builder",
-    "version":"1.6.0",
-    "slug":"cbdebugger-shell",
-    "private":false,
-    "defaultPort":0,
-    "dependencies":{
-        "workbench":"git+https://github.com/Ortus-Solutions/unified-workbench.git",
-        "coldbox":"^4.3.0+188"
-    },
-    "devDependencies":{
-        "testbox":"^2.5.0+107"
-    },
-    "installPaths":{
-        "workbench":"workbench",
-        "testbox":"testbox/",
-        "coldbox":"coldbox/"
-    },
-    "testbox":{
-        "runner":"http://localhost:49616"
-    },
+	"name" 		: "ColdBox Debugger",
+	"author" 	: "Ortus Solutions <info@ortussolutions.com",
+	"location"	: "http://downloads.ortussolutions.com.s3.amazonaws.com/ortussolutions/coldbox-modules/cbdebugger/@build.version@/cbdebugger-@build.version@.zip",
+	"version"	: "1.7.0",
+	"slug"		: "cbdebugger",
+	"type"		: "modules",
+	"homepage"	: "https://github.com/coldbox-modules/cbdebugger",
+	"bugs"		: "https://github.com/coldbox-modules/cbdebugger/issues",
+	"documentation"		: "https://github.com/coldbox-modules/cbdebugger",
+	"repository"		: { "type" : "git", "url" : "https://github.com/coldbox-modules/cbdebugger" },
+	"shortDescription"	: "The official ColdBox 4 debugger module",
+	"license"			: [ 
+		{ "type" : "Apache2", "url" : "http://www.apache.org/licenses/LICENSE-2.0.html" } 
+	],
+	"contributors"		: [
+		"Curt Gratz <gratzc@compknowhow.com", "Brad Wood <bdw429s@gmail.com>", "Luis Majano <lmajano@ortussolutions.com>"
+	],
+	"ignore":[
+        "**/.*",
+        "tests",
+        "*/.md"
+    ],
     "scripts":{
-        "postVersion":"recipe workbench/bump.boxr"
+        "toMaster":"recipe build/toMaster.boxr"
     }
 }

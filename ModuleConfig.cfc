@@ -8,9 +8,8 @@ component {
 	// Module Properties
 	this.title 				= "ColdBox Debugger";
 	this.author 			= "Curt Gratz - Ortus Solutions";
-	this.webURL 			= "http://www.ortussolutions.com";
+	this.webURL 			= "https://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
-	this.version			= "@build.version@+@build.number@";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
 	this.viewParentLookup 	= true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
@@ -23,13 +22,23 @@ component {
 	this.modelNamespace		= "cbdebugger";
 	// Auto Map Models Directory
 	this.autoMapModels		= true;
+	// App Helpers
+	this.applicationHelper = [
+		"models/Mixins.cfm"
+	]
 
 	/**
 	* Module Registration
 	*/
 	function configure(){
-		// Mixin our own methods on handlers, interceptors and views via the ColdBox UDF Library File setting
-		arrayAppend( controller.getSetting( "ApplicationHelper" ), "#moduleMapping#/models/Mixins.cfm" );
+
+		variables.interceptorSettings = {
+			customInterceptionPoints = [
+				"beforeDebuggerPanel",
+				"afterDebuggerPanel"
+			]
+		};
+
 	}
 
 	/**
@@ -53,11 +62,12 @@ component {
 			.setDebugMode( settings.debugger.debugMode );
 
 		// Register the interceptor, it has to be here due to loading of configuration files.
-		controller.getInterceptorService()
+		controller
+			.getInterceptorService()
 			.registerInterceptor( 
-			interceptorClass="#moduleMapping#.interceptors.Debugger",
-			interceptorName="debugger@cbdebugger"
-		);
+				interceptorClass	= "#moduleMapping#.interceptors.Debugger",
+				interceptorName		= "debugger@cbdebugger"
+			);
 	}
 
 	/**
