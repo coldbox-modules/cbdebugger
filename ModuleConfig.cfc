@@ -25,7 +25,7 @@ component {
 	// App Helpers
 	this.applicationHelper = [
 		"models/Mixins.cfm"
-	]
+	];
 
 	/**
 	* Module Registration
