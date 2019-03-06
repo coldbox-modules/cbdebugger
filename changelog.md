@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 1.7.1
+
+* Updated location protocol
+
 ## 1.7.0
 
 * Missing interception points for extending the panels: `afterDebuggerPanel`, `beforeDebuggerPanel`
