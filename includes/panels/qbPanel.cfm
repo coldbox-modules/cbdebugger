@@ -54,8 +54,8 @@ Description :
 											<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 												<thead>
 													<tr>
-														<th>Timestamp</th>
-														<th>Execution Time</th>
+														<th width="15%">Timestamp</th>
+														<th width="15%">Execution Time</th>
 														<th>Bindings</th>
 													</tr>
 												</thead>
@@ -64,7 +64,11 @@ Description :
 														<tr>
 															<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
 															<td>#q.executionTime# ms</td>
-															<td><cfdump var="#q.bindings#" expand="false" /></td>
+															<td>
+																<cfif NOT q.bindings.isEmpty()>
+																	<cfdump var="#q.bindings#" expand="false" />
+																</cfif>
+															</td>
 														</tr>
 													</cfloop>
 												</tbody>
