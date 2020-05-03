@@ -77,6 +77,15 @@ component {
 					interceptorName		= "QBCollector@cbdebugger"
 				);
 		}
+
+		if ( settings.debugger.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+			controller
+				.getInterceptorService()
+				.registerInterceptor(
+					interceptorClass	= "#moduleMapping#.interceptors.QuickCollector",
+					interceptorName		= "QuickCollector@cbdebugger"
+				);
+		}
 	}
 
 	/**
