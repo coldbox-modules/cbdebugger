@@ -64,10 +64,19 @@ component {
 		// Register the interceptor, it has to be here due to loading of configuration files.
 		controller
 			.getInterceptorService()
-			.registerInterceptor( 
+			.registerInterceptor(
 				interceptorClass	= "#moduleMapping#.interceptors.Debugger",
 				interceptorName		= "debugger@cbdebugger"
 			);
+
+		if ( settings.debugger.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+			controller
+				.getInterceptorService()
+				.registerInterceptor(
+					interceptorClass	= "#moduleMapping#.interceptors.QBCollector",
+					interceptorName		= "QBCollector@cbdebugger"
+				);
+		}
 	}
 
 	/**
@@ -76,12 +85,12 @@ component {
 	function onUnload(){
 		// unregister interceptor
 		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
-		
+
 		// Remove application helper
 		var appHelperArray 	= controller.getSetting( "ApplicationHelper" );
 		var mixinToRemove 	= "#moduleMapping#/models/Mixins.cfm";
 		var mixinIndex 		= arrayFindNoCase( appHelperArray, mixinToRemove );
-		
+
 		// If the mixin is in the array
 		if( mixinIndex ) {
 			// Remove it
@@ -117,6 +126,8 @@ component {
 			expandedRCPanel = false,
 			showModulesPanel = true,
 			expandedModulesPanel = false,
+			showQBPanel = true,
+			expandedQBPanel = false,
 			showRCSnapshots = false,
 			wireboxCreationProfiler=false
 		};
@@ -124,7 +135,7 @@ component {
 		// incorporate settings
 		structAppend( configStruct.debugger, debuggerDSL, true );
 	}
-	
+
 	// This appender is part of a module, so we need to register it after the modules have been loaded.
 	function afterConfigurationLoad() {
 	    var logBox = controller.getLogBox();
@@ -139,6 +150,6 @@ component {
 	    root.addAppender( appenders[ 'tracer' ] );
 	    root.setLevelMax( 4 );
 	    root.setLevelMin( 0 );
-	
+
 	}
 }

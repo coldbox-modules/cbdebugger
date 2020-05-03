@@ -302,6 +302,13 @@ Description :
 	</div>
 	</cfif>
 
+<!--- **************************************************************--->
+<!--- qb debug --->
+<!--- **************************************************************--->
+<cfif instance.debuggerConfig.showQBPanel>
+	<cfinclude template="panels/qbPanel.cfm">
+</cfif>
+
 	<div class="fw_renderTime">Approximate Debug Rendering Time: #GetTickCount()-DebugStartTime# ms</div>
 
 </div>
