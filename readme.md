@@ -22,7 +22,7 @@ Just drop into your **modules** folder or use CommandBox to install
 
 `box install cbdebugger`
 
-This will activate the debugger in your application and render out at the end of a request.  
+This will activate the debugger in your application and render out at the end of a request.
 
 ## Settings
 This will also allow you to use several settings in your parent application or you can modify the settings in the `ModuleConfig` if desired. We recommend placing your debugger settings in your main `ColdBox.cfc` configuration file under a `debugger` struct.
@@ -48,6 +48,8 @@ debugger = {
     expandedRCPanel = false,
     showModulesPanel = true,
     expandedModulesPanel = false,
+    showQBPanel = true,
+    expandedQBPanel = false,
     showRCSnapshots = false,
     wireboxCreationProfiler=false
 };
@@ -95,7 +97,7 @@ function afterConfigurationLoad() {
     var logBox = controller.getLogBox();
     logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );
     var appenders = logBox.getAppendersMap( 'tracer' );
-    
+
     // Register the appender with the root loggger, and turn the logger on.
     var root = logBox.getRootLogger();
     root.addAppender( appenders['tracer'] );
@@ -117,7 +119,7 @@ Because of His grace, this project exists. If you don't like this, then don't re
 By whom also we have access by faith into this grace wherein we stand, and rejoice in hope of the glory of God.
 And not only so, but we glory in tribulations also: knowing that tribulation worketh patience;
 And patience, experience; and experience, hope:
-And hope maketh not ashamed; because the love of God is shed abroad in our hearts by the 
+And hope maketh not ashamed; because the love of God is shed abroad in our hearts by the
 Holy Ghost which is given unto us. ." Romans 5:5
 
 ### THE DAILY BREAD

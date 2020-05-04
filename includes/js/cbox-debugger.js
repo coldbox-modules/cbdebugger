@@ -66,3 +66,13 @@ function fw_toggleDiv(targetDiv, displayStyle){
 		target.style.display = displayStyle;
 	}
 }
+
+function fw_showGroupedQueries() {
+	fw_toggleDiv("timelineQueries", "none");
+	fw_toggleDiv("groupedQueries", "block");
+}
+
+function fw_showTimelineQueries() {
+	fw_toggleDiv("groupedQueries", "none");
+	fw_toggleDiv("timelineQueries", "block");
+}
