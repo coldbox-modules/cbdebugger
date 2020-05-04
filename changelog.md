@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.0.0
+
+* Dropped ACF 11 support
+* Formatting updates
+* Quick/QB Panels
+
 ## 1.7.1
 
 * Updated location protocol
