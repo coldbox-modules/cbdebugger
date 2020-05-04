@@ -27,6 +27,18 @@
    cursor: pointer;
    color: black;
 }
+.fw_subtitles{
+    font-size: 10px;
+    font-weight: bold;
+    color: black;
+    border:1px solid #D3D3D3;
+	background: #D7EBF9;
+    padding:5px 5px 5px 5px;
+    margin-bottom: 2px;
+    -moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-khtml-border-radius: 5px;
+}
 .fw_profilers{
     font-size: 10px;
     font-weight:bold;
@@ -208,4 +220,31 @@
 	padding: 5px;
 	background-color: #FFF6CC;
 	border: 1px solid #999999;
+}
+.fw_badge_light{
+	display: inline-block;
+	padding: .25em .4em;
+	font-weight: 700;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25rem;
+	color: black;
+	background: #D7EBF9;
+    border:1px solid #D3D3D3;
+}
+
+.fw_badge_dark{
+	display: inline-block;
+	padding: .25em .4em;
+	font-weight: 700;
+	line-height: 1;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: baseline;
+	border-radius: .25rem;
+	color: white;
+    border: 1px solid #2694E8;
+    background: #3BAAE3;
 }
