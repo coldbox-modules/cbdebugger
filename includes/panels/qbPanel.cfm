@@ -94,7 +94,7 @@ Description :
 							</thead>
 							<tbody>
 								<cfloop array="#request.cbdebugger.qbQueries.all#" index="q">
-									<tr <cfif debugTimers.currentrow mod 2 eq 0>class="even"</cfif>>
+									<tr>
 										<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
 										<td>#q.sql#</td>
 										<td>#q.executionTime# ms</td>
@@ -131,7 +131,7 @@ Description :
 						</thead>
 						<tbody>
 							<cfloop collection="#request.cbdebugger.quick.byMapping#" item="mapping">
-								<tr <cfif debugTimers.currentrow mod 2 eq 0>class="even"</cfif>>
+								<tr>
 									<td align="center">#request.cbdebugger.quick.byMapping[ mapping ]#</td>
 									<td>#mapping#</td>
 								</tr>
