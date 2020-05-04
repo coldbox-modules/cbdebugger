@@ -15,6 +15,9 @@ Description :
 	var isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
 	var isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
 	var totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
+	var totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
+		return total + q.executionTime;
+	}, 0 );
 	var totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
 </cfscript>
 <cfoutput>
@@ -101,10 +104,19 @@ Description :
 							</tbody>
 						</table>
 					</div>
+					<div style="margin-top: 0.5em; margin-left: 1em;">
+						<div class="fw_debugTitleCell">
+							Total Execution Time:
+						</div>
+						<div class="fw_debugContentCell">
+							#totalExecutionTime# ms
+						</div>
+					</div>
 				</cfif>
 			</cfif>
 		</div>
 		<cfif isQuickInstalled>
+			<hr />
 			<div id="quickEntities" style="margin-top: 1em;">
 				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#totalEntities#</span></div>
 				<cfif totalEntities EQ 0>
@@ -120,7 +132,7 @@ Description :
 						<tbody>
 							<cfloop collection="#request.cbdebugger.quick.byMapping#" item="mapping">
 								<tr <cfif debugTimers.currentrow mod 2 eq 0>class="even"</cfif>>
-									<td>#request.cbdebugger.quick.byMapping[ mapping ]#</td>
+									<td align="center">#request.cbdebugger.quick.byMapping[ mapping ]#</td>
 									<td>#mapping#</td>
 								</tr>
 							</cfloop>
