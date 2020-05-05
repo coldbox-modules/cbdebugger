@@ -119,7 +119,7 @@ component {
 
 		//defaults
 		configStruct.debugger = {
-			debugMode = false,
+			debugMode = controller.getSetting( "environment", "production" ) == "development",
 			debugPassword = "cb:null",
 			enableDumpVar = true,
 			persistentRequestProfiler = true,

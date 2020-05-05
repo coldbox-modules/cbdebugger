@@ -12,13 +12,13 @@ Description :
 	Debugging template for the application
 ----------------------------------------------------------------------->
 <cfscript>
-	var isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
-	var isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
-	var totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
-	var totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
+	isQuickInstalled = event.getController().getModuleService().isModuleRegistered( "quick" );
+	isQBInstalled = event.getController().getModuleService().isModuleRegistered( "qb" );
+	totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
+	totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
 		return total + q.executionTime;
 	}, 0 );
-	var totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
+	totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
 </cfscript>
 <cfoutput>
 	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
