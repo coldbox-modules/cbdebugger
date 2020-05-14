@@ -12,29 +12,29 @@ Description :
 	Debugging template for the application
 ----------------------------------------------------------------------->
 <cfscript>
-	var isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
-	var isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
-	var totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
-	var totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
+	local.isQuickInstalled = event.getController().getModuleService().isModuleRegistered( "quick" );
+	local.isQBInstalled = event.getController().getModuleService().isModuleRegistered( "qb" );
+	local.totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
+	local.totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
 		return total + q.executionTime;
 	}, 0 );
-	var totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
+	local.totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
 </cfscript>
 <cfoutput>
 	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
-		&nbsp;<cfif isQuickInstalled>Quick &##47; </cfif>qb
+		&nbsp;<cfif local.isQuickInstalled>Quick &##47; </cfif>qb
 	</div>
 	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
 		<div id="qbQueries">
-			<cfif NOT isQBInstalled>
+			<cfif NOT local.isQBInstalled>
 				qb is not installed or registered.
 			<cfelse>
-				<div class="fw_subtitles">&nbsp;Queries <span class="fw_badge_dark" style="margin-left: 1em;">#totalQueries#</span></div>
+				<div class="fw_subtitles">&nbsp;Queries <span class="fw_badge_dark" style="margin-left: 1em;">#local.totalQueries#</span></div>
 				<div style="padding: 1em;">
 					<input type="button" style="font-size:10px" value="Grouped View" onClick="fw_showGroupedQueries()">
 					<input type="button" style="font-size:10px" value="Timeline View" onClick="fw_showTimelineQueries()">
 				</div>
-				<cfif totalQueries EQ 0>
+				<cfif local.totalQueries EQ 0>
 					No queries executed
 				<cfelse>
 					<div id="groupedQueries">
@@ -109,17 +109,17 @@ Description :
 							Total Execution Time:
 						</div>
 						<div class="fw_debugContentCell">
-							#totalExecutionTime# ms
+							#local.totalExecutionTime# ms
 						</div>
 					</div>
 				</cfif>
 			</cfif>
 		</div>
-		<cfif isQuickInstalled>
+		<cfif local.isQuickInstalled>
 			<hr />
 			<div id="quickEntities" style="margin-top: 1em;">
-				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#totalEntities#</span></div>
-				<cfif totalEntities EQ 0>
+				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#local.totalEntities#</span></div>
+				<cfif local.totalEntities EQ 0>
 					No Quick entities loaded.
 				<cfelse>
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables" style="margin-top: 1em;">

@@ -1,20 +1,23 @@
 [![Build Status](https://travis-ci.org/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.org/coldbox-modules/cbox-debugger)
 
 # WELCOME TO THE COLDBOX DEBUGGER MODULE
+
 This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
 ## LICENSE
+
 Apache License, Version 2.0.
 
 ## IMPORTANT LINKS
-- https://github.com/ColdBox/cbox-debugger
-- http://www.coldbox.org/forgebox/view/cbdebugger
+
+- https://github.com/coldbox-modules/cbox-debugger
+- http://www.forgebox.io/view/cbdebugger
 - [Changelog](changelog.md)
 
 ## SYSTEM REQUIREMENTS
-- Lucee 4.5+
-- Railo 4+ (Deprecated)
-- ColdFusion 9+
+
+- Lucee 5+
+- ColdFusion 2016+
 
 # INSTRUCTIONS
 
@@ -25,6 +28,7 @@ Just drop into your **modules** folder or use CommandBox to install
 This will activate the debugger in your application and render out at the end of a request.
 
 ## Settings
+
 This will also allow you to use several settings in your parent application or you can modify the settings in the `ModuleConfig` if desired. We recommend placing your debugger settings in your main `ColdBox.cfc` configuration file under a `debugger` struct.
 
 ```js
@@ -56,6 +60,7 @@ debugger = {
 ```
 
 ## WireBox Mappings
+
 The module will also register two model objects for you:
 
 * `debuggerService@cbdebugger`
@@ -85,11 +90,9 @@ any function hideDebugger()
 boolean function isDebuggerRendering()
 ```
 
-
 ## LogBox Appender
 
 This module also comes with a LogBox appender called `cbdebugger.includes.appenders.ColdboxTracerAppender` so your application can log to the debugger's tracer.  You won't be able to configure the appender in your main LogBox configuration since modules aren't loaded until after LogBox is already created.  What you can do though is add the appender programmatically to LogBox using the `afterConfigurationLoad` interception point.  Here's an example of what that might look like:
-
 
 ```js
 // This appender is part of a module, so we need to register it after the modules have been loaded.
@@ -106,13 +109,13 @@ function afterConfigurationLoad() {
 }
 ```
 
-
-
 ********************************************************************************
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
 www.coldbox.org | www.luismajano.com | www.ortussolutions.com
 ********************************************************************************
-#### HONOR GOES TO GOD ABOVE ALL
+
+### HONOR GOES TO GOD ABOVE ALL
+
 Because of His grace, this project exists. If you don't like this, then don't read it, its not for you.
 
 >"Therefore being justified by faith, we have peace with God through our Lord Jesus Christ:
@@ -123,4 +126,5 @@ And hope maketh not ashamed; because the love of God is shed abroad in our heart
 Holy Ghost which is given unto us. ." Romans 5:5
 
 ### THE DAILY BREAD
+
  > "I am the way, and the truth, and the life; no one comes to the Father, but by me (JESUS)" Jn 14:1-12

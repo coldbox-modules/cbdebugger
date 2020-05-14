@@ -58,7 +58,9 @@ Description :
 		  Framework Info:
 		</div>
 		<div class="fw_debugContentCell">
-		#controller.getSetting("Codename",true)# #controller.getSetting("Version",true)# #controller.getSetting("Suffix",true)#
+		#controller.getColdboxSettings().codename#
+		#controller.getColdboxSettings().version#
+		#controller.getColdboxSettings().suffix#
 		</div>
 		<div class="fw_debugTitleCell">
 		  Application Name:
