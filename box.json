@@ -12,7 +12,7 @@
         "type":"git",
         "url":"https://github.com/coldbox-modules/cbdebugger"
     },
-    "shortDescription":"The official ColdBox 4 debugger module",
+    "shortDescription":"The official ColdBox debugger module",
     "license":[
         {
             "type":"Apache2",
@@ -30,6 +30,9 @@
         "*/.md"
     ],
     "scripts":{
-        "toMaster":"recipe build/toMaster.boxr"
+        "release":"recipe build/release.boxr",
+        "format":"cfformat run includes/,interceptors/,models/,test-harness/tests/ --overwrite",
+        "format:watch":"cfformat watch includes/,interceptors/,models/,test-harness/tests/",
+        "format:check":"cfformat check includes/,interceptors/,models/,test-harness/tests/"
     }
 }
