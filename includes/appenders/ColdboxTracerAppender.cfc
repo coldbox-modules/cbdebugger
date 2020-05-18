@@ -1,72 +1,37 @@
-﻿<!-----------------------------------------------------------------------
-********************************************************************************
-Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-www.coldbox.org | www.luismajano.com | www.ortussolutions.com
-********************************************************************************
-Author          :	Luis Majano
-Date               :	04/12/2009
-Description :
-An appender that interfaces with the ColdBox Tracer Panel
------------------------------------------------------------------------>
-<cfcomponent
-	extends="coldbox.system.logging.AbstractAppender"
-	output ="false"
-	hint   ="An appender that interfaces with the ColdBox Tracer Panel"
->
-	<!--- Init --->
-	<cffunction name="init" access="public" returntype="ColdboxTracerAppender" hint="Constructor" output="false">
-		<!--- ************************************************************* --->
-		<cfargument name="name" required="true" hint="The unique name for this appender."/>
-		<cfargument
-			name    ="properties"
-			required="false"
-			default ="#structNew()#"
-			hint    ="A map of configuration properties for the appender"
-		/>
-		<cfargument
-			name    ="layout"
-			required="false"
-			default =""
-			hint    ="The layout class to use in this appender for custom message rendering."
-		/>
-		<cfargument
-			name    ="levelMin"
-			required="false"
-			default ="0"
-			hint    ="The default log level for this appender, by default it is 0. Optional. ex: LogBox.logLevels.WARN"
-		/>
-		<cfargument
-			name    ="levelMax"
-			required="false"
-			default ="4"
-			hint    ="The default log level for this appender, by default it is 5. Optional. ex: LogBox.logLevels.WARN"
-		/>
-		<!--- ************************************************************* --->
-		<cfscript>
+﻿/**
+ * An appender that interfaces with the ColdBox Tracer Panel
+ */
+component extends="coldbox.system.logging.AbstractAppender" {
+
+	/**
+	 * Constructor
+	 */
+	function init(
+		required name,
+		struct properties={},
+		layout="",
+		levelMin=0,
+		levelMax=4
+	) {
 		// Init supertype
 		super.init( argumentCollection = arguments );
 		return this;
-		</cfscript>
-	</cffunction>
+	}
 
-	<cffunction name="onRegistration" access="public">
-		<cfset variables.debuggerService = getColdBox()
+	/**
+	 * Called upon registration
+	 */
+	function onRegistration() {
+		variables.debuggerService = getColdBox()
 			.getWireBox()
-			.getInstance( "debuggerService@cbdebugger" )>
-	</cffunction>
+			.getInstance( "debuggerService@cbdebugger" );
+		return this;
+	}
 
-	<!--- Log Message --->
-	<cffunction
-		name      ="logMessage"
-		access    ="public"
-		output    ="false"
-		returntype="void"
-		hint      ="Write an entry into the appender."
-	>
-		<!--- ************************************************************* --->
-		<cfargument name="logEvent" type="any" required="true" hint="The logging event"/>
-		<!--- ************************************************************* --->
-		<cfscript>
+	/**
+	  * Log a message
+	  */
+	function logMessage( required any logEvent ){
 		var loge          = arguments.logEvent;
 		var entry         = "";
 		var traceSeverity = "information";
@@ -105,8 +70,8 @@ An appender that interfaces with the ColdBox Tracer Panel
 
 		// send to coldBox debugger
 		variables.debuggerService.pushTracer( entry, loge.getExtraInfo() );
-		</cfscript>
-	</cffunction>
 
-	<!------------------------------------------- PRIVATE ------------------------------------------>
-</cfcomponent>
+		return this;
+	}
+
+}
