@@ -8,6 +8,7 @@ component {
 	// Module Properties
 	this.title 				= "ColdBox Debugger";
 	this.author 			= "Curt Gratz - Ortus Solutions";
+	this.version 			= "@build.version@+@build.number@";
 	this.webURL 			= "https://www.ortussolutions.com";
 	this.description 		= "The ColdBox Debugger Module";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
