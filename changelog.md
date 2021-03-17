@@ -21,6 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [2.2.0] => 2020-MAY-18
+
+### Added
+
+* Upgraded Appender to script and fixes for LogBox 6
+* More tests for logbox loading and appender registration
+
+### Fixed
+
+* Visual display of the debugger version
+
+----
+
 ## [2.1.0] => 2020-MAY-14
 
 ### Added
