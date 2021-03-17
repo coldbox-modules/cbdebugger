@@ -11,32 +11,29 @@ Date     :	September 25, 2005
 Description :
 	Debugging template for the application
 ----------------------------------------------------------------------->
-<cfif instance.debuggerConfig.showTracerPanel and arrayLen(getTracers())>
-	<cfset TracerArray = getTracers()>
-	<cfoutput>
+<cfif variables.debuggerConfig.showTracerPanel and arrayLen( variables.tracers )>
+<cfoutput>
 	<div class="fw_titles" onClick="fw_toggle('fw_tracer')">&nbsp;ColdBox Tracer Messages </div>
-	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedTracerPanel>View</cfif>" id="fw_tracer">
-		<cfloop from="1" to="#arrayLen(TracerArray)#" index="i">
+	<div class="fw_debugContent<cfif variables.debuggerConfig.expandedTracerPanel>View</cfif>" id="fw_tracer">
+		<cfloop from="1" to="#arrayLen( variables.tracers )#" index="i">
 			<div class="fw_tracerMessage">
 
 				<!--- Message --->
 				<strong>Message:</strong><br>
-				#TracerArray[i].message#<br>
+				#variables.tracers[ i ].message#<br>
 
 				<!--- Extra Information --->
-				<cfif not isSimpleValue(TracerArray[i].extrainfo)>
+				<cfif not isSimpleValue(variables.tracers[ i ].extrainfo)>
 					<strong>ExtraInformation:<br></strong>
-					<cfdump var="#TracerArray[i].extrainfo#">
-				<cfelseif TracerArray[i].extrainfo neq "">
+					<cfdump var="#variables.tracers[ i ].extrainfo#">
+				<cfelseif variables.tracers[ i ].extrainfo neq "">
 					<strong>ExtraInformation:<br></strong>
-					#TracerArray[i].extrainfo#
+					#variables.tracers[ i ].extrainfo#
 				</cfif>
 
 			</div>
 		</cfloop>
 	</div>
-	<!--- Rendered, now Remove --->
-	<cfset resetTracers()>
-	</cfoutput>
+</cfoutput>
 </cfif>
 <cfsetting enablecfoutputonly="false">

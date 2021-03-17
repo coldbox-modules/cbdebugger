@@ -34,11 +34,11 @@ Description :
 				</cfif>
 			<cfelse>
 				<!--- Max Display For Queries  --->
-				<cfif isQuery(varVal) and (varVal.recordCount gt instance.debuggerConfig.maxRCPanelQueryRows )>
-					<cfquery name="varVal" dbType="query" maxrows="#instance.debuggerConfig.maxRCPanelQueryRows#">
+				<cfif isQuery(varVal) and (varVal.recordCount gt variables.debuggerConfig.maxRCPanelQueryRows )>
+					<cfquery name="varVal" dbType="query" maxrows="#variables.debuggerConfig.maxRCPanelQueryRows#">
 						select * from varVal
 					</cfquery>
-					<cfdump var="#varVal#" label="Query Truncated to #instance.debuggerConfig.maxRCPanelQueryRows# records" expand="false">
+					<cfdump var="#varVal#" label="Query Truncated to #variables.debuggerConfig.maxRCPanelQueryRows# records" expand="false">
 				<cfelseif isObject(varVal)>
 					<cfdump var="#varVal#" expand="false" top="2">
 				<cfelse>

@@ -25,7 +25,13 @@ Modification History:
 
 	<!------------------------------------------- PUBLIC ------------------------------------------->
 
-	<cffunction name="start" access="public" returntype="void" output="false" hint="Start the Timer with label.">
+	<cffunction
+		name      ="start"
+		access    ="public"
+		returntype="void"
+		output    ="false"
+		hint      ="Start the Timer with label."
+	>
 		<cfargument name="Label" required="true" type="string">
 		<!--- Create request Timer --->
 		<cfset var timerStruct = structNew()>
@@ -35,7 +41,13 @@ Modification History:
 		<cfset request[ hash( arguments.label ) ] = timerStruct>
 	</cffunction>
 
-	<cffunction name="stop" access="public" returntype="void" output="false" hint="Stop the timer with label">
+	<cffunction
+		name      ="stop"
+		access    ="public"
+		returntype="void"
+		output    ="false"
+		hint      ="Stop the timer with label"
+	>
 		<cfargument name="Label" required="true" type="string">
 		<cfset var stopTime = getTickCount()>
 		<cfset var timerStruct = "">
@@ -74,18 +86,20 @@ Modification History:
 
 	<!------------------------------------------- PRIVATE ------------------------------------------->
 
-	<cffunction name="addRow" access="private" returntype="void" output="false" hint="Add a new timer row.">
+	<cffunction
+		name      ="addRow"
+		access    ="private"
+		returntype="void"
+		output    ="false"
+		hint      ="Add a new timer row."
+	>
 		<cfargument name="label" required="true" type="string" hint="The lable of the timer.">
 		<cfargument name="tickcount" required="true" type="string" hint="The tickcounts of the time.">
 		<cfscript>
 		var qTimers = getTimerScope();
 
 		queryAddRow( qTimers, 1 );
-		querySetCell(
-			qTimers,
-			"ID",
-			hash( arguments.label & now() )
-		);
+		querySetCell( qTimers, "ID", hash( arguments.label & now() ) );
 		querySetCell( qTimers, "Method", arguments.label );
 		querySetCell( qTimers, "Time", arguments.tickcount );
 		querySetCell( qTimers, "Timestamp", now() );

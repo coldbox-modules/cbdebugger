@@ -1,4 +1,8 @@
 /**
+ * ContentBox - A Modular Content Platform
+ * Copyright since 2012 by Ortus Solutions, Corp
+ * www.ortussolutions.com/products/contentbox
+ * ---
  * Coldbox Debugger Interecptor
  */
 component extends="coldbox.system.Interceptor" {
@@ -65,7 +69,9 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to pre process execution
 	 */
 	public function preProcess( event, interceptData, rc, prc ){
-		request.cbdebugger.processHash = debuggerService.timerStart( "[preProcess to postProcess]" );
+		request.cbdebugger.processHash = variables.debuggerService.timerStart(
+			"[preProcess to postProcess]"
+		);
 	}
 
 	/**
@@ -85,6 +91,7 @@ component extends="coldbox.system.Interceptor" {
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record the profilers
 		variables.debuggerService.recordProfiler();
+
 		// Determine if we can render the debugger
 		if (
 			// Is the debug mode turned on

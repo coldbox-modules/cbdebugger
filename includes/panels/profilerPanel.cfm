@@ -57,13 +57,13 @@ Description :
 		  Profilers in stack
 		</div>
 		<div class="fw_debugContentCell">
-		  #profilersCount# / #instance.debuggerConfig.maxPersistentRequestProfilers#
+		  #profilersCount# / #variables.debuggerConfig.maxPersistentRequestProfilers#
 		</div>
 
 		<p>Below you can see the incoming request profilers. Click on the desired profiler to view its execution report.</p>
 		<!--- Render Profilers --->
 		<cfloop from="#profilersCount#" to="1" step="-1" index="x">
-			<cfset refLocal.thisProfiler = profilers[x]>
+			<cfset refLocal.thisProfiler = profilers[ x ]>
 			<div class="fw_profilers" onClick="fw_toggle('fw_executionprofile_#x#')">&nbsp;#dateformat(refLocal.thisProfiler.datetime,"mm/dd/yyyy")# #timeformat(refLocal.thisProfiler.datetime,"hh:mm:ss.l tt")# (#refLocal.thisProfiler.ip#)</div>
 			<div class="fw_debugContent" id="fw_executionprofile_#x#">
 
@@ -100,7 +100,7 @@ Description :
 				<!--- **************************************************************--->
 				<!--- Response Data --->
 				<!--- **************************************************************--->
-				<cfif findNoCase( "railo,lucee", server.coldfusion.productname )>
+				<cfif findNoCase( "lucee", server.coldfusion.productname )>
 				<h2>Response</h2>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 
@@ -121,59 +121,42 @@ Description :
 				<h2>Executions</h2>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 				  <tr>
-				  	<th width="13%" align="center" >Timestamp</th>
+					<th width="150" align="center" >Started At</th>
+					<th width="150" align="center" >Finished At</th>
 					<th width="10%" align="center" >Execution Time</th>
 					<th >Framework Method</th>
-					<!--- Show RC Snapshots if active --->
-					<cfif instance.debuggerConfig.showRCSnapshots>
-					<th width="75" align="center" >RC Snapshot</th>
-					<th width="75" align="center" >PRC Snapshot</th>
-					</cfif>
 				  </tr>
-					  <cfloop query="refLocal.thisProfiler.timers">
-						  <cfif findnocase("rendering", method)>
-						  	<cfset color = "fw_redText">
-						  <cfelseif findnocase("interception",method)>
-						  	<cfset color = "fw_blackText">
-						  <cfelseif findnocase("runEvent", method)>
-						  	<cfset color = "fw_blueText">
-						  <cfelseif findnocase("pre",method) or findnocase("post",method)>
-						  	<cfset color = "fw_purpleText">
-						  <cfelse>
-						  	<cfset color = "fw_greenText">
-						  </cfif>
-						<tr <cfif currentrow mod 2 eq 0>class="even"</cfif>>
-						  	<td align="center" >#TimeFormat(timestamp,"hh:MM:SS.l tt")#</td>
-							<td align="center" >#Time# ms</td>
-							<td ><span class="#color#">#Method#</span></td>
-							<!--- Show RC Snapshots if active --->
-							<cfif instance.debuggerConfig.showRCSnapshots>
-					 		<td align="center" >
-								<cfif len(rc)><a href="javascript:fw_poprc('fw_poprc_#id#')">View</a><cfelse>...</cfif>
-							</td>
-							<td align="center" >
-								<cfif len(prc)><a href="javascript:fw_poprc('fw_popprc_#id#')">View</a><cfelse>...</cfif>
-							</td>
-							</cfif>
-						 </tr>
-						<!--- Show RC Snapshots if active --->
-						<cfif instance.debuggerConfig.showRCSnapshots>
-						<tr id="fw_poprc_#id#" class="hideRC">
-						  	<td colspan="5" style="padding:5px;" wrap="true">
-							  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-								  #replacenocase(rc,",",chr(10) & chr(13),"all")#
-								</div>
-							</td>
-				  		  </tr>
-				  		 <tr id="fw_popprc_#id#" class="hideRC">
-					  	    <td colspan="5" style="padding:5px;" wrap="true">
-						  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-							  #replacenocase(prc,",",chr(10) & chr(13),"all")#
-							</div>
-						   </td>
-			  		    </tr>
+				  <cfloop array="#refLocal.thisProfiler.timers#" index="thisTimer">
+						<cfif findnocase( "render", thisTimer.method )>
+							<cfset color = "fw_greenText">
+						<cfelseif findnocase( "interception", thisTimer.method )>
+							<cfset color = "fw_blackText">
+						<cfelseif findnocase( "runEvent",  thisTimer.method )>
+							<cfset color = "fw_blueText">
+						<cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
+							<cfset color = "fw_purpleText">
+						<cfelse>
+							<cfset color = "fw_greenText">
 						</cfif>
-					  </cfloop>
+						<tr style="border-bottom:1px solid ##eaeaea">
+							<td align="center" >
+							  #timeFormat( thisTimer.startedAt, "hh:MM:SS.l tt" )#
+						  </td>
+						  <td align="center" >
+							  #timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
+						  </td>
+						  <td align="center" >
+							  <cfif thisTimer.executionTime gt 200>
+								  <span class="fw_redText">#thisTimer.executionTime# ms</span>
+							  <cfelse>
+								  #thisTimer.executionTime# ms
+							  </cfif>
+						  </td>
+						  <td>
+							  <span class="#color#">#thisTimer.method#</span>
+						  </td>
+						</tr>
+					</cfloop>
 				</table>
 			</div>
 		</cfloop>

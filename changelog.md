@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [2.2.0]
+## [3.0.0]
 
 ### Added
 
@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added the route record to the info panel so you can debug the selected route
 * Removed the loaded modules as it just produced noise
 * Highlights transactions that take over 250ms in red
+* Refactored to use array of structs instead of queries for even faster timer performance
+* Show transactions as they start instead of how they end, huge UI update to visualize the timers
 
 ----
 

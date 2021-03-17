@@ -24,7 +24,7 @@ Description :
 	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
 		&nbsp;<cfif local.isQuickInstalled>Quick &##47; </cfif>qb
 	</div>
-	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
+	<div class="fw_debugContent<cfif variables.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
 		<div id="qbQueries">
 			<cfif NOT local.isQBInstalled>
 				qb is not installed or registered.

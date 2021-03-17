@@ -13,10 +13,10 @@ component extends="coldbox.system.Interceptor" {
 		if ( !structKeyExists( request.cbdebugger.qbQueries.grouped, arguments.interceptData.sql ) ) {
 			request.cbdebugger.qbQueries.grouped[ arguments.interceptData.sql ] = [];
 		}
-		request.cbdebugger.qbQueries.grouped[ arguments.interceptData.sql ].append( arguments.interceptData );
-		request.cbdebugger.qbQueries.all.append(
+		request.cbdebugger.qbQueries.grouped[ arguments.interceptData.sql ].append(
 			arguments.interceptData
 		);
+		request.cbdebugger.qbQueries.all.append( arguments.interceptData );
 	}
 
 }

@@ -22,33 +22,45 @@ Description :
 	<!--- **************************************************************--->
 	<cfinclude template="panels/tracersPanel.cfm">
 
-
 	<!--- **************************************************************--->
 	<!--- DEBUGGING PANEL --->
 	<!--- **************************************************************--->
-	<cfif instance.debuggerConfig.showInfoPanel>
+	<cfif variables.debuggerConfig.showInfoPanel>
 	<div class="fw_titles" onClick="fw_toggle('fw_info')" >
 		&nbsp;ColdBox Debugger v#controller.getSetting( "modules" ).cbdebugger.version#
 	</div>
 
-	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedInfoPanel>View</cfif>" id="fw_info">
+	<div class="fw_debugContent<cfif variables.debuggerConfig.expandedInfoPanel>View</cfif>" id="fw_info">
 
 		<div>
 			<form name="fw_reinitcoldbox" id="fw_reinitcoldbox" action="#URLBase#" method="POST">
 				<input type="hidden" name="fwreinit" id="fwreinit" value="">
-				<input type="button" value="Reinitialize Framework" name="reinitframework" style="font-size:10px"
-					   title="Reinitialize the framework."
-					   onClick="fw_reinitframework(#iif(controller.getSetting('ReinitPassword').length(),'true','false')#)">
-				<cfif instance.debuggerConfig.persistentRequestProfiler>
-				&nbsp;
-				<input type="button" value="Open Profiler Monitor" name="profilermonitor" style="font-size:10px"
-					   title="Open the profiler monitor in a new window."
-					   onClick="window.open('#URLBase#?debugpanel=profiler','profilermonitor','status=1,toolbar=0,location=0,resizable=1,scrollbars=1,height=750,width=850')">
+				<input
+					type="button"
+					value="Reinitialize Framework"
+					name="reinitframework"
+					style="font-size:10px"
+					title="Reinitialize the framework."
+					onClick="fw_reinitframework(#iif( controller.getSetting( 'ReinitPassword' ).length(), 'true', 'false' )#)"
+				>
+				<cfif variables.debuggerConfig.persistentRequestProfiler>
+					&nbsp;
+					<input
+						type="button"
+						value="Open Profiler Monitor"
+						name="profilermonitor"
+						style="font-size:10px"
+						title="Open the profiler monitor in a new window."
+						onClick="window.open( '#URLBase#?debugpanel=profiler', 'profilermonitor', 'status=1,toolbar=0,location=0,resizable=1,scrollbars=1,height=750,width=850' )">
 				</cfif>
 				&nbsp;
-				<input type="button" value="Turn Debugger Off" name="debuggerButton" style="font-size:10px"
-					   title="Turn the ColdBox Debugger Off"
-					   onClick="window.location='#URLBase#?debugmode=false'">
+				<input
+					type="button"
+					value="Turn Debugger Off"
+					name="debuggerButton"
+					style="font-size:10px"
+					title="Turn the ColdBox Debugger Off"
+					onClick="window.location='#URLBase#?debugmode=false'">
 
 			</form>
 		  <br>
@@ -58,10 +70,11 @@ Description :
 		  Framework Info:
 		</div>
 		<div class="fw_debugContentCell">
-		#controller.getColdboxSettings().codename#
-		#controller.getColdboxSettings().version#
-		#controller.getColdboxSettings().suffix#
+			#controller.getColdboxSettings().codename#
+			#controller.getColdboxSettings().version#
+			#controller.getColdboxSettings().suffix#
 		</div>
+
 		<div class="fw_debugTitleCell">
 		  Application Name:
 		</div>
@@ -76,7 +89,7 @@ Description :
 		  TimeStamp:
 		</div>
 		<div class="fw_debugContentCell">
-		#dateformat(now(), "MMM-DD-YYYY")# #timeFormat(now(), "hh:MM:SS tt")#
+			#dateformat( now(), "MMM-DD-YYYY" )# #timeFormat( now(), "hh:MM:SS tt" )#
 		</div>
 
 		<div class="fw_debugTitleCell">
@@ -91,8 +104,7 @@ Description :
 			HTTP Response:
 		</div>
 		<div class="fw_debugContentCell">
-
-				statusCode=#getPageContext().getResponse().getStatus()#;
+			statusCode=#getPageContext().getResponse().getStatus()#;
 	    	contentType=#getPageContext().getResponse().getContentType()#
 		</div>
 	    </cfif>
@@ -179,72 +191,44 @@ Description :
 		<!--- **************************************************************--->
 		<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 		  <tr>
-		  	<th width="150" align="center" >Timestamp</th>
+		  	<th width="150" align="center" >Started At</th>
+			<th width="150" align="center" >Finished At</th>
 			<th width="150" align="center" >Execution Time</th>
 			<th >Framework Method</th>
-			<!--- Show RC Snapshots if active --->
-			<cfif instance.debuggerConfig.showRCSnapshots>
-				<th width="75" align="center" >RC Snapshot</th>
-				<th width="75" align="center" >PRC Snapshot</th>
-			</cfif>
 		  </tr>
 
 		  <!--- Show Timers if any are found --->
-		  <cfif debugTimers.recordCount>
-			  <cfloop query="debugTimers">
-				  <cfif findnocase( "render", debugTimers.method )>
+		  <cfif arrayLen( debugTimers )>
+			  <cfloop array="#debugTimers#" index="thisTimer">
+				  <cfif findnocase( "render", thisTimer.method )>
 				  	<cfset color = "fw_greenText">
-				  <cfelseif findnocase( "interception", debugTimers.method )>
+				  <cfelseif findnocase( "interception", thisTimer.method )>
 				  	<cfset color = "fw_blackText">
-				  <cfelseif findnocase( "runEvent",  debugTimers.method )>
+				  <cfelseif findnocase( "runEvent",  thisTimer.method )>
 				  	<cfset color = "fw_blueText">
-				  <cfelseif findnocase( "pre", debugTimers.method ) or findnocase( "post", debugTimers.method )>
+				  <cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
 				  	<cfset color = "fw_purpleText">
 				  <cfelse>
 				  	<cfset color = "fw_greenText">
 				  </cfif>
 				  <tr style="border-bottom:1px solid ##eaeaea">
 				  	<td align="center" >
-						#timeFormat( debugTimers.timestamp, "hh:MM:SS.l tt" )#
+						#timeFormat( thisTimer.startedAt, "hh:MM:SS.l tt" )#
 					</td>
 					<td align="center" >
-						<cfif debugTimers.time gt 200>
-							<span class="fw_redText">#debugTimers.Time# ms</span>
+						#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
+					</td>
+					<td align="center" >
+						<cfif thisTimer.executionTime gt 200>
+							<span class="fw_redText">#thisTimer.executionTime# ms</span>
 						<cfelse>
-							#debugTimers.Time# ms
+							#thisTimer.executionTime# ms
 						</cfif>
 					</td>
 					<td>
-						<span class="#color#">#debugTimers.method#</span>
+						<span class="#color#">#thisTimer.method#</span>
 					</td>
-					<!--- Show RC Snapshots if active --->
-					<cfif instance.debuggerConfig.showRCSnapshots>
-						<td align="center" >
-							<cfif len(debugTimers.rc )><a href="javascript:fw_poprc('fw_poprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
-						</td>
-						<td align="center" >
-							<cfif len(debugTimers.prc )><a href="javascript:fw_poprc('fw_popprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
-						</td>
-					</cfif>
 				  </tr>
-
-				  <!--- Show RC Snapshots if active --->
-				  <cfif instance.debuggerConfig.showRCSnapshots>
-					<tr id="fw_poprc_#debugTimers.id#" class="hideRC">
-						<td colspan="5" style="padding:5px;" wrap="true">
-							<div style="overflow:auto;width:98%; height:150px;padding:5px">
-							#replacenocase(debugTimers.rc,",",chr(10) & chr(13),"all")#
-							</div>
-						</td>
-					</tr>
-					<tr id="fw_popprc_#debugTimers.id#" class="hideRC">
-						<td colspan="5" style="padding:5px;" wrap="true">
-							<div style="overflow:auto;width:98%; height:150px;padding:5px">
-							#replacenocase(debugTimers.prc,",",chr(10) & chr(13),"all")#
-							</div>
-						</td>
-					</tr>
-				  </cfif>
 			  </cfloop>
 		  <cfelse>
 		  	<tr>
@@ -252,7 +236,7 @@ Description :
 			</tr>
 		  </cfif>
 
-		  <cfif structKeyExists(request,"fwExecTime" )>
+		  <cfif structKeyExists( request, "fwExecTime" )>
 			<tr>
 				<th colspan="5">Total ColdBox Request Execution Time: #request.fwExecTime# ms</th>
 			</tr>
@@ -261,17 +245,19 @@ Description :
 		<!--- **************************************************************--->
 	</div>
 	</cfif>
-<!--- **************************************************************--->
-<!--- CACHE PANEL --->
-<!--- **************************************************************--->
-	<cfif instance.debuggerConfig.showCachePanel>
+
+	<!--- **************************************************************--->
+	<!--- CACHE PANEL --->
+	<!--- **************************************************************--->
+	<cfif variables.debuggerConfig.showCachePanel>
 		<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
 				  cacheFactory="#controller.getCacheBox()#"
-				  expandedPanel="#instance.debuggerConfig.expandedCachePanel#">
+				  expandedPanel="#variables.debuggerConfig.expandedCachePanel#">
 	</cfif>
-<!--- **************************************************************--->
-<!--- DUMP VAR --->
-<!--- **************************************************************--->
+
+	<!--- **************************************************************--->
+	<!--- DUMP VAR --->
+	<!--- **************************************************************--->
 	<cfif controller.getSetting( "debugger"). EnableDumpVar>
 		<cfif structKeyExists(rc,"dumpvar" )>
 		<!--- Dump Var --->
@@ -287,39 +273,42 @@ Description :
 		</div>
 		</cfif>
 	</cfif>
-<!--- **************************************************************--->
-<!--- ColdBox Modules --->
-<!--- **************************************************************--->
-	<cfif instance.debuggerConfig.showModulesPanel>
+
+	<!--- **************************************************************--->
+	<!--- ColdBox Modules --->
+	<!--- **************************************************************--->
+	<cfif variables.debuggerConfig.showModulesPanel>
 		<cfinclude template="panels/modulesPanel.cfm">
 	</cfif>
-<!--- **************************************************************--->
-<!--- Request Collection Debug --->
-<!--- **************************************************************--->
-	<cfif instance.debuggerConfig.showRCPanel>
-	<div class="fw_titles"  onClick="fw_toggle('fw_reqCollection')" >
-	&nbsp;ColdBox Request Structures
-	</div>
-	<div class="fw_debugContent<cfif instance.debuggerConfig.expandedRCPanel>View</cfif>" id="fw_reqCollection">
-		<!--- Public Collection --->
-		<cfset thisCollection = rc>
-		<cfset thisCollectionType = "Public">
-		<cfinclude template="panels/collectionPanel.cfm">
-		<!--- Private Collection --->
-		<cfset thisCollection = prc>
-		<cfset thisCollectionType = "Private">
-		<cfinclude template="panels/collectionPanel.cfm">
-	</div>
+
+	<!--- **************************************************************--->
+	<!--- Request Collection Debug --->
+	<!--- **************************************************************--->
+	<cfif variables.debuggerConfig.showRCPanel>
+		<div class="fw_titles"  onClick="fw_toggle('fw_reqCollection')" >
+		&nbsp;ColdBox Request Structures
+		</div>
+		<div class="fw_debugContent<cfif variables.debuggerConfig.expandedRCPanel>View</cfif>" id="fw_reqCollection">
+			<!--- Public Collection --->
+			<cfset thisCollection = rc>
+			<cfset thisCollectionType = "Public">
+			<cfinclude template="panels/collectionPanel.cfm">
+			<!--- Private Collection --->
+			<cfset thisCollection = prc>
+			<cfset thisCollectionType = "Private">
+			<cfinclude template="panels/collectionPanel.cfm">
+		</div>
 	</cfif>
 
-<!--- **************************************************************--->
-<!--- qb debug --->
-<!--- **************************************************************--->
-<cfif instance.debuggerConfig.showQBPanel>
-	<cfinclude template="panels/qbPanel.cfm">
-</cfif>
+	<!--- **************************************************************--->
+	<!--- qb debug --->
+	<!--- **************************************************************--->
+	<cfif variables.debuggerConfig.showQBPanel>
+		<cfinclude template="panels/qbPanel.cfm">
+	</cfif>
 
-	<div class="fw_renderTime">Approximate Debug Rendering Time: #GetTickCount()-DebugStartTime# ms</div>
+	<!--- Final Rendering --->
+	<div class="fw_renderTime">Approximate Debug Rendering Time: #GetTickCount() - DebugStartTime# ms</div>
 
 </div>
 </cfoutput>
