@@ -11,13 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* Reworked how timers are displayed so the information is more readable
 * Focused on performance to make sure the debugger is as performant as possible
 * Added the route record to the info panel so you can debug the selected route
-* Removed the loaded modules as it just produced noise
 * Highlights transactions that take over 250ms in red
 * Refactored to use array of structs instead of queries for even faster timer performance
-* Show transactions as they start instead of how they end, huge UI update to visualize the timers
+* Show timers as they start instead of how they end, huge UI update to visualize the timers
+
+### Removed
+
+* Old helper code to remove helpers
+* Removed the loaded modules as it just produced noise
+* Removed the rc/prc snapshot comparisons, causes too much noise and not helpful anymore
 
 ----
 

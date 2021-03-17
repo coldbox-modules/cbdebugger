@@ -25,7 +25,7 @@ component {
 	this.autoMapModels		= true;
 	// App Helpers
 	this.applicationHelper = [
-		"models/Mixins.cfm"
+		"helpers/Mixins.cfm"
 	];
 
 	/**
@@ -90,24 +90,11 @@ component {
 	}
 
 	/**
-	* Unloading
-	*/
+	 * Unloading
+	 */
 	function onUnload(){
 		// unregister interceptor
 		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
-
-		// Remove application helper
-		var appHelperArray 	= controller.getSetting( "ApplicationHelper" );
-		var mixinToRemove 	= "#moduleMapping#/models/Mixins.cfm";
-		var mixinIndex 		= arrayFindNoCase( appHelperArray, mixinToRemove );
-
-		// If the mixin is in the array
-		if( mixinIndex ) {
-			// Remove it
-			arrayDeleteAt( appHelperArray, mixinIndex );
-			// Arrays passed by value in Adobe CF
-			controller.setSetting( "ApplicationHelper", appHelperArray );
-		}
 	}
 
 	/**
@@ -156,6 +143,5 @@ component {
 	    root.addAppender( appenders[ 'tracer' ] );
 	    root.setLevelMax( 4 );
 	    root.setLevelMin( 0 );
-
 	}
 }
