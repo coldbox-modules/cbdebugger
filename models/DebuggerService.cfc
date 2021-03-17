@@ -8,10 +8,21 @@ Date               :	January 18, 2007
 Description :
 This is the service that powers the ColdBox Debugger.
 ----------------------------------------------------------------------->
-<cfcomponent output="false" extends="coldbox.system.web.services.BaseService" accessors="true" singleton>
+<cfcomponent
+	output   ="false"
+	extends  ="coldbox.system.web.services.BaseService"
+	accessors="true"
+	singleton
+>
 	<!------------------------------------------- CONSTRUCTOR ------------------------------------------->
 
-	<cffunction name="init" access="public" output="false" returntype="DebuggerService" hint="Constructor">
+	<cffunction
+		name      ="init"
+		access    ="public"
+		output    ="false"
+		returntype="DebuggerService"
+		hint      ="Constructor"
+	>
 		<cfargument name="controller" inject="coldbox">
 		<cfscript>
 		// setup controller
@@ -105,8 +116,20 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- timerEnd --->
-	<cffunction name="timerEnd" output="false" access="public" returntype="void" hint="End an internal code timer">
-		<cfargument name="labelHash" type="any" required="true" default="" hint="The timer label hash to stop"/>
+	<cffunction
+		name      ="timerEnd"
+		output    ="false"
+		access    ="public"
+		returntype="void"
+		hint      ="End an internal code timer"
+	>
+		<cfargument
+			name    ="labelHash"
+			type    ="any"
+			required="true"
+			default =""
+			hint    ="The timer label hash to stop"
+		/>
 		<cfscript>
 		var timerInfo = 0;
 		var qTimers   = "";
@@ -135,7 +158,9 @@ This is the service that powers the ColdBox Debugger.
 			querySetCell( qTimers, "Timestamp", now() );
 
 			// RC Snapshot
-			if ( NOT findNoCase( "rendering", timerInfo.label ) AND instance.debuggerConfig.showRCSnapshots ) {
+			if (
+				NOT findNoCase( "rendering", timerInfo.label ) AND instance.debuggerConfig.showRCSnapshots
+			) {
 				// Save collection
 				querySetCell(
 					qTimers,
@@ -145,7 +170,9 @@ This is the service that powers the ColdBox Debugger.
 				querySetCell(
 					qTimers,
 					"PRC",
-					htmlEditFormat( left( context.getCollection( private = true ).toString(), 5000 ) )
+					htmlEditFormat(
+						left( context.getCollection( private = true ).toString(), 5000 )
+					)
 				);
 			} else {
 				querySetCell( qTimers, "RC", "" );
@@ -243,7 +270,13 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- render the debug log --->
-	<cffunction name="renderDebugLog" access="public" hint="Return the debug log." output="false" returntype="Any">
+	<cffunction
+		name      ="renderDebugLog"
+		access    ="public"
+		hint      ="Return the debug log."
+		output    ="false"
+		returntype="Any"
+	>
 		<cfset var renderedDebugging = "">
 		<cfif getDebugMode()>
 			<cfset var event = controller.getRequestService().getContext()>
@@ -324,41 +357,86 @@ This is the service that powers the ColdBox Debugger.
 		returntype="Any"
 	>
 		<cfsavecontent variable="cachepanel">
-			<cfmodule template="/coldbox/system/cache/report/monitor.cfm" cacheFactory="#controller.getCacheBox()#">
+			<cfmodule
+				template    ="/coldbox/system/cache/report/monitor.cfm"
+				cacheFactory="#controller.getCacheBox()#"
+			>
 		</cfsavecontent>
 
 		<cfreturn cachepanel>
 	</cffunction>
 
 	<!--- Get set the cookie name --->
-	<cffunction name="getCookieName" access="public" output="false" returntype="any" hint="Get cookieName">
+	<cffunction
+		name      ="getCookieName"
+		access    ="public"
+		output    ="false"
+		returntype="any"
+		hint      ="Get cookieName"
+	>
 		<cfreturn instance.cookieName/>
 	</cffunction>
-	<cffunction name="setCookieName" access="public" output="false" returntype="void" hint="Set cookieName">
+	<cffunction
+		name      ="setCookieName"
+		access    ="public"
+		output    ="false"
+		returntype="void"
+		hint      ="Set cookieName"
+	>
 		<cfargument name="cookieName" type="string" required="true"/>
 		<cfset instance.cookieName = arguments.cookieName/>
 	</cffunction>
 
 	<!--- Get set the secret key --->
-	<cffunction name="getSecretKey" access="private" output="false" returntype="any" hint="Get secret key">
+	<cffunction
+		name      ="getSecretKey"
+		access    ="private"
+		output    ="false"
+		returntype="any"
+		hint      ="Get secret key"
+	>
 		<cfreturn instance.secretKey/>
 	</cffunction>
-	<cffunction name="setSecretKey" access="private" output="false" returntype="void" hint="Set secret key">
+	<cffunction
+		name      ="setSecretKey"
+		access    ="private"
+		output    ="false"
+		returntype="void"
+		hint      ="Set secret key"
+	>
 		<cfargument name="secretKey" type="string" required="true"/>
 		<cfset instance.secretKey = arguments.secretKey/>
 	</cffunction>
 
 	<!--- Persistent Profilers --->
-	<cffunction name="getProfilers" access="public" output="false" returntype="array" hint="Get Profilers">
+	<cffunction
+		name      ="getProfilers"
+		access    ="public"
+		output    ="false"
+		returntype="array"
+		hint      ="Get Profilers"
+	>
 		<cfreturn instance.profilers/>
 	</cffunction>
-	<cffunction name="setProfilers" access="public" output="false" returntype="void" hint="Set Profilers">
+	<cffunction
+		name      ="setProfilers"
+		access    ="public"
+		output    ="false"
+		returntype="void"
+		hint      ="Set Profilers"
+	>
 		<cfargument name="Profilers" type="array" required="true"/>
 		<cfset instance.profilers = arguments.Profilers/>
 	</cffunction>
 
 	<!--- resetProfilers --->
-	<cffunction name="resetProfilers" output="false" access="public" returntype="void" hint="Reset all profilers">
+	<cffunction
+		name      ="resetProfilers"
+		output    ="false"
+		access    ="public"
+		returntype="void"
+		hint      ="Reset all profilers"
+	>
 		<cfset instance.profilers = arrayNew( 1 )>
 	</cffunction>
 
@@ -378,8 +456,19 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- Push a profiler --->
-	<cffunction name="pushProfiler" access="public" returntype="void" hint="Push a profiler record" output="false">
-		<cfargument name="profilerRecord" required="true" type="query" hint="The profiler query for this request">
+	<cffunction
+		name      ="pushProfiler"
+		access    ="public"
+		returntype="void"
+		hint      ="Push a profiler record"
+		output    ="false"
+	>
+		<cfargument
+			name    ="profilerRecord"
+			required="true"
+			type    ="query"
+			hint    ="The profiler query for this request"
+		>
 		<cfscript>
 		// are persistent profilers activated
 		if ( NOT instance.debuggerConfig.persistentRequestProfiler ) {
@@ -411,14 +500,26 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- Pop a profiler --->
-	<cffunction name="popProfiler" access="public" returntype="void" hint="Pop a profiler record" output="false">
+	<cffunction
+		name      ="popProfiler"
+		access    ="public"
+		returntype="void"
+		hint      ="Pop a profiler record"
+		output    ="false"
+	>
 		<cfscript>
 		arrayDeleteAt( instance.profilers, 1 );
 		</cfscript>
 	</cffunction>
 
 	<!--- Get Set Tracers --->
-	<cffunction name="getTracers" access="public" output="false" returntype="array" hint="Get Tracers">
+	<cffunction
+		name      ="getTracers"
+		access    ="public"
+		output    ="false"
+		returntype="array"
+		hint      ="Get Tracers"
+	>
 		<cfreturn instance.tracers/>
 	</cffunction>
 	<cffunction name="setTracers" access="public" output="false" returntype="void" hint="Set Tracers">
@@ -427,9 +528,21 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- Push a tracer --->
-	<cffunction name="pushTracer" access="public" returntype="void" hint="Push a new tracer" output="false">
+	<cffunction
+		name      ="pushTracer"
+		access    ="public"
+		returntype="void"
+		hint      ="Push a new tracer"
+		output    ="false"
+	>
 		<cfargument name="message" required="true" type="string" hint="Message to Send">
-		<cfargument name="extraInfo" required="false" type="any" default="" hint="Extra Information to dump on the trace">
+		<cfargument
+			name    ="extraInfo"
+			required="false"
+			type    ="any"
+			default =""
+			hint    ="Extra Information to dump on the trace"
+		>
 		<cfscript>
 		var tracerEntry = structNew();
 
@@ -447,7 +560,13 @@ This is the service that powers the ColdBox Debugger.
 	</cffunction>
 
 	<!--- removeTracers --->
-	<cffunction name="resetTracers" output="false" access="public" returntype="void" hint="Reset all Tracers">
+	<cffunction
+		name      ="resetTracers"
+		output    ="false"
+		access    ="public"
+		returntype="void"
+		hint      ="Reset all Tracers"
+	>
 		<cfset instance.tracers = arrayNew( 1 )>
 	</cffunction>
 

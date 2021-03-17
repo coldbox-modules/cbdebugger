@@ -66,8 +66,10 @@ Description :
 		  Application Name:
 		</div>
 		<div class="fw_debugContentCell">
-		#controller.getSetting("AppName")#
-		<span class="fw_purpleText">(environment=#lcase(controller.getSetting("Environment"))#)</span>
+			#controller.getSetting( "AppName")#
+			<span class="fw_purpleText">
+				(environment=#controller.getSetting( "Environment" )#)
+			</span>
 		</div>
 
 		<div class="fw_debugTitleCell">
@@ -84,7 +86,7 @@ Description :
 	    	#getInetHost()# (#getLocalHostIP()#)
 		</div>
 
-		<cfif findNoCase( "railo,lucee", server.coldfusion.productname )>
+		<cfif findNoCase( "railo,lucee", server.coldfusion.productname  )>
 		<div class="fw_debugTitleCell">
 			HTTP Response:
 		</div>
@@ -113,44 +115,51 @@ Description :
 		  Current Event:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif Event.getCurrentEvent() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentEvent()#</cfif>
-		<cfif Event.isEventCacheable()><span class="fw_redText">&nbsp;CACHED EVENT</span></cfif>
+			<cfif Event.getCurrentEvent() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentEvent()#</cfif>
+			<cfif Event.isEventCacheable( )><span class="fw_redText">&nbsp;CACHED EVENT</span></cfif>
 		</div>
 
 		<div class="fw_debugTitleCell">
 		  Current Layout:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif Event.getCurrentLayout() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentLayout()#</cfif>
-		(Module: #event.getCurrentLayoutModule()#)
+			<cfif Event.getCurrentLayout() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentLayout()#</cfif>
+			(Module: #event.getCurrentLayoutModule()#)
 		</div>
 
 		<div class="fw_debugTitleCell">
 		  Current View:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif Event.getCurrentView() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentView()#</cfif>
+			<cfif Event.getCurrentView() eq ""><span class="fw_redText">N/A</span><cfelse>#Event.getCurrentView()#</cfif>
 		</div>
 
 		<div class="fw_debugTitleCell">
-		  Current Route:
+		  Route:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif Event.getCurrentRoute() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoute()#</cfif>
+			<cfif Event.getCurrentRoute() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoute()#</cfif>
+		</div>
+
+		<div class="fw_debugTitleCell">
+			Routed Record:
+		</div>
+		<div>
+			<cfdump var="#event.getCurrentRouteRecord()#" expand="false" label="Route Record (click to expand)">
 		</div>
 
 		<div class="fw_debugTitleCell">
 		  Routed URL:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif Event.getCurrentRoutedURL() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoutedURL()#</cfif>
+			<cfif Event.getCurrentRoutedURL() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoutedURL()#</cfif>
 		</div>
 
 		<div class="fw_debugTitleCell">
 		  Routed Namespace:
 		</div>
 		<div class="fw_debugContentCell">
-		<cfif event.getCurrentRoutedNamespace() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoutedNamespace()#</cfif>
+			<cfif event.getCurrentRoutedNamespace() eq ""><span class="fw_redText">N/A</span><cfelse>#event.getCurrentRoutedNamespace()#</cfif>
 		</div>
 
 		<div class="fw_debugTitleCell">
@@ -164,78 +173,77 @@ Description :
 			#controller.getLogBox().logLevels.lookup(controller.getLogBox().getRootLogger().getLevelMin())# -
 			#controller.getLogBox().logLevels.lookup(controller.getLogBox().getRootLogger().getLevelMax())#
 		</div>
-		<div class="fw_debugTitleCell">
-		  Loaded Modules:
-		</div>
-		<div class="fw_debugContentCell">
-			<cfloop from="1" to="#arrayLen(loadedModules)#" index="loc.x">
-				<cfif len(moduleSettings[loadedModules[loc.x]].entryPoint)>
-					<a href="#event.buildLink(moduleSettings[loadedModules[loc.x]].entryPoint)#">#loadedModules[loc.x]#</a>
-				<cfelse>
-					#loadedModules[loc.x]#
-				</cfif>
-				<cfif loc.x NEQ arrayLen(loadedModules)>,</cfif>
-			</cfloop>
-		</div>
 
 		<!--- **************************************************************--->
 		<!--- Method Executions --->
 		<!--- **************************************************************--->
 		<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 		  <tr>
-		  	<th width="13%" align="center" >Timestamp</th>
-			<th width="10%" align="center" >Execution Time</th>
+		  	<th width="150" align="center" >Timestamp</th>
+			<th width="150" align="center" >Execution Time</th>
 			<th >Framework Method</th>
 			<!--- Show RC Snapshots if active --->
 			<cfif instance.debuggerConfig.showRCSnapshots>
-			<th width="75" align="center" >RC Snapshot</th>
-			<th width="75" align="center" >PRC Snapshot</th>
+				<th width="75" align="center" >RC Snapshot</th>
+				<th width="75" align="center" >PRC Snapshot</th>
 			</cfif>
 		  </tr>
 
+		  <!--- Show Timers if any are found --->
 		  <cfif debugTimers.recordCount>
 			  <cfloop query="debugTimers">
-				  <cfif findnocase("rendering", debugTimers.method)>
-				  	<cfset color = "fw_redText">
-				  <cfelseif findnocase("interception",debugTimers.method)>
+				  <cfif findnocase( "render", debugTimers.method )>
+				  	<cfset color = "fw_greenText">
+				  <cfelseif findnocase( "interception", debugTimers.method )>
 				  	<cfset color = "fw_blackText">
-				  <cfelseif findnocase("runEvent", debugTimers.method)>
+				  <cfelseif findnocase( "runEvent",  debugTimers.method )>
 				  	<cfset color = "fw_blueText">
-				  <cfelseif findnocase("pre",debugTimers.method) or findnocase("post",debugTimers.method)>
+				  <cfelseif findnocase( "pre", debugTimers.method ) or findnocase( "post", debugTimers.method )>
 				  	<cfset color = "fw_purpleText">
 				  <cfelse>
 				  	<cfset color = "fw_greenText">
 				  </cfif>
-				  <tr <cfif debugTimers.currentrow mod 2 eq 0>class="even"</cfif>>
-				  	<td align="center" >#TimeFormat(debugTimers.timestamp,"hh:MM:SS.l tt")#</td>
-					<td align="center" >#debugTimers.Time# ms</td>
-					<td ><span class="#color#">#debugTimers.Method#</span></td>
+				  <tr style="border-bottom:1px solid ##eaeaea">
+				  	<td align="center" >
+						#timeFormat( debugTimers.timestamp, "hh:MM:SS.l tt" )#
+					</td>
+					<td align="center" >
+						<cfif debugTimers.time gt 200>
+							<span class="fw_redText">#debugTimers.Time# ms</span>
+						<cfelse>
+							#debugTimers.Time# ms
+						</cfif>
+					</td>
+					<td>
+						<span class="#color#">#debugTimers.method#</span>
+					</td>
 					<!--- Show RC Snapshots if active --->
 					<cfif instance.debuggerConfig.showRCSnapshots>
-					<td align="center" >
-						<cfif len(debugTimers.rc)><a href="javascript:fw_poprc('fw_poprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
-					</td>
-					<td align="center" >
-						<cfif len(debugTimers.prc)><a href="javascript:fw_poprc('fw_popprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
-					</td>
+						<td align="center" >
+							<cfif len(debugTimers.rc )><a href="javascript:fw_poprc('fw_poprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
+						</td>
+						<td align="center" >
+							<cfif len(debugTimers.prc )><a href="javascript:fw_poprc('fw_popprc_#debugTimers.id#')">View</a><cfelse>...</cfif>
+						</td>
 					</cfif>
 				  </tr>
+
 				  <!--- Show RC Snapshots if active --->
 				  <cfif instance.debuggerConfig.showRCSnapshots>
-				  <tr id="fw_poprc_#debugTimers.id#" class="hideRC">
-				  	<td colspan="5" style="padding:5px;" wrap="true">
-					  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-						  #replacenocase(debugTimers.rc,",",chr(10) & chr(13),"all")#
-						</div>
-					</td>
-		  		  </tr>
-		  		  <tr id="fw_popprc_#debugTimers.id#" class="hideRC">
-				  	<td colspan="5" style="padding:5px;" wrap="true">
-					  	<div style="overflow:auto;width:98%; height:150px;padding:5px">
-						  #replacenocase(debugTimers.prc,",",chr(10) & chr(13),"all")#
-						</div>
-					</td>
-		  		  </tr>
+					<tr id="fw_poprc_#debugTimers.id#" class="hideRC">
+						<td colspan="5" style="padding:5px;" wrap="true">
+							<div style="overflow:auto;width:98%; height:150px;padding:5px">
+							#replacenocase(debugTimers.rc,",",chr(10) & chr(13),"all")#
+							</div>
+						</td>
+					</tr>
+					<tr id="fw_popprc_#debugTimers.id#" class="hideRC">
+						<td colspan="5" style="padding:5px;" wrap="true">
+							<div style="overflow:auto;width:98%; height:150px;padding:5px">
+							#replacenocase(debugTimers.prc,",",chr(10) & chr(13),"all")#
+							</div>
+						</td>
+					</tr>
 				  </cfif>
 			  </cfloop>
 		  <cfelse>
@@ -244,10 +252,10 @@ Description :
 			</tr>
 		  </cfif>
 
-		  <cfif structKeyExists(request,"fwExecTime")>
-		  <tr>
-			<th colspan="5">Total Framework Request Execution Time: #request.fwExecTime# ms</th>
-		  </tr>
+		  <cfif structKeyExists(request,"fwExecTime" )>
+			<tr>
+				<th colspan="5">Total ColdBox Request Execution Time: #request.fwExecTime# ms</th>
+			</tr>
 		  </cfif>
 		</table>
 		<!--- **************************************************************--->
@@ -264,15 +272,15 @@ Description :
 <!--- **************************************************************--->
 <!--- DUMP VAR --->
 <!--- **************************************************************--->
-	<cfif controller.getSetting("debugger").EnableDumpVar>
-		<cfif structKeyExists(rc,"dumpvar")>
+	<cfif controller.getSetting( "debugger"). EnableDumpVar>
+		<cfif structKeyExists(rc,"dumpvar" )>
 		<!--- Dump Var --->
 		<div class="fw_titles" onClick="fw_toggle('fw_dumpvar')">&nbsp;Dumpvar</div>
 		<div class="fw_debugContent" id="fw_dumpvar">
 			<cfloop list="#rc.dumpvar#" index="i">
-				<cfif isDefined("#i#")>
+				<cfif isDefined( "#i #" )>
 					<cfdump var="#evaluate(i)#" label="#i#" expand="false">
-				<cfelseif event.valueExists(i)>
+				<cfelseif event.valueExists(i )>
 					<cfdump var="#event.getValue(i)#" label="#i#" expand="false">
 				</cfif>
 			</cfloop>

@@ -11,28 +11,30 @@ component extends="coldbox.system.Interceptor" {
 		variables.debuggerConfig  = controller.getSetting( "debugger" );
 	}
 
-	// Before we capture.
+	/**
+	 * Listen to request captures
+	 */
 	function onRequestCapture( event, interceptData, rc, prc ){
 		// init tracker
 		request.cbdebugger = {};
 		request.fwExecTime = getTickCount();
 
-		// Debug Mode Checks
+		// Determine if we are turning the debugger on/off
 		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ) {
 			if ( NOT len( variables.debuggerConfig.debugPassword ) ) {
-				debuggerService.setDebugMode( rc.debugMode );
+				variables.debuggerService.setDebugMode( rc.debugMode );
 			} else if (
 				structKeyExists( rc, "debugPassword" ) AND compareNoCase(
 					variables.debuggerConfig.debugPassword,
 					hash( rc.debugPassword )
 				) eq 0
 			) {
-				debuggerService.setDebugMode( rc.debugMode );
+				variables.debuggerService.setDebugMode( rc.debugMode );
 			}
 		}
 
-		// verify in debug mode
-		if ( debuggerService.getDebugMode() ) {
+		// verify in debug mode else skip
+		if ( variables.debuggerService.getDebugMode() ) {
 			// call debug commands
 			debuggerCommands( arguments.event );
 			// panel rendering
@@ -40,18 +42,18 @@ component extends="coldbox.system.Interceptor" {
 
 			switch ( debugPanel ) {
 				case "profiler": {
-					writeOutput( debuggerService.renderProfiler() );
+					writeOutput( variables.debuggerService.renderProfiler() );
 					break;
 				}
 				case "cache":
 				case "cacheReport":
 				case "cacheContentReport":
 				case "cacheViewer": {
-					writeOutput( debuggerService.renderCachePanel() );
+					writeOutput( variables.debuggerService.renderCachePanel() );
 					break;
 				}
 			}
-			// turn off debugger and stop
+			// If we are rendering a debug panel, let's renderit and abort the execution of the request.
 			if ( len( debugPanel ) ) {
 				include "/cbdebugger/includes/debugoutput.cfm";
 				abort;
@@ -59,103 +61,106 @@ component extends="coldbox.system.Interceptor" {
 		}
 	}
 
-	// setup all the timers
+	/**
+	 * Listen to pre process execution
+	 */
 	public function preProcess( event, interceptData, rc, prc ){
-		request.cbdebugger.processHash = debuggerService.timerStart(
-			"[preProcess to postProcess] for #arguments.event.getCurrentEvent()#"
-		);
+		request.cbdebugger.processHash = debuggerService.timerStart( "[preProcess to postProcess]" );
 	}
 
-	// post processing
-	public function postProcess(
-		event,
-		interceptData,
-		rc,
-		prc,
-		buffer
-	){
-		var debugHTML = "";
-		var command   = event.getTrimValue( "cbox_command", "" );
-
+	/**
+	 * Listen to post processing execution
+	 */
+	public function postProcess( event, interceptData, rc, prc, buffer ){
 		// Verify if we have a command, if we do just exit
-		if ( len( command ) ) {
+		if ( len( arguments.event.getTrimValue( "cbox_command", "" ) ) ) {
 			return;
 		}
 
 		// end the request timer
-		debuggerService.timerEnd( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
+		variables.debuggerService.timerEnd(
+			isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash
+		);
+		// End fw execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record the profilers
-		debuggerService.recordProfiler();
-		// Only render if enabled, if no renderdata, and if not ajax call and not in testing mode
+		variables.debuggerService.recordProfiler();
+		// Determine if we can render the debugger
 		if (
-			debuggerService.getDebugMode() AND
+			// Is the debug mode turned on
+			variables.debuggerService.getDebugMode() AND
+			// Has it not been disabled by the user programmatically
 			isDebuggerRendering() AND
-			structIsEmpty( event.getRenderData() ) AND
-			!event.isAjax() AND
+			// We don't have any render data OR the render data is HTML
+			(
+				structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().type == "HTML"
+			) AND
+			// Don't render in ajax calls
+			!arguments.event.isAjax() AND
+			// Don't render in testing mode
 			!findNoCase( "MockController", getMetadata( controller ).name )
 		) {
-			// render out the debugger
-			debugHTML = debuggerService.renderDebugLog();
-			// render out the debugger to output
-			buffer.append( debugHTML );
+			// render out the debugger to the buffer output
+			arguments.buffer.append( variables.debuggerService.renderDebugLog() );
 		}
 	}
 
 	public function preEvent( event, interceptData, rc, prc ){
-		request.cbdebugger.eventhash = debuggerService.timerStart(
-			"[preEvent to postEvent] for #arguments.event.getCurrentEvent()#"
+		request.cbdebugger.eventhash = variables.debuggerService.timerStart(
+			"[runEvent] #arguments.event.getCurrentEvent()#"
 		);
 	}
 
 	public function postEvent( event, interceptData, rc, prc ){
-		debuggerService.timerEnd( request.cbdebugger.eventhash );
+		variables.debuggerService.timerEnd( request.cbdebugger.eventhash );
 	}
 
 	public function preLayout( event, interceptData, rc, prc ){
-		request.cbdebugger.layoutHash = debuggerService.timerStart(
+		request.cbdebugger.layoutHash = variables.debuggerService.timerStart(
 			"[preLayout to postLayout] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
 	public function postLayout( event, interceptData, rc, prc ){
-		debuggerService.timerEnd( request.cbdebugger.layoutHash );
+		variables.debuggerService.timerEnd( request.cbdebugger.layoutHash );
 	}
 
 	public function preRender( event, interceptData, rc, prc ){
-		request.cbdebugger.renderHash = debuggerService.timerStart(
+		request.cbdebugger.renderHash = variables.debuggerService.timerStart(
 			"[preRender to postRender] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
 	public function postRender( event, interceptData, rc, prc ){
-		debuggerService.timerEnd( request.cbdebugger.renderHash );
+		variables.debuggerService.timerEnd( request.cbdebugger.renderHash );
 	}
 
 	public function preViewRender( event, interceptData, rc, prc ){
-		request.cbdebugger.renderViewHash = debuggerService.timerStart(
-			"Rendering View: #interceptData.view# from event: #arguments.event.getCurrentEvent()#"
+		request.cbdebugger.renderViewHash = variables.debuggerService.timerStart(
+			"[renderView]: #arguments.interceptData.view#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
 
 	public function postViewRender( event, interceptData, rc, prc ){
-		debuggerService.timerEnd( request.cbdebugger.renderViewHash );
+		variables.debuggerService.timerEnd( request.cbdebugger.renderViewHash );
 	}
 
 	public function preLayoutRender( event, interceptData, rc, prc ){
-		request.cbdebugger.layoutHash = debuggerService.timerStart(
-			"Rendering Layout: #interceptData.layout# from event: #arguments.event.getCurrentEvent()#"
+		request.cbdebugger.layoutHash = variables.debuggerService.timerStart(
+			"[renderLayout]: #arguments.interceptData.layout#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
 
 	public function postLayoutRender( event, interceptData, rc, prc ){
-		debuggerService.timerEnd( request.cbdebugger.layoutHash );
+		variables.debuggerService.timerEnd( request.cbdebugger.layoutHash );
 	}
 
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
 		if ( variables.debuggerConfig.wireboxCreationProfiler ) {
-			request.cbdebugger[ interceptData.mapping.getName() ] = debuggerService.timerStart(
-				"Wirebox instance creation of #interceptData.mapping.getName()#"
+			request.cbdebugger[ arguments.interceptData.mapping.getName() ] = variables.debuggerService.timerStart(
+				"Wirebox instance creation of #arguments.interceptData.mapping.getName()#"
 			);
 		}
 	}
@@ -165,16 +170,18 @@ component extends="coldbox.system.Interceptor" {
 		if (
 			variables.debuggerConfig.wireboxCreationProfiler
 			and structKeyExists( request, "cbdebugger" )
-			and structKeyExists( request.cbdebugger, interceptData.mapping.getName() )
+			and structKeyExists( request.cbdebugger, arguments.interceptData.mapping.getName() )
 		) {
-			debuggerService.timerEnd( request.cbdebugger[ interceptData.mapping.getName() ] );
+			variables.debuggerService.timerEnd(
+				request.cbdebugger[ arguments.interceptData.mapping.getName() ]
+			);
 		}
 	}
 
 	/************************************** PRIVATE METHODS *********************************************/
 
 	/**
-	 * Debugger Commands
+	 * Execute Debugger Commands
 	 */
 	private function debuggerCommands( event ){
 		var command = event.getTrimValue( "cbox_command", "" );
@@ -214,7 +221,7 @@ component extends="coldbox.system.Interceptor" {
 			case "cacheBoxReapAll":
 			case "cacheBoxExpireAll":
 			case "gc": {
-				debuggerService.renderCachePanel();
+				variables.debuggerService.renderCachePanel();
 				break;
 			}
 			default:

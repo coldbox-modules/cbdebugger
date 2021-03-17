@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [2.2.0]
+
+### Added
+
+* Reworked how timers are displayed so the information is more readable
+* Focused on performance to make sure the debugger is as performant as possible
+* Added the route record to the info panel so you can debug the selected route
+* Removed the loaded modules as it just produced noise
+* Highlights transactions that take over 250ms in red
+
+----
+
 ## [2.1.0] => 2020-MAY-14
 
 ### Added
