@@ -200,6 +200,11 @@ component
 			var loadedModules      = variables.controller.getModuleService().getLoadedModules();
 			var moduleSettings     = variables.controller.getSetting( "modules" );
 
+			// Sort timers
+			debugTimers.sort( function( e1, e2 ){
+				return dateCompare( e1.startedAt, e2.startedAt );
+			} );
+
 			if ( NOT event.isSES() ) {
 				URLBase = listLast( cgi.script_name, "/" );
 			}
