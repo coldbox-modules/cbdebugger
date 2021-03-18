@@ -37,11 +37,11 @@ component accessors="true" singleton {
 	}
 
 	/**
-	 * End a code timer with a tracking hash. If the tracking hash is not tracked we ignore it
+	 * Stop a code timer with a tracking hash. If the tracking hash is not tracked we ignore it
 	 *
 	 * @labelHash The timer label hash to stop
 	 */
-	Timer function end( required labelHash ){
+	Timer function stop( required labelHash ){
 		// Verify tracking hash
 		if ( structKeyExists( request, arguments.labelHash ) ) {
 			// Get Timer Info
@@ -67,7 +67,7 @@ component accessors="true" singleton {
 	function timeIt( required label, required closure ){
 		var labelhash = this.start( arguments.label );
 		var results   = arguments.closure();
-		this.end( labelhash );
+		this.stop( labelhash );
 		if ( !isNull( results ) ) {
 			return results;
 		}

@@ -91,7 +91,7 @@ component extends="coldbox.system.Interceptor" {
 		}
 
 		// end the request timer
-		variables.timerService.end( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
+		variables.timerService.stop( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
 		// End fw execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record all profilers
@@ -123,7 +123,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function postEvent( event, interceptData, rc, prc ){
-		variables.timerService.end( request.cbdebugger.eventhash );
+		variables.timerService.stop( request.cbdebugger.eventhash );
 	}
 
 	public function preLayout( event, interceptData, rc, prc ){
@@ -133,7 +133,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function postLayout( event, interceptData, rc, prc ){
-		variables.timerService.end( request.cbdebugger.layoutHash );
+		variables.timerService.stop( request.cbdebugger.layoutHash );
 	}
 
 	public function preRender( event, interceptData, rc, prc ){
@@ -143,7 +143,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function postRender( event, interceptData, rc, prc ){
-		variables.timerService.end( request.cbdebugger.renderHash );
+		variables.timerService.stop( request.cbdebugger.renderHash );
 	}
 
 	public function preViewRender( event, interceptData, rc, prc ){
@@ -154,7 +154,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function postViewRender( event, interceptData, rc, prc ){
-		variables.timerService.end( request.cbdebugger.renderViewHash );
+		variables.timerService.stop( request.cbdebugger.renderViewHash );
 	}
 
 	public function preLayoutRender( event, interceptData, rc, prc ){
@@ -165,7 +165,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function postLayoutRender( event, interceptData, rc, prc ){
-		variables.timerService.end( request.cbdebugger.layoutHash );
+		variables.timerService.stop( request.cbdebugger.layoutHash );
 	}
 
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
@@ -186,7 +186,7 @@ component extends="coldbox.system.Interceptor" {
 				arguments.interceptData.mapping.getName()
 			)
 		) {
-			variables.timerService.end( request.cbdebugger[ arguments.interceptData.mapping.getName() ] );
+			variables.timerService.stop( request.cbdebugger[ arguments.interceptData.mapping.getName() ] );
 		}
 	}
 

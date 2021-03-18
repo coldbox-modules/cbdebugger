@@ -77,6 +77,10 @@
 				persistentRequestProfilers = true,
 				maxPersistentRequestProfilers = 10,
 				maxRCPanelQueryRows = 50,
+				// Profile model objects annotated with the `profile` annotation
+				profileObjects = true,
+				// If enabled, will trace the results of any methods that are being profiled
+				traceObjectResults = true,
 				//Panels
 				showTracerPanel = true,
 				expandedTracerPanel = false,

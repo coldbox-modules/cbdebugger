@@ -17,11 +17,12 @@ TODO
 
 ### Added
 
+* New object profiling via metadata AOP `profileObjects`, `traceObjectResults`
 * Encapsualted request timers UI
 * New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps
 * `Timer` is now built in script and optimized
 * New method: `timer.timeIt()` so you can time code execution via a closure
-* New Helper Methods: `startCBTimer(), endCBTimer(), cbTimeIt()`
+* New Helper Methods: `startCBTimer(), stopCBTimer(), cbTimeIt()`
 * Focused on performance to make sure the debugger is as performant as possible
 * Added the route record to the info panel so you can debug the selected route
 * Highlights transactions that take over 250ms in red

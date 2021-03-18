@@ -5,6 +5,7 @@ component{
 
 	// Index
 	any function index( event,rc, prc ){
+		getInstance( "TestService" ).testMethod();
 		log.info( "in the index event firing" );
 	}
 
