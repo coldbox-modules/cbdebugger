@@ -182,66 +182,17 @@ Description :
 		  RootLogger Levels:
 		</div>
 		<div class="fw_debugContentCell">
-			#controller.getLogBox().logLevels.lookup(controller.getLogBox().getRootLogger().getLevelMin())# -
-			#controller.getLogBox().logLevels.lookup(controller.getLogBox().getRootLogger().getLevelMax())#
+			#controller.getLogBox().logLevels.lookup( controller.getLogBox().getRootLogger().getLevelMin() )# -
+			#controller.getLogBox().logLevels.lookup( controller.getLogBox().getRootLogger().getLevelMax() )#
 		</div>
 
 		<!--- **************************************************************--->
-		<!--- Method Executions --->
+		<!--- Debugging Timers --->
 		<!--- **************************************************************--->
-		<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
-		  <tr>
-		  	<th width="150" align="center" >Started At</th>
-			<th width="150" align="center" >Finished At</th>
-			<th width="150" align="center" >Execution Time</th>
-			<th >Framework Method</th>
-		  </tr>
-
-		  <!--- Show Timers if any are found --->
-		  <cfif arrayLen( debugTimers )>
-			  <cfloop array="#debugTimers#" index="thisTimer">
-				  <cfif findnocase( "render", thisTimer.method )>
-				  	<cfset color = "fw_greenText">
-				  <cfelseif findnocase( "interception", thisTimer.method )>
-				  	<cfset color = "fw_blackText">
-				  <cfelseif findnocase( "runEvent",  thisTimer.method )>
-				  	<cfset color = "fw_blueText">
-				  <cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
-				  	<cfset color = "fw_purpleText">
-				  <cfelse>
-				  	<cfset color = "fw_greenText">
-				  </cfif>
-				  <tr style="border-bottom:1px solid ##eaeaea">
-				  	<td align="center" >
-						#timeFormat( thisTimer.startedAt, "hh:MM:SS.l tt" )#
-					</td>
-					<td align="center" >
-						#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
-					</td>
-					<td align="center" >
-						<cfif thisTimer.executionTime gt 200>
-							<span class="fw_redText">#thisTimer.executionTime# ms</span>
-						<cfelse>
-							#thisTimer.executionTime# ms
-						</cfif>
-					</td>
-					<td>
-						<span class="#color#">#thisTimer.method#</span>
-					</td>
-				  </tr>
-			  </cfloop>
-		  <cfelse>
-		  	<tr>
-			  	<td colspan="5">No Timers Found...</td>
-			</tr>
-		  </cfif>
-
-		  <cfif structKeyExists( request, "fwExecTime" )>
-			<tr>
-				<th colspan="5">Total ColdBox Request Execution Time: #request.fwExecTime# ms</th>
-			</tr>
-		  </cfif>
-		</table>
+		<cfmodule
+			template="/cbdebugger/includes/debugTimers.cfm"
+			timers=#debugTimers#
+			debuggerConfig=#variables.debuggerConfig#>
 		<!--- **************************************************************--->
 	</div>
 	</cfif>

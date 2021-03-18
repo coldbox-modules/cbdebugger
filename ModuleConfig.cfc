@@ -35,25 +35,47 @@ component {
 		 * Settings
 		 */
 		variables.settings = {
+			// Turn the debugger on/off by default
 			debugMode = controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
+			// The URL password to use to activate it on demand
 			debugPassword = "cb:null",
+			// Persist request tracking profilers
 			persistentRequestProfiler = true,
+			// How many tracking profilers to keep in stack: Default is monitor the last 10 requests
 			maxPersistentRequestProfilers = 10,
+			wireboxCreationProfiler=false,
+			// How many rows to dump for object collections if the RC panel is activated
 			maxRCPanelQueryRows = 50,
+			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
+			slowExecutionThreshold = 200,
+			/**
+			 * PANEL VISIBILITY SETTINGS
+			 */
+
+			// Activate the tracer panel
 			showTracerPanel = true,
+			// Show the panel expanded by default
 			expandedTracerPanel = true,
+			// Show the info tracking panel
 			showInfoPanel = true,
+			// Show the panel expanded by default
 			expandedInfoPanel = true,
+			// Show the cache report panel
 			showCachePanel = true,
+			// Show the panel expanded by default
 			expandedCachePanel = false,
+			// Show the RC/PRC collection panels
 			showRCPanel = true,
+			// Show the panel expanded by default
 			expandedRCPanel = false,
+			// Show the modules panel
 			showModulesPanel = true,
+			// Show the panel expanded by default
 			expandedModulesPanel = false,
+			// Show the QB Panel
 			showQBPanel = true,
-			expandedQBPanel = false,
-			showRCSnapshots = false,
-			wireboxCreationProfiler=false
+			// Show the panel expanded by default
+			expandedQBPanel = false
 		};
 
 		// Visualizer Route

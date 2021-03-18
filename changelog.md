@@ -17,6 +17,7 @@ TODO
 
 ### Added
 
+* Encapsualted request timers UI
 * New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps
 * `Timer` is now built in script and optimized
 * New method: `timer.timeIt()` so you can time code execution via a closure

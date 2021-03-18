@@ -148,7 +148,7 @@ component extends="coldbox.system.Interceptor" {
 
 	public function preViewRender( event, interceptData, rc, prc ){
 		request.cbdebugger.renderViewHash = variables.timerService.start(
-			"[renderView]: #arguments.interceptData.view#" &
+			"[renderView] #arguments.interceptData.view#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
@@ -159,7 +159,7 @@ component extends="coldbox.system.Interceptor" {
 
 	public function preLayoutRender( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = variables.timerService.start(
-			"[renderLayout]: #arguments.interceptData.layout#" &
+			"[renderLayout] #arguments.interceptData.layout#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
@@ -171,7 +171,7 @@ component extends="coldbox.system.Interceptor" {
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
 		if ( variables.debuggerConfig.wireboxCreationProfiler ) {
 			request.cbdebugger[ arguments.interceptData.mapping.getName() ] = variables.timerService.start(
-				"Wirebox instance creation of #arguments.interceptData.mapping.getName()#"
+				"[Wirebox Creation] #arguments.interceptData.mapping.getName()#"
 			);
 		}
 	}

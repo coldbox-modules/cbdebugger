@@ -53,7 +53,6 @@ debugger = {
     expandedModulesPanel = false,
     showQBPanel = true,
     expandedQBPanel = false,
-    showRCSnapshots = false,
     wireboxCreationProfiler=false
 };
 ```

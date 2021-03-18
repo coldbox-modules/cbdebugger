@@ -243,21 +243,17 @@ component
 		}
 
 		// New Profiler record to store
-		var newRecord = {
-			"dateTime"    : now(),
-			"ip"          : getLocalhostIP(),
-			"timers"      : arguments.profilerRecord,
-			"requestData" : getHTTPRequestData(),
-			"statusCode"  : 0,
-			"contentType" : ""
-		};
-
-		// stupid Adobe CF does not support status and content type from response implementation
-		newRecord.statusCode  = getPageContextResponse().getStatus();
-		newRecord.contentType = getPageContextResponse().getContentType();
-
-		// add it to profilers
-		arrayAppend( variables.profilers, newRecord );
+		arrayAppend(
+			variables.profilers,
+			{
+				"dateTime"    : now(),
+				"ip"          : getLocalhostIP(),
+				"timers"      : arguments.profilerRecord,
+				"requestData" : getHTTPRequestData(),
+				"statusCode"  : getPageContextResponse().getStatus(),
+				"contentType" : getPageContextResponse().getContentType()
+			}
+		);
 
 		return this;
 	}

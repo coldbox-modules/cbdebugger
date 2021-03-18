@@ -77,7 +77,6 @@
 				persistentRequestProfilers = true,
 				maxPersistentRequestProfilers = 10,
 				maxRCPanelQueryRows = 50,
-				showRCSnapshots = true,
 				//Panels
 				showTracerPanel = true,
 				expandedTracerPanel = false,
