@@ -147,29 +147,34 @@ component {
 			);
 		}
 
-		// Register our interceptor profiler
-		binder
-			.mapAspect( "InterceptorProfiler" )
-			.to( "#moduleMapping#.aspects.InterceptorProfiler" )
-			.initArg(
-				name  = "excludedInterceptions",
-				value = controller.getInterceptorService().getInterceptionPoints()
-			)
-			.initArg(
-				name  = "includedInterceptions",
-				value = variables.settings.includedInterceptions
+		/******************** PROFILE INTERCEPTIONS ************************************/
+
+		if ( variables.settings.profileInterceptions ) {
+			// Register our interceptor profiler
+			binder
+				.mapAspect( "InterceptorProfiler" )
+				.to( "#moduleMapping#.aspects.InterceptorProfiler" )
+				.initArg(
+					name  = "excludedInterceptions",
+					value = controller.getInterceptorService().getInterceptionPoints()
+				)
+				.initArg(
+					name  = "includedInterceptions",
+					value = variables.settings.includedInterceptions
+				);
+			// Intercept all announcements
+			binder.bindAspect(
+				classes = binder.match().mappings( "coldbox.system.services.InterceptorService" ),
+				methods = binder.match().methods( "announce" ),
+				aspects = "InterceptorProfiler"
 			);
-		// Intercept all announcements
-		binder.bindAspect(
-			classes = binder.match().mappings( "coldbox.system.services.InterceptorService" ),
-			methods = binder.match().methods( "announce" ),
-			aspects = "InterceptorProfiler"
-		);
-		// Apply AOP
-		wirebox.autowire(
-			target   = controller.getInterceptorService(),
-			targetID = "coldbox.system.services.InterceptorService"
-		);
+			// Apply AOP
+			wirebox.autowire(
+				target   = controller.getInterceptorService(),
+				targetID = "coldbox.system.services.InterceptorService"
+			);
+		}
+
 
 		/******************** Activate Debugger Interceptor ************************************/
 

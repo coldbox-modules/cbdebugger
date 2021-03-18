@@ -27,14 +27,12 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	 */
 	any function invokeMethod( required invocation ){
 		var targetArgs = arguments.invocation.getArgs();
-		var txName     = "[Interception] ";
-		var state      = "";
 
 		// state
 		if ( structKeyExists( targetArgs, "state" ) ) {
-			state = targetArgs.state;
+			var state = targetArgs.state;
 		} else if ( structKeyExists( targetArgs, 1 ) and isSimpleValue( targetArgs[ 1 ] ) ) {
-			state = targetArgs[ 1 ];
+			var state = targetArgs[ 1 ];
 		}
 
 		// Do we need to profile it or not?
@@ -50,21 +48,13 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 			return arguments.invocation.proceed();
 		}
 
-		// Verify interceptData
-		// var data = {};
-		// if ( !isNull( targetArgs.data ) ) {
-		//	data = targetArgs.data;
-		// }
-
+		var txName    = "[Interception] ";
 		// create FR tx with method name
 		var labelHash = variables.timerService.start( txName & state );
-
 		// proceed invocation
-		var results = arguments.invocation.proceed();
-
+		var results   = arguments.invocation.proceed();
 		// close tx
 		variables.timerService.stop( labelhash );
-
 		// return results
 		if ( !isNull( results ) ) {
 			return results;
