@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0]
 
+TODO
+
+[] Use elixir for css and js
+[] Better colors for timers
+[] Rework the timers.cfc to script
+[] Add timer helpers
+[] Update Test Harness
+
 ### Added
 
 * Focused on performance to make sure the debugger is as performant as possible
