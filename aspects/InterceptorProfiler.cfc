@@ -7,49 +7,64 @@
 component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 
 	// DI
-	property name="timerService" inject="Timer@cbdebugger";
+	property name="timerService"    inject="Timer@cbdebugger";
 	property name="debuggerService" inject="debuggerService@cbdebugger";
 
 	/**
 	 * Constructor
 	 */
-	function init(){
+	function init(
+		required excludedInterceptions,
+		required includedInterceptions
+	){
+		variables.excludedInterceptions = arguments.excludedInterceptions;
+		variables.includedInterceptions = arguments.includedInterceptions;
 		return this;
 	}
 
 	/**
 	 * The AOP method invocation
 	 */
-	any function invokeMethod( required invocation ) output=false{
-		var args = arguments.invocation.getArgs();
-
-		var txName = "coldbox/" & arguments.invocation.getTargetName() &
-		"/interceptor:" & arguments.invocation.getMethod();
+	any function invokeMethod( required invocation ){
+		var targetArgs = arguments.invocation.getArgs();
+		var txName     = "[Interception] ";
+		var state      = "";
 
 		// state
-		if ( structKeyExists( args, "state" ) ) {
-			txName &= ":#args.state#";
-		} else if ( structKeyExists( args, 1 ) and isSimpleValue( args[ 1 ] ) ) {
-			txName &= ":" & args[ 1 ];
+		if ( structKeyExists( targetArgs, "state" ) ) {
+			state = targetArgs.state;
+		} else if ( structKeyExists( targetArgs, 1 ) and isSimpleValue( targetArgs[ 1 ] ) ) {
+			state = targetArgs[ 1 ];
 		}
+
+		// Do we need to profile it or not?
+		if (
+			arrayContainsNoCase(
+				variables.excludedInterceptions,
+				state
+			) && !arrayContainsNoCase(
+				variables.includedInterceptions,
+				state
+			)
+		) {
+			return arguments.invocation.proceed();
+		}
+
+		// Verify interceptData
+		// var data = {};
+		// if ( !isNull( targetArgs.data ) ) {
+		//	data = targetArgs.data;
+		// }
 
 		// create FR tx with method name
-		var tx = FRTransactionProvider.get().init( txName );
-
-		// Trace interceptData
-		if ( structKeyExists( args, "interceptData" ) ) {
-			tx.setProperty(
-				"interceptData",
-				args[ "interceptData" ]
-			);
-		} else if ( structKeyExists( args, "2" ) ) {
-			tx.setProperty( "interceptData", args[ 2 ] );
-		}
+		var labelHash = variables.timerService.start( txName & state );
 
 		// proceed invocation
 		var results = arguments.invocation.proceed();
+
 		// close tx
-		tx.close();
+		variables.timerService.stop( labelhash );
+
 		// return results
 		if ( !isNull( results ) ) {
 			return results;

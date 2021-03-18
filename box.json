@@ -31,8 +31,8 @@
     ],
     "scripts":{
         "release":"recipe build/release.boxr",
-        "format":"cfformat run includes/,interceptors/,models/,test-harness/tests/ --overwrite",
-        "format:watch":"cfformat watch includes/,interceptors/,models/,test-harness/tests/ ./.cfformat.json",
-        "format:check":"cfformat check includes/,interceptors/,models/,test-harness/tests/"
+        "format":"cfformat run includes/,interceptors/,models/,test-harness/tests/,*.cfc --overwrite",
+        "format:watch":"cfformat watch includes/,interceptors/,models/,test-harness/tests/,*.cfc ./.cfformat.json",
+        "format:check":"cfformat check includes/,interceptors/,models/,test-harness/tests/,*.cfc"
     }
 }

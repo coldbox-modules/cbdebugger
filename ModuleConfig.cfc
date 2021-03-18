@@ -1,96 +1,99 @@
 /**
-* Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-* www.ortussolutions.com
-* ---
-*/
+ * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
+ * www.ortussolutions.com
+ * ---
+ */
 component {
 
 	// Module Properties
-	this.title 				= "ColdBox Debugger";
-	this.author 			= "Curt Gratz - Ortus Solutions";
-	this.version 			= "@build.version@+@build.number@";
-	this.webURL 			= "https://www.ortussolutions.com";
-	this.description 		= "The ColdBox Debugger Module";
+	this.title              = "ColdBox Debugger";
+	this.author             = "Curt Gratz - Ortus Solutions";
+	this.version            = "@build.version@+@build.number@";
+	this.webURL             = "https://www.ortussolutions.com";
+	this.description        = "The ColdBox Debugger Module";
 	// If true, looks for views in the parent first, if not found, then in the module. Else vice-versa
-	this.viewParentLookup 	= true;
+	this.viewParentLookup   = true;
 	// If true, looks for layouts in the parent first, if not found, then in module. Else vice-versa
 	this.layoutParentLookup = true;
 	// Module Entry Point
-	this.entryPoint			= "cbdebugger";
+	this.entryPoint         = "cbdebugger";
 	// CF Mapping
-	this.cfMapping			= "cbdebugger";
+	this.cfMapping          = "cbdebugger";
 	// Model Namespace
-	this.modelNamespace		= "cbdebugger";
+	this.modelNamespace     = "cbdebugger";
 	// App Helpers
-	this.applicationHelper = [
-		"helpers/Mixins.cfm"
-	];
+	this.applicationHelper  = [ "helpers/Mixins.cfm" ];
 
 	/**
-	* Module Registration
-	*/
+	 * Module Registration
+	 */
 	function configure(){
-
 		/**
 		 * Settings
 		 */
 		variables.settings = {
 			// Turn the debugger on/off by default
-			debugMode = controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
+			debugMode : controller.getSetting(
+				name         = "environment",
+				defaultValue = "production"
+			) == "development",
 			// The URL password to use to activate it on demand
-			debugPassword = "cb:null",
+			debugPassword                 : "cb:null",
 			// Persist request tracking profilers
-			persistentRequestProfiler = true,
+			persistentRequestProfiler     : true,
 			// How many tracking profilers to keep in stack: Default is monitor the last 10 requests
-			maxPersistentRequestProfilers = 10,
+			maxPersistentRequestProfilers : 10,
 			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
-			wireboxCreationProfiler=false,
+			wireboxCreationProfiler       : false,
 			// How many rows to dump for object collections if the RC panel is activated
-			maxRCPanelQueryRows = 50,
+			maxRCPanelQueryRows           : 50,
 			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
-			slowExecutionThreshold = 200,
+			slowExecutionThreshold        : 200,
 			// Profile model objects annotated with the `profile` annotation
-			profileObjects = true,
+			profileObjects                : true,
 			// If enabled, will trace the results of any methods that are being profiled
-			traceObjectResults = false,
+			traceObjectResults            : false,
+			// Profile Custom or Core interception points
+			profileInterceptions          : true,
+			// By default all interception events are excluded, you must include what you want to profile
+			includedInterceptions         : [],
 			/**
 			 * PANEL VISIBILITY SETTINGS
 			 */
 			// Activate the tracer panel
-			showTracerPanel = true,
+			showTracerPanel      : true,
 			// Show the panel expanded by default
-			expandedTracerPanel = true,
+			expandedTracerPanel  : true,
 			// Show the info tracking panel
-			showInfoPanel = true,
+			showInfoPanel        : true,
 			// Show the panel expanded by default
-			expandedInfoPanel = true,
+			expandedInfoPanel    : true,
 			// Show the cache report panel
-			showCachePanel = true,
+			showCachePanel       : true,
 			// Show the panel expanded by default
-			expandedCachePanel = false,
+			expandedCachePanel   : false,
 			// Show the RC/PRC collection panels
-			showRCPanel = true,
+			showRCPanel          : true,
 			// Show the panel expanded by default
-			expandedRCPanel = false,
+			expandedRCPanel      : false,
 			// Show the modules panel
-			showModulesPanel = true,
+			showModulesPanel     : true,
 			// Show the panel expanded by default
-			expandedModulesPanel = false,
+			expandedModulesPanel : false,
 			// Show the QB Panel
-			showQBPanel = true,
+			showQBPanel          : true,
 			// Show the panel expanded by default
-			expandedQBPanel = false
+			expandedQBPanel      : false
 		};
 
 		// Visualizer Route
-		router
-			.route( "/" ).to( "Main.index" );
+		router.route( "/" ).to( "Main.index" );
 
 		/**
 		 * Custom Interception Points
 		 */
 		variables.interceptorSettings = {
-			customInterceptionPoints = [
+			customInterceptionPoints : [
 				"beforeDebuggerPanel",
 				"afterDebuggerPanel"
 			]
@@ -99,18 +102,17 @@ component {
 		/******************** LOAD AOP MIXER ************************************/
 
 		// Verify if the AOP mixer is loaded, if not, load it
-		if( !isAOPMixerLoaded() ){
+		if ( !isAOPMixerLoaded() ) {
 			loadAOPMixer();
 		}
-
 	}
 
 	/**
-	* Load the module
-	*/
+	 * Load the module
+	 */
 	function onLoad(){
 		// default the password to something so we are secure by default
-		if( variables.settings.debugPassword eq "cb:null" ){
+		if ( variables.settings.debugPassword eq "cb:null" ) {
 			variables.settings.debugPassword = hash( getCurrentTemplatePath() );
 		} else if ( len( variables.settings.debugPassword ) ) {
 			// hash the password into memory
@@ -118,16 +120,19 @@ component {
 		}
 
 		// set debug mode according to setting
-		wirebox.getInstance( "debuggerService@cbDebugger" )
-			.setDebugMode( variables.settings.debugMode );
+		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
 
 		/******************** PROFILE OBJECTS ************************************/
 
-		if( variables.settings.profileObjects ){
+		if ( variables.settings.profileObjects ) {
 			// Object Profiler Aspect
-			binder.mapAspect( "ObjectProfiler" )
+			binder
+				.mapAspect( "ObjectProfiler" )
 				.to( "#moduleMapping#.aspects.ObjectProfiler" )
-				.initArg( name="traceResults", value=variables.settings.traceObjectResults );
+				.initArg(
+					name  = "traceResults",
+					value = variables.settings.traceObjectResults
+				);
 
 			// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
 			binder.bindAspect(
@@ -142,13 +147,37 @@ component {
 			);
 		}
 
+		// Register our interceptor profiler
+		binder
+			.mapAspect( "InterceptorProfiler" )
+			.to( "#moduleMapping#.aspects.InterceptorProfiler" )
+			.initArg(
+				name  = "excludedInterceptions",
+				value = controller.getInterceptorService().getInterceptionPoints()
+			)
+			.initArg(
+				name  = "includedInterceptions",
+				value = variables.settings.includedInterceptions
+			);
+		// Intercept all announcements
+		binder.bindAspect(
+			classes = binder.match().mappings( "coldbox.system.services.InterceptorService" ),
+			methods = binder.match().methods( "announce" ),
+			aspects = "InterceptorProfiler"
+		);
+		// Apply AOP
+		wirebox.autowire(
+			target   = controller.getInterceptorService(),
+			targetID = "coldbox.system.services.InterceptorService"
+		);
+
 		/******************** Activate Debugger Interceptor ************************************/
 
 		controller
 			.getInterceptorService()
 			.registerInterceptor(
-				interceptorClass	= "#moduleMapping#.interceptors.Debugger",
-				interceptorName		= "debugger@cbdebugger"
+				interceptorClass = "#moduleMapping#.interceptors.Debugger",
+				interceptorName  = "debugger@cbdebugger"
 			);
 
 		/******************** Register QB Collector ************************************/
@@ -157,8 +186,8 @@ component {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
-					interceptorClass	= "#moduleMapping#.interceptors.QBCollector",
-					interceptorName		= "QBCollector@cbdebugger"
+					interceptorClass = "#moduleMapping#.interceptors.QBCollector",
+					interceptorName  = "QBCollector@cbdebugger"
 				);
 		}
 
@@ -168,8 +197,8 @@ component {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
-					interceptorClass	= "#moduleMapping#.interceptors.QuickCollector",
-					interceptorName		= "QuickCollector@cbdebugger"
+					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
+					interceptorName  = "QuickCollector@cbdebugger"
 				);
 		}
 	}
@@ -185,15 +214,18 @@ component {
 	/**
 	 * Register our tracer appender
 	 */
-	function afterConfigurationLoad() {
-	    var logBox = controller.getLogBox();
-	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );
-    	var appenders = logBox.getAppendersMap( 'tracer' );
-    	// Register the appender with the root loggger, and turn the logger on.
-	    var root = logBox.getRootLogger();
-	    root.addAppender( appenders[ 'tracer' ] );
-	    root.setLevelMax( 4 );
-	    root.setLevelMin( 0 );
+	function afterConfigurationLoad(){
+		var logBox = controller.getLogBox();
+		logBox.registerAppender(
+			"tracer",
+			"cbdebugger.includes.appenders.ColdboxTracerAppender"
+		);
+		var appenders = logBox.getAppendersMap( "tracer" );
+		// Register the appender with the root loggger, and turn the logger on.
+		var root      = logBox.getRootLogger();
+		root.addAppender( appenders[ "tracer" ] );
+		root.setLevelMax( 4 );
+		root.setLevelMin( 0 );
 	}
 
 	// Load AOP Mixer
@@ -202,16 +234,21 @@ component {
 		// configure it
 		mixer.configure( wirebox, {} );
 		// register it
-		controller.getInterceptorService().registerInterceptor( interceptorObject=mixer, interceptorName="AOPMixer" );
+		controller
+			.getInterceptorService()
+			.registerInterceptor(
+				interceptorObject = mixer,
+				interceptorName   = "AOPMixer"
+			);
 	}
 
 	// Verify if wirebox aop mixer is loaded
 	private function isAOPMixerLoaded(){
-		var listeners 	= wirebox.getBinder().getListeners();
-		var results 	= false;
+		var listeners = wirebox.getBinder().getListeners();
+		var results   = false;
 
-		for( var thisListener in listeners ){
-			if( thisListener.class eq "coldbox.system.aop.Mixer" ){
+		for ( var thisListener in listeners ) {
+			if ( thisListener.class eq "coldbox.system.aop.Mixer" ) {
 				results = true;
 				break;
 			}
@@ -219,4 +256,5 @@ component {
 
 		return results;
 	}
+
 }

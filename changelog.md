@@ -9,30 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0]
 
-TODO
-
-[] Use elixir for css and js
-[] Better colors for timers
-[] Document things in the readme
-
 ### Added
 
-* New object profiling via metadata AOP `profileObjects`, `traceObjectResults`
-* Encapsualted request timers UI
+* New interceptor profiling via AOP `announce` interceptions
+* New object profiling via metadata AOP aspects via new settings: `profileObjects`, `traceObjectResults`
 * New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps
-* `Timer` is now built in script and optimized
-* New method: `timer.timeIt()` so you can time code execution via a closure
+* New method: `timer.timeIt()` so you can time code execution via a closure wrapper
 * New Helper Methods: `startCBTimer(), stopCBTimer(), cbTimeIt()`
-* Focused on performance to make sure the debugger is as performant as possible
 * Added the route record to the info panel so you can debug the selected route
-* Highlights transactions that take over 250ms in red
+* Highlights transactions that take over `200ms` or using the `slowExecutionThreshold` setting
 * Refactored to use array of structs instead of queries for even faster timer performance
+
+### Changed
+
+* Encapsualted request timers UI into a single template
+* `Timer` is now built in script and optimized
 * Show timers as they start instead of how they end, huge UI update to visualize the timers
+
+### Security
+
+* `Dumpar` facilities removed due to security concerns
 
 ### Removed
 
 * Old `debugger` settings instead use the `modulesettings.cbdebugger` according to ColdBox 5+ standards
-* `Dumpar` facilities removed due to security concerns
 * Old helper code to remove helpers
 * Removed the loaded modules as it just produced noise
 * Removed the rc/prc snapshot comparisons, causes too much noise and not helpful anymore
