@@ -8,11 +8,11 @@ component extends="coldbox.system.logging.AbstractAppender" {
 	 */
 	function init(
 		required name,
-		struct properties={},
-		layout="",
-		levelMin=0,
-		levelMax=4
-	) {
+		struct properties = {},
+		layout            = "",
+		levelMin          = 0,
+		levelMax          = 4
+	){
 		// Init supertype
 		super.init( argumentCollection = arguments );
 		return this;
@@ -21,16 +21,14 @@ component extends="coldbox.system.logging.AbstractAppender" {
 	/**
 	 * Called upon registration
 	 */
-	function onRegistration() {
-		variables.debuggerService = getColdBox()
-			.getWireBox()
-			.getInstance( "debuggerService@cbdebugger" );
+	function onRegistration(){
+		variables.debuggerService = getColdBox().getWireBox().getInstance( "debuggerService@cbdebugger" );
 		return this;
 	}
 
 	/**
-	  * Log a message
-	  */
+	 * Log a message
+	 */
 	function logMessage( required any logEvent ){
 		var loge          = arguments.logEvent;
 		var entry         = "";

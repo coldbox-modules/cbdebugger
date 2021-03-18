@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Encapsualted request timers UI into a single template
 * `Timer` is now built in script and optimized
 * Show timers as they start instead of how they end, huge UI update to visualize the timers
+* Refactored the logbox appenders from `includes/appenders` to `appenders`
 
 ### Security
 
