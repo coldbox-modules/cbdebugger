@@ -13,12 +13,14 @@ TODO
 
 [] Use elixir for css and js
 [] Better colors for timers
-[] Rework the timers.cfc to script
-[] Add timer helpers
-[] Update Test Harness
+[] Document things in the readme
 
 ### Added
 
+* New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps
+* `Timer` is now built in script and optimized
+* New method: `timer.timeIt()` so you can time code execution via a closure
+* New Helper Methods: `startCBTimer(), endCBTimer(), cbTimeIt()`
 * Focused on performance to make sure the debugger is as performant as possible
 * Added the route record to the info panel so you can debug the selected route
 * Highlights transactions that take over 250ms in red
@@ -27,6 +29,8 @@ TODO
 
 ### Removed
 
+* Old `debugger` settings instead use the `modulesettings.cbdebugger` according to ColdBox 5+ standards
+* `Dumpar` facilities removed due to security concerns
 * Old helper code to remove helpers
 * Removed the loaded modules as it just produced noise
 * Removed the rc/prc snapshot comparisons, causes too much noise and not helpful anymore

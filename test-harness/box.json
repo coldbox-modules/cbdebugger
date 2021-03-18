@@ -5,7 +5,7 @@
     "private":true,
     "description":"",
     "dependencies":{
-        "coldbox":"be"
+        "coldbox":"^6.0.0"
     },
     "devDependencies":{
         "testbox":"^4.0.0"

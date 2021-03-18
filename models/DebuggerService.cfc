@@ -11,10 +11,24 @@ component
 	singleton
 {
 
+	/**
+	 * --------------------------------------------------------------------------
+	 * DI
+	 * --------------------------------------------------------------------------
+	 */
+
+	property name="timerService" inject="Timer@cbdebugger";
+
+	/**
+	 * --------------------------------------------------------------------------
+	 * Tracking Properties
+	 * --------------------------------------------------------------------------
+	 */
+
 	property name="cookieName";
 	property name="secretKey";
-	property name="profilers" type="array";
-	property name="tracers" type="array";
+	property name="profilers"  type="array";
+	property name="tracers"    type="array";
 	property name="maxTracers" type="numeric";
 	property name="debuggerConfig";
 	property name="debugMode";
@@ -25,8 +39,13 @@ component
 	 *
 	 * @controller The ColdBox controller
 	 * @controller.inject coldbox
+	 * @settings Module Settings
+	 * @settings.inject coldbox:modulesettings:cbdebugger
 	 */
-	function init( required controller ){
+	function init(
+		required controller,
+		required settings
+	){
 		// setup controller
 		variables.controller     = arguments.controller;
 		// Set the unique cookie name per ColdBox application
@@ -42,7 +61,7 @@ component
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
 		// config
-		variables.debuggerConfig = controller.getSetting( "debugger" );
+		variables.debuggerConfig = arguments.settings;
 		// run modes
 		variables.debugMode      = variables.debuggerConfig.debugMode;
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
@@ -65,75 +84,11 @@ component
 		*/
 		var salt = createUUID();
 		setSecretKey(
-			hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" )
+			hash(
+				variables.controller.getAppHash() & variables.debugPassword & salt,
+				"SHA-256"
+			)
 		);
-		return this;
-	}
-
-	/**
-	 * Do we have any timers in request
-	 */
-	boolean function timersExist(){
-		return request.keyExists( "debugTimers" );
-	}
-
-	/**
-	 * Return the timers from the request. If they don't exist, we initialize them
-	 */
-	array function getTimers(){
-		if ( !request.keyExists( "debugTimers" ) ) {
-			request.debugTimers = [];
-		}
-		return request.debugTimers;
-	}
-
-	/**
-	 * Start an internal code timer and get a hash of the timer storage
-	 *
-	 * @label The timer label to record
-	 *
-	 * @return The tracking hash for the timer series started
-	 */
-	string function timerStart( required label ){
-		// Create Timer Hash
-		var labelHash = hash( getTickCount() & arguments.label );
-		// Verify Debug Mode
-		if ( getDebugMode() ) {
-			// Store the timer record
-			request[ labelHash ] = {
-				"id"            : labelHash,
-				"startedAt"     : now(),
-				"startCount"    : getTickCount(),
-				"method"        : arguments.label,
-				"stoppedAt"     : now(),
-				"executionTime" : 0
-			};
-		}
-		return labelHash;
-	}
-
-	/**
-	 * End an internal code timer
-	 *
-	 * @labelHash The timer label hash to stop
-	 *
-	 * @return The tracking hash for the timer series started
-	 */
-	DebuggerService function timerEnd( required labelHash ){
-		// Verify Debug Mode and timer label exists, else do nothing.
-		if ( getDebugMode() and structKeyExists( request, arguments.labelHash ) ) {
-			// Get Timer Info
-			var timerInfo = request[ arguments.labelHash ];
-
-			// Stop the timer
-			timerInfo.stoppedAt     = now();
-			timerInfo.executionTime = getTickCount() - timerInfo.startCount;
-			// Append the timer information
-			getTimers().prepend( timerInfo );
-			// Cleanup
-			structDelete( request, arguments.labelHash );
-		}
-
 		return this;
 	}
 
@@ -174,9 +129,15 @@ component
 	 */
 	DebuggerService function setDebugMode( required boolean mode ){
 		if ( arguments.mode ) {
-			cfcookie( name = getCookieName(), value = getSecretKey() );
+			cfcookie(
+				name  = getCookieName(),
+				value = getSecretKey()
+			);
 		} else {
-			cfcookie( name = getCookieName(), value = "_disabled_" );
+			cfcookie(
+				name  = getCookieName(),
+				value = "_disabled_"
+			);
 		}
 		return this;
 	}
@@ -194,33 +155,20 @@ component
 			var loc                = {};
 			var thisCollection     = "";
 			var thisCollectionType = "";
-			var debugTimers        = getTimers();
+			var debugTimers        = variables.timerService.getSortedTimers();
 			var renderType         = "main";
 			var URLBase            = event.getSESBaseURL();
 			var loadedModules      = variables.controller.getModuleService().getLoadedModules();
 			var moduleSettings     = variables.controller.getSetting( "modules" );
-
-			// Sort timers
-			debugTimers.sort( function( e1, e2 ){
-				return dateCompare( e1.startedAt, e2.startedAt );
-			} );
 
 			if ( NOT event.isSES() ) {
 				URLBase = listLast( cgi.script_name, "/" );
 			}
 
 			savecontent variable="renderedDebugging" {
-				writeOutput(
-					variables.controller
-						.getInterceptorService()
-						.processState( "beforeDebuggerPanel" )
-				);
+				writeOutput( variables.controller.getInterceptorService().processState( "beforeDebuggerPanel" ) );
 				include "/cbdebugger/includes/debug.cfm";
-				writeOutput(
-					variables.controller
-						.getInterceptorService()
-						.processState( "afterDebuggerPanel" )
-				);
+				writeOutput( variables.controller.getInterceptorService().processState( "afterDebuggerPanel" ) );
 			}
 
 			// Reset Info that's shown now
@@ -266,7 +214,7 @@ component
 	}
 
 	/**
-	 * Reset the profilers
+	 * Reset the request tracking profilers
 	 */
 	DebuggerService function resetProfilers(){
 		variables.profilers = [];
@@ -274,17 +222,14 @@ component
 	}
 
 	/**
-	 * This method will try to push a profiler record
+	 * Record a profiler and it's timers internally
 	 */
 	DebuggerService function recordProfiler(){
-		if ( getDebugMode() AND timersExist() ) {
-			pushProfiler( getTimers() );
-		}
-		return this;
+		return pushProfiler( variables.timerService.getTimers() );
 	}
 
 	/**
-	 * Push a profiler record
+	 * Push a profiler record (timers) into the tracking facilities
 	 */
 	DebuggerService function pushProfiler( required profilerRecord ){
 		// are persistent profilers activated
@@ -293,13 +238,11 @@ component
 		}
 
 		// size check, if passed, pop one
-		if (
-			arrayLen( variables.profilers ) gte variables.debuggerConfig.maxPersistentRequestProfilers
-		) {
+		if ( arrayLen( variables.profilers ) gte variables.debuggerConfig.maxPersistentRequestProfilers ) {
 			popProfiler();
 		}
 
-		// New Profiler record
+		// New Profiler record to store
 		var newRecord = {
 			"dateTime"    : now(),
 			"ip"          : getLocalhostIP(),
@@ -310,10 +253,8 @@ component
 		};
 
 		// stupid Adobe CF does not support status and content type from response implementation
-		if ( findNoCase( "lucee", server.coldfusion.productname ) ) {
-			newRecord.statusCode  = getPageContext().getResponse().getStatus();
-			newRecord.contentType = getPageContext().getResponse().getContentType();
-		}
+		newRecord.statusCode  = getPageContextResponse().getStatus();
+		newRecord.contentType = getPageContextResponse().getContentType();
 
 		// add it to profilers
 		arrayAppend( variables.profilers, newRecord );
@@ -369,6 +310,19 @@ component
 			return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		} catch ( any e ) {
 			return cgi.SERVER_NAME;
+		}
+	}
+
+	/**
+	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
+	 */
+	function getPageContextResponse(){
+		var response = getPageContext().getResponse();
+		try {
+			response.getStatus();
+			return response;
+		} catch ( any e ) {
+			return response.getResponse();
 		}
 	}
 

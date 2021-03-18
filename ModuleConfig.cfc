@@ -21,8 +21,6 @@ component {
 	this.cfMapping			= "cbdebugger";
 	// Model Namespace
 	this.modelNamespace		= "cbdebugger";
-	// Auto Map Models Directory
-	this.autoMapModels		= true;
 	// App Helpers
 	this.applicationHelper = [
 		"helpers/Mixins.cfm"
@@ -33,83 +31,12 @@ component {
 	*/
 	function configure(){
 
-		variables.interceptorSettings = {
-			customInterceptionPoints = [
-				"beforeDebuggerPanel",
-				"afterDebuggerPanel"
-			]
-		};
-
-	}
-
-	/**
-	* Load the module
-	*/
-	function onLoad(){
-		var settings = controller.getConfigSettings();
-		// parse parent settings
-		parseParentSettings();
-
-		//default the password to something so we are secure by default
-		if( settings.debugger.debugPassword eq "cb:null" ){
-			settings.debugger.debugPassword = hash( getCurrentTemplatePath() );
-		} else if ( len( settings.debugger.debugPassword ) ) {
-			// hash the password into memory
-			settings.debugger.debugPassword = hash( settings.debugger.debugPassword );
-		}
-
-		// set debug mode?
-		wirebox.getInstance( "debuggerService@cbDebugger" )
-			.setDebugMode( settings.debugger.debugMode );
-
-		// Register the interceptor, it has to be here due to loading of configuration files.
-		controller
-			.getInterceptorService()
-			.registerInterceptor(
-				interceptorClass	= "#moduleMapping#.interceptors.Debugger",
-				interceptorName		= "debugger@cbdebugger"
-			);
-
-		if ( settings.debugger.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
-			controller
-				.getInterceptorService()
-				.registerInterceptor(
-					interceptorClass	= "#moduleMapping#.interceptors.QBCollector",
-					interceptorName		= "QBCollector@cbdebugger"
-				);
-		}
-
-		if ( settings.debugger.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-			controller
-				.getInterceptorService()
-				.registerInterceptor(
-					interceptorClass	= "#moduleMapping#.interceptors.QuickCollector",
-					interceptorName		= "QuickCollector@cbdebugger"
-				);
-		}
-	}
-
-	/**
-	 * Unloading
-	 */
-	function onUnload(){
-		// unregister interceptor
-		controller.getInterceptorService().unregister( interceptorName="debugger@cbdebugger" );
-	}
-
-	/**
-	* parse parent settings
-	*/
-	private function parseParentSettings(){
-		var oConfig 		= controller.getSetting( "ColdBoxConfig" );
-		var configStruct 	= controller.getConfigSettings();
-		var debuggerDSL 	= oConfig.getPropertyMixin( "debugger", "variables", structnew() );
-
-		//defaults
-		configStruct.debugger = {
+		/**
+		 * Settings
+		 */
+		variables.settings = {
 			debugMode = controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			debugPassword = "cb:null",
-			enableDumpVar = true,
 			persistentRequestProfiler = true,
 			maxPersistentRequestProfilers = 10,
 			maxRCPanelQueryRows = 50,
@@ -129,11 +56,78 @@ component {
 			wireboxCreationProfiler=false
 		};
 
-		// incorporate settings
-		structAppend( configStruct.debugger, debuggerDSL, true );
+		// Visualizer Route
+		router
+			.route( "/" ).to( "Main.index" );
+
+		/**
+		 * Custom Interception Points
+		 */
+		variables.interceptorSettings = {
+			customInterceptionPoints = [
+				"beforeDebuggerPanel",
+				"afterDebuggerPanel"
+			]
+		};
+
 	}
 
-	// This appender is part of a module, so we need to register it after the modules have been loaded.
+	/**
+	* Load the module
+	*/
+	function onLoad(){
+		// default the password to something so we are secure by default
+		if( variables.settings.debugPassword eq "cb:null" ){
+			variables.settings.debugPassword = hash( getCurrentTemplatePath() );
+		} else if ( len( variables.settings.debugPassword ) ) {
+			// hash the password into memory
+			variables.settings.debugPassword = hash( variables.settings.debugPassword );
+		}
+
+		// set debug mode?
+		wirebox.getInstance( "debuggerService@cbDebugger" )
+			.setDebugMode( variables.settings.debugMode );
+
+		// Register the interceptor, it has to be here due to loading of configuration files.
+		controller
+			.getInterceptorService()
+			.registerInterceptor(
+				interceptorClass	= "#moduleMapping#.interceptors.Debugger",
+				interceptorName		= "debugger@cbdebugger"
+			);
+
+		// Register QB Collector
+		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+			controller
+				.getInterceptorService()
+				.registerInterceptor(
+					interceptorClass	= "#moduleMapping#.interceptors.QBCollector",
+					interceptorName		= "QBCollector@cbdebugger"
+				);
+		}
+
+		// Register Quick Collector
+		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+			controller
+				.getInterceptorService()
+				.registerInterceptor(
+					interceptorClass	= "#moduleMapping#.interceptors.QuickCollector",
+					interceptorName		= "QuickCollector@cbdebugger"
+				);
+		}
+	}
+
+	/**
+	 * Unloading
+	 */
+	function onUnload(){
+		// unregister interceptor
+		controller.getInterceptorService().unregister( "debugger@cbdebugger" );
+	}
+
+	/**
+	 * Register our tracer appender
+	 */
 	function afterConfigurationLoad() {
 	    var logBox = controller.getLogBox();
 	    logBox.registerAppender( 'tracer', 'cbdebugger.includes.appenders.ColdboxTracerAppender' );

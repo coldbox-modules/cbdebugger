@@ -38,7 +38,6 @@ debugger = {
     debugMode = true,
     // Setup a password for the panel
     debugPassword = "",
-    enableDumpVar = true,
     persistentRequestProfiler = true,
     maxPersistentRequestProfilers = 10,
     maxRCPanelQueryRows = 50,

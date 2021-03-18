@@ -7,12 +7,15 @@
  */
 component extends="coldbox.system.Interceptor" {
 
+	// DI
+	property name="debuggerService" inject="debuggerService@cbdebugger";
+	property name="timerService"    inject="timer@cbdebugger";
+	property name="debuggerConfig"  inject="coldbox:moduleSettings:cbdebugger";
+
 	/**
 	 * Configure
 	 */
 	function configure(){
-		variables.debuggerService = getInstance( "debuggerService@cbdebugger" );
-		variables.debuggerConfig  = controller.getSetting( "debugger" );
 	}
 
 	/**
@@ -37,7 +40,7 @@ component extends="coldbox.system.Interceptor" {
 			}
 		}
 
-		// verify in debug mode else skip
+		// verify in debug mode else skip command executions
 		if ( variables.debuggerService.getDebugMode() ) {
 			// call debug commands
 			debuggerCommands( arguments.event );
@@ -69,27 +72,29 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to pre process execution
 	 */
 	public function preProcess( event, interceptData, rc, prc ){
-		request.cbdebugger.processHash = variables.debuggerService.timerStart(
-			"[preProcess to postProcess]"
-		);
+		request.cbdebugger.processHash = variables.timerService.start( "[preProcess to postProcess]" );
 	}
 
 	/**
 	 * Listen to post processing execution
 	 */
-	public function postProcess( event, interceptData, rc, prc, buffer ){
+	public function postProcess(
+		event,
+		interceptData,
+		rc,
+		prc,
+		buffer
+	){
 		// Verify if we have a command, if we do just exit
 		if ( len( arguments.event.getTrimValue( "cbox_command", "" ) ) ) {
 			return;
 		}
 
 		// end the request timer
-		variables.debuggerService.timerEnd(
-			isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash
-		);
+		variables.timerService.end( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
 		// End fw execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
-		// record the profilers
+		// record all profilers
 		variables.debuggerService.recordProfiler();
 
 		// Determine if we can render the debugger
@@ -99,13 +104,14 @@ component extends="coldbox.system.Interceptor" {
 			// Has it not been disabled by the user programmatically
 			isDebuggerRendering() AND
 			// We don't have any render data OR the render data is HTML
-			(
-				structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().type == "HTML"
-			) AND
+			( structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().type == "HTML" ) AND
 			// Don't render in ajax calls
 			!arguments.event.isAjax() AND
 			// Don't render in testing mode
-			!findNoCase( "MockController", getMetadata( controller ).name )
+			!findNoCase(
+				"MockController",
+				getMetadata( controller ).name
+			)
 		) {
 			// render out the debugger to the buffer output
 			arguments.buffer.append( variables.debuggerService.renderDebugLog() );
@@ -113,60 +119,58 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	public function preEvent( event, interceptData, rc, prc ){
-		request.cbdebugger.eventhash = variables.debuggerService.timerStart(
-			"[runEvent] #arguments.event.getCurrentEvent()#"
-		);
+		request.cbdebugger.eventhash = variables.timerService.start( "[runEvent] #arguments.event.getCurrentEvent()#" );
 	}
 
 	public function postEvent( event, interceptData, rc, prc ){
-		variables.debuggerService.timerEnd( request.cbdebugger.eventhash );
+		variables.timerService.end( request.cbdebugger.eventhash );
 	}
 
 	public function preLayout( event, interceptData, rc, prc ){
-		request.cbdebugger.layoutHash = variables.debuggerService.timerStart(
+		request.cbdebugger.layoutHash = variables.timerService.start(
 			"[preLayout to postLayout] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
 	public function postLayout( event, interceptData, rc, prc ){
-		variables.debuggerService.timerEnd( request.cbdebugger.layoutHash );
+		variables.timerService.end( request.cbdebugger.layoutHash );
 	}
 
 	public function preRender( event, interceptData, rc, prc ){
-		request.cbdebugger.renderHash = variables.debuggerService.timerStart(
+		request.cbdebugger.renderHash = variables.timerService.start(
 			"[preRender to postRender] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
 	public function postRender( event, interceptData, rc, prc ){
-		variables.debuggerService.timerEnd( request.cbdebugger.renderHash );
+		variables.timerService.end( request.cbdebugger.renderHash );
 	}
 
 	public function preViewRender( event, interceptData, rc, prc ){
-		request.cbdebugger.renderViewHash = variables.debuggerService.timerStart(
+		request.cbdebugger.renderViewHash = variables.timerService.start(
 			"[renderView]: #arguments.interceptData.view#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
 
 	public function postViewRender( event, interceptData, rc, prc ){
-		variables.debuggerService.timerEnd( request.cbdebugger.renderViewHash );
+		variables.timerService.end( request.cbdebugger.renderViewHash );
 	}
 
 	public function preLayoutRender( event, interceptData, rc, prc ){
-		request.cbdebugger.layoutHash = variables.debuggerService.timerStart(
+		request.cbdebugger.layoutHash = variables.timerService.start(
 			"[renderLayout]: #arguments.interceptData.layout#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
 		);
 	}
 
 	public function postLayoutRender( event, interceptData, rc, prc ){
-		variables.debuggerService.timerEnd( request.cbdebugger.layoutHash );
+		variables.timerService.end( request.cbdebugger.layoutHash );
 	}
 
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
 		if ( variables.debuggerConfig.wireboxCreationProfiler ) {
-			request.cbdebugger[ arguments.interceptData.mapping.getName() ] = variables.debuggerService.timerStart(
+			request.cbdebugger[ arguments.interceptData.mapping.getName() ] = variables.timerService.start(
 				"Wirebox instance creation of #arguments.interceptData.mapping.getName()#"
 			);
 		}
@@ -177,11 +181,12 @@ component extends="coldbox.system.Interceptor" {
 		if (
 			variables.debuggerConfig.wireboxCreationProfiler
 			and structKeyExists( request, "cbdebugger" )
-			and structKeyExists( request.cbdebugger, arguments.interceptData.mapping.getName() )
+			and structKeyExists(
+				request.cbdebugger,
+				arguments.interceptData.mapping.getName()
+			)
 		) {
-			variables.debuggerService.timerEnd(
-				request.cbdebugger[ arguments.interceptData.mapping.getName() ]
-			);
+			variables.timerService.end( request.cbdebugger[ arguments.interceptData.mapping.getName() ] );
 		}
 	}
 
@@ -237,7 +242,10 @@ component extends="coldbox.system.Interceptor" {
 
 		// relocate to correct panel
 		if ( event.getValue( "debugPanel", "" ) eq "" ) {
-			relocate( URL = "#listLast( cgi.script_name, "/" )#", addtoken = false );
+			relocate(
+				URL      = "#listLast( cgi.script_name, "/" )#",
+				addtoken = false
+			);
 		} else {
 			relocate(
 				URL      = "#listLast( cgi.script_name, "/" )#?debugpanel=#event.getValue( "debugPanel", "" )#",

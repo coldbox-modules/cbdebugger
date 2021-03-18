@@ -26,7 +26,7 @@
 			//Error/Exception Handling
 			exceptionHandler		= "",
 			onInvalidEvent			= "",
-			customErrorTemplate 	= "/coldbox/system/includes/BugReport.cfm",
+			customErrorTemplate 	= "/coldbox/system/exceptions/Whoops.cfm",
 
 			//Application Aspects
 			handlerCaching 			= false,
@@ -69,27 +69,28 @@
 		};
 
 		//Debugger Settings
-		debugger = {
-			// Debugger
-			debugMode = true,
-			debugPassword = "",
-			enableDumpVar = false,
-			persistentRequestProfilers = true,
-			maxPersistentRequestProfilers = 10,
-			maxRCPanelQueryRows = 50,
-			showRCSnapshots = true,
-			//Panels
-			showTracerPanel = true,
-			expandedTracerPanel = false,
-			showInfoPanel = true,
-			expandedInfoPanel = true,
-			showCachePanel = true,
-			expandedCachePanel = false,
-			showRCPanel = true,
-			expandedRCPanel = false,
-			showModulesPanel = true,
-			expandedModulesPanel = false,
-			wireboxCreationProfiler=true
+		moduleSettings = {
+			cbdebugger = {
+				// Debugger
+				debugMode = true,
+				debugPassword = "",
+				persistentRequestProfilers = true,
+				maxPersistentRequestProfilers = 10,
+				maxRCPanelQueryRows = 50,
+				showRCSnapshots = true,
+				//Panels
+				showTracerPanel = true,
+				expandedTracerPanel = false,
+				showInfoPanel = true,
+				expandedInfoPanel = true,
+				showCachePanel = true,
+				expandedCachePanel = false,
+				showRCPanel = true,
+				expandedRCPanel = false,
+				showModulesPanel = true,
+				expandedModulesPanel = false,
+				wireboxCreationProfiler=true
+			}
 		};
 
 	}

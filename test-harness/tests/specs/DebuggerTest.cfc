@@ -22,19 +22,29 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/root" {
 		describe( "Debugger Module", function(){
 			beforeEach( function( currentSpec ){
 				setup();
+				debuggerService = getWireBox().getInstance( "DebuggerService@cbdebugger" );
+				timer           = getWireBox().getInstance( "Timer@cbdebugger" );
 			} );
 
 			it( "should register components", function(){
-				var obj = getWireBox().getInstance( "Timer@cbdebugger" );
-				expect( obj ).toBeComponent();
-
-				var obj = getWireBox().getInstance( "DebuggerService@cbdebugger" );
-				expect( obj ).toBeComponent();
+				expect( timer ).toBeComponent();
+				expect( debuggerService ).toBeComponent();
 			} );
 
-			it( "should run integration", function(){
-				var event = execute( event = "main.index", renderResults = true );
-				// expect( event.getValue( "cbox_rendered_content" ) ).toMatch( "ColdBox Debugging Information" );
+			it( "should run integration and time it", function(){
+				timer.timeIt( "integrationtest", function(){
+					var event = execute(
+						event         = "main.index",
+						renderResults = true
+					);
+					expect( timer.getTimers() ).notToBeEmpty();
+					expect( debuggerService.getProfilers() ).notToBeEmpty();
+					expect( debuggerService.getTracers() ).notToBeEmpty();
+				} );
+
+				debug( timer.getTimers() );
+				debug( debuggerService.getProfilers() );
+				debug( debuggerService.getTracers() );
 			} );
 		} );
 	}

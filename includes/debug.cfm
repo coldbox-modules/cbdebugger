@@ -256,25 +256,6 @@ Description :
 	</cfif>
 
 	<!--- **************************************************************--->
-	<!--- DUMP VAR --->
-	<!--- **************************************************************--->
-	<cfif controller.getSetting( "debugger"). EnableDumpVar>
-		<cfif structKeyExists(rc,"dumpvar" )>
-		<!--- Dump Var --->
-		<div class="fw_titles" onClick="fw_toggle('fw_dumpvar')">&nbsp;Dumpvar</div>
-		<div class="fw_debugContent" id="fw_dumpvar">
-			<cfloop list="#rc.dumpvar#" index="i">
-				<cfif isDefined( "#i #" )>
-					<cfdump var="#evaluate(i)#" label="#i#" expand="false">
-				<cfelseif event.valueExists(i )>
-					<cfdump var="#event.getValue(i)#" label="#i#" expand="false">
-				</cfif>
-			</cfloop>
-		</div>
-		</cfif>
-	</cfif>
-
-	<!--- **************************************************************--->
 	<!--- ColdBox Modules --->
 	<!--- **************************************************************--->
 	<cfif variables.debuggerConfig.showModulesPanel>
