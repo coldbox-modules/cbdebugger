@@ -1,16 +1,3 @@
-<cfsetting enablecfoutputonly="true">
-<!-----------------------------------------------------------------------
-********************************************************************************
-Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-www.coldbox.org | www.luismajano.com | www.ortussolutions.com
-********************************************************************************
-
-Template :  debug.cfm
-Author 	 :	Luis Majano
-Date     :	September 25, 2005
-Description :
-	Debugging template for the application
------------------------------------------------------------------------>
 <cfscript>
 	local.isQuickInstalled = event.getController().getModuleService().isModuleRegistered( "quick" );
 	local.isQBInstalled = event.getController().getModuleService().isModuleRegistered( "qb" );
@@ -24,7 +11,7 @@ Description :
 	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
 		&nbsp;<cfif local.isQuickInstalled>Quick &##47; </cfif>qb
 	</div>
-	<div class="fw_debugContent<cfif variables.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
+	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
 		<div id="qbQueries">
 			<cfif NOT local.isQBInstalled>
 				qb is not installed or registered.
@@ -143,4 +130,3 @@ Description :
 		</cfif>
 	</div>
 </cfoutput>
-<cfsetting enablecfoutputonly="false">

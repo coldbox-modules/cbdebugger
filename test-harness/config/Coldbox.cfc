@@ -79,7 +79,7 @@
 				includedInterceptions         : [ "preProcess" ],
 				// Panels
 				showTracerPanel               : true,
-				expandedTracerPanel           : false,
+				expandedTracerPanel           : true,
 				showInfoPanel                 : true,
 				expandedInfoPanel             : true,
 				showCachePanel                : true,

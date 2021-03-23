@@ -17,14 +17,12 @@ component {
 
 		// Source Excludes Not Added to final binary
 		variables.excludes = [
-			".gitignore",
-			".travis.yml",
-			".artifacts",
-			".tmp",
+			"\..*",
 			"build",
+			"node-modules",
 			"test-harness",
-			".DS_Store",
-			".git"
+			"resources",
+			".DS_Store"
 		];
 
 		// Cleanup + Init Build Directories
@@ -285,7 +283,7 @@ component {
 			function( path ){
 				var isExcluded = false;
 				variables.excludes.each( function( item ){
-					if ( path.replaceNoCase( variables.cwd, "", "all" ).findNoCase( item ) ) {
+					if ( path.replaceNoCase( variables.cwd, "", "all" ).reFindNoCase( item ) ) {
 						isExcluded = true;
 					}
 				} );

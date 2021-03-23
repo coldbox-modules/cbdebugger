@@ -1,8 +1,8 @@
 <cfoutput>
 <div class="fw_titles"  onClick="fw_toggle('fw_modules')" >
-&nbsp;ColdBox Modules
+	&nbsp;ColdBox Modules
 </div>
-<div class="fw_debugContent<cfif variables.debuggerConfig.expandedModulesPanel>View</cfif>" id="fw_modules">
+<div class="fw_debugContent<cfif args.debuggerConfig.expandedModulesPanel>View</cfif>" id="fw_modules">
 
 	<div>
 		<!--- Module Commands --->
@@ -10,15 +10,19 @@
 			   name="cboxbutton_reloadModules"
 			   style="font-size:10px"
 			   title="Reload All Modules"
-			   onClick="location.href='#URLBase#?cbox_command=reloadModules'" />
+			   onClick="location.href='#args.URLBase#?cbox_command=reloadModules'" />
 		<input type="button" value="Unload All"
 			   name="variables."
 			   style="font-size:10px"
 			   title="Unload all modules from the application"
-			   onClick="location.href='#URLBase#?cbox_command=unloadModules'" />
+			   onClick="location.href='#args.URLBase#?cbox_command=unloadModules'" />
 
 	</div>
-	<p>Below you can see the loaded application modules.</p>
+
+	<p>
+		Below you can see the loaded application modules.
+	</p>
+
 	<div>
 		<!--- Module Charts --->
 		<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables">
@@ -31,46 +35,52 @@
 				<th width="75">Load Time</th>
 				<th align="center" width="130" >CMDS</th>
 			</tr>
-			<cfloop from="1" to="#arrayLen(loadedModules)#" index="loc.x">
-			<cfset loc.mod = moduleSettings[loadedModules[loc.x]]>
+			<cfloop array="#args.loadedModules#" index="thisModule">
+				<cfset thisModuleConfig = getModuleConfig( thisModule )>
 			<tr>
-				<td title=" Invocation Path: #loc.mod.invocationPath#">
-					<strong>#loc.mod.Title#</strong><br />
-					#loc.mod.description# <br /><br />
-					<cfif len(moduleSettings[loadedModules[loc.x]].entryPoint)>
-					<a href="#event.buildLink(loc.mod.entryPoint)#" title="#event.buildLink(loc.mod.entryPoint)#">Open Module Entry Point</a>
+				<td title=" Invocation Path: #thisModuleConfig.invocationPath#">
+					<strong>#thisModuleConfig.title#</strong>
+					<br />
+					#thisModuleConfig.description#
+					<br /><br />
+					<cfif len( thisModuleConfig.entryPoint )>
+						<a
+							href="#event.buildLink( thisModuleConfig.entryPoint )#"
+							title="#event.buildLink( thisModuleConfig.entryPoint )#">
+							Open
+						</a>
 					<cfelse>
 						<em>No Entry Point Defined</em>
 					</cfif>
 				</td>
 				<td align="center">
-					<a href="#loc.mod.webURL#" title="#loc.mod.webURL#">#loc.mod.Author#</a>
+					<a href="#thisModuleConfig.webURL#" title="#thisModuleConfig.webURL#">#thisModuleConfig.Author#</a>
 				</td>
 				<td align="center">
-					#loc.mod.Version#
+					#thisModuleConfig.Version#
 				</td>
 				<td align="center">
-					#yesNoFormat(loc.mod.viewParentLookup)#
+					#yesNoFormat( thisModuleConfig.viewParentLookup )#
 				</td>
 				<td align="center">
-					#yesNoFormat(loc.mod.layoutParentLookup)#
+					#yesNoFormat( thisModuleConfig.layoutParentLookup )#
 				</td>
 				<td align="center">
-					#dateFormat(loc.mod.loadTime,"mmm-dd")# <br />
-					#timeFormat(loc.mod.loadTime,"hh:mm:ss tt")#
+					#dateFormat( thisModuleConfig.loadTime, "mmm-dd" )# <br />
+					#timeFormat( thisModuleConfig.loadTime, "hh:mm:ss tt" )#
 				</td>
 				<td align="center">
 				<input type="button" value="Unload"
 					   name="cboxbutton_unloadModule"
 				  	   style="font-size:10px"
 					   title="Unloads This Module Only!"
-				   	   onClick="location.href='#URLBase#?cbox_command=unloadModule&module=#loadedModules[loc.x]#'">
+				   	   onClick="location.href='#args.URLBase#?cbox_command=unloadModule&module=#thisModule#'">
 				&nbsp;
 				<input type="button" value="Reload"
 					   name="cboxbutton_unloadModule"
 				  	   style="font-size:10px"
 					   title="Reloads This Module Only!"
-				   	   onClick="location.href='#URLBase#?cbox_command=reloadModule&module=#loadedModules[loc.x]#'">
+				   	   onClick="location.href='#args.URLBase#?cbox_command=reloadModule&module=#thisModule#'">
 				</td>
 			</tr>
 			</cfloop>

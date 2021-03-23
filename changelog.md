@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Complete migration to elixir for assets
+* Complete migration to runnable events to make things easier for rendering and debugging
 * New interceptor profiling via AOP `announce` interceptions
 * New object profiling via metadata AOP aspects via new settings: `profileObjects`, `traceObjectResults`
 * New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps

@@ -1,6 +1,4 @@
 <cfoutput>
-<cfset debugTimers = attributes.timers>
-<cfset debuggerConfig = attributes.debuggerConfig>
 <h2>Executions</h2>
 <table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
 	<tr>
@@ -10,8 +8,8 @@
 	<th >Framework Method</th>
 	</tr>
 	<!--- Show Timers if any are found --->
-	<cfif arrayLen( debugTimers )>
-		<cfloop array="#debugTimers#" index="thisTimer">
+	<cfif arrayLen( args.timers )>
+		<cfloop array="#args.timers#" index="thisTimer">
 			<cfif findnocase( "render", thisTimer.method )>
 			<cfset color = "fw_greenText">
 			<cfelseif findnocase( "interception", thisTimer.method )>
@@ -31,7 +29,7 @@
 				#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
 			</td>
 			<td align="center" >
-				<cfif thisTimer.executionTime gt variables.debuggerConfig.slowExecutionThreshold>
+				<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
 					<span class="fw_redText">#thisTimer.executionTime# ms</span>
 				<cfelse>
 					#thisTimer.executionTime# ms
@@ -49,9 +47,9 @@
 	</cfif>
 
 	<cfif structKeyExists( request, "fwExecTime" )>
-	<tr>
-		<th colspan="5">Total ColdBox Request Execution Time: #request.fwExecTime# ms</th>
-	</tr>
+		<tr>
+			<th colspan="5">Total ColdBox Request Execution Time: #numberFormat( request.fwExecTime )# ms</th>
+		</tr>
 	</cfif>
 </table>
 </cfoutput>

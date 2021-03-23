@@ -18,8 +18,7 @@ branches:
   - development
   - master
 
-dist: trusty
-
+dist: focal
 sudo: required
 
 before_install:
@@ -30,7 +29,7 @@ before_install:
 
 install:
   # Install Commandbox
-  - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  - sudo apt-get update && sudo apt-get --assume-yes install jq commandbox nodejs
   # Install CommandBox Supporting Librarires
   - box install commandbox-cfconfig,commandbox-dotenv,commandbox-docbox
   # If using auto-publish, you will need to provide your API token with this line:
@@ -43,6 +42,12 @@ script:
   - echo "Starting build for ${MODULE_ID} v${TARGET_VERSION}"
   # Replace version so builder can issue it
   - box package set version=@build.version@+@build.number@
+  # Build the Debugger UI
+  - node -v
+  - npm i npm@latest -g
+  - npm install
+  - npm run prod
+  - rm -Rf node_modules
   # Startup the harness
   - cd test-harness
   # run our dependency install to ensure the workbench is in place

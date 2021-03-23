@@ -1,0 +1,6 @@
+<cfoutput>
+<cfmodule
+	template     = "/coldbox/system/cache/report/monitor.cfm"
+	cacheFactory = #variables.controller.getCacheBox()#
+>
+</cfoutput>

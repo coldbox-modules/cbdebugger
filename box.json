@@ -26,13 +26,19 @@
     ],
     "ignore":[
         "**/.*",
-        "tests",
+		"package-lock.json",
+		"package.json",
+		"webpack.config.js",
+		"build/**",
+		"node_modules/**",
+		"resources/**",
+        "test-harness/**",
         "*/.md"
     ],
     "scripts":{
         "release":"recipe build/release.boxr",
-        "format":"cfformat run includes/,interceptors/,models/,test-harness/tests/,*.cfc --overwrite",
-        "format:watch":"cfformat watch includes/,interceptors/,models/,test-harness/tests/,*.cfc ./.cfformat.json",
-        "format:check":"cfformat check includes/,interceptors/,models/,test-harness/tests/,*.cfc"
+        "format":"cfformat run handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc --overwrite",
+        "format:watch":"cfformat watch handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc ./.cfformat.json",
+        "format:check":"cfformat check handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc"
     }
 }

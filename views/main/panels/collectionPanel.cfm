@@ -1,16 +1,3 @@
-<cfsetting enablecfoutputonly="true">
-<!-----------------------------------------------------------------------
-********************************************************************************
-Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-www.coldbox.org | www.luismajano.com | www.ortussolutions.com
-********************************************************************************
-
-Template :  debug.cfm
-Author 	 :	Luis Majano
-Date     :	September 25, 2005
-Description :
-	Debugging template for the application
------------------------------------------------------------------------>
 <cfoutput>
 <!--- Public Collection --->
 <table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables" width="100%">
@@ -34,11 +21,11 @@ Description :
 				</cfif>
 			<cfelse>
 				<!--- Max Display For Queries  --->
-				<cfif isQuery(varVal) and (varVal.recordCount gt variables.debuggerConfig.maxRCPanelQueryRows )>
-					<cfquery name="varVal" dbType="query" maxrows="#variables.debuggerConfig.maxRCPanelQueryRows#">
+				<cfif isQuery(varVal) and (varVal.recordCount gt args.debuggerConfig.maxRCPanelQueryRows )>
+					<cfquery name="varVal" dbType="query" maxrows="#args.debuggerConfig.maxRCPanelQueryRows#">
 						select * from varVal
 					</cfquery>
-					<cfdump var="#varVal#" label="Query Truncated to #variables.debuggerConfig.maxRCPanelQueryRows# records" expand="false">
+					<cfdump var="#varVal#" label="Query Truncated to #args.debuggerConfig.maxRCPanelQueryRows# records" expand="false">
 				<cfelseif isObject(varVal)>
 					<cfdump var="#varVal#" expand="false" top="2">
 				<cfelse>
@@ -54,4 +41,3 @@ Description :
 	</cfloop>
 </table>
 </cfoutput>
-<cfsetting enablecfoutputonly="false">

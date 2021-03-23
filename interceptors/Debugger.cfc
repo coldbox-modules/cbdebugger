@@ -22,7 +22,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to request captures
 	 */
 	function onRequestCapture( event, interceptData, rc, prc ){
-		// init tracker
+		// init tracker variables for the request
 		request.cbdebugger = {};
 		request.fwExecTime = getTickCount();
 
@@ -40,30 +40,23 @@ component extends="coldbox.system.Interceptor" {
 			}
 		}
 
-		// verify in debug mode else skip command executions
+		// Are we in command execute or panel rendering mode?
 		if ( variables.debuggerService.getDebugMode() ) {
 			// call debug commands
 			debuggerCommands( arguments.event );
 			// panel rendering
-			var debugPanel = event.getValue( "debugPanel", "" );
-
-			switch ( debugPanel ) {
+			switch ( event.getValue( "debugPanel", "" ) ) {
 				case "profiler": {
-					writeOutput( variables.debuggerService.renderProfiler() );
+					event.overrideEvent( "cbdebugger:main.renderProfiler" );
 					break;
 				}
 				case "cache":
 				case "cacheReport":
 				case "cacheContentReport":
 				case "cacheViewer": {
-					writeOutput( variables.debuggerService.renderCachePanel() );
+					event.overrideEvent( "cbdebugger:main.renderCacheMonitor" );
 					break;
 				}
-			}
-			// If we are rendering a debug panel, let's renderit and abort the execution of the request.
-			if ( len( debugPanel ) ) {
-				include "/cbdebugger/includes/debugoutput.cfm";
-				abort;
 			}
 		}
 	}
@@ -85,8 +78,11 @@ component extends="coldbox.system.Interceptor" {
 		prc,
 		buffer
 	){
-		// Verify if we have a command, if we do just exit
-		if ( len( arguments.event.getTrimValue( "cbox_command", "" ) ) ) {
+		// If we are in a command or panel rendering, exit
+		if (
+			arguments.event.getTrimValue( "cbox_command", "" ).len() ||
+			arguments.event.getTrimValue( "debugPanel", "" ).len()
+		) {
 			return;
 		}
 
@@ -97,7 +93,7 @@ component extends="coldbox.system.Interceptor" {
 		// record all profilers
 		variables.debuggerService.recordProfiler();
 
-		// Determine if we can render the debugger
+		// Determine if we can render the debugger at the bottom of the request
 		if (
 			// Is the debug mode turned on
 			variables.debuggerService.getDebugMode() AND
@@ -114,12 +110,14 @@ component extends="coldbox.system.Interceptor" {
 			)
 		) {
 			// render out the debugger to the buffer output
-			arguments.buffer.append( variables.debuggerService.renderDebugLog() );
+			arguments.buffer.append( runEvent( "cbdebugger:main.renderDebugger" ) );
 		}
 	}
 
 	public function preEvent( event, interceptData, rc, prc ){
-		request.cbdebugger.eventhash = variables.timerService.start( "[runEvent] #arguments.event.getCurrentEvent()#" );
+		request.cbdebugger.eventhash = variables.timerService.start(
+			"[runEvent] #arguments.interceptData.processedEvent#( #arguments.interceptData.eventArguments.toString()# )"
+		);
 	}
 
 	public function postEvent( event, interceptData, rc, prc ){
@@ -128,7 +126,7 @@ component extends="coldbox.system.Interceptor" {
 
 	public function preLayout( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = variables.timerService.start(
-			"[preLayout to postLayout] for #arguments.event.getCurrentEvent()#"
+			"[preLayout to postLayout rendering] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
