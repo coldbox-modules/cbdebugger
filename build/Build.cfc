@@ -17,12 +17,14 @@ component {
 
 		// Source Excludes Not Added to final binary
 		variables.excludes = [
-			"\..*",
 			"build",
 			"node-modules",
 			"test-harness",
 			"resources",
-			".DS_Store"
+			"\.DS_Store",
+			"(package|package-lock).json",
+			"webpack.config.js",
+			"^\..*"
 		];
 
 		// Cleanup + Init Build Directories
@@ -64,7 +66,7 @@ component {
 		fileSystemUtil.createMapping( arguments.projectName, variables.cwd );
 
 		// Run the tests
-		runTests();
+		//runTests();
 
 		// Build the source
 		buildSource( argumentCollection = arguments );
