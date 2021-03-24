@@ -1,4 +1,7 @@
-$( document ).ready( function(){
+import cb$ from "jquery";
+
+cb$( document ).ready( function(){
+	console.log( "CBDebugger Loaded" );
 } );
 
 window.fw_toggle = function( divid ){
@@ -8,7 +11,7 @@ window.fw_toggle = function( divid ){
 	else {
 		document.getElementById( divid ).className = "fw_debugContent";
 	}
-}
+};
 
 window.fw_poprc = function( divid ){
 	var _div = document.getElementById( divid );
@@ -16,7 +19,7 @@ window.fw_poprc = function( divid ){
 		document.getElementById( divid ).className = "showRC";
 	else
 		document.getElementById( divid ).className = "hideRC";
-}
+};
 window.fw_openwindow = function( mypage,myname,w,h,features ) {
 	if ( screen.width ){
 		var winl = ( screen.width-w )/2;
@@ -35,7 +38,7 @@ window.fw_openwindow = function( mypage,myname,w,h,features ) {
 	settings += features;
 	win = window.open( mypage,myname,settings );
 	win.window.focus();
-}
+};
 window.fw_reinitframework = function( usingPassword ){
 	var reinitForm = document.getElementById( "fw_reinitcoldbox" );
 	if ( usingPassword ){
@@ -46,10 +49,10 @@ window.fw_reinitframework = function( usingPassword ){
 	} else {
 		reinitForm.submit();
 	}
-}
+};
 window.fw_pollmonitor = function( panel, frequency, urlBase ){
 	window.location=urlBase + "?debugpanel="+panel+"&frequency="+frequency;
-}
+};
 window.fw_cboxCommand = function( commandURL, verb ){
 	if ( verb == null ){
 		verb = "GET";
@@ -58,7 +61,7 @@ window.fw_cboxCommand = function( commandURL, verb ){
 	request.open( verb, commandURL, false );
 	request.send();
 	return request.responseText;
-}
+};
 window.fw_toggleDiv = function( targetDiv, displayStyle ){
 	// toggle a div with styles, man I miss jquery
 	if ( displayStyle == null ){ displayStyle = "block"; }
@@ -69,14 +72,14 @@ window.fw_toggleDiv = function( targetDiv, displayStyle ){
 	else {
 		target.style.display = displayStyle;
 	}
-}
+};
 
 window.fw_showGroupedQueries = function() {
 	fw_toggleDiv( "timelineQueries", "none" );
 	fw_toggleDiv( "groupedQueries", "block" );
-}
+};
 
 window.fw_showTimelineQueries = function() {
 	fw_toggleDiv( "groupedQueries", "none" );
 	fw_toggleDiv( "timelineQueries", "block" );
-}
+};
