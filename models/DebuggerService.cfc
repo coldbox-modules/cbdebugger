@@ -61,9 +61,12 @@ component
 		variables.maxTracers     = variables.debuggerConfig.maxPersistentRequestTracers;
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
+		variables.Thread         = createObject( "java", "java.lang.Thread" );
 		// run modes
 		variables.debugMode      = variables.debuggerConfig.debugMode;
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
+		// uuid helper
+		variables.uuid           = createObject( "java", "java.util.UUID" );
 
 		// Initialize secret key
 		rotateSecretKey();
@@ -151,15 +154,26 @@ component
 
 	/**
 	 * Record a profiler and it's timers internally
+	 *
+	 * @event The request context that requested the record
 	 */
-	DebuggerService function recordProfiler(){
-		return pushProfiler( variables.timerService.getTimers() );
+	DebuggerService function recordProfiler( required event ){
+		return pushProfiler(
+			variables.timerService.getTimers(),
+			arguments.event
+		);
 	}
 
 	/**
 	 * Push a profiler record (timers) into the tracking facilities
+	 *
+	 * @profilerRecord The array of timers to store
+	 * @event The request contex that requested the record
 	 */
-	DebuggerService function pushProfiler( required profilerRecord ){
+	DebuggerService function pushProfiler(
+		required profilerRecord,
+		required event
+	){
 		// are persistent profilers activated
 		if ( NOT variables.debuggerConfig.persistentRequestProfiler ) {
 			return this;
@@ -174,12 +188,23 @@ component
 		arrayAppend(
 			variables.profilers,
 			{
-				"dateTime"    : now(),
-				"ip"          : getLocalhostIP(),
-				"timers"      : arguments.profilerRecord,
-				"requestData" : getHTTPRequestData(),
-				"statusCode"  : getPageContextResponse().getStatus(),
-				"contentType" : getPageContextResponse().getContentType()
+				"id"               : variables.uuid.randomUUID(),
+				"timestamp"        : now(),
+				"ip"               : getRealIP(),
+				"inetHost"         : getInetHost(),
+				"threadName"       : getThreadName(),
+				"executionTime"    : request.fwExecTime,
+				"timers"           : arguments.profilerRecord,
+				"requestData"      : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
+				"statusCode"       : getPageContextResponse().getStatus(),
+				"contentType"      : getPageContextResponse().getContentType(),
+				"currentRoutedUrl" : arguments.event.getCurrentRoutedUrl(),
+				"currentRoute"     : arguments.event.getCurrentRoute(),
+				"currentRouteName" : arguments.event.getCurrentRouteName(),
+				"currentEvent"     : arguments.event.getCurrentEvent(),
+				"currentView"      : arguments.event.getCurrentView(),
+				"currentLayout"    : arguments.event.getCurrentLayout(),
+				"fullUrl"          : arguments.event.getFullUrl()
 			}
 		);
 
@@ -246,6 +271,23 @@ component
 	}
 
 	/**
+	 * Get Real IP, by looking at clustered, proxy headers and locally.
+	 */
+	function getRealIP(){
+		var headers = getHTTPRequestData().headers;
+
+		// Very balanced headers
+		if ( structKeyExists( headers, "x-cluster-client-ip" ) ) {
+			return headers[ "x-cluster-client-ip" ];
+		}
+		if ( structKeyExists( headers, "X-Forwarded-For" ) ) {
+			return headers[ "X-Forwarded-For" ];
+		}
+
+		return len( CGI.REMOTE_ADDR ) ? trim( listFirst( CGI.REMOTE_ADDR ) ) : "127.0.0.1";
+	}
+
+	/**
 	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
 	 */
 	function getPageContextResponse(){
@@ -256,6 +298,20 @@ component
 		} catch ( any e ) {
 			return response.getResponse();
 		}
+	}
+
+	/**
+	 * Get the current thread java object
+	 */
+	function getCurrentThread(){
+		return variables.Thread.currentThread();
+	}
+
+	/**
+	 * Get the current thread name
+	 */
+	function getThreadName(){
+		return getCurrentThread().getName();
 	}
 
 }

@@ -84,10 +84,15 @@
 		margin-bottom: 5px;
 	}
 }
-.fw_debugContent{
+.fw_debugContent, .fw_hide{
     display:none;
 }
-
+.fw_show{
+	display: block;
+}
+.fw_showRow{
+	display: table-row;
+}
 .fw_debugTitleCell{
     font-weight:bold;
     float:left;

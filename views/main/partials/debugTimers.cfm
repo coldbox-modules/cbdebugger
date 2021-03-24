@@ -11,15 +11,15 @@
 	<cfif arrayLen( args.timers )>
 		<cfloop array="#args.timers#" index="thisTimer">
 			<cfif findnocase( "render", thisTimer.method )>
-			<cfset color = "fw_greenText">
+				<cfset color = "fw_greenText">
 			<cfelseif findnocase( "interception", thisTimer.method )>
-			<cfset color = "fw_blackText">
+				<cfset color = "fw_blackText">
 			<cfelseif findnocase( "runEvent",  thisTimer.method )>
-			<cfset color = "fw_blueText">
+				<cfset color = "fw_blueText">
 			<cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
-			<cfset color = "fw_purpleText">
+				<cfset color = "fw_purpleText">
 			<cfelse>
-			<cfset color = "fw_greenText">
+				<cfset color = "fw_greenText">
 			</cfif>
 			<tr style="border-bottom:1px solid ##eaeaea">
 			<td align="center" >
@@ -30,9 +30,11 @@
 			</td>
 			<td align="center" >
 				<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-					<span class="fw_redText">#thisTimer.executionTime# ms</span>
+					<span class="fw_redText">
+						#numberFormat( thisTimer.executionTime )#ms
+					</span>
 				<cfelse>
-					#thisTimer.executionTime# ms
+					#numberFormat( thisTimer.executionTime )#ms
 				</cfif>
 			</td>
 			<td>
@@ -46,10 +48,14 @@
 	</tr>
 	</cfif>
 
-	<cfif structKeyExists( request, "fwExecTime" )>
-		<tr>
-			<th colspan="5">Total ColdBox Request Execution Time: #numberFormat( request.fwExecTime )# ms</th>
-		</tr>
-	</cfif>
+	<cfscript>
+		param name="args.executionTime" default="0";
+		if( isNull( args.executionTime ) && structKeyExists( request, "fwExecTime" ) ){
+			args.executionTime = request.fwExecTime;
+		}
+	</cfscript>
+	<tr>
+		<th colspan="5">Total ColdBox Request Execution Time: #numberFormat( args.executionTime )# ms</th>
+	</tr>
 </table>
 </cfoutput>

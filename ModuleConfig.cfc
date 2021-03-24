@@ -43,6 +43,8 @@ component {
 			persistentRequestProfiler     : true,
 			// How many tracking profilers to keep in stack: Default is monitor the last 20 requests
 			maxPersistentRequestProfilers : 20,
+			// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data
+			profileHTTPBody               : false,
 			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 			wireboxCreationProfiler       : false,
 			// How many rows to dump for object collections if the RC panel is activated

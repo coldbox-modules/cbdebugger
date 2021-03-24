@@ -63,6 +63,7 @@ component extends="coldbox.system.EventHandler" {
 				inetHost         : variables.debuggerService.getInetHost(),
 				loadedModules    : variables.controller.getModuleService().getLoadedModules(),
 				moduleSettings   : getSetting( "modules" ),
+				debuggerService  : variables.debuggerService,
 				debuggerConfig   : getModuleSettings( "cbdebugger" ),
 				httpResponse     : variables.debuggerService.getPageContextResponse(),
 				debugTimers      : variables.timerService.getSortedTimers(),

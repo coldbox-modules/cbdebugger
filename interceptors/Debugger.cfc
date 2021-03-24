@@ -90,7 +90,7 @@ component extends="coldbox.system.Interceptor" {
 		// End fw execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// record all profilers
-		variables.debuggerService.recordProfiler();
+		variables.debuggerService.recordProfiler( event );
 
 		// Determine if we can render the debugger at the bottom of the request
 		if (

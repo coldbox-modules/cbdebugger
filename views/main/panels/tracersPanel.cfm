@@ -17,7 +17,7 @@
 		}
 	}
 </cfscript>
-<cfif args.debuggerConfig.showTracerPanel and arrayLen( args.tracers )>
+<cfif args.debuggerConfig.showTracerPanel>
 	<cfoutput>
 		<!--- Title --->
 		<div class="fw_titles" onClick="fw_toggle( 'fw_tracer' )">
@@ -91,11 +91,15 @@
 
 				</div>
 			</cfloop>
+
+			<cfif !arrayLen( args.tracers )>
+				<em>No tracers found</em>
+			</cfif>
 		</div>
 	</cfoutput>
 
 	<!--- Cleanup of tracers --->
 	<cfif args.debuggerConfig.clearTracersUponRendering>
-		<cfset getCBDebugger().resetTracers()>
+		<cfset args.debuggerService.resetTracers()>
 	</cfif>
 </cfif>
