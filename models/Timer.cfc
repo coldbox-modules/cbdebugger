@@ -1,7 +1,6 @@
 ﻿/**
- * ContentBox - A Modular Content Platform
- * Copyright since 2012 by Ortus Solutions, Corp
- * www.ortussolutions.com/products/contentbox
+ * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
+ * www.ortussolutions.com
  * ---
  * This component tracks execution times in our internal request facilities.
  */
