@@ -52,4 +52,11 @@
 		return variables.wirebox.getInstance( "Timer@cbdebugger" ).timeIt( arguments.label );
 	}
 
+	/**
+	 * Shortcut to get a reference to the ColdBox Debugger Service
+	 */
+	function getCBDebugger(){
+		return variables.wirebox.getInstance( "debuggerService@cbdebugger" );
+	}
+
 </cfscript>

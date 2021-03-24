@@ -18,6 +18,9 @@ component extends="coldbox.system.EventHandler" {
 		action,
 		eventArguments
 	){
+		// Incoming Refresh frequency
+		event.paramValue( "frequency", 0 );
+		// Don't show cf debug
 		cfsetting( showdebugoutput = "false" );
 	}
 
@@ -54,16 +57,18 @@ component extends="coldbox.system.EventHandler" {
 			view      : "main/debugger",
 			viewModule: "cbdebugger",
 			args      : {
-				debugStartTime : getTickCount(),
-				urlBase        : event.buildLink( "" ),
-				inetHost       : variables.debuggerService.getInetHost(),
-				loadedModules  : variables.controller.getModuleService().getLoadedModules(),
-				moduleSettings : getSetting( "modules" ),
-				debuggerConfig : getModuleSettings( "cbdebugger" ),
-				httpResponse   : variables.debuggerService.getPageContextResponse(),
-				debugTimers    : variables.timerService.getSortedTimers(),
-				tracers        : variables.debuggerService.getTracers(),
-				manifestRoot   : event.getModuleRoot( "cbDebugger" ) & "/includes"
+				debugStartTime   : getTickCount(),
+				refreshFrequency : rc.frequency,
+				urlBase          : event.buildLink( "" ),
+				inetHost         : variables.debuggerService.getInetHost(),
+				loadedModules    : variables.controller.getModuleService().getLoadedModules(),
+				moduleSettings   : getSetting( "modules" ),
+				debuggerConfig   : getModuleSettings( "cbdebugger" ),
+				httpResponse     : variables.debuggerService.getPageContextResponse(),
+				debugTimers      : variables.timerService.getSortedTimers(),
+				tracers          : variables.debuggerService.getTracers(),
+				profilers        : variables.debuggerService.getProfilers(),
+				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);
 	}
@@ -77,9 +82,6 @@ component extends="coldbox.system.EventHandler" {
 			return "";
 		}
 
-		// Incoming Refresh frequency
-		event.paramValue( "frequency", 0 );
-
 		// Return the debugger layout+view
 		return renderLayout(
 			layout    : "Monitor",
@@ -87,7 +89,8 @@ component extends="coldbox.system.EventHandler" {
 			view      : "main/profilers",
 			viewModule: "cbdebugger",
 			args      : {
-				pageTitle        : "ColdBox Execution Profiler Monitor",
+				currentPanel     : "profiler",
+				pageTitle        : "ColdBox Request Tracker",
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
 				profilers        : variables.debuggerService.getProfilers(),

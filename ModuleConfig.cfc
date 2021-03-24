@@ -41,8 +41,8 @@ component {
 			debugPassword                 : "cb:null",
 			// Persist request tracking profilers
 			persistentRequestProfiler     : true,
-			// How many tracking profilers to keep in stack: Default is monitor the last 10 requests
-			maxPersistentRequestProfilers : 10,
+			// How many tracking profilers to keep in stack: Default is monitor the last 20 requests
+			maxPersistentRequestProfilers : 20,
 			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 			wireboxCreationProfiler       : false,
 			// How many rows to dump for object collections if the RC panel is activated
@@ -57,6 +57,10 @@ component {
 			profileInterceptions          : true,
 			// By default all interception events are excluded, you must include what you want to profile
 			includedInterceptions         : [],
+			// How many tracer messages to keep in stack before we start rotating: Default is a stack of 100 messages
+			maxPersistentRequestTracers   : 50,
+			// If enabled, the tracers will be cleaned upon rendering
+			clearTracersUponRendering     : true,
 			/**
 			 * PANEL VISIBILITY SETTINGS
 			 */

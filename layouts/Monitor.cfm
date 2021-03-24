@@ -18,8 +18,27 @@
 
 		<!--- Event --->
 		#announce( "beforeDebuggerPanel" )#
+
+		<div>
+			<strong>Monitor Refresh Frequency: </strong>
+			<select
+				id="frequency"
+				style="font-size:10px"
+				onChange="fw_pollmonitor( '#args.currentPanel#', this.value, '#args.URLBase#' )">
+					<option value="0">None</option>
+					<option value="2" <cfif args.refreshFrequency eq 2>selected</cfif>>2 Seconds</option>
+					<option value="3" <cfif args.refreshFrequency eq 3>selected</cfif>>3 Seconds</option>
+					<cfloop from="5" to="30" index="i" step="5">
+						<option value="#i#" <cfif args.refreshFrequency eq i>selected</cfif>>#i# Seconds</option>
+					</cfloop>
+			</select>
+			<hr>
+		</div>
+
 		<!--- Rendering --->
-		#renderView()#
+		<div class="fw_debugPanel">
+			#renderView()#
+		</div>
 		<!--- Event --->
 		#announce( "afterDebuggerPanel" )#
 
@@ -32,7 +51,7 @@
 				name="close"
 				value="Close Monitor"
 				onClick="window.close()"
-				style="font-size:10px">
+			>
 		</div>
 
 		<!--- JS Assets --->

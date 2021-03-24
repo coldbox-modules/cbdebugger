@@ -33,44 +33,14 @@ component extends="coldbox.system.logging.AbstractAppender" {
 	 * Log a message
 	 */
 	function logMessage( required any logEvent ){
-		var loge          = arguments.logEvent;
-		var entry         = "";
-		var traceSeverity = "information";
-		var severityStyle = "";
-		var severity      = severityToString( loge.getseverity() );
-
-		// Severity Styles
-		switch ( severity ) {
-			case "FATAL": {
-				severityStyle = "fw_redText";
-				break;
-			}
-			case "ERROR": {
-				severityStyle = "fw_orangeText";
-				break;
-			}
-			case "WARN": {
-				severityStyle = "fw_greenText";
-				break;
-			}
-			case "INFO": {
-				severityStyle = "fw_blackText";
-				break;
-			}
-			case "DEBUG": {
-				severityStyle = "fw_blueText";
-				break;
-			}
-		}
-
-		if ( hasCustomLayout() ) {
-			entry = getCustomLayout().format( loge );
-		} else {
-			entry = "<span class='#severityStyle#'><b>#severity#</b></span> #timeFormat( loge.getTimeStamp(), "hh:MM:SS.l tt" )# <b>#loge.getCategory()#</b> <br/> #loge.getMessage()#";
-		}
-
 		// send to coldBox debugger
-		variables.debuggerService.pushTracer( entry, loge.getExtraInfo() );
+		variables.debuggerService.pushTracer(
+			message  : arguments.logEvent.getMessage(),
+			severity : severityToString( arguments.logEvent.getseverity() ),
+			category : arguments.logEvent.getCategory(),
+			timestamp: arguments.logEvent.getTimestamp(),
+			extraInfo: arguments.logEvent.getExtraInfo()
+		);
 
 		return this;
 	}
