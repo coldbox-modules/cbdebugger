@@ -203,21 +203,28 @@ component extends="coldbox.system.Interceptor" {
 
 		// Commands
 		switch ( command ) {
-			// Module Commands
+			case "clearTracers": {
+				variables.debuggerService.resetTracers();
+				break;
+			}
+			case "clearProfilers": {
+				variables.debuggerService.resetProfilers();
+				break;
+			}
 			case "reloadModules": {
-				controller.getModuleService().reloadAll();
+				variables.controller.getModuleService().reloadAll();
 				break;
 			}
 			case "unloadModules": {
-				controller.getModuleService().unloadAll();
+				variables.controller.getModuleService().unloadAll();
 				break;
 			}
 			case "reloadModule": {
-				controller.getModuleService().reload( event.getValue( "module", "" ) );
+				variables.controller.getModuleService().reload( event.getValue( "module", "" ) );
 				break;
 			}
 			case "unloadModule": {
-				controller.getModuleService().unload( event.getValue( "module", "" ) );
+				variables.controller.getModuleService().unload( event.getValue( "module", "" ) );
 				break;
 			}
 			// Caching Reporting Commands
@@ -230,14 +237,20 @@ component extends="coldbox.system.Interceptor" {
 			case "cacheBoxReapAll":
 			case "cacheBoxExpireAll":
 			case "gc": {
-				variables.debuggerService.renderCachePanel();
+				// Relay this to the cache monitor
+				var cache = renderView(
+					view         : "main/cacheMonitor",
+					module       : "cbdebugger",
+					prePostExempt: true
+				);
 				break;
 			}
+			// Not a registered command, just ignore
 			default:
 				return;
 		}
 
-		// relocate to correct panel
+		// relocate to correct panel if passed
 		if ( event.getValue( "debugPanel", "" ) eq "" ) {
 			relocate(
 				URL      = "#listLast( cgi.script_name, "/" )#",
