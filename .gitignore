@@ -1,8 +1,11 @@
+# Ide
 .vscode
 
+# build artifacts
 .artifacts/**
 .tmp/**
 
+# Test harness dependencies
 test-harness/.engine/**
 test-harness/coldbox/**
 test-harness/docbox/**
@@ -10,5 +13,6 @@ test-harness/testbox/**
 test-harness/logs/**
 test-harness/modules/**
 
-# log files
-logs/**
+# UI Build Process
+includes/**
+node_modules/**
