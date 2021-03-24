@@ -7,6 +7,12 @@
     width:98%;
     margin: auto;
     clear: both;
+
+	svg {
+		width: 16px;
+		height: 16px;
+		vertical-align: middle;
+	}
 }
 .fw_titles{
     font-size: 10px;
@@ -70,9 +76,13 @@
 }
 .fw_tracerMessage{
     padding:5px 5px 5px 5px;
-    border:1px solid #3366CC;
-    background-color: #ffffff;
+    border-bottom:1px solid #3366CC;
     color: black;
+
+	div {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
 }
 .fw_debugContent{
     display:none;

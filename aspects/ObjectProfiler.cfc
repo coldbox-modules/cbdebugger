@@ -8,7 +8,7 @@
 component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 
 	// DI
-	property name="timerService" inject="Timer@cbdebugger";
+	property name="timerService"    inject="Timer@cbdebugger";
 	property name="debuggerService" inject="debuggerService@cbdebugger";
 
 	/**
@@ -45,7 +45,12 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		if ( !isNull( results ) ) {
 			// trace results
 			if ( variables.traceResults ) {
-				variables.debuggerService.pushTracer( "Object [#arguments.invocation.getTargetName()#.#arguments.invocation.getMethod()#()] results", results );
+				variables.debuggerService.pushTracer(
+					message  : "Object [#arguments.invocation.getTargetName()#.#arguments.invocation.getMethod()#()] results",
+					severity : "debug",
+					category : "cbdebugger.ObjectProfiler",
+					extraInfo: results
+				);
 			}
 			return results;
 		}

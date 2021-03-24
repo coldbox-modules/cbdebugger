@@ -47,20 +47,20 @@ component
 	){
 		// setup controller
 		variables.controller     = arguments.controller;
+		// config
+		variables.debuggerConfig = arguments.settings;
 		// Set the unique cookie name per ColdBox application
 		variables.cookieName     = "coldbox_debugmode_#arguments.controller.getAppHash()#";
 		// This will store the secret key
 		variables.secretKey      = "";
 		// Create persistent profilers
-		variables.profilers      = arrayNew( 1 );
+		variables.profilers      = [];
 		// Create persistent tracers
-		variables.tracers        = arrayNew( 1 );
+		variables.tracers        = [];
 		// Set a maximum tracers possible
-		variables.maxTracers     = 75;
+		variables.maxTracers     = variables.debuggerConfig.maxPersistentRequestTracers;
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
-		// config
-		variables.debuggerConfig = arguments.settings;
 		// run modes
 		variables.debugMode      = variables.debuggerConfig.debugMode;
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
@@ -195,34 +195,42 @@ component
 	}
 
 	/**
-	 * Push a new tracer
+	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
+	 * the same patterns
 	 *
 	 * @message The message to trace
+	 * @severity The severity of the message
+	 * @category The tracking category the message came from
+	 * @timestamp The timestamp of the message
 	 * @extraInfo Extra info to store in the tracer
 	 */
-	DebuggerService function pushTracer( required message, extraInfo = "" ){
+	DebuggerService function pushTracer(
+		required message,
+		severity  = "info",
+		category  = "",
+		timestamp = now(),
+		extraInfo = ""
+	){
 		// Max Check
 		if ( arrayLen( variables.tracers ) gte variables.maxTracers ) {
 			resetTracers();
 		}
 
-		arrayAppend(
-			variables.tracers,
-			{
-				"message"   : arguments.message,
-				"extraInfo" : arguments.extraInfo
-			}
-		);
+		// Push it
+		lock name="cbdebugger-tracers" type="readonly" timeout="10" throwOnTimeout="true" {
+			arrayPrepend( variables.tracers, arguments );
+		}
 
 		return this;
 	}
 
 	/**
-	 * Reset all tracers
+	 * Reset all tracers back to zero
 	 */
 	DebuggerService function resetTracers(){
-		variables.tracers = [];
-
+		lock name="cbdebugger-tracers" type="exclusive" timeout="10" throwOnTimeout="true" {
+			variables.tracers = [];
+		}
 		return this;
 	}
 

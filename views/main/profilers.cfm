@@ -17,7 +17,7 @@
 				style="font-size:10px"
 				onChange="fw_pollmonitor( 'profiler', this.value, '#args.URLBase#' )">
 					<option value="0">None</option>
-					<option value="1" <cfif args.refreshFrequency eq 1>selected</cfif>>1 Seconds</option>
+					<option value="2" <cfif args.refreshFrequency eq 2>selected</cfif>>2 Seconds</option>
 					<option value="3" <cfif args.refreshFrequency eq 3>selected</cfif>>3 Seconds</option>
 					<cfloop from="5" to="30" index="i" step="5">
 						<option value="#i#" <cfif args.refreshFrequency eq i>selected</cfif>>#i# Seconds</option>
