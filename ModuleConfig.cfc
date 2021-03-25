@@ -114,7 +114,7 @@ component {
 
 		/******************** DEBUGGER INTERCEPTORS ************************************/
 
-		variables.interceptors = [ { class : "cbdebugger.interceptors.Debugger" } ];
+		variables.interceptors = [ { class : "cbdebugger.interceptors.RequestCollector" } ];
 	}
 
 	/**

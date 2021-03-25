@@ -2,7 +2,8 @@
  * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
  * www.ortussolutions.com
  * ---
- * Coldbox Debugger Interecptor
+ * This intereceptor collects request information into the appropriate debugger or
+ * timing services
  */
 component extends="coldbox.system.Interceptor" {
 
