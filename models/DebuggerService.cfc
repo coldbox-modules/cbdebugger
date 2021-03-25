@@ -24,14 +24,39 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
+	/**
+	 * The cookie name used for tracking the debug mode
+	 */
 	property name="cookieName";
-	property name="secretKey";
-	property name="profilers"  type="array";
-	property name="tracers"    type="array";
-	property name="maxTracers" type="numeric";
-	property name="debuggerConfig";
-	property name="debugMode";
+
+	/**
+	 * The collection of request profilers we track in the debugger
+	 */
+	property name="profilers" type="array";
+
+	/**
+	 * The collection of tracers we track in the debugger
+	 */
+	property name="tracers" type="array";
+
+	/**
+	 * The debugger configuration struct
+	 */
+	property name="debuggerConfig" type="struct";
+
+	/**
+	 * The controlling debug mode flag
+	 */
+	property name="debugMode" type="boolean";
+
+	/**
+	 * The debugging password we track for activation/deactivation
+	 */
 	property name="debugPassword";
+
+	/**
+	 * The running host we are tracking on
+	 */
 	property name="inetHost";
 
 	/**
@@ -58,8 +83,6 @@ component
 		variables.profilers      = [];
 		// Create persistent tracers
 		variables.tracers        = [];
-		// Set a maximum tracers possible
-		variables.maxTracers     = variables.debuggerConfig.maxPersistentRequestTracers;
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
 		variables.Thread         = createObject( "java", "java.lang.Thread" );
@@ -87,12 +110,11 @@ component
 			current debugPassword and a random salt.  The salt also protects against someone being able to
 			reverse engineer the orignal password from an intercepted cookie value.
 		*/
-		var salt = createUUID();
-		setSecretKey(
-			hash(
-				variables.controller.getAppHash() & variables.debugPassword & salt,
-				"SHA-256"
-			)
+		var salt            = createUUID();
+		variables.secretKey =
+		hash(
+			variables.controller.getAppHash() & variables.debugPassword & salt,
+			"SHA-256"
 		);
 		return this;
 	}
@@ -101,17 +123,15 @@ component
 	 * Get the debug mode marker
 	 */
 	boolean function getDebugMode(){
-		var secretKey = getSecretKey();
-
 		// If no secretKey has been set, don't allow debug mode
-		if ( not ( len( secretKey ) ) ) {
+		if ( not ( len( variables.secretKey ) ) ) {
 			return false;
 		}
 
 		// If Cookie exists, it's value is used.
 		if ( isDebugCookieValid() ) {
 			// Must be equal to the current secret key
-			if ( cookie[ variables.cookieName ] == secretKey ) {
+			if ( cookie[ variables.cookieName ] == variables.secretKey ) {
 				return true;
 			} else {
 				return false;
@@ -136,7 +156,7 @@ component
 		if ( arguments.mode ) {
 			cfcookie(
 				name  = getCookieName(),
-				value = getSecretKey()
+				value = variables.secretKey
 			);
 		} else {
 			cfcookie(
@@ -248,7 +268,7 @@ component
 		extraInfo = ""
 	){
 		// Max Check
-		if ( arrayLen( variables.tracers ) gte variables.maxTracers ) {
+		if ( arrayLen( variables.tracers ) gte variables.debuggerConfig.maxPersistentRequestTracers ) {
 			resetTracers();
 		}
 
