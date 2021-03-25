@@ -3,12 +3,14 @@
 <!--- Head Assets --->
 <cfinclude template="includes/head.cfm">
 
-<!--- Event --->
-#announce( "beforeDebuggerPanel" )#
-<!--- Rendering --->
-#renderView()#
-<!--- Event --->
-#announce( "afterDebuggerPanel" )#
+<div class="cbDebugger">
+	<!--- Event --->
+	#announce( "beforeDebuggerPanel" )#
+	<!--- Rendering --->
+	#renderView()#
+	<!--- Event --->
+	#announce( "afterDebuggerPanel" )#
+</div>
 
 <!--- JS Assets --->
 <cfinclude template="includes/footer.cfm">

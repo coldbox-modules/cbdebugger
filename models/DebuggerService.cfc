@@ -180,15 +180,18 @@ component
 	 *
 	 * @event The request context that requested the record
 	 * @executionTime The time it took for th request to finish
+	 * @exception If there is an exception in the request, track it
 	 */
 	DebuggerService function recordProfiler(
 		required event,
-		required executionTime
+		required executionTime,
+		exception = {}
 	){
 		return pushProfiler(
 			variables.timerService.getTimers(),
 			arguments.event,
-			arguments.executionTime
+			arguments.executionTime,
+			arguments.exception
 		);
 	}
 
@@ -198,20 +201,39 @@ component
 	 * @profilerRecord The array of timers to store
 	 * @event The request contex that requested the record
 	 * @executionTime The time it took for th request to finish
+	 * @exception If there is an exception in the request, track it
 	 */
 	DebuggerService function pushProfiler(
 		required profilerRecord,
 		required event,
-		required executionTime
+		required executionTime,
+		exception = {}
 	){
-		// are persistent profilers activated
-		if ( NOT variables.debuggerConfig.persistentRequestProfiler ) {
-			return this;
-		}
-
 		// size check, if passed, pop one
 		if ( arrayLen( variables.profilers ) gte variables.debuggerConfig.maxPersistentRequestProfilers ) {
 			popProfiler();
+		}
+
+		// Build out the exception data to trace if any?
+		var exceptionData = {};
+		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
+			exceptionData = {
+				"stackTrace"      : arguments.exception.stacktrace ?: "",
+				"type"            : arguments.exception.type ?: "",
+				"detail"          : arguments.exception.detail ?: "",
+				"tagContext"      : arguments.exception.tagContext ?: [],
+				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
+				"sqlState"        : arguments.exception.sqlState ?: "",
+				"sql"             : arguments.exception.sql ?: "",
+				"queryError"      : arguments.exception.queryError ?: "",
+				"where"           : arguments.exception.where ?: "",
+				"errNumber"       : arguments.exception.errNumber ?: "",
+				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"lockName"        : arguments.exception.lockName ?: "",
+				"lockOperation"   : arguments.exception.lockOperation ?: "",
+				"errorCode"       : arguments.exception.errorCode ?: "",
+				"extendedInfo"    : arguments.exception.extendedInfo ?: ""
+			};
 		}
 
 		// New Profiler record to store
@@ -225,8 +247,10 @@ component
 				"threadName"         : getThreadName(),
 				"executionTime"      : arguments.executionTime,
 				"timers"             : arguments.profilerRecord,
+				// Log the http body if user wants it
 				"requestData"        : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
-				"statusCode"         : getPageContextResponse().getStatus(),
+				// Set the content type according to context response or exception
+				"statusCode"         : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
 				"contentType"        : getPageContextResponse().getContentType(),
 				"currentRoutedUrl"   : arguments.event.getCurrentRoutedUrl(),
 				"currentRoute"       : arguments.event.getCurrentRoute(),
@@ -235,7 +259,8 @@ component
 				"currentEvent"       : arguments.event.getCurrentEvent(),
 				"currentView"        : arguments.event.getCurrentView(),
 				"currentLayout"      : arguments.event.getCurrentLayout(),
-				"fullUrl"            : arguments.event.getFullUrl()
+				"fullUrl"            : arguments.event.getFullUrl(),
+				"exception"          : exceptionData
 			}
 		);
 

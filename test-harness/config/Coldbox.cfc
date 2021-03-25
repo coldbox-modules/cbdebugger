@@ -68,9 +68,9 @@
 				// Debugger
 				debugMode                     : true,
 				debugPassword                 : "",
-				persistentRequestProfilers    : true,
 				maxPersistentRequestProfilers : 20,
 				maxRCPanelQueryRows           : 50,
+				profileHTTPBody               : true,
 				// Profile model objects annotated with the `profile` annotation
 				profileObjects                : true,
 				// If enabled, will trace the results of any methods that are being profiled

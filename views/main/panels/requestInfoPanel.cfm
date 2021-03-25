@@ -19,15 +19,13 @@
 					title="Reinitialize the framework."
 					onClick="fw_reinitframework( #iif( controller.getSetting( 'ReinitPassword' ).length(), 'true', 'false' )#)"
 				>
-				<cfif args.debuggerConfig.persistentRequestProfiler>
-					&nbsp;
-					<input
-						type="button"
-						value="Open Profiler Monitor"
-						name="profilermonitor"
-						title="Open the profiler monitor in a new window."
-						onClick="window.open( '#args.urlBase#?debugpanel=profiler', 'profilermonitor', 'status=1,toolbar=0,location=0,resizable=1,scrollbars=1,height=750,width=850' )">
-				</cfif>
+				&nbsp;
+				<input
+					type="button"
+					value="Open Profiler Monitor"
+					name="profilermonitor"
+					title="Open the profiler monitor in a new window."
+					onClick="window.open( '#args.urlBase#?debugpanel=profiler', 'profilermonitor', 'status=1,toolbar=0,location=0,resizable=1,scrollbars=1,height=750,width=850' )">
 				&nbsp;
 				<input
 					type="button"

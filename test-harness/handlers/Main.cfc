@@ -14,6 +14,13 @@ component {
 		event.renderData( data = "<h1>Hello</h1>" );
 	}
 
+	/**
+	 * error
+	 */
+	function error( event, rc, prc ){
+		event.setdddView( "Main/error" );
+	}
+
 	// Run on first init
 	any function onAppInit( event, rc, prc ){
 		// var logBox = controller.getLogBox();

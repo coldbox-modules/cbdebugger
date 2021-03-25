@@ -39,8 +39,6 @@ component {
 			) == "development",
 			// The URL password to use to activate it on demand
 			debugPassword                 : "cb:null",
-			// Persist request tracking profilers
-			persistentRequestProfiler     : true,
 			// How many tracking profilers to keep in stack: Default is monitor the last 20 requests
 			maxPersistentRequestProfilers : 20,
 			// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data

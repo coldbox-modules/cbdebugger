@@ -40,11 +40,13 @@ component extends="coldbox.system.EventHandler" {
 		return "";
 	}
 
-
 	/**
 	 * This action renders out the debugger back to the caller as HTML widget
 	 */
 	function renderDebugger( event, rc, prc ){
+		// are we in visualizer mode?
+		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
+
 		// Are we in debug mode or not? If not, just return empty string
 		if ( !variables.debuggerService.getDebugMode() ) {
 			return "";
@@ -52,11 +54,13 @@ component extends="coldbox.system.EventHandler" {
 
 		// Return the debugger layout+view
 		return renderLayout(
-			layout    : "Main",
+			layout    : isVisualizer ? "Monitor" : "Main",
 			module    : "cbdebugger",
 			view      : "main/debugger",
 			viewModule: "cbdebugger",
 			args      : {
+				pageTitle        : "ColdBox Debugger",
+				currentPanel     : "",
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),

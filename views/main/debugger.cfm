@@ -1,25 +1,16 @@
 <cfoutput>
-<div style="margin-top:40px"></div>
-<div class="fw_debugPanel">
-
-	<!--- **************************************************************--->
-	<!--- REQUEST INFO PANEL --->
-	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.showInfoPanel>
-		<cfinclude template="panels/requestInfoPanel.cfm">
-	</cfif>
-
+<div>
 	<!--- **************************************************************--->
 	<!--- REQUEST PROFILERS--->
 	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.persistentRequestProfiler>
-		<cfinclude template="profilers.cfm">
-	</cfif>
+	<cfinclude template="profilers.cfm">
 
 	<!--- **************************************************************--->
 	<!--- TRACER STACK--->
 	<!--- **************************************************************--->
-	<cfinclude template="panels/tracersPanel.cfm">
+	<cfif args.debuggerConfig.showTracerPanel>
+		<cfinclude template="panels/tracersPanel.cfm">
+	</cfif>
 
 	<!--- **************************************************************--->
 	<!--- MODULES PANEL --->
@@ -63,12 +54,11 @@
 	<!--- **************************************************************--->
 	<cfif args.debuggerConfig.showCachePanel>
 		<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
-				  cacheFactory="#controller.getCacheBox()#"
-				  expandedPanel="#args.debuggerConfig.expandedCachePanel#">
+				cacheFactory="#controller.getCacheBox()#"
+				expandedPanel="#args.debuggerConfig.expandedCachePanel#">
 	</cfif>
 
 	<!--- Final Rendering --->
 	<div class="fw_renderTime">Approximate Debug Rendering Time: #getTickCount() - args.debugStartTime# ms</div>
-
 </div>
 </cfoutput>

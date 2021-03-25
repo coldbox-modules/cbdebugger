@@ -91,7 +91,10 @@ component extends="coldbox.system.Interceptor" {
 		// End request execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
 		// Record the request
-		variables.debuggerService.recordProfiler( event, request.fwExecTime );
+		variables.debuggerService.recordProfiler(
+			event        : arguments.event,
+			executionTime: request.fwExecTime
+		);
 
 		// Determine if we can render the debugger at the bottom of the request
 		if (
@@ -114,36 +117,73 @@ component extends="coldbox.system.Interceptor" {
 		}
 	}
 
+	/**
+	 * Listen to exceptions
+	 */
+	public function onException( event, interceptData, rc, prc ){
+		// End the request timer for the request
+		variables.timerService.stop( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
+		// End request execution time
+		request.fwExecTime = getTickCount() - request.fwExecTime;
+		// Record the request and exception
+		variables.debuggerService.recordProfiler(
+			event        : arguments.event,
+			executionTime: request.fwExecTime,
+			exception    : interceptData.exception
+		);
+	}
+
+	/**
+	 * Listen to start of events
+	 */
 	public function preEvent( event, interceptData, rc, prc ){
 		request.cbdebugger.eventhash = variables.timerService.start(
 			"[runEvent] #arguments.interceptData.processedEvent#( #arguments.interceptData.eventArguments.toString()# )"
 		);
 	}
 
+	/**
+	 * Listen to end of events
+	 */
 	public function postEvent( event, interceptData, rc, prc ){
 		variables.timerService.stop( request.cbdebugger.eventhash );
 	}
 
+	/**
+	 * Listen to beginning of layout rendering
+	 */
 	public function preLayout( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = variables.timerService.start(
 			"[preLayout to postLayout rendering] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
+	/**
+	 * Listen to when the layout is now rendered
+	 */
 	public function postLayout( event, interceptData, rc, prc ){
 		variables.timerService.stop( request.cbdebugger.layoutHash );
 	}
 
+	/**
+	 * Listen to before rendering process executes
+	 */
 	public function preRender( event, interceptData, rc, prc ){
 		request.cbdebugger.renderHash = variables.timerService.start(
 			"[preRender to postRender] for #arguments.event.getCurrentEvent()#"
 		);
 	}
 
+	/**
+	 * Listen to when rendering is complete
+	 */
 	public function postRender( event, interceptData, rc, prc ){
 		variables.timerService.stop( request.cbdebugger.renderHash );
 	}
 
+	/**
+	 * Listen to when views are about to be rendered
+	 */
 	public function preViewRender( event, interceptData, rc, prc ){
 		request.cbdebugger.renderViewHash = variables.timerService.start(
 			"[renderView] #arguments.interceptData.view#" &
@@ -151,10 +191,16 @@ component extends="coldbox.system.Interceptor" {
 		);
 	}
 
+	/**
+	 * Listen to when views are done rendering
+	 */
 	public function postViewRender( event, interceptData, rc, prc ){
 		variables.timerService.stop( request.cbdebugger.renderViewHash );
 	}
 
+	/**
+	 * Listen to when layouts are rendered
+	 */
 	public function preLayoutRender( event, interceptData, rc, prc ){
 		request.cbdebugger.layoutHash = variables.timerService.start(
 			"[renderLayout] #arguments.interceptData.layout#" &
@@ -162,10 +208,16 @@ component extends="coldbox.system.Interceptor" {
 		);
 	}
 
+	/**
+	 * Listen to when layouts are done rendering
+	 */
 	public function postLayoutRender( event, interceptData, rc, prc ){
 		variables.timerService.stop( request.cbdebugger.layoutHash );
 	}
 
+	/**
+	 * Listen before wirebox objects are created
+	 */
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
 		if ( variables.debuggerConfig.wireboxCreationProfiler ) {
 			request.cbdebugger[ arguments.interceptData.mapping.getName() ] = variables.timerService.start(
@@ -174,6 +226,9 @@ component extends="coldbox.system.Interceptor" {
 		}
 	}
 
+	/**
+	 * Listen to after objects are created and DI is done
+	 */
 	public function afterInstanceCreation( event, interceptData, rc, prc ){
 		// so many checks, due to chicken and the egg problems
 		if (
