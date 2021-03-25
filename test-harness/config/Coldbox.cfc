@@ -69,7 +69,7 @@
 				debugMode                     : true,
 				debugPassword                 : "",
 				persistentRequestProfilers    : true,
-				maxPersistentRequestProfilers : 10,
+				maxPersistentRequestProfilers : 20,
 				maxRCPanelQueryRows           : 50,
 				// Profile model objects annotated with the `profile` annotation
 				profileObjects                : true,

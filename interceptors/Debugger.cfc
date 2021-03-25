@@ -97,7 +97,7 @@ component extends="coldbox.system.Interceptor" {
 			// Is the debug mode turned on
 			variables.debuggerService.getDebugMode() AND
 			// Has it not been disabled by the user programmatically
-			isDebuggerRendering() AND
+			arguments.event.getPrivateValue( "cbox_debugger_show", true ) AND
 			// We don't have any render data OR the render data is HTML
 			( structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().type == "HTML" ) AND
 			// Don't render in ajax calls

@@ -16,17 +16,17 @@ component {
 
 	// Run on first init
 	any function onAppInit( event, rc, prc ){
-		var logBox = controller.getLogBox();
-		logBox.registerAppender(
-			"tracer",
-			"cbdebugger.appenders.ColdboxTracerAppender"
-		);
-		var appenders = logBox.getAppendersMap( "tracer" );
-		// Register the appender with the root loggger, and turn the logger on.
-		var root      = logBox.getRootLogger();
-		root.addAppender( appenders[ "tracer" ] );
-		root.setLevelMax( 4 );
-		root.setLevelMin( 0 );
+		// var logBox = controller.getLogBox();
+		// logBox.registerAppender(
+		//	"tracer",
+		//	"cbdebugger.appenders.TracerAppender"
+		// );
+		// var appenders = logBox.getAppendersMap( "tracer" );
+		// // Register the appender with the root loggger, and turn the logger on.
+		// var root      = logBox.getRootLogger();
+		// root.addAppender( appenders[ "tracer" ] );
+		// root.setLevelMax( 4 );
+		// root.setLevelMin( 0 );
 	}
 
 }

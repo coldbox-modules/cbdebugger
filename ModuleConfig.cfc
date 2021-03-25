@@ -111,6 +111,10 @@ component {
 		if ( !isAOPMixerLoaded() ) {
 			loadAOPMixer();
 		}
+
+		/******************** DEBUGGER INTERCEPTORS ************************************/
+
+		variables.interceptors = [ { class : "cbdebugger.interceptors.Debugger" } ];
 	}
 
 	/**
@@ -125,7 +129,7 @@ component {
 			variables.settings.debugPassword = hash( variables.settings.debugPassword );
 		}
 
-		// set debug mode according to setting
+		// Configure the debugging mode from the loaded app settings
 		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
 
 		/******************** PROFILE OBJECTS ************************************/
@@ -181,16 +185,6 @@ component {
 			);
 		}
 
-
-		/******************** Activate Debugger Interceptor ************************************/
-
-		controller
-			.getInterceptorService()
-			.registerInterceptor(
-				interceptorClass = "#moduleMapping#.interceptors.Debugger",
-				interceptorName  = "debugger@cbdebugger"
-			);
-
 		/******************** Register QB Collector ************************************/
 
 		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
@@ -218,18 +212,22 @@ component {
 	 * Unloading
 	 */
 	function onUnload(){
-		// unregister interceptor
-		controller.getInterceptorService().unregister( "debugger@cbdebugger" );
+		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
+		}
+		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
+		}
 	}
 
 	/**
-	 * Register our tracer appender
+	 * Register our tracer appender after the configuration loads
 	 */
 	function afterConfigurationLoad(){
 		var logBox = controller.getLogBox();
 		logBox.registerAppender(
 			"tracer",
-			"cbdebugger.appenders.ColdboxTracerAppender"
+			"cbdebugger.appenders.TracerAppender"
 		);
 		var appenders = logBox.getAppendersMap( "tracer" );
 		// Register the appender with the root loggger, and turn the logger on.
@@ -239,7 +237,9 @@ component {
 		root.setLevelMin( 0 );
 	}
 
-	// Load AOP Mixer
+	/**
+	 * Loads the AOP mixer if not loaded in the application
+	 */
 	private function loadAOPMixer(){
 		var mixer = new coldbox.system.aop.Mixer();
 		// configure it
@@ -253,8 +253,10 @@ component {
 			);
 	}
 
-	// Verify if wirebox aop mixer is loaded
-	private function isAOPMixerLoaded(){
+	/**
+	 * Verify if wirebox aop mixer is loaded
+	 */
+	private boolean function isAOPMixerLoaded(){
 		var listeners = wirebox.getBinder().getListeners();
 		var results   = false;
 
