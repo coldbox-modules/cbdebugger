@@ -85,12 +85,12 @@ component extends="coldbox.system.Interceptor" {
 			return;
 		}
 
-		// end the request timer
+		// End the request timer for the request
 		variables.timerService.stop( isNull( request.cbdebugger.processHash ) ? "" : request.cbdebugger.processHash );
-		// End fw execution time
+		// End request execution time
 		request.fwExecTime = getTickCount() - request.fwExecTime;
-		// record all profilers
-		variables.debuggerService.recordProfiler( event );
+		// Record the request
+		variables.debuggerService.recordProfiler( event, request.fwExecTime );
 
 		// Determine if we can render the debugger at the bottom of the request
 		if (

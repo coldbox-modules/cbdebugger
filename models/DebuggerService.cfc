@@ -32,6 +32,7 @@ component
 	property name="debuggerConfig";
 	property name="debugMode";
 	property name="debugPassword";
+	property name="inetHost";
 
 	/**
 	 * Constructor
@@ -67,6 +68,8 @@ component
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
 		// uuid helper
 		variables.uuid           = createObject( "java", "java.util.UUID" );
+		// Store the host we are on
+		variables.inetHost       = discoverInetHost();
 
 		// Initialize secret key
 		rotateSecretKey();
@@ -156,11 +159,16 @@ component
 	 * Record a profiler and it's timers internally
 	 *
 	 * @event The request context that requested the record
+	 * @executionTime The time it took for th request to finish
 	 */
-	DebuggerService function recordProfiler( required event ){
+	DebuggerService function recordProfiler(
+		required event,
+		required executionTime
+	){
 		return pushProfiler(
 			variables.timerService.getTimers(),
-			arguments.event
+			arguments.event,
+			arguments.executionTime
 		);
 	}
 
@@ -169,10 +177,12 @@ component
 	 *
 	 * @profilerRecord The array of timers to store
 	 * @event The request contex that requested the record
+	 * @executionTime The time it took for th request to finish
 	 */
 	DebuggerService function pushProfiler(
 		required profilerRecord,
-		required event
+		required event,
+		required executionTime
 	){
 		// are persistent profilers activated
 		if ( NOT variables.debuggerConfig.persistentRequestProfiler ) {
@@ -188,23 +198,24 @@ component
 		arrayAppend(
 			variables.profilers,
 			{
-				"id"               : variables.uuid.randomUUID(),
-				"timestamp"        : now(),
-				"ip"               : getRealIP(),
-				"inetHost"         : getInetHost(),
-				"threadName"       : getThreadName(),
-				"executionTime"    : request.fwExecTime,
-				"timers"           : arguments.profilerRecord,
-				"requestData"      : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
-				"statusCode"       : getPageContextResponse().getStatus(),
-				"contentType"      : getPageContextResponse().getContentType(),
-				"currentRoutedUrl" : arguments.event.getCurrentRoutedUrl(),
-				"currentRoute"     : arguments.event.getCurrentRoute(),
-				"currentRouteName" : arguments.event.getCurrentRouteName(),
-				"currentEvent"     : arguments.event.getCurrentEvent(),
-				"currentView"      : arguments.event.getCurrentView(),
-				"currentLayout"    : arguments.event.getCurrentLayout(),
-				"fullUrl"          : arguments.event.getFullUrl()
+				"id"                 : variables.uuid.randomUUID(),
+				"timestamp"          : now(),
+				"ip"                 : getRealIP(),
+				"inetHost"           : variables.inetHost,
+				"threadName"         : getThreadName(),
+				"executionTime"      : arguments.executionTime,
+				"timers"             : arguments.profilerRecord,
+				"requestData"        : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
+				"statusCode"         : getPageContextResponse().getStatus(),
+				"contentType"        : getPageContextResponse().getContentType(),
+				"currentRoutedUrl"   : arguments.event.getCurrentRoutedUrl(),
+				"currentRoute"       : arguments.event.getCurrentRoute(),
+				"currentRouteRecord" : arguments.event.getCurrentRouteRecord(),
+				"currentRouteName"   : arguments.event.getCurrentRouteName(),
+				"currentEvent"       : arguments.event.getCurrentEvent(),
+				"currentView"        : arguments.event.getCurrentView(),
+				"currentLayout"      : arguments.event.getCurrentLayout(),
+				"fullUrl"            : arguments.event.getFullUrl()
 			}
 		);
 
@@ -262,7 +273,7 @@ component
 	/**
 	 * Get the hostname of the executing machine.
 	 */
-	function getInetHost(){
+	function discoverInetHost(){
 		try {
 			return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		} catch ( any e ) {
