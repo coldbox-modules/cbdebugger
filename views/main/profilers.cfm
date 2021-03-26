@@ -86,9 +86,11 @@
 		<cfelse>
 			#server.coldfusion.productVersion#
 		</cfif>
-		/
-		#server.java.vendor#
-		#server.java.version#
+		<cfif server.keyExists( "system" )>
+			/
+			#server.system.properties[ "java.runtime.name" ]#
+			#server.system.properties[ "java.version" ]#
+		</cfif>
 	</div>
 
 	<!--- Render Profilers --->
