@@ -1,6 +1,6 @@
 <cfoutput>
 <!--- Public Collection --->
-<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables" width="100%">
+<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables" width="100%">
 	<tr>
 		<th colspan="2">#thisCollectionType# Collection</th>
 	</tr>

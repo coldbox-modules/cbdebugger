@@ -1,9 +1,12 @@
+<!---
+This main debugger view collects all the different panels to present to the user
+--->
 <cfoutput>
 <div>
 	<!--- **************************************************************--->
 	<!--- REQUEST PROFILERS--->
 	<!--- **************************************************************--->
-	<cfinclude template="profilers.cfm">
+	<cfinclude template="panels/profilersPanel.cfm">
 
 	<!--- **************************************************************--->
 	<!--- TRACER STACK--->
@@ -59,6 +62,8 @@
 	</cfif>
 
 	<!--- Final Rendering --->
-	<div class="fw_renderTime">Approximate Debug Rendering Time: #getTickCount() - args.debugStartTime# ms</div>
+	<div class="fw_renderTime">
+		Approximate Debug Rendering Time: #getTickCount() - args.debugStartTime# ms
+	</div>
 </div>
 </cfoutput>

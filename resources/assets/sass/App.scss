@@ -1,4 +1,4 @@
-.cbDebugger{
+.cbd-debugger{
     font-family: Verdana,Arial,sans-serif;
     font-size: 11px;
     font-weight: normal;
@@ -26,9 +26,63 @@
 		}
 	}
 
+	.cbd-spinner{
+		transform: translateZ(0);
+		animation: spinning 1s infinite linear;
+	}
+
+	@keyframes spinning {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
 	p{
 		font-size: inherit;
 		font-weight: inherit;
+	}
+
+	.cbd-tables{
+		border:1px outset #93C2FF;
+		background-color: #eeeeee;
+		border-radius: 5px;
+		width: 100%;
+		margin-left:auto;
+		margin-right:auto;
+
+		th{
+			font-size: 11px;
+			background-color: #CFE9FF;
+			font-weight:bold;
+			padding: 5px 5px 5px 5px;
+		}
+		tr{
+			background-color: white;
+		}
+		tr:hover{
+			background-color: #caeefe;
+		}
+		tr.even{
+			background-color: #EFF6FF;
+		}
+		td{
+			padding: 5px 5px 5px 5px;
+			font-size: 11px;
+		}
+		textarea{
+			border: 1px solid #eeeeee;
+			background-color: #fffff0;
+			font-size: 11px;
+		}
+		tr.showRC{
+			display: table-row;
+		}
+		tr.hideRC{
+			display: none;
+		}
 	}
 
 	.fw_titles{
@@ -43,13 +97,13 @@
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 		-khtml-border-radius: 5px;
-	}
 
-	.fw_titles:hover{
-	   background: #D7EBF9;
-	   border:1px solid #D3D3D3;
-	   cursor: pointer;
-	   color: black;
+		&:hover{
+			background: #D7EBF9;
+			border:1px solid #D3D3D3;
+			cursor: pointer;
+			color: black;
+		}
 	}
 
 	.fw_subtitles{
@@ -71,18 +125,18 @@
 		color: black;
 		background: #D7EBF9;
 		border:1px solid #D3D3D3;
-		   padding:5px 5px 5px 5px;
+		padding:5px 5px 5px 5px;
 		cursor: pointer;
 		margin-bottom: 2px;
 		-moz-border-radius: 5px;
 		-webkit-border-radius: 5px;
 		-khtml-border-radius: 5px;
-	}
 
-	.fw_profilers:hover{
-	   background-color: #6988c4;
-	   border:1px solid #555555;
-	   cursor: pointer;
+		&:hover{
+			background-color: #6988c4;
+			border:1px solid #555555;
+			cursor: pointer;
+		}
 	}
 
 	.fw_debugContentView{
@@ -179,45 +233,7 @@
 	.cellScroller{
 		overflow-y: auto;
 		max-height: 300px;
-	}
-
-	.fw_debugTables{
-		border:1px outset #93C2FF;
-		background-color: #eeeeee;
-		width: 100%;
-		margin-left:auto;
-		margin-right:auto;
-
-		th{
-			font-size: 11px;
-			background-color: #CFE9FF;
-			font-weight:bold;
-			padding: 5px 5px 5px 5px;
-		}
-		tr{
-			background-color: white;
-		}
-		tr:hover{
-			background-color: #caeefe;
-		}
-		tr.even{
-			background-color: #EFF6FF;
-		}
-		td{
-			padding: 5px 5px 5px 5px;
-			font-size: 11px;
-		}
-		textarea{
-			border: 1px solid #eeeeee;
-			background-color: #fffff0;
-			font-size: 11px;
-		}
-		tr.showRC{
-			display: table-row;
-		}
-		tr.hideRC{
-			display: none;
-		}
+		max-width: 100%;
 	}
 
 	.fw_cacheContentReport{
@@ -321,6 +337,10 @@
 	.floatLeft { float:left !important; }
 	.floatRight { float:right !important; }
 
+	.size11{ font-size: 11px; }
+	.size12{ font-size: 12px; }
+	.size13{ font-size: 13px; }
+	.size14{ font-size: 14px; }
 	.text{ color: #333333 !important}
 	.textMuted{ color: #777 !important }
 	.textGray{ color: #c4c4c4  !important }
@@ -334,6 +354,7 @@
 	.textLeft { text-align:left !important; }
 	.textCenter { text-align:center !important; }
 
+	.bgLightRed{ background-color: #f7e9e9 !important;}
 	.bgLightGray{ background-color: #f7f7f7; }
 
 	.center { text-align:center !important; margin:auto !important; }

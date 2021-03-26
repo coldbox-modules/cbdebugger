@@ -1,6 +1,6 @@
 <cfoutput>
 <h2>Executions</h2>
-<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 	<tr>
 	<th width="125" align="center" >Started At</th>
 	<th width="125" align="center" >Finished At</th>

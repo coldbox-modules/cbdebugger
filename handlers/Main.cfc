@@ -1,7 +1,7 @@
 /**
  * Main ColdBox Debugger Visualizer
  */
-component extends="coldbox.system.EventHandler" {
+component extends="coldbox.system.RestHandler" {
 
 	// DI
 	property name="debuggerService" inject="debuggerService@cbdebugger";
@@ -64,32 +64,8 @@ component extends="coldbox.system.EventHandler" {
 				debuggerConfig   : getModuleSettings( "cbdebugger" ),
 				debuggerService  : variables.debuggerService,
 				environment      : variables.debuggerService.getEnvironment(),
-				debugTimers      : variables.timerService.getSortedTimers(),
 				tracers          : variables.debuggerService.getTracers(),
 				profilers        : variables.debuggerService.getProfilers(),
-				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
-			}
-		);
-	}
-
-	/**
-	 * This action renders out the profiler panel back as HTML
-	 */
-	function renderProfiler( event, rc, prc ){
-		// Return the debugger layout+view
-		return renderLayout(
-			layout    : "Monitor",
-			module    : "cbdebugger",
-			view      : "main/profilers",
-			viewModule: "cbdebugger",
-			args      : {
-				currentPanel     : "profiler",
-				pageTitle        : "ColdBox Request Tracker",
-				refreshFrequency : rc.frequency,
-				urlBase          : event.buildLink( "" ),
-				profilers        : variables.debuggerService.getProfilers(),
-				tracers          : variables.debuggerService.getTracers(),
-				debuggerConfig   : getModuleSettings( "cbdebugger" ),
 				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);
@@ -109,6 +85,46 @@ component extends="coldbox.system.EventHandler" {
 				pageTitle    : "ColdBox CacheBox Monitor",
 				manifestRoot : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
+		);
+	}
+
+	/**
+	 * Clear the profilers via ajax
+	 */
+	function clearProfilers( event, rc, prc ){
+		variables.debuggerService.resetProfilers();
+		event.getResponse().addMessage( "Profilers reset!" );
+	}
+
+	/**
+	 * Get the profilers via ajax
+	 */
+	function renderProfilers( event, rc, prc ){
+		return renderView(
+			view  : "main/partials/profilers",
+			module: "cbdebugger",
+			args  : {
+				environment    : variables.debuggerService.getEnvironment(),
+				profilers      : variables.debuggerService.getProfilers(),
+				debuggerConfig : getModuleSettings( "cbdebugger" )
+			},
+			prePostExempt: true
+		);
+	}
+
+	/**
+	 * Get a profiler report via ajax
+	 */
+	function renderProfilerReport( event, rc, prc ){
+		return renderView(
+			view  : "main/partials/profilerReport",
+			module: "cbdebugger",
+			args  : {
+				environment    : variables.debuggerService.getEnvironment(),
+				profiler       : variables.debuggerService.getProfilerById( rc.id ),
+				debuggerConfig : getModuleSettings( "cbdebugger" )
+			},
+			prePostExempt: true
 		);
 	}
 

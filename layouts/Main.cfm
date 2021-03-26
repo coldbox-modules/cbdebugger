@@ -3,7 +3,10 @@
 <!--- Head Assets --->
 <cfinclude template="includes/head.cfm">
 
-<div class="cbDebugger">
+<div
+	class="cbd-debugger"
+	id="cbd-debugger"
+	data-appurl="#event.buildLink( '' )#">
 	<!--- Event --->
 	#announce( "beforeDebuggerPanel" )#
 	<!--- Rendering --->

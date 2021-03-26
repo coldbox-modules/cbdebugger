@@ -15,7 +15,10 @@
 		<cfinclude template="includes/head.cfm">
 	</head>
 	<body>
-		<div class="cbDebugger">
+		<div
+			class="cbd-debugger"
+			id="cbd-debugger"
+			data-appurl="#event.buildLink( '' )#">
 			<!--- Event --->
 			#announce( "beforeDebuggerPanel" )#
 

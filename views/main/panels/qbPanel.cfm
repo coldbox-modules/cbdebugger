@@ -29,7 +29,7 @@
 					No queries executed
 				<cfelse>
 					<div id="groupedQueries">
-						<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<thead>
 								<tr>
 									<th width="5%">Count</th>
@@ -45,7 +45,7 @@
 									<tr style="margin-right: 2em;">
 										<td></td>
 										<td style="width: 100%;">
-											<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+											<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 												<thead>
 													<tr>
 														<th width="15%">Timestamp</th>
@@ -74,7 +74,7 @@
 						</table>
 					</div>
 					<div id="timelineQueries" style="display: none;">
-						<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables">
+						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<thead>
 								<tr>
 									<th>Timestamp</th>
@@ -113,7 +113,7 @@
 				<cfif local.totalEntities EQ 0>
 					No Quick entities loaded.
 				<cfelse>
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="fw_debugTables" style="margin-top: 1em;">
+					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables" style="margin-top: 1em;">
 						<thead>
 							<tr>
 								<th width="5%">Count</th>

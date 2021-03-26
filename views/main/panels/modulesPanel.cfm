@@ -27,7 +27,7 @@
 
 	<div>
 		<!--- Module Charts --->
-		<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables">
+		<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables">
 			<tr >
 				<th>Module</th>
 				<th width="50">Version</th>

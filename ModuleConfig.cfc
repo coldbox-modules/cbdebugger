@@ -91,7 +91,12 @@ component {
 		};
 
 		// Visualizer Route
-		router.route( "/" ).to( "Main.index" );
+		router
+			.route( "/" )
+			.to( "Main.index" )
+			.route( "/:action" )
+			.toHandler( "Main" )
+		;
 
 		/**
 		 * Custom Interception Points

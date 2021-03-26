@@ -273,7 +273,7 @@ component
 		// Close out the profiler
 		request.cbDebugger.append(
 			{
-				"timers"        : variables.timerService.getTimers(),
+				"timers"        : variables.timerService.getSortedTimers(),
 				"exception"     : exceptionData,
 				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
 				"response"      : {
@@ -293,8 +293,8 @@ component
 			true
 		);
 
-		// New Profiler record to store
-		arrayAppend(
+		// New Profiler record to store into the stack
+		arrayPrepend(
 			variables.profilers,
 			request.cbDebugger
 		);
@@ -303,10 +303,31 @@ component
 	}
 
 	/**
-	 * Pop a profiler record
+	 * Retrieve the profiler by incoming id
+	 *
+	 * @id The unique profiler id to get
+	 *
+	 * @return The profiler requested or an empty struct if not found
+	 */
+	struct function getProfilerById( required id ){
+		return variables.profilers
+			.filter( function( thisItem ){
+				return arguments.thisItem.id.toString() == id;
+			} )
+			.reduce( function( results, thisItem ){
+				arguments.results = arguments.thisItem;
+				return arguments.results;
+			}, {} );
+	}
+
+	/**
+	 * Pop a profiler record from the top
 	 */
 	DebuggerService function popProfiler(){
-		arrayDeleteAt( variables.profilers, 1 );
+		arrayDeleteAt(
+			variables.profilers,
+			arrayLen( variables.profilers )
+		);
 		return this;
 	}
 

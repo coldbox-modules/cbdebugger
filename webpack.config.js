@@ -25,7 +25,7 @@ elixir.config.mergeConfig( {
 			{
 				test   	: require.resolve( "jquery" ),
 				loader  : "expose-loader",
-				options : { exposes: [ "cb$" ] }
+				options : { exposes: [ "$cb" ] }
 			}
 		]
 	}
