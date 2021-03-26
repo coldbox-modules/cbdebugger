@@ -9,13 +9,6 @@ This main debugger view collects all the different panels to present to the user
 	<cfinclude template="panels/profilersPanel.cfm">
 
 	<!--- **************************************************************--->
-	<!--- TRACER STACK--->
-	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.showTracerPanel>
-		<cfinclude template="panels/tracersPanel.cfm">
-	</cfif>
-
-	<!--- **************************************************************--->
 	<!--- MODULES PANEL --->
 	<!--- **************************************************************--->
 	<cfif args.debuggerConfig.showModulesPanel>

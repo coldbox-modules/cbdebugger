@@ -40,7 +40,6 @@ debugger = {
     debugPassword = "",
     maxPersistentRequestProfilers = 10,
     maxRCPanelQueryRows = 50,
-    showTracerPanel = true,
     expandedTracerPanel = true,
     showInfoPanel = true,
     expandedInfoPanel = true,

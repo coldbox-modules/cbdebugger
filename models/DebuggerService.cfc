@@ -35,11 +35,6 @@ component
 	property name="profilers" type="array";
 
 	/**
-	 * The collection of tracers we track in the debugger
-	 */
-	property name="tracers" type="array";
-
-	/**
 	 * The debugger configuration struct
 	 */
 	property name="debuggerConfig" type="struct";
@@ -81,8 +76,6 @@ component
 		variables.secretKey      = "";
 		// Create persistent profilers
 		variables.profilers      = [];
-		// Create persistent tracers
-		variables.tracers        = [];
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" ).getRuntime();
 		variables.Thread         = createObject( "java", "java.lang.Thread" );
@@ -186,6 +179,9 @@ component
 	 * @event The ColdBox context we will start the tracker on
 	 */
 	struct function createRequestTracker( required event ){
+		// Init the request tracers
+		request.tracers    = [];
+		// Init the request debugger tracking
 		request.cbDebugger = {
 			"id"            : variables.uuid.randomUUID(),
 			"timestamp"     : now(),
@@ -195,18 +191,11 @@ component
 			"executionTime" : 0,
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"timers"        : [],
+			"tracers"       : [],
 			"requestData"   : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
 			"response"      : { "statusCode" : 0, "contentType" : "" },
-			"coldbox"       : {
-				"currentRoutedUrl"   : "",
-				"currentRoute"       : "",
-				"currentRouteRecord" : "",
-				"currentRouteName"   : "",
-				"currentEvent"       : "",
-				"currentView"        : "",
-				"currentLayout"      : ""
-			},
-			"exception" : {}
+			"coldbox"       : {},
+			"exception"     : {}
 		};
 		return request.cbDebugger;
 	}
@@ -274,6 +263,7 @@ component
 		request.cbDebugger.append(
 			{
 				"timers"        : variables.timerService.getSortedTimers(),
+				"tracers"       : getTracers(),
 				"exception"     : exceptionData,
 				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
 				"response"      : {
@@ -281,13 +271,16 @@ component
 					"contentType" : getPageContextResponse().getContentType()
 				},
 				"coldbox" : {
-					"currentRoutedUrl"   : arguments.event.getCurrentRoutedUrl(),
-					"currentRoute"       : arguments.event.getCurrentRoute(),
-					"currentRouteRecord" : arguments.event.getCurrentRouteRecord(),
-					"currentRouteName"   : arguments.event.getCurrentRouteName(),
-					"currentEvent"       : arguments.event.getCurrentEvent(),
-					"currentView"        : arguments.event.getCurrentView(),
-					"currentLayout"      : arguments.event.getCurrentLayout()
+					"RoutedUrl"        : arguments.event.getCurrentRoutedUrl(),
+					"Route"            : arguments.event.getCurrentRoute(),
+					"RouteRecord"      : serializeJSON( arguments.event.getCurrentRouteRecord() ),
+					"RouteName"        : arguments.event.getCurrentRouteName(),
+					"Event"            : arguments.event.getCurrentEvent(),
+					"isEventCacheable" : arguments.event.isEventCacheable(),
+					"View"             : arguments.event.getCurrentView(),
+					"ViewModule"       : arguments.event.getCurrentViewModule(),
+					"Layout"           : arguments.event.getCurrentLayout(),
+					"LayoutModule"     : arguments.event.getCurrentLayoutModule()
 				}
 			},
 			true
@@ -348,15 +341,13 @@ component
 		timestamp = now(),
 		extraInfo = ""
 	){
-		// Max Check
-		if ( arrayLen( variables.tracers ) gte variables.debuggerConfig.maxPersistentRequestTracers ) {
-			resetTracers();
+		// Ensure we have the tracers array for the request
+		if ( isNull( request.tracers ) ) {
+			request.tracers = [];
 		}
 
 		// Push it
-		lock name="cbdebugger-tracers" type="readonly" timeout="10" throwOnTimeout="true" {
-			arrayPrepend( variables.tracers, arguments );
-		}
+		arrayPrepend( request.tracers, arguments );
 
 		return this;
 	}
@@ -365,10 +356,15 @@ component
 	 * Reset all tracers back to zero
 	 */
 	DebuggerService function resetTracers(){
-		lock name="cbdebugger-tracers" type="exclusive" timeout="10" throwOnTimeout="true" {
-			variables.tracers = [];
-		}
+		request.tracers = [];
 		return this;
+	}
+
+	/**
+	 * Get all the request tracers array
+	 */
+	array function getTracers(){
+		return request.tracers ?: [];
 	}
 
 	/**

@@ -7,7 +7,6 @@ component extends="coldbox.system.RestHandler" {
 	property name="debuggerService" inject="debuggerService@cbdebugger";
 	property name="timerService"    inject="timer@cbdebugger";
 
-
 	/**
 	 * Executes before all handler actions
 	 */
@@ -55,7 +54,6 @@ component extends="coldbox.system.RestHandler" {
 			viewModule: "cbdebugger",
 			args      : {
 				pageTitle        : "ColdBox Debugger",
-				currentPanel     : "",
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
@@ -64,7 +62,6 @@ component extends="coldbox.system.RestHandler" {
 				debuggerConfig   : getModuleSettings( "cbdebugger" ),
 				debuggerService  : variables.debuggerService,
 				environment      : variables.debuggerService.getEnvironment(),
-				tracers          : variables.debuggerService.getTracers(),
 				profilers        : variables.debuggerService.getProfilers(),
 				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}

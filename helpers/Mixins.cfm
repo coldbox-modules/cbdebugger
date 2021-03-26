@@ -59,4 +59,24 @@
 		return variables.wirebox.getInstance( "debuggerService@cbdebugger" );
 	}
 
+	/**
+	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
+	 * the same patterns
+	 *
+	 * @message The message to trace
+	 * @severity The severity of the message
+	 * @category The tracking category the message came from
+	 * @timestamp The timestamp of the message
+	 * @extraInfo Extra info to store in the tracer
+	 */
+	DebuggerService function cbTracer(
+		required message,
+		severity  = "info",
+		category  = "",
+		timestamp = now(),
+		extraInfo = ""
+	){
+		return getCBDebugger().pushTracer( argumentCollection=arguments );
+	}
+
 </cfscript>

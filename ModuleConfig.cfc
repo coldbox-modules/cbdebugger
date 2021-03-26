@@ -57,15 +57,11 @@ component {
 			profileInterceptions          : true,
 			// By default all interception events are excluded, you must include what you want to profile
 			includedInterceptions         : [],
-			// How many tracer messages to keep in stack before we start rotating: Default is a stack of 100 messages
-			maxPersistentRequestTracers   : 50,
 			// If enabled, the tracers will be cleaned upon rendering
 			clearTracersUponRendering     : true,
 			/**
 			 * PANEL VISIBILITY SETTINGS
 			 */
-			// Activate the tracer panel
-			showTracerPanel      : true,
 			// Show the panel expanded by default
 			expandedTracerPanel  : true,
 			// Show the info tracking panel

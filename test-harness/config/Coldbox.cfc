@@ -78,7 +78,6 @@
 				profileInterceptions          : true,
 				includedInterceptions         : [ "preProcess" ],
 				// Panels
-				showTracerPanel               : true,
 				expandedTracerPanel           : true,
 				showInfoPanel                 : true,
 				expandedInfoPanel             : true,

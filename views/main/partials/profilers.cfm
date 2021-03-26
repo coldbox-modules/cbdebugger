@@ -96,7 +96,7 @@
 					<strong>
 						Event:
 					</strong>
-					#thisProfiler.coldbox.currentEvent#
+					#thisProfiler.coldbox.event#
 				</div>
 			</td>
 
