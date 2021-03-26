@@ -22,13 +22,6 @@ component extends="coldbox.system.EventHandler" {
 		event.paramValue( "frequency", 0 );
 		// Don't show cf debug
 		cfsetting( showdebugoutput = "false" );
-	}
-
-
-	/**
-	 * Visualize the debugger as an incoming event
-	 */
-	any function index( event, rc, prc ){
 		// If not enabled, just 404 it
 		if ( !variables.debuggerService.getDebugMode() ) {
 			event.setHTTPHeader(
@@ -37,6 +30,13 @@ component extends="coldbox.system.EventHandler" {
 			);
 			return "Page Not Found";
 		}
+	}
+
+
+	/**
+	 * Visualize the debugger as an incoming event
+	 */
+	any function index( event, rc, prc ){
 		return "";
 	}
 
@@ -46,11 +46,6 @@ component extends="coldbox.system.EventHandler" {
 	function renderDebugger( event, rc, prc ){
 		// are we in visualizer mode?
 		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
-
-		// Are we in debug mode or not? If not, just return empty string
-		if ( !variables.debuggerService.getDebugMode() ) {
-			return "";
-		}
 
 		// Return the debugger layout+view
 		return renderLayout(
@@ -64,12 +59,11 @@ component extends="coldbox.system.EventHandler" {
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
-				inetHost         : variables.debuggerService.getInetHost(),
 				loadedModules    : variables.controller.getModuleService().getLoadedModules(),
 				moduleSettings   : getSetting( "modules" ),
-				debuggerService  : variables.debuggerService,
 				debuggerConfig   : getModuleSettings( "cbdebugger" ),
-				httpResponse     : variables.debuggerService.getPageContextResponse(),
+				debuggerService  : variables.debuggerService,
+				environment      : variables.debuggerService.getEnvironment(),
 				debugTimers      : variables.timerService.getSortedTimers(),
 				tracers          : variables.debuggerService.getTracers(),
 				profilers        : variables.debuggerService.getProfilers(),
@@ -82,11 +76,6 @@ component extends="coldbox.system.EventHandler" {
 	 * This action renders out the profiler panel back as HTML
 	 */
 	function renderProfiler( event, rc, prc ){
-		// Are we in debug mode or not? If not, just return empty string
-		if ( !variables.debuggerService.getDebugMode() ) {
-			return "";
-		}
-
 		// Return the debugger layout+view
 		return renderLayout(
 			layout    : "Monitor",
@@ -110,14 +99,6 @@ component extends="coldbox.system.EventHandler" {
 	 * This action renders out the caching panels
 	 */
 	function renderCacheMonitor( event, rc, prc ){
-		// Are we in debug mode or not? If not, just return empty string
-		if ( !variables.debuggerService.getDebugMode() ) {
-			return "";
-		}
-
-		// Incoming Refresh frequency
-		event.paramValue( "frequency", 0 );
-
 		// Return the debugger layout+view
 		return renderLayout(
 			layout    : "Monitor",

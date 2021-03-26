@@ -55,9 +55,9 @@ component
 	property name="debugPassword";
 
 	/**
-	 * The running host we are tracking on
+	 * Get the runtime environment
 	 */
-	property name="inetHost";
+	property name="environment" type="struct";
 
 	/**
 	 * Constructor
@@ -84,15 +84,28 @@ component
 		// Create persistent tracers
 		variables.tracers        = [];
 		// Runtime
-		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
+		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" ).getRuntime();
 		variables.Thread         = createObject( "java", "java.lang.Thread" );
 		// run modes
 		variables.debugMode      = variables.debuggerConfig.debugMode;
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
 		// uuid helper
 		variables.uuid           = createObject( "java", "java.util.UUID" );
-		// Store the host we are on
-		variables.inetHost       = discoverInetHost();
+
+		// Store Environment struct
+		variables.environment = {
+			"inetHost"            : discoverInetHost(),
+			"cfmlEngine"          : server.coldfusion.productName,
+			"cfmlVersion"         : ( server.keyExists( "lucee" ) ? server.lucee.version : server.coldfusion.productVersion ),
+			"javaVersion"         : variables.jvmRuntime.version().toString(),
+			"totalMemory"         : variables.jvmRuntime.totalMemory(),
+			"maxMemory"           : variables.jvmRuntime.maxMemory(),
+			"availableProcessors" : variables.jvmRuntime.availableProcessors(),
+			"coldboxName"         : variables.controller.getColdBoxSettings().codename,
+			"coldboxVersion"      : variables.controller.getColdBoxSettings().version,
+			"coldboxSuffix"       : variables.controller.getColdBoxSettings().suffix,
+			"coldboxModules"      : variables.controller.getModuleService().getLoadedModules()
+		};
 
 		// Initialize secret key
 		rotateSecretKey();
@@ -168,6 +181,44 @@ component
 	}
 
 	/**
+	 * Create a new request tracking structure
+	 *
+	 * @event The ColdBox context we will start the tracker on
+	 */
+	struct function createRequestProfiler( required event ){
+		request.cbDebugger = {
+			"id"            : variables.uuid.randomUUID(),
+			"timestamp"     : now(),
+			"ip"            : getRealIP(),
+			"threadInfo"    : getCurrentThread().toString(),
+			"startCount"    : getTickCount(),
+			"executionTime" : 0,
+			"fullUrl"       : arguments.event.getFullUrl(),
+			"timers"        : [],
+			"requestData"   : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
+			"response"      : { "statusCode" : 0, "contentType" : "" },
+			"coldbox"       : {
+				"currentRoutedUrl"   : "",
+				"currentRoute"       : "",
+				"currentRouteRecord" : "",
+				"currentRouteName"   : "",
+				"currentEvent"       : "",
+				"currentView"        : "",
+				"currentLayout"      : ""
+			},
+			"exception" : {}
+		};
+		return request.cbDebugger;
+	}
+
+	/**
+	 * Get the current request tracker struct
+	 */
+	struct function getRequestTracker(){
+		return request.cbDebugger;
+	}
+
+	/**
 	 * Reset the request tracking profilers
 	 */
 	DebuggerService function resetProfilers(){
@@ -183,28 +234,6 @@ component
 	 * @exception If there is an exception in the request, track it
 	 */
 	DebuggerService function recordProfiler(
-		required event,
-		required executionTime,
-		exception = {}
-	){
-		return pushProfiler(
-			variables.timerService.getTimers(),
-			arguments.event,
-			arguments.executionTime,
-			arguments.exception
-		);
-	}
-
-	/**
-	 * Push a profiler record (timers) into the tracking facilities
-	 *
-	 * @profilerRecord The array of timers to store
-	 * @event The request contex that requested the record
-	 * @executionTime The time it took for th request to finish
-	 * @exception If there is an exception in the request, track it
-	 */
-	DebuggerService function pushProfiler(
-		required profilerRecord,
 		required event,
 		required executionTime,
 		exception = {}
@@ -236,32 +265,38 @@ component
 			};
 		}
 
+		// Verify we have the tracking struct, we might not have it due to exceptions
+		if ( !request.keyExists( "cbDebugger" ) ) {
+			createRequestProfiler( arguments.event );
+		}
+
+		// Close out the profiler
+		request.cbDebugger.append(
+			{
+				"timers"        : variables.timerService.getTimers(),
+				"exception"     : exceptionData,
+				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
+				"response"      : {
+					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
+					"contentType" : getPageContextResponse().getContentType()
+				},
+				"coldbox" : {
+					"currentRoutedUrl"   : arguments.event.getCurrentRoutedUrl(),
+					"currentRoute"       : arguments.event.getCurrentRoute(),
+					"currentRouteRecord" : arguments.event.getCurrentRouteRecord(),
+					"currentRouteName"   : arguments.event.getCurrentRouteName(),
+					"currentEvent"       : arguments.event.getCurrentEvent(),
+					"currentView"        : arguments.event.getCurrentView(),
+					"currentLayout"      : arguments.event.getCurrentLayout()
+				}
+			},
+			true
+		);
+
 		// New Profiler record to store
 		arrayAppend(
 			variables.profilers,
-			{
-				"id"                 : variables.uuid.randomUUID(),
-				"timestamp"          : now(),
-				"ip"                 : getRealIP(),
-				"inetHost"           : variables.inetHost,
-				"threadName"         : getThreadName(),
-				"executionTime"      : arguments.executionTime,
-				"timers"             : arguments.profilerRecord,
-				// Log the http body if user wants it
-				"requestData"        : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
-				// Set the content type according to context response or exception
-				"statusCode"         : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
-				"contentType"        : getPageContextResponse().getContentType(),
-				"currentRoutedUrl"   : arguments.event.getCurrentRoutedUrl(),
-				"currentRoute"       : arguments.event.getCurrentRoute(),
-				"currentRouteRecord" : arguments.event.getCurrentRouteRecord(),
-				"currentRouteName"   : arguments.event.getCurrentRouteName(),
-				"currentEvent"       : arguments.event.getCurrentEvent(),
-				"currentView"        : arguments.event.getCurrentView(),
-				"currentLayout"      : arguments.event.getCurrentLayout(),
-				"fullUrl"            : arguments.event.getFullUrl(),
-				"exception"          : exceptionData
-			}
+			request.cbDebugger
 		);
 
 		return this;

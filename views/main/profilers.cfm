@@ -80,35 +80,26 @@
 		CFML Engine:
 	</div>
 	<div class="fw_debugContentCell">
-		#server.coldfusion.productName#
-		<cfif server.keyExists( "lucee" )>
-			#server.lucee.version#
-		<cfelse>
-			#server.coldfusion.productVersion#
-		</cfif>
-		<cfif server.keyExists( "system" )>
-			/
-			#server.system.properties[ "java.runtime.name" ]#
-			#server.system.properties[ "java.version" ]#
-		</cfif>
+		#args.environment.cfmlEngine#
+		#args.environment.cfmlVersion#
+		/
+		Java #args.environment.javaVersion#
 	</div>
 
 	<!--- Render Profilers --->
 	<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables mt10" width="100%">
 		<tr>
 			<th align="left" width="100">
-				Timestamp
+				Timestamp<br>
+				Ip
 			</th>
 			<th align="left" width="150">
 				Status Code<br>
 				Content Type
 			</th>
-			<th align="left" width="150">
+			<th align="left" width="175">
 				Server<br>
 				Thread
-			</th>
-			<th align="left" width="75">
-				Request IP
 			</th>
 			<th align="left">
 				Request
@@ -134,55 +125,64 @@
 					<div>
 						#timeformat( thisProfiler.timestamp,"hh:mm:ss.l tt")#
 					</div>
+					<div class="mt5">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+						</svg>
+						<a
+							href="https://www.whois.com/whois/#thisProfiler.ip#"
+							target="_blank"
+							title="Open whois for this ip address"
+						>
+							#thisProfiler.ip#
+						</a>
+					</div>
 				</td>
 				<td align="left">
 					<div>
-						<cfif thisProfiler.statusCode gte 200 && thisProfiler.statusCode lt 300 >
+						<cfif thisProfiler.response.statusCode gte 200 && thisProfiler.response.statusCode lt 300 >
 							<span class="fw_greenText">
-								#thisProfiler.statusCode#
+								#thisProfiler.response.statusCode#
 							</span>
-						<cfelseif thisProfiler.statusCode gte 300 && thisProfiler.statusCode lt 400 >
+						<cfelseif thisProfiler.response.statusCode gte 300 && thisProfiler.response.statusCode lt 400 >
 							<span class="fw_blueText">
-								#thisProfiler.statusCode#
+								#thisProfiler.response.statusCode#
 							</span>
-						<cfelseif thisProfiler.statusCode gte 400>
+						<cfelseif thisProfiler.response.statusCode gte 400>
 							<span class="fw_redText">
-								#thisProfiler.statusCode#
+								#thisProfiler.response.statusCode#
 							</span>
 						</cfif>
 					</div>
-					<div>
-						#thisProfiler.contentType#
+					<div class="mt5">
+						#thisProfiler.response.contentType#
 					</div>
 				</td>
 				<td>
 					<div>
-						#thisProfiler.inetHost#
+						#args.environment.inetHost#
 					</div>
-					<div>
-						#thisProfiler.threadName#
+					<div class="mt5">
+						#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 					</div>
 				</td>
 				<td>
-					#thisProfiler.ip#
-				</td>
-				<td>
 					<div>
-						#thisProfiler.requestData.method#>#thisProfiler.fullUrl#
+						#thisProfiler.requestData.method#:#thisProfiler.fullUrl#
 					</div>
-					<div class="mt10">
+					<div class="mt10 fw_blueText">
 						<strong>
 							Event:
 						</strong>
-						#thisProfiler.currentEvent#
+						#thisProfiler.coldbox.currentEvent#
 
-						<cfif len( thisProfiler.currentRoute )>
+						<cfif len( thisProfiler.coldbox.currentRoute )>
 							<strong>
 								Route:
 							</strong>
-							#thisProfiler.currentRoute#
-							<cfif len( thisProfiler.currentRouteName )>
-								(#thisProfiler.currentRouteName#)
+							#thisProfiler.coldbox.currentRoute#
+							<cfif len( thisProfiler.coldbox.currentRouteName )>
+								(#thisProfiler.coldbox.currentRouteName#)
 							</cfif>
 						</cfif>
 					</div>
@@ -297,11 +297,11 @@
 
 							<tr>
 								<th width="200">Status Code:</th>
-								<td>#thisProfiler.statusCode#</td>
+								<td>#thisProfiler.response.statusCode#</td>
 							</tr>
 							<tr>
 								<th width="200">Content Type:</th>
-								<td>#thisProfiler.contentType#</td>
+								<td>#thisProfiler.response.contentType#</td>
 							</tr>
 						</table>
 
