@@ -229,5 +229,18 @@
 			</div>
 		</cfif>
 	</div>
+
+	<!--- Scroll to top --->
+	<div class="mt10 mb10 textCenter">
+		<button
+			type="button"
+			title="Got to top of report"
+			onClick="cbdScrollToProfilerReport()"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+			</svg>
+		</button>
+	</div>
 </div>
 </cfoutput>

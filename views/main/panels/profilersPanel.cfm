@@ -104,6 +104,7 @@
 	</div>
 
 	<!--- Render Profilers --->
+	<a name="cbd-profilers"></a>
 	<div id="cbd-profilers">
 		#renderView(
 			view : "main/partials/profilers",

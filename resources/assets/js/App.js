@@ -1,7 +1,7 @@
 import $cb from "jquery";
 
 $cb( document ).ready( function(){
-	window.cbDebuggerUrl = $( "#cbd-debugger" ).data().appurl;
+	window.cbDebuggerUrl = $cb( "#cbd-debugger" ).data().appurl;
 	console.log( "ColdBox Debugger Loaded at " + window.cbDebuggerUrl );
 } );
 
@@ -9,14 +9,14 @@ $cb( document ).ready( function(){
  * Send an ajax command to clear the profilers
  */
 window.cbdClearProfilers = function(){
-	$( "#cbd-buttonClearProfilers > svg" ).addClass( "cbd-spinner" );
+	$cb( "#cbd-buttonClearProfilers > svg" ).addClass( "cbd-spinner" );
 	$cb.getJSON( cbDebuggerUrl + "cbDebugger/clearProfilers", ( data ) => {
 		if ( data.error ){
 			alert( data.messages.toString() );
 		} else {
-			$( "#cbd-profilers" ).html( data.messages.toString() );
+			$cb( "#cbd-profilers" ).html( data.messages.toString() );
 		}
-		$( "#cbd-buttonClearProfilers > svg" ).removeClass( "cbd-spinner" );
+		$cb( "#cbd-buttonClearProfilers > svg" ).removeClass( "cbd-spinner" );
 		cbdRefreshProfilers();
 	} );
 };
@@ -25,11 +25,18 @@ window.cbdClearProfilers = function(){
  * Send an ajax command to render the profilers
  */
 window.cbdRefreshProfilers = function(){
-	$( "#cbd-buttonRefreshProfilers > svg" ).addClass( "cbd-spinner" );
+	$cb( "#cbd-buttonRefreshProfilers > svg" ).addClass( "cbd-spinner" );
 	$cb.get( cbDebuggerUrl + "cbDebugger/renderProfilers", ( response ) => {
-		$( "#cbd-buttonRefreshProfilers > svg" ).removeClass( "cbd-spinner" );
-		$( "#cbd-profilers" ).html( response );
+		$cb( "#cbd-buttonRefreshProfilers > svg" ).removeClass( "cbd-spinner" );
+		$cb( "#cbd-profilers" ).html( response );
 	} );
+};
+
+/**
+ * Scroll to the top of the profiler report
+ */
+window.cbdScrollToProfilerReport = function(){
+	$cb( document ).scrollTop( $cb( "#cbd-profilers" ).offset().top - 10 );
 };
 
 /**
@@ -37,13 +44,14 @@ window.cbdRefreshProfilers = function(){
  * @param {*} id The profiler id to load
  */
 window.cbdGetProfilerReport = function( id ){
-	$( "#cbd-buttonGetProfilerReport" + id + " > svg" ).addClass( "cbd-spinner" );
+	$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).addClass( "cbd-spinner" );
 	$cb.get(
 		cbDebuggerUrl + "cbDebugger/renderProfilerReport",
 		{ id: id },
 		( response ) => {
-			$( "#cbd-profilers" ).html( response );
-			$( "#cbd-buttonGetProfilerReport" + id + " > svg" ).removeClass( "cbd-spinner" );
+			$cb( "#cbd-profilers" ).html( response );
+			$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).removeClass( "cbd-spinner" );
+			cbdScrollToProfilerReport();
 		}
 	);
 };
