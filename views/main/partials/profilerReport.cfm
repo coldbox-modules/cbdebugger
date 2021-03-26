@@ -51,7 +51,7 @@
 
 			</div>
 
-			<div class="mt5 ml30 size12">
+			<div class="mt5 ml30 size12 fw_badge_light">
 				<strong>Event: </strong>
 				<span class="textBlue mr5">
 					#args.profiler.coldbox.event#
