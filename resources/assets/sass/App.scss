@@ -14,6 +14,23 @@
 		vertical-align: middle;
 	}
 
+	button{
+		border-radius: 10px;
+		padding: 5px 5px;
+		border: 1px solid #eaeaea;
+
+		&:hover{
+			border: 1px solid #333333;
+			background-color: #f7f7f7;
+			cursor: pointer;
+		}
+	}
+
+	p{
+		font-size: inherit;
+		font-weight: inherit;
+	}
+
 	.fw_titles{
 		font-size: 10px;
 		font-weight: bold;
@@ -246,6 +263,7 @@
 		overflow:scroll;
 		height: 300px;
 	}
+
 	.fw_errorDiv{
 		font-size:12px;
 		font-family: verdana;
@@ -299,18 +317,6 @@
 	}
 
 	/** UTITLITIES **/
-
-	button{
-		border-radius: 10px;
-		padding: 5px 5px;
-		border: 1px solid #eaeaea;
-
-		&:hover{
-			border: 1px solid #333333;
-			background-color: #f7f7f7;
-			cursor: pointer;
-		}
-	}
 
 	.floatLeft { float:left !important; }
 	.floatRight { float:right !important; }

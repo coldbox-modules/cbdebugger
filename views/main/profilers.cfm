@@ -89,17 +89,16 @@
 	<!--- Render Profilers --->
 	<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables mt10" width="100%">
 		<tr>
-			<th align="left" width="100">
+			<th align="left" width="125">
 				Timestamp<br>
 				Ip
 			</th>
 			<th align="left" width="150">
-				Status Code<br>
-				Content Type
-			</th>
-			<th align="left" width="175">
 				Server<br>
 				Thread
+			</th>
+			<th align="left" width="75">
+				Response Type
 			</th>
 			<th align="left">
 				Request
@@ -107,8 +106,12 @@
 			<th width="50">
 				Timers
 			</th>
-			<th width="100">
-				Execution Time
+			<th width="50">
+				Tracers
+			</th>
+			<th width="50">
+				Time<br>
+				(ms)
 			</th>
 			<th width="50">
 				Actions
@@ -118,12 +121,12 @@
 		<cfloop from="#arrayLen( args.profilers )#" to="1" step="-1" index="x">
 			<cfset thisProfiler = args.profilers[ x ]>
 			<tr>
-				<td align="right">
+				<td align="left">
 					<div>
-						#dateformat( thisProfiler.timestamp,"mmm.dd.yyyy" )#
+						#timeformat( thisProfiler.timestamp, "hh:mm:ss.l tt" )#
 					</div>
-					<div>
-						#timeformat( thisProfiler.timestamp,"hh:mm:ss.l tt")#
+					<div class="textMuted">
+						<small>#dateformat( thisProfiler.timestamp, "mmm.dd.yyyy" )#</small>
 					</div>
 					<div class="mt5">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,6 +139,14 @@
 						>
 							#thisProfiler.ip#
 						</a>
+					</div>
+				</td>
+				<td>
+					<div>
+						#args.environment.inetHost#
+					</div>
+					<div class="mt5">
+						#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 					</div>
 				</td>
 				<td align="left">
@@ -154,16 +165,8 @@
 							</span>
 						</cfif>
 					</div>
-					<div class="mt5">
-						#thisProfiler.response.contentType#
-					</div>
-				</td>
-				<td>
-					<div>
-						#args.environment.inetHost#
-					</div>
-					<div class="mt5">
-						#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
+					<div class="mt5 textMuted">
+						#thisProfiler.response.contentType.listFirst( ";" )#
 					</div>
 				</td>
 				<td>
@@ -190,13 +193,16 @@
 				<td align="center">
 					#arrayLen( thisProfiler.timers )#
 				</td>
+				<td align="center">
+					#arrayLen( thisProfiler.tracers ?: [] )#
+				</td>
 				<td align="right">
 					<cfif thisProfiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
 						<span class="fw_redText">
-							#numberFormat( thisProfiler.executionTime )#ms
+							#numberFormat( thisProfiler.executionTime )#
 						</span>
 					<cfelse>
-						#numberFormat( thisProfiler.executionTime )#ms
+						#numberFormat( thisProfiler.executionTime )#
 					</cfif>
 				</td>
 				<td align="center">
