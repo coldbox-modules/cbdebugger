@@ -210,22 +210,6 @@
 				</table>
 
 				<!--- **************************************************************--->
-				<!--- Response Data --->
-				<!--- **************************************************************--->
-				<h2>Response</h2>
-				<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-
-					<tr>
-						<th width="200">Status Code:</th>
-						<td>#args.profiler.response.statusCode#</td>
-					</tr>
-					<tr>
-						<th width="200">Content Type:</th>
-						<td>#args.profiler.response.contentType#</td>
-					</tr>
-				</table>
-
-				<!--- **************************************************************--->
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
 				#renderView(

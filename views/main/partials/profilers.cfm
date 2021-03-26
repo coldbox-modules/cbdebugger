@@ -31,7 +31,7 @@
 	</tr>
 
 	<cfloop array="#args.profilers#" index="thisProfiler">
-		<tr class="content" <cfif thisProfiler.response.statusCode gte 400>class="bgLightRed"</cfif>>
+		<tr <cfif thisProfiler.response.statusCode gte 400>class="bgLightRed"</cfif>>
 
 			<!--- TIMESTAMP + IP --->
 			<td align="left">
