@@ -185,7 +185,7 @@ component
 	 *
 	 * @event The ColdBox context we will start the tracker on
 	 */
-	struct function createRequestProfiler( required event ){
+	struct function createRequestTracker( required event ){
 		request.cbDebugger = {
 			"id"            : variables.uuid.randomUUID(),
 			"timestamp"     : now(),

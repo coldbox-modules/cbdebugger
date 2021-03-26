@@ -22,11 +22,11 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to request captures
 	 */
 	function onRequestCapture( event, interceptData, rc, prc ){
-		// The timer hashes
+		// The timer hashes are stored here for the request and then destroyed
 		request.$timerHashes = {};
 
 		// init tracker variables for the request
-		variables.debuggerService.createRequestProfiler( event );
+		variables.debuggerService.createRequestTracker( event );
 
 		// Determine if we are turning the debugger on/off
 		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ) {
