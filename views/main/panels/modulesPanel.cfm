@@ -1,4 +1,5 @@
 <cfoutput>
+<!--- Panel Header --->
 <div class="fw_titles"  onClick="fw_toggle('fw_modules')" >
 	&nbsp;
 	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -6,95 +7,106 @@
 	</svg>
 	ColdBox Modules
 </div>
+
+<!--- Panel Content --->
 <div class="fw_debugContent<cfif args.debuggerConfig.expandedModulesPanel>View</cfif>" id="fw_modules">
 
-	<div>
-		<!--- Module Commands --->
-		<input type="button" value="Reload All"
-			   name="cboxbutton_reloadModules"
-			   title="Reload All Modules"
-			   onClick="location.href='#args.URLBase#?cbox_command=reloadModules'" />
-		<input type="button" value="Unload All"
-			   name="variables."
-			   title="Unload all modules from the application"
-			   onClick="location.href='#args.URLBase#?cbox_command=unloadModules'" />
-
+	<!--- Toolbar --->
+	<div class="floatRight">
+		<!--- Reload All Modules --->
+		<button
+			type="button"
+			title="Reload All Modules"
+			id="cbd-buttonReloadAllModules"
+			onClick="cbdReloadAllModules()"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+			</svg>
+		</button>
 	</div>
 
 	<p>
-		Below you can see the loaded application modules.
+		Below you can see the registered and activated application modules.
 	</p>
 
-	<div>
-		<!--- Module Charts --->
-		<table border="0" cellpadding="0" cellspacing="1" class="fw_debugTables">
-			<tr >
-				<th>Module</th>
-				<th width="50">Version</th>
-				<th width="75">Load Time</th>
-				<th align="center" width="130" >CMDS</th>
-			</tr>
-			<cfloop array="#args.loadedModules#" index="thisModule">
-				<cfset thisModuleConfig = getModuleConfig( thisModule )>
-			<tr>
+	<!--- Module Charts --->
+	<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables">
+		<tr >
+			<th align="left">Module / Version</th>
+			<th align="left" width="300">Mapping</th>
+			<th align="center" width="100" >CMDS</th>
+		</tr>
+
+		<cfloop array="#args.loadedModules#" index="thisModule">
+			<cfset thisModuleConfig = getModuleConfig( thisModule )>
+			<tr id="cbd-modulerow-#thisModule#">
 				<td title=" Invocation Path: #thisModuleConfig.invocationPath#">
 
 					<div>
+						<cfif len( thisModuleConfig.entryPoint )>
+							<a href="#event.buildLink( thisModuleConfig.entryPoint )#" title="Open Module Entry Point">
+								<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+								</svg>
+							</a>
+						</cfif>
+
+						<!--- Title --->
 						<strong>#thisModuleConfig.title#</strong>
-						(#thisModuleConfig.mapping#)
+						<!--- Version --->
+						<cfif len( thisModuleConfig.version )>
+							<span class="fw_badge_light">
+								#thisModuleConfig.version#
+							</span>
+						</cfif>
 					</div>
 
-					<div>
+					<div class="mt5">
 						#thisModuleConfig.description#
 					</div>
 
-					<div>
+					<div class="mt5">
 						<cfdump var="#getModuleSettings( thisModule )#" expand="false" label="Settings (click to expand)">
 					</div>
 				</td>
-				<td align="center">
-					#thisModuleConfig.Version#
-				</td>
-				<td align="center">
-					#dateFormat( thisModuleConfig.loadTime, "mmm-dd" )# <br />
-					#timeFormat( thisModuleConfig.loadTime, "hh:mm:ss tt" )#
-				</td>
-				<td align="center">
-					<cfif len( thisModuleConfig.entryPoint )>
-						<div>
-							<input
-								type="button"
-								value="Open"
-								name="cboxbutton_open"
-								title="Opens the module entry point"
-								onClick="location.href='#event.buildLink( thisModuleConfig.entryPoint )#'">
-						</div>
-					</cfif>
 
-					<div>
-						<input
-							type="button"
-							value="Unload"
-							name="cboxbutton_unloadModule"
-							title="Unloads This Module Only!"
-							onClick="location.href='#args.URLBase#?cbox_command=unloadModule&module=#thisModule#'">
+				<!--- Mapping --->
+				<td align="left">
+					<div class="fw_badge_light mt5">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+						</svg>
+						#thisModuleConfig.mapping#
 					</div>
+				</td>
 
-					<div>
-						<input
-							type="button"
-							value="Reload"
-							name="cboxbutton_unloadModule"
-							title="Reloads This Module Only!"
-							onClick="location.href='#args.URLBase#?cbox_command=reloadModule&module=#thisModule#'">
-					</div>
+				<!--- Actions --->
+				<td align="center">
+					<button
+						type="button"
+						title="Unloads This Module!"
+						onClick="cbdUnloadModule( '#thisModule#', this )"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+					</button>
+
+					<button
+						type="button"
+						title="Reload This Module!"
+						onClick="cbdReloadModule( '#thisModule#', this )"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+						</svg>
+					</button>
 				</td>
 			</tr>
-			</cfloop>
+		</cfloop>
 
-		</table>
-
-	</div>
+	</table>
 
 </div>
 </cfoutput>

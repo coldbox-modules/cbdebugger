@@ -261,30 +261,6 @@ component extends="coldbox.system.Interceptor" {
 
 		// Commands
 		switch ( command ) {
-			case "clearTracers": {
-				variables.debuggerService.resetTracers();
-				break;
-			}
-			case "clearProfilers": {
-				variables.debuggerService.resetProfilers();
-				break;
-			}
-			case "reloadModules": {
-				variables.controller.getModuleService().reloadAll();
-				break;
-			}
-			case "unloadModules": {
-				variables.controller.getModuleService().unloadAll();
-				break;
-			}
-			case "reloadModule": {
-				variables.controller.getModuleService().reload( event.getValue( "module", "" ) );
-				break;
-			}
-			case "unloadModule": {
-				variables.controller.getModuleService().unload( event.getValue( "module", "" ) );
-				break;
-			}
 			// Caching Reporting Commands
 			case "expirecache":
 			case "reapcache":

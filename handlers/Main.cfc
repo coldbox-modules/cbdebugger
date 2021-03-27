@@ -125,4 +125,37 @@ component extends="coldbox.system.RestHandler" {
 		);
 	}
 
+	/**
+	 * Reload all modules
+	 */
+	function reloadAllModules( event, rc, prc ){
+		variables.controller.getModuleService().reloadAll();
+		event.getResponse().addMessage( "Modules Reloaded!" );
+	}
+
+	/**
+	 * Unload a modules
+	 */
+	function unloadModule( event, rc, prc ){
+		event.paramValue( "module", "" );
+		// variables.controller.getModuleService().unload( rc.module );
+		event.getResponse().addMessage( "Module #rc.module# Unloaded!" );
+	}
+
+	/**
+	 * Reload a modules
+	 */
+	function reloadModule( event, rc, prc ){
+		event.paramValue( "module", "" );
+		variables.controller.getModuleService().reload( rc.module );
+		event.getResponse().addMessage( "Module #rc.module# reloaded!" );
+	}
+
+	/**
+	 * Get runtime environment
+	 */
+	function environment( event, rc, prc ){
+		event.getResponse().setData( variables.debuggerService.getEnvironment() );
+	}
+
 }
