@@ -69,19 +69,13 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * This action renders out the caching panels
+	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){
 		// Return the debugger layout+view
-		return renderLayout(
-			layout    : "Monitor",
-			module    : "cbdebugger",
-			view      : "main/cacheMonitor",
-			viewModule: "cbdebugger",
-			args      : {
-				pageTitle    : "ColdBox CacheBox Monitor",
-				manifestRoot : event.getModuleRoot( "cbDebugger" ) & "/includes"
-			}
+		return renderView(
+			view  : "main/cacheMonitor",
+			module: "cbdebugger"
 		);
 	}
 

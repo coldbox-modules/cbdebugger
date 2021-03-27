@@ -53,6 +53,7 @@
 			<div class="fw_debugPanel">
 				#renderView()#
 			</div>
+
 			<!--- Event --->
 			#announce( "afterDebuggerPanel" )#
 

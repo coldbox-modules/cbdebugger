@@ -48,10 +48,6 @@ component extends="coldbox.system.Interceptor" {
 			debuggerCommands( arguments.event );
 			// panel rendering
 			switch ( event.getValue( "debugPanel", "" ) ) {
-				case "profiler": {
-					event.overrideEvent( "cbdebugger:main.renderProfiler" );
-					break;
-				}
 				case "cache":
 				case "cacheReport":
 				case "cacheContentReport":
@@ -81,10 +77,7 @@ component extends="coldbox.system.Interceptor" {
 		buffer
 	){
 		// If we are in a command or panel rendering, exit
-		if (
-			arguments.event.getTrimValue( "cbox_command", "" ).len() ||
-			arguments.event.getTrimValue( "debugPanel", "" ).len()
-		) {
+		if ( arguments.event.getTrimValue( "debugPanel", "" ).len() ) {
 			return;
 		}
 
