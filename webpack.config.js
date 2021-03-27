@@ -54,6 +54,8 @@ module.exports = elixir( mix => {
 				name           : "vendor.min",
 				entryDirectory : ""
 			}
-		);
+		)
+		.copy( "resources/assets/images", "includes/images" )
+	;
 
 } );
