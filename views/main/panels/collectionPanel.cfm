@@ -2,12 +2,12 @@
 <!--- Public Collection --->
 <table border="0" cellpadding="0" cellspacing="1" class="cbd-tables" width="100%">
 	<tr>
-		<th colspan="2">#thisCollectionType# Collection</th>
+		<th colspan="2">#args.collectionType# Collection</th>
 	</tr>
-	<cfloop array="#thisCollection.keyArray().sort( "textnocase" )#" index="thisKey">
+	<cfloop array="#args.collection.keyArray().sort( "textnocase" )#" index="thisKey">
 		<!--- Identify Value or null --->
-		<cfif !isNull( thisCollection[ thisKey ] )>
-			<cfset thisValue = thisCollection[ thisKey ]>
+		<cfif !isNull( args.collection[ thisKey ] )>
+			<cfset thisValue = args.collection[ thisKey ]>
 		<cfelse>
 			<cfset thisValue = "<em>NULL</em>">
 		</cfif>
