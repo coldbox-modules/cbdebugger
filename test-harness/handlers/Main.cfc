@@ -3,9 +3,55 @@
  */
 component {
 
+	property name="qb" inject="queryBuilder@qb";
+
+
+	/**
+	 * onRequestStart
+	 */
+	function onRequestStart( event, rc, prc ){
+		prc.blogCategories = qb
+			.newQuery()
+			.from( "categories" )
+			.orderBy( "category" )
+			.get();
+		prc.blogEntries = qb
+			.newQuery()
+			.from( "blogEntries" )
+			.orderBy( "blogEntriesdateUpdated", "desc" )
+			.get();
+	}
+
+
 	// Index
 	any function index( event, rc, prc ){
 		getInstance( "TestService" ).testMethod();
+
+		prc.blogEntries = qb
+			.newQuery()
+			.from( "blogEntries" )
+			.orderBy( "blogEntriesdateUpdated", "desc" )
+			.get();
+
+		prc.blogEntry = qb
+			.newQuery()
+			.from( "blogEntries" )
+			.where( "blogEntriesId", 1 )
+			.get();
+
+		prc.blogCategories = qb
+			.newQuery()
+			.from( "categories" )
+			.orderBy( "category" )
+			.get();
+
+		prc.users = qb
+			.newQuery()
+			.from( "users" )
+			.where( "isActive", true )
+			.orderBy( "lastName" )
+			.get();
+
 		log.info( "in the index event firing" );
 	}
 

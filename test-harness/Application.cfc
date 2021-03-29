@@ -38,6 +38,7 @@ component {
 
 	// Mappings
 	this.mappings[ "/root" ] = COLDBOX_APP_ROOT_PATH;
+	this.datasource          = "coolblog";
 
 	// Map back to its root
 	moduleRootPath = reReplaceNoCase(

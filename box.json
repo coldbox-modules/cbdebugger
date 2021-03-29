@@ -37,8 +37,8 @@
     ],
     "scripts":{
         "release":"recipe build/release.boxr",
-        "format":"cfformat run handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc --overwrite",
-        "format:watch":"cfformat watch handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc ./.cfformat.json",
-        "format:check":"cfformat check handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,*.cfc"
+        "format":"cfformat run handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc --overwrite",
+        "format:watch":"cfformat watch handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+        "format:check":"cfformat check handlers,helpers,includes/,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc"
     }
 }

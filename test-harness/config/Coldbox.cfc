@@ -12,7 +12,7 @@
 			modulesExternalLocation : [],
 			// Implicit Events
 			defaultEvent            : "",
-			requestStartHandler     : "",
+			requestStartHandler     : "main.onRequestStart",
 			requestEndHandler       : "",
 			applicationStartHandler : "main.onAppInit",
 			applicationEndHandler   : "",
