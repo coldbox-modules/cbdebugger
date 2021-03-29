@@ -48,7 +48,9 @@ component {
 			// How many rows to dump for object collections if the RC panel is activated
 			maxRCPanelQueryRows           : 50,
 			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
-			slowExecutionThreshold        : 200,
+			slowExecutionThreshold        : 1000,
+			// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
+			slowTimerThreshold            : 250,
 			// Profile model objects annotated with the `profile` annotation
 			profileObjects                : true,
 			// If enabled, will trace the results of any methods that are being profiled

@@ -69,19 +69,13 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * This action renders out the caching panels
+	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){
 		// Return the debugger layout+view
-		return renderLayout(
-			layout    : "Monitor",
-			module    : "cbdebugger",
-			view      : "main/cacheMonitor",
-			viewModule: "cbdebugger",
-			args      : {
-				pageTitle    : "ColdBox CacheBox Monitor",
-				manifestRoot : event.getModuleRoot( "cbDebugger" ) & "/includes"
-			}
+		return renderView(
+			view  : "main/cacheMonitor",
+			module: "cbdebugger"
 		);
 	}
 
@@ -123,6 +117,39 @@ component extends="coldbox.system.RestHandler" {
 			},
 			prePostExempt: true
 		);
+	}
+
+	/**
+	 * Reload all modules
+	 */
+	function reloadAllModules( event, rc, prc ){
+		variables.controller.getModuleService().reloadAll();
+		event.getResponse().addMessage( "Modules Reloaded!" );
+	}
+
+	/**
+	 * Unload a modules
+	 */
+	function unloadModule( event, rc, prc ){
+		event.paramValue( "module", "" );
+		// variables.controller.getModuleService().unload( rc.module );
+		event.getResponse().addMessage( "Module #rc.module# Unloaded!" );
+	}
+
+	/**
+	 * Reload a modules
+	 */
+	function reloadModule( event, rc, prc ){
+		event.paramValue( "module", "" );
+		variables.controller.getModuleService().reload( rc.module );
+		event.getResponse().addMessage( "Module #rc.module# reloaded!" );
+	}
+
+	/**
+	 * Get runtime environment
+	 */
+	function environment( event, rc, prc ){
+		event.getResponse().setData( variables.debuggerService.getEnvironment() );
 	}
 
 }

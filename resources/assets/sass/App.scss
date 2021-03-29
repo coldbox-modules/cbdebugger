@@ -45,6 +45,11 @@
 		font-weight: inherit;
 	}
 
+	.cbd-flex{
+		display: flex;
+		align-items: center;
+	}
+
 	.cbd-tables{
 		border:1px outset #93C2FF;
 		background-color: #eeeeee;
@@ -185,13 +190,6 @@
 	.fw_debugContentCell{
 		clear:right;
 		height: 20px;
-	}
-
-	.fw_renderTime{
-		margin-top: 20px;
-		margin-bottom: 20px;
-		font-weight: bold;
-		font-style: italic;
 	}
 
 	.fw_redText{

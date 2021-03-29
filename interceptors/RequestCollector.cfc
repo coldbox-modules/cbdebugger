@@ -48,10 +48,6 @@ component extends="coldbox.system.Interceptor" {
 			debuggerCommands( arguments.event );
 			// panel rendering
 			switch ( event.getValue( "debugPanel", "" ) ) {
-				case "profiler": {
-					event.overrideEvent( "cbdebugger:main.renderProfiler" );
-					break;
-				}
 				case "cache":
 				case "cacheReport":
 				case "cacheContentReport":
@@ -81,10 +77,7 @@ component extends="coldbox.system.Interceptor" {
 		buffer
 	){
 		// If we are in a command or panel rendering, exit
-		if (
-			arguments.event.getTrimValue( "cbox_command", "" ).len() ||
-			arguments.event.getTrimValue( "debugPanel", "" ).len()
-		) {
+		if ( arguments.event.getTrimValue( "debugPanel", "" ).len() ) {
 			return;
 		}
 
@@ -261,30 +254,6 @@ component extends="coldbox.system.Interceptor" {
 
 		// Commands
 		switch ( command ) {
-			case "clearTracers": {
-				variables.debuggerService.resetTracers();
-				break;
-			}
-			case "clearProfilers": {
-				variables.debuggerService.resetProfilers();
-				break;
-			}
-			case "reloadModules": {
-				variables.controller.getModuleService().reloadAll();
-				break;
-			}
-			case "unloadModules": {
-				variables.controller.getModuleService().unloadAll();
-				break;
-			}
-			case "reloadModule": {
-				variables.controller.getModuleService().reload( event.getValue( "module", "" ) );
-				break;
-			}
-			case "unloadModule": {
-				variables.controller.getModuleService().unload( event.getValue( "module", "" ) );
-				break;
-			}
 			// Caching Reporting Commands
 			case "expirecache":
 			case "reapcache":

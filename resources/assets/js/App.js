@@ -57,6 +57,69 @@ window.cbdGetProfilerReport = function( id ){
 };
 
 /**
+ * Reload all modules
+ * @param {*} btn The caller button
+ */
+window.cbdReloadAllModules = function( btn ){
+	$cb( this ).find( "svg" ).addClass( "cbd-spinner" );
+	$cb.getJSON(
+		cbDebuggerUrl + "cbDebugger/reloadAllModules",
+		( data ) => {
+			if ( data.error ){
+				alert( data.messages.toString() );
+			} else {
+				alert( "All modules reloaded!" );
+			}
+			$cb( this ).find( "svg" ).removeClass( "cbd-spinner" );
+		}
+	);
+};
+
+/**
+ * Reload a module
+ * @param {*} module The module to reload
+ * @param {*} btn The caller button
+ */
+window.cbdReloadModule = function( module, btn ){
+	$cb( this ).find( "svg" ).addClass( "cbd-spinner" );
+	$cb.getJSON(
+		cbDebuggerUrl + "cbDebugger/reloadModule",
+		{ module: module },
+		( data ) => {
+			if ( data.error ){
+				alert( data.messages.toString() );
+			} else {
+				alert( module + " reloaded!" );
+			}
+			$cb( this ).find( "svg" ).removeClass( "cbd-spinner" );
+		}
+	);
+};
+
+/**
+ * Unload a module
+ * @param {*} module The module to reload
+ * @param {*} btn The caller button
+ */
+window.cbdUnloadModule = function( module, btn ){
+	$cb( this ).find( "svg" ).addClass( "cbd-spinner" );
+	$cb.getJSON(
+		cbDebuggerUrl + "cbDebugger/unloadModule",
+		{ module: module },
+		( data ) => {
+			return;
+			if ( data.error ){
+				alert( data.messages.toString() );
+			} else {
+				alert( module + " unloaded!" );
+				$cb( "#cbd-modulerow-" + module ).remove();
+			}
+			$cb( this ).find( "svg" ).removeClass( "cbd-spinner" );
+		}
+	);
+};
+
+/**
  * Toggle display from block to none
  * @param {*} targetDiv The target div
  * @param {*} displayStyle The display style to test
