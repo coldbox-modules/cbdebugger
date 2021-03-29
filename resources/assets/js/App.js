@@ -107,7 +107,6 @@ window.cbdUnloadModule = function( module, btn ){
 		cbDebuggerUrl + "cbDebugger/unloadModule",
 		{ module: module },
 		( data ) => {
-			return;
 			if ( data.error ){
 				alert( data.messages.toString() );
 			} else {
@@ -118,6 +117,33 @@ window.cbdUnloadModule = function( module, btn ){
 		}
 	);
 };
+
+/**
+ * Activate the request tracker monitor reloading frequency
+ * @param {*} frequency The frequency in seconds to refresh
+ */
+window.cbdStartDebuggerMonitor = function( frequency ){
+	if ( frequency == 0 ){
+		cbdStopDebuggerMonitor();
+		return;
+	}
+	window.cbdRefreshMonitor = setInterval( cbdRefreshProfilers, frequency * 1000 );
+
+	// Start it
+	console.log( "Started ColdBox Debugger Profiler Refresh using " + frequency + " seconds" );
+};
+
+/**
+ * Stop the debugger refresh monitor
+ */
+window.cbdStopDebuggerMonitor = function(){
+	if ( "cbdRefreshMonitor" in window ){
+		clearInterval( window.cbdRefreshMonitor );
+		console.log( "Stopped ColdBox Debugger Profiler Refresh" );
+	}
+};
+
+/****************** MIGRATE BELOW ****************/
 
 /**
  * Toggle display from block to none
@@ -216,16 +242,6 @@ window.fw_reinitframework = function( usingPassword ){
 	} else {
 		reinitForm.submit();
 	}
-};
-
-/**
- * Relocate to a new panel with a frequency
- * @param {*} panel The panel to show
- * @param {*} frequency The frequency to set
- * @param {*} urlBase The url base
- */
-window.fw_pollmonitor = function( panel, frequency, urlBase ){
-	window.location = urlBase + "?debugpanel=" + panel + "&frequency=" + frequency;
 };
 
 /**

@@ -10,7 +10,7 @@
 		</div>
 
 		<div class="ml5">
-			ColdBox Debugger Request Tracker (#arrayLen( args.profilers )# / #args.debuggerConfig.maxPersistentRequestProfilers#)
+			ColdBox Debugger Request Tracker
 		</div>
 	</div>
 </div>
@@ -21,6 +21,18 @@
 	<div class="floatRight">
 		<form name="fw_reinitcoldbox" id="fw_reinitcoldbox" action="#args.urlBase#" method="POST">
 			<input type="hidden" name="fwreinit" id="fwreinit" value="">
+
+			<!--- Auto Refresh Frequency --->
+			<select
+				id="cbdAutoRefresh"
+				onChange="cbdStartDebuggerMonitor( this.value )">
+					<option value="0">No Auto-Refresh</option>
+					<option value="2" <cfif args.refreshFrequency eq 2>selected</cfif>>2 Seconds</option>
+					<option value="3" <cfif args.refreshFrequency eq 3>selected</cfif>>3 Seconds</option>
+					<cfloop from="5" to="30" index="i" step="5">
+						<option value="#i#" <cfif args.refreshFrequency eq i>selected</cfif>>#i# Seconds</option>
+					</cfloop>
+			</select>
 
 			<!--- Reinit --->
 			<button
