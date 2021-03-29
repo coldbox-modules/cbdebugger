@@ -1,31 +1,34 @@
 <cfscript>
-	local.isQuickInstalled = event.getController().getModuleService().isModuleRegistered( "quick" );
-	local.isQBInstalled = event.getController().getModuleService().isModuleRegistered( "qb" );
-	local.totalQueries = request.cbdebugger.keyExists( "qbQueries" ) ? request.cbdebugger.qbQueries.all.len() : 0;
-	local.totalExecutionTime = !request.cbdebugger.keyExists( "qbQueries" ) ? 0 : request.cbdebugger.qbQueries.all.reduce( function( total, q ) {
+	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
+	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
+	totalQueries = args.profiler.keyExists( "qbQueries" ) ? args.profiler.qbQueries.all.len() : 0;
+	totalExecutionTime = !args.profiler.keyExists( "qbQueries" ) ? 0 : args.profiler.qbQueries.all.reduce( function( total, q ) {
 		return total + q.executionTime;
 	}, 0 );
-	local.totalEntities = request.cbdebugger.keyExists( "quick" ) ? request.cbdebugger.quick.total : 0;
+	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
 </cfscript>
 <cfoutput>
+	<!--- Panel Title --->
 	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
 		</svg>
-		<cfif local.isQuickInstalled>Quick &##47; </cfif>qb
+		<cfif isQuickInstalled>Quick &##47; </cfif>qb (#totalQueries#)
 	</div>
+
+	<!--- Panel Content --->
 	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
 		<div id="qbQueries">
-			<cfif NOT local.isQBInstalled>
+			<cfif NOT isQBInstalled>
 				qb is not installed or registered.
 			<cfelse>
-				<div class="fw_subtitles">&nbsp;Queries <span class="fw_badge_dark" style="margin-left: 1em;">#local.totalQueries#</span></div>
+				<div class="fw_subtitles">&nbsp;Queries <span class="fw_badge_dark" style="margin-left: 1em;">#totalQueries#</span></div>
 				<div style="padding: 1em;">
 					<input type="button" style="font-size:10px" value="Grouped View" onClick="fw_showGroupedQueries()">
 					<input type="button" style="font-size:10px" value="Timeline View" onClick="fw_showTimelineQueries()">
 				</div>
-				<cfif local.totalQueries EQ 0>
+				<cfif totalQueries EQ 0>
 					No queries executed
 				<cfelse>
 					<div id="groupedQueries">
@@ -37,9 +40,9 @@
 								</tr>
 							</thead>
 							<tbody>
-								<cfloop array="#request.cbdebugger.qbQueries.grouped.keyArray()#" index="sql">
+								<cfloop array="#args.profiler.qbQueries.grouped.keyArray()#" index="sql">
 									<tr>
-										<td align="center">#request.cbdebugger.qbQueries.grouped[ sql ].len()#</td>
+										<td align="center">#args.profiler.qbQueries.grouped[ sql ].len()#</td>
 										<td>#sql#</td>
 									</tr>
 									<tr style="margin-right: 2em;">
@@ -54,7 +57,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<cfloop array="#request.cbdebugger.qbQueries.grouped[ sql ]#" index="q">
+													<cfloop array="#args.profiler.qbQueries.grouped[ sql ]#" index="q">
 														<tr>
 															<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
 															<td>#q.executionTime# ms</td>
@@ -84,7 +87,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<cfloop array="#request.cbdebugger.qbQueries.all#" index="q">
+								<cfloop array="#args.profiler.qbQueries.all#" index="q">
 									<tr>
 										<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
 										<td>#q.sql#</td>
@@ -100,17 +103,17 @@
 							Total Execution Time:
 						</div>
 						<div class="fw_debugContentCell">
-							#local.totalExecutionTime# ms
+							#totalExecutionTime# ms
 						</div>
 					</div>
 				</cfif>
 			</cfif>
 		</div>
-		<cfif local.isQuickInstalled>
+		<cfif isQuickInstalled>
 			<hr />
 			<div id="quickEntities" style="margin-top: 1em;">
-				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#local.totalEntities#</span></div>
-				<cfif local.totalEntities EQ 0>
+				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#totalEntities#</span></div>
+				<cfif totalEntities EQ 0>
 					No Quick entities loaded.
 				<cfelse>
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables" style="margin-top: 1em;">
@@ -121,9 +124,9 @@
 							</tr>
 						</thead>
 						<tbody>
-							<cfloop collection="#request.cbdebugger.quick.byMapping#" item="mapping">
+							<cfloop collection="#args.profiler.quick.byMapping#" item="mapping">
 								<tr>
-									<td align="center">#request.cbdebugger.quick.byMapping[ mapping ]#</td>
+									<td align="center">#args.profiler.quick.byMapping[ mapping ]#</td>
 									<td>#mapping#</td>
 								</tr>
 							</cfloop>

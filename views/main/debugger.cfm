@@ -39,13 +39,6 @@ This main debugger view collects all the different panels to present to the user
 	</cfif>
 
 	<!--- **************************************************************--->
-	<!--- QB/QUICK --->
-	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.showQBPanel>
-		<cfinclude template="panels/qbPanel.cfm">
-	</cfif>
-
-	<!--- **************************************************************--->
 	<!--- CACHE PANEL --->
 	<!--- **************************************************************--->
 	<cfif args.debuggerConfig.showCachePanel>

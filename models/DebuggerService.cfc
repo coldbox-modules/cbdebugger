@@ -204,6 +204,7 @@ component
 	 * Get the current request tracker struct
 	 */
 	struct function getRequestTracker(){
+		param request.cbDebugger = {};
 		return request.cbDebugger;
 	}
 

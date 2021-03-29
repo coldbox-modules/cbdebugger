@@ -99,8 +99,14 @@ component {
 		 */
 		variables.interceptorSettings = {
 			customInterceptionPoints : [
+				// Before the debugger panel is rendered
 				"beforeDebuggerPanel",
-				"afterDebuggerPanel"
+				// After the last debugger panel is rendered
+				"afterDebuggerPanel",
+				// Before any individual profiler report panels are rendered
+				"beforeProfilerReportPanels",
+				// After any individual profiler report panels are rendered
+				"afterProfilerReportPanels"
 			]
 		};
 

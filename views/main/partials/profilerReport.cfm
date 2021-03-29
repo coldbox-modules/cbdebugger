@@ -136,6 +136,13 @@
 		<cfif !structIsEmpty( args.profiler )>
 			<!--- Details Row --->
 			<div>
+
+				<!--- Event --->
+				#announce( "beforeProfilerReportPanels", {
+					profiler : args.profiler,
+					debuggerConfig : args.debuggerConfig
+				} )#
+
 				<!--- **************************************************************--->
 				<!--- Exception Data --->
 				<!--- **************************************************************--->
@@ -303,6 +310,28 @@
 					},
 					prePostExempt : true
 				)#
+
+				<!--- **************************************************************--->
+				<!--- QB/QUICK --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.showQBPanel>
+					#renderView(
+						view : "main/panels/qbPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig,
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- Event --->
+				#announce( "afterProfilerReportPanels", {
+					profiler : args.profiler,
+					debuggerConfig : args.debuggerConfig
+				} )#
+
 			</div>
 		<cfelse>
 			<div class="textRed">

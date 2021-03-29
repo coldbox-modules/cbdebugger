@@ -6,13 +6,18 @@
 <div
 	class="cbd-debugger"
 	id="cbd-debugger"
-	data-appurl="#event.buildLink( '' )#">
+	data-appurl="#event.buildLink( '' )#"
+>
 	<!--- Event --->
-	#announce( "beforeDebuggerPanel" )#
+	#announce( "beforeDebuggerPanel", {
+		debuggerConfig : args.debuggerConfig
+	} )#
 	<!--- Rendering --->
 	#renderView()#
 	<!--- Event --->
-	#announce( "afterDebuggerPanel" )#
+	#announce( "afterDebuggerPanel", {
+		debuggerConfig : args.debuggerConfig
+	} )#
 </div>
 
 <!--- JS Assets --->
