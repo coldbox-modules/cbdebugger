@@ -257,7 +257,7 @@ component
 
 		// Verify we have the tracking struct, we might not have it due to exceptions
 		if ( !request.keyExists( "cbDebugger" ) ) {
-			createRequestProfiler( arguments.event );
+			createRequestTracker( arguments.event );
 		}
 
 		// Close out the profiler
