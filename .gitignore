@@ -15,6 +15,7 @@ test-harness/docbox/**
 test-harness/testbox/**
 test-harness/logs/**
 test-harness/modules/**
+test-harness/.env
 
 # UI Build Process
 includes/**
