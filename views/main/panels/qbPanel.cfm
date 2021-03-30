@@ -183,15 +183,24 @@
 
 		<!--- Quick info --->
 		<cfif isQuickInstalled>
+
 			<hr class="mt10 mb10" />
-			<div id="quickEntities" style="margin-top: 1em;">
-				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#totalEntities#</span></div>
+
+			<div id="quickEntities" class="mt10">
+				<div class="fw_subtitles">&nbsp;Entities
+					<span class="fw_badge_dark ml5">#totalEntities#</span>
+				</div>
 				<cfif totalEntities EQ 0>
 					<em class="textMuted">
 						No Quick entities loaded.
 					</em>
 				<cfelse>
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables" style="margin-top: 1em;">
+					<table
+						border="0"
+						align="center"
+						cellpadding="0"
+						cellspacing="1"
+						class="cbd-tables mt5">
 						<thead>
 							<tr>
 								<th width="5%">Count</th>

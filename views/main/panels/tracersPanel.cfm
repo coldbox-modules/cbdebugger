@@ -73,13 +73,13 @@
 					</cfif>
 				</div>
 
-				<div style="margin-left: 20px">
+				<div class="ml20">
 					#thisTracer.message#
 				</div>
 
 				<!--- Extra Information --->
 				<cfif !isSimpleValue( thisTracer.extraInfo ) or len( thisTracer.extraInfo )>
-					<div style="margin-left: 20px">
+					<div class="ml20">
 						<strong>Extra Information:</strong>
 						<cfif !isSimpleValue( thisTracer.extrainfo )>
 							<cfdump var="#thisTracer.extrainfo#">

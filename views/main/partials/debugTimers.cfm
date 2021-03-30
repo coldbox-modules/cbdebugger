@@ -11,11 +11,12 @@
 <div class="fw_debugContent" id="cbd-executionTimers">
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 		<tr>
-		<th width="125" align="center" >Started At</th>
-		<th width="125" align="center" >Finished At</th>
-		<th width="125" align="center" >Execution Time</th>
-		<th >Framework Method</th>
+			<th width="125" align="center" >Started At</th>
+			<th width="125" align="center" >Finished At</th>
+			<th width="125" align="center" >Execution Time</th>
+			<th align="left">Framework Method</th>
 		</tr>
+
 		<!--- Show Timers if any are found --->
 		<cfif arrayLen( args.timers )>
 			<cfloop array="#args.timers#" index="thisTimer">
@@ -30,31 +31,31 @@
 				<cfelse>
 					<cfset color = "fw_greenText">
 				</cfif>
-				<tr style="border-bottom:1px solid ##eaeaea">
-				<td align="center" >
-					#timeFormat( thisTimer.startedAt, "hh:MM:SS.l tt" )#
-				</td>
-				<td align="center" >
-					#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
-				</td>
-				<td align="center" >
-					<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-						<span class="fw_redText">
+				<tr>
+					<td align="center" >
+						#timeFormat( thisTimer.startedAt, "hh:MM:SS.l tt" )#
+					</td>
+					<td align="center" >
+						#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
+					</td>
+					<td align="center" >
+						<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
+							<span class="fw_redText">
+								#numberFormat( thisTimer.executionTime )#ms
+							</span>
+						<cfelse>
 							#numberFormat( thisTimer.executionTime )#ms
-						</span>
-					<cfelse>
-						#numberFormat( thisTimer.executionTime )#ms
-					</cfif>
-				</td>
-				<td>
-					<span class="#color#">#thisTimer.method#</span>
-				</td>
+						</cfif>
+					</td>
+					<td>
+						<span class="#color#">#thisTimer.method#</span>
+					</td>
 				</tr>
 			</cfloop>
 		<cfelse>
-		<tr>
-			<td colspan="5">No Timers Found...</td>
-		</tr>
+			<tr>
+				<td colspan="5">No Timers Found...</td>
+			</tr>
 		</cfif>
 
 		<cfscript>
@@ -64,7 +65,9 @@
 			}
 		</cfscript>
 		<tr>
-			<th colspan="5">Total ColdBox Request Execution Time: #numberFormat( args.executionTime )# ms</th>
+			<th colspan="5">
+				Total ColdBox Request Execution Time: #numberFormat( args.executionTime )# ms
+			</th>
 		</tr>
 	</table>
 </div>

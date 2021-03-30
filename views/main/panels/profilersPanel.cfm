@@ -1,7 +1,7 @@
 <cfoutput>
 <!--- Start Rendering the Execution Profiler panel  --->
 <div class="fw_titles" onClick="fw_toggle( 'fw_executionprofiler' )">
-	<span style="float: right;">
+	<span class="floatRight">
 		v#getModuleConfig( "cbdebugger" ).version#
 	</span>
 	<div class="cbd-flex ml5">

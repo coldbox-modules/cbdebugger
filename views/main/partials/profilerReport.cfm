@@ -1,8 +1,8 @@
 <cfoutput>
-<div style="border-radius: 5px; border: 1px solid blue" class="mt5">
+<div class="rounded mt10 mb10 cbd-reportContainer">
 
 	<!--- Header Panel --->
-	<div class="pl10 pr10 pt5" style="border-bottom:1px solid blue; background-color: ##dde1e6">
+	<div class="pl10 pr10 pt5 cbd-reportHeader">
 
 		<!--- Reload Report Button --->
 		<div class="floatRight">
@@ -153,6 +153,7 @@
 				<!--- Exception Data --->
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
+					<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
 					<!--- Title --->
 					<div class="fw_titles" onClick="fw_toggle( 'cbd-exceptionData' )">
 						&nbsp;
@@ -162,7 +163,7 @@
 						Exception Data
 					</div>
 
-					<div class="fw_debugContent" id="cbd-exceptionData">
+					<div class="fw_debugContentView" id="cbd-exceptionData">
 						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<cfloop array="#args.profiler.exception.keyArray().sort( "textnocase" )#" item="thisItem" >
 								<cfif !isSimpleValue( args.profiler.exception[ thisItem ] ) OR len( args.profiler.exception[ thisItem ] )>
@@ -172,14 +173,63 @@
 										</th>
 										<td>
 											<div class="cellScroller">
+												<!--- Simple value Exceptions --->
 												<cfif isSimpleValue( args.profiler.exception[ thisItem ] )>
+
 													<cfif thisItem eq "stacktrace">
-														#new coldbox.system.web.context.ExceptionBean().processStackTrace( args.profiler.exception[ thisItem ] )#
+														<code>
+															#exceptionBean.processStackTrace( args.profiler.exception[ thisItem ] )#
+														</code>
 													<cfelse>
 														#args.profiler.exception[ thisItem ]#
 													</cfif>
+
+												<!--- Complex Value Exception data --->
 												<cfelse>
-													<cfdump var="#args.profiler.exception[ thisItem ]#">
+													<!--- Tag Context Rendering --->
+													<cfif thisItem eq "tagContext">
+														<cfset appPath = getSetting( "ApplicationPath" )>
+														<cfloop array="#args.profiler.exception[ thisItem ]#" item="thisTagContext">
+															<div class="mb10 mt10 cbd-bindings">
+
+																<!--- Open in Editor--->
+																<cfif exceptionBean.openInEditorURL( event, thisTagContext ) NEQ "">
+																	<div class="floatRight">
+																		<a
+																			class="cbd-button"
+																			target="_self"
+																			rel   ="noreferrer noopener"
+																			title="Open in Editor"
+																			href="#exceptionBean.openInEditorURL( event, thisTagContext )#"
+																		>
+																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+																			</svg>
+																		</a>
+																	</div>
+																</cfif>
+
+																<!--- Line --->
+																<div>
+																	<strong>
+																		#replaceNoCase( thisTagContext.template, appPath, "" )#:#thisTagContext.line#
+																	</strong>
+																</div>
+
+																<!--- Code Print --->
+																<cfif thisTagContext.keyExists( "codePrintHTML" )>
+																	<div class="mt5 textMuted">
+																		<code>
+																			#thisTagContext.codePrintHTML#
+																		</code>
+																	</div>
+																</cfif>
+															</div>
+														</cfloop>
+													<!--- Other Rendering --->
+													<cfelse>
+														<cfdump var="#args.profiler.exception[ thisItem ]#">
+													</cfif>
 												</cfif>
 											</div>
 										</td>
