@@ -44,6 +44,10 @@
 		background-color: #dde1e6
 	}
 
+	.cbd-cellBreak{
+		word-wrap: break-word; overflow-wrap: break-word;
+	}
+
 	@keyframes spinning {
 		0% {
 			transform: rotate(0deg);

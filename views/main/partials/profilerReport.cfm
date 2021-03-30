@@ -367,12 +367,12 @@
 												</tr>
 												<cfloop array="#args.profiler.requestData.headers.cookie.listToArray( ";" ).sort( "textNoCase" )#" index="thisHeader">
 													<tr>
-														<td style="word-wrap: break-word; overflow-wrap: break-word;">
+														<td class="cbd-cellBreak">
 															<em class="textBlue">
 																#getToken( thisHeader, 1, "=" )#
 															</em>
 														</td>
-														<td style="word-wrap: break-word; overflow-wrap: break-word;">
+														<td class="cbd-cellBreak">
 															<cfif !isBoolean( getToken( thisHeader, 2, "=" ) ) && isJSON( getToken( thisHeader, 2, "=" ) )>
 																#getInstance( '@JSONPrettyPrint' ).formatJSON( getToken( thisHeader, 2, "=" ) )#
 															<cfelse>
