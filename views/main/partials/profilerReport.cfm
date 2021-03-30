@@ -294,11 +294,9 @@
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 						<cfloop array="#args.profiler.requestData.headers.keyArray().sort( "textnocase" )#" item="thisHeader" >
 							<tr>
-								<td width="175" align="right">
-									<em class="textBlue">
-										#thisHeader#
-									</em>:
-								</td>
+								<th width="175" align="right">
+									#thisHeader#
+								</th>
 								<td >
 									<cfif thisHeader eq "cookie">
 										<div class="cellScroller">

@@ -55,6 +55,13 @@
 		align-items: center;
 	}
 
+	.cbd-bindings{
+		border: 1px solid blueviolet;
+		padding: 10px;
+		background-color: aliceblue;
+		border-radius: 5px;
+	}
+
 	.cbd-tables{
 		border:1px outset #93C2FF;
 		background-color: #eeeeee;
@@ -81,6 +88,9 @@
 		td{
 			padding: 5px 5px 5px 5px;
 			font-size: 11px;
+		}
+		td.key{
+			background-color: #f0f0f0;
 		}
 		textarea{
 			border: 1px solid #eeeeee;

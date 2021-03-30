@@ -18,7 +18,7 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="fw_debugContentView<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdQBPanel">
+	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdQBPanel">
 		<div id="qbQueries">
 
 			<!--- If not installed --->
@@ -113,14 +113,16 @@
 																#numberFormat( q.executionTime )# ms
 															</td>
 															<td>
-																<cfif NOT q.bindings.isEmpty()>
-																	#getInstance( '@JSONPrettyPrint' ).formatJSON(
-																		json : serializeJSON( q.bindings ),
-																		spaceAfterColon : true
-																	)#
-																<cfelse>
-																	[]
-																</cfif>
+																<code>
+																	<cfif NOT q.bindings.isEmpty()>
+																		#getInstance( '@JSONPrettyPrint' ).formatJSON(
+																			json : serializeJSON( q.bindings ),
+																			spaceAfterColon : true
+																		)#
+																	<cfelse>
+																		[]
+																	</cfif>
+																</code>
 															</td>
 														</tr>
 													</cfloop>
@@ -153,7 +155,7 @@
 											<code>#q.sql#</code>
 
 											<cfif NOT q.bindings.isEmpty()>
-												<div class="mt10 mb5">
+												<div class="mt10 mb5 cbd-bindings">
 													<div class="mb10">
 														<strong>Bindings: </strong>
 													</div>
