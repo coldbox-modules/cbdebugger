@@ -53,6 +53,9 @@ component {
 			.orderBy( "lastName" )
 			.get();
 
+		prc.logs = getInstance( "Log" ).all();
+
+
 		log.info( "in the index event firing" );
 	}
 

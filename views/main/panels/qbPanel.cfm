@@ -180,12 +180,16 @@
 				</cfif>
 			</cfif>
 		</div>
+
+		<!--- Quick info --->
 		<cfif isQuickInstalled>
-			<hr />
+			<hr class="mt10 mb10" />
 			<div id="quickEntities" style="margin-top: 1em;">
 				<div class="fw_subtitles">&nbsp;Entities <span class="fw_badge_dark" style="margin-left: 1em;">#totalEntities#</span></div>
 				<cfif totalEntities EQ 0>
-					No Quick entities loaded.
+					<em class="textMuted">
+						No Quick entities loaded.
+					</em>
 				<cfelse>
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables" style="margin-top: 1em;">
 						<thead>
