@@ -240,6 +240,21 @@
 					</div>
 				</cfif>
 
+
+				<!--- **************************************************************--->
+				<!--- Profiling Timers --->
+				<!--- **************************************************************--->
+				#renderView(
+					view : "main/partials/debugTimers",
+					module : "cbdebugger",
+					args : {
+						timers : args.profiler.timers,
+						debuggerConfig : args.debuggerConfig,
+						executionTime : args.profiler.executionTime
+					},
+					prePostExempt : true
+				)#
+
 				<!--- **************************************************************--->
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
@@ -285,20 +300,6 @@
 						</cfloop>
 					</table>
 				</div>
-
-				<!--- **************************************************************--->
-				<!--- Profiling Timers --->
-				<!--- **************************************************************--->
-				#renderView(
-					view : "main/partials/debugTimers",
-					module : "cbdebugger",
-					args : {
-						timers : args.profiler.timers,
-						debuggerConfig : args.debuggerConfig,
-						executionTime : args.profiler.executionTime
-					},
-					prePostExempt : true
-				)#
 
 				<!--- **************************************************************--->
 				<!--- Request Data --->

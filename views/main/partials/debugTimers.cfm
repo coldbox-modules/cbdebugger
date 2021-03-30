@@ -8,7 +8,7 @@
 	Execution Timers (#arraylen( args.timers )#)
 </div>
 
-<div class="fw_debugContent" id="cbd-executionTimers">
+<div class="fw_debugContentView" id="cbd-executionTimers">
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 		<tr>
 			<th width="125" align="center" >Started At</th>
