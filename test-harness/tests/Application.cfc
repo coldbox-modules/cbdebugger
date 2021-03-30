@@ -23,6 +23,7 @@ component {
 		""
 	);
 	this.mappings[ "/root" ] = rootPath;
+	this.datasource          = "coolblog";
 
 	// UPDATE THE NAME OF THE MODULE IN TESTING BELOW
 	request.MODULE_NAME = "cbdebugger";
