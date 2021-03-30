@@ -53,6 +53,7 @@ component extends="coldbox.system.RestHandler" {
 			view      : "main/debugger",
 			viewModule: "cbdebugger",
 			args      : {
+				isVisualizer : isVisualizer,
 				pageTitle        : "ColdBox Debugger",
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
@@ -63,6 +64,7 @@ component extends="coldbox.system.RestHandler" {
 				debuggerService  : variables.debuggerService,
 				environment      : variables.debuggerService.getEnvironment(),
 				profilers        : variables.debuggerService.getProfilers(),
+				currentProfiler : variables.debuggerService.getProfilers()[ 1 ],
 				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);
@@ -113,7 +115,8 @@ component extends="coldbox.system.RestHandler" {
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
 				profiler       : variables.debuggerService.getProfilerById( rc.id ),
-				debuggerConfig : getModuleSettings( "cbdebugger" )
+				debuggerConfig : getModuleSettings( "cbdebugger" ),
+				isVisualizer : true
 			},
 			prePostExempt: true
 		);
