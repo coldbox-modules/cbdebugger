@@ -6,7 +6,8 @@
     "description":"",
     "dependencies":{
         "coldbox":"^6.0.0",
-        "qb":"^8.4.9"
+        "qb":"^8.4.9",
+        "JSONPrettyPrint":"^1.4.1"
     },
     "devDependencies":{
         "testbox":"^4.0.0"
@@ -14,7 +15,8 @@
     "installPaths":{
         "coldbox":"coldbox/",
         "testbox":"testbox/",
-        "qb":"modules/qb/"
+        "qb":"modules/qb/",
+        "JSONPrettyPrint":"modules/JSONPrettyPrint/"
     },
     "testbox":{
         "runner":"http://localhost:60299/tests/runner.cfm"

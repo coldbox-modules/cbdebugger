@@ -207,17 +207,14 @@
 									<div class="cellScroller">
 										<cfif isSimpleValue( args.profiler.coldbox[ thisItem ] )>
 											<cfif !isBoolean( args.profiler.coldbox[ thisItem ] ) && isJSON( args.profiler.coldbox[ thisItem ] )>
-												<cfdump
-													var="#deserializeJSON( args.profiler.coldbox[ thisItem ] )#"
-													label="Click to expand..."
-													expand="false">
+												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.coldbox[ thisItem ] )#
 											<cfelse>
 												<cfif len( args.profiler.coldbox[ thisItem ] )>
 													#args.profiler.coldbox[ thisItem ]#
 												<cfelse>
-													<span class="textMuted">
+													<em class="textMuted">
 														n/a
-													</span>
+													</em>
 												</cfif>
 											</cfif>
 										<cfelse>
@@ -226,58 +223,6 @@
 												label="Click to expand..."
 												expand="false">
 										</cfif>
-									</div>
-								</td>
-							</tr>
-						</cfloop>
-					</table>
-				</div>
-
-				<!--- **************************************************************--->
-				<!--- Request Data --->
-				<!--- **************************************************************--->
-				<!--- Title --->
-				<div class="fw_titles" onClick="fw_toggle( 'cbd-requestInfo' )">
-					&nbsp;
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-					</svg>
-					Request
-				</div>
-
-				<!--- Panel --->
-				<div class="fw_debugContent" id="cbd-requestInfo">
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-						<tr>
-							<th width="200">HTTP Method:</th>
-							<td>#args.profiler.requestData.method#</td>
-						</tr>
-						<cfif !isNull( args.profiler.requestData.content )>
-							<tr>
-								<th width="200">HTTP Content:</th>
-								<td>
-									<div class="cellScroller">
-										<cfif isSimpleValue( args.profiler.requestData.content )>
-											<cfif len( args.profiler.requestData.content )>
-												#args.profiler.requestData.content#
-											<cfelse>
-												<em>empty</em>
-											</cfif>
-										<cfelse>
-											<cfdump var="#args.profiler.requestData.content#">
-										</cfif>
-									</div>
-								</td>
-							</tr>
-						</cfif>
-						<cfloop collection="#args.profiler.requestData.headers#" item="thisHeader" >
-							<tr>
-								<th width="200">
-									Header-#thisHeader#:
-								</th>
-								<td>
-									<div class="cellScroller">
-										#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
 									</div>
 								</td>
 							</tr>
@@ -298,6 +243,104 @@
 					},
 					prePostExempt : true
 				)#
+
+				<!--- **************************************************************--->
+				<!--- Request Data --->
+				<!--- **************************************************************--->
+				<!--- Title --->
+				<div class="fw_titles" onClick="fw_toggle( 'cbd-requestInfo' )">
+					&nbsp;
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+					</svg>
+					Request
+				</div>
+
+				<!--- Panel --->
+				<div class="fw_debugContent" id="cbd-requestInfo">
+					<h2>HTTP Request Information</h2>
+					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
+						<tr>
+							<th width="125" align="right">HTTP Method:</th>
+							<td>#args.profiler.requestData.method#</td>
+						</tr>
+						<tr>
+							<th width="125" align="right">HTTP URL:</th>
+							<td>#args.profiler.fullUrl#</td>
+						</tr>
+						<cfif !isNull( args.profiler.requestData.content )>
+							<tr>
+								<th width="125" align="right">HTTP Content:</th>
+								<td>
+									<div class="cellScroller">
+										<cfif isSimpleValue( args.profiler.requestData.content )>
+											<cfif !isBoolean( args.profiler.requestData.content ) && isJSON( args.profiler.requestData.content )>
+												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.requestData.content )#
+											<cfelseif len( args.profiler.requestData.content )>
+												#args.profiler.requestData.content#
+											<cfelse>
+												<em class="textMuted">empty</em>
+											</cfif>
+										<cfelse>
+											<cfdump var="#args.profiler.requestData.content#">
+										</cfif>
+									</div>
+								</td>
+							</tr>
+						</cfif>
+					</table>
+
+					<h2>Headers</h2>
+					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
+						<cfloop array="#args.profiler.requestData.headers.keyArray().sort( "textnocase" )#" item="thisHeader" >
+							<tr>
+								<td width="175" align="right">
+									<em class="textBlue">
+										#thisHeader#
+									</em>:
+								</td>
+								<td >
+									<cfif thisHeader eq "cookie">
+										<div class="cellScroller">
+											<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables"  style="table-layout: fixed">
+												<tr>
+													<th width="50%">
+														Cookie Name
+													</th>
+													<th>
+														Cookie Value
+													</th>
+												</tr>
+												<cfloop array="#args.profiler.requestData.headers.cookie.listToArray( ";" ).sort( "textNoCase" )#" index="thisHeader">
+													<tr>
+														<td style="word-wrap: break-word; overflow-wrap: break-word;">
+															<em class="textBlue">
+																#getToken( thisHeader, 1, "=" )#
+															</em>
+														</td>
+														<td style="word-wrap: break-word; overflow-wrap: break-word;">
+															<cfif !isBoolean( getToken( thisHeader, 2, "=" ) ) && isJSON( getToken( thisHeader, 2, "=" ) )>
+																#getInstance( '@JSONPrettyPrint' ).formatJSON( getToken( thisHeader, 2, "=" ) )#
+															<cfelse>
+																#getToken( thisHeader, 2, "=" )#
+															</cfif>
+														</td>
+													</tr>
+												</cfloop>
+											</table>
+										</div>
+									<cfelse>
+										<div class="cellScroller">
+											<code>
+												#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
+											</code>
+										</div>
+									</cfif>
+								</td>
+							</tr>
+						</cfloop>
+					</table>
+				</div>
 
 				<!--- **************************************************************--->
 				<!--- Tracers --->

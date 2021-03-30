@@ -5,6 +5,9 @@
 .artifacts/**
 .tmp/**
 
+# Module Dependencies
+modules/**
+
 # Test harness dependencies
 test-harness/.engine/**
 test-harness/coldbox/**

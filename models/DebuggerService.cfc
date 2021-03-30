@@ -274,7 +274,7 @@ component
 				"coldbox" : {
 					"RoutedUrl"        : arguments.event.getCurrentRoutedUrl(),
 					"Route"            : arguments.event.getCurrentRoute(),
-					"RouteRecord"      : serializeJSON( arguments.event.getCurrentRouteRecord() ),
+					"RouteMetadata"    : serializeJSON( arguments.event.getCurrentRouteMeta() ),
 					"RouteName"        : arguments.event.getCurrentRouteName(),
 					"Event"            : arguments.event.getCurrentEvent(),
 					"isEventCacheable" : arguments.event.isEventCacheable(),
