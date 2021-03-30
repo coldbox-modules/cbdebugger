@@ -26,6 +26,11 @@
 		}
 	}
 
+	.cbd-selected{
+		border:1px solid #4395dd;
+		background-color: aliceblue;
+	}
+
 	.cbd-spinner{
 		transform: translateZ(0);
 		animation: spinning 1s infinite linear;
@@ -167,11 +172,11 @@
 		}
 	}
 
-	.fw_debugContent, .fw_hide{
+	.fw_debugContent, .fw_hide, .cbd-hide{
 		display:none;
 	}
 
-	.fw_show{
+	.fw_show, .cbd-show{
 		display: block;
 	}
 

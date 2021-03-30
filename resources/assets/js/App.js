@@ -263,15 +263,27 @@ window.fw_cboxCommand = function( commandURL, verb ){
 /**
  * Show group queries and hide timeline queries
  */
-window.fw_showGroupedQueries = function() {
-	fw_toggleDiv( "timelineQueries", "none" );
-	fw_toggleDiv( "groupedQueries", "block" );
+window.cbdShowGroupedQueries = function() {
+	// Watch out for double toggles
+	if ( $cb( "#groupedQueries" ).css( "display" ) == "block" ){
+		return;
+	}
+	$cb( "#cbdButtonGroupedQueries" ).addClass( "cbd-selected" );
+	$cb( "#cbdButtonTimelineQueries" ).removeClass( "cbd-selected" );
+	$cb( "#cbdTimelineQueries" ).slideUp();
+	$cb( "#cbdGroupedQueries" ).slideDown();
 };
 
 /**
  * Show timeline queries and hide group queries
  */
-window.fw_showTimelineQueries = function() {
-	fw_toggleDiv( "groupedQueries", "none" );
-	fw_toggleDiv( "timelineQueries", "block" );
+window.cbdShowTimelineQueries = function() {
+	// Watch out for double toggles
+	if ( $cb( "#timelineQueries" ).css( "display" ) == "block" ){
+		return;
+	}
+	$cb( "#cbdButtonTimelineQueries" ).addClass( "cbd-selected" );
+	$cb( "#cbdButtonGroupedQueries" ).removeClass( "cbd-selected" );
+	$cb( "#cbdTimelineQueries" ).slideDown();
+	$cb( "#cbdGroupedQueries" ).slideUp();
 };

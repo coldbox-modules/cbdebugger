@@ -15,6 +15,7 @@ component {
 			.from( "categories" )
 			.orderBy( "category" )
 			.get();
+
 		prc.blogEntries = qb
 			.newQuery()
 			.from( "blogEntries" )

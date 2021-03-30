@@ -3,13 +3,13 @@
 	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
 	totalQueries = args.profiler.keyExists( "qbQueries" ) ? args.profiler.qbQueries.all.len() : 0;
 	totalExecutionTime = !args.profiler.keyExists( "qbQueries" ) ? 0 : args.profiler.qbQueries.all.reduce( function( total, q ) {
-		return total + q.executionTime;
+		return arguments.total + arguments.q.executionTime;
 	}, 0 );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
 </cfscript>
 <cfoutput>
 	<!--- Panel Title --->
-	<div class="fw_titles"  onClick="fw_toggle('fw_qbPanel')" >
+	<div class="fw_titles"  onClick="fw_toggle( 'cbdQBPanel' )" >
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
@@ -18,20 +18,59 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="fw_qbPanel">
+	<div class="fw_debugContentView<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdQBPanel">
 		<div id="qbQueries">
+
+			<!--- If not installed --->
 			<cfif NOT isQBInstalled>
-				qb is not installed or registered.
+				<em>
+					qb is not installed or registered.
+				</em>
 			<cfelse>
-				<div class="fw_subtitles">&nbsp;Queries <span class="fw_badge_dark" style="margin-left: 1em;">#totalQueries#</span></div>
-				<div style="padding: 1em;">
-					<input type="button" style="font-size:10px" value="Grouped View" onClick="fw_showGroupedQueries()">
-					<input type="button" style="font-size:10px" value="Timeline View" onClick="fw_showTimelineQueries()">
+
+				<!--- Info Bar --->
+				<div class="floatRight mr5 mt10">
+					<div>
+						<strong>Total Execution Time:</strong>
+						<div class="fw_badge_light">
+							#totalExecutionTime# ms
+						</div>
+					</div>
 				</div>
+
+				<!--- ToolBar --->
+				<div class="p10">
+					<button
+						class="cbd-selected"
+						id="cbdButtonGroupedQueries"
+						onClick="cbdShowGroupedQueries()"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+						</svg>
+						Grouped
+					</button>
+					<button
+						class=""
+						id="cbdButtonTimelineQueries"
+						onClick="cbdShowTimelineQueries()"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
+						</svg>
+						Timeline
+					</button>
+				</div>
+
+				<!--- Query Views --->
 				<cfif totalQueries EQ 0>
-					No queries executed
+					<div class="textMuted">
+						<em>No queries executed</em>
+					</div>
 				<cfelse>
-					<div id="groupedQueries">
+
+					<!--- Grouped Queries --->
+					<div id="cbdGroupedQueries">
 						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<thead>
 								<tr>
@@ -42,12 +81,20 @@
 							<tbody>
 								<cfloop array="#args.profiler.qbQueries.grouped.keyArray()#" index="sql">
 									<tr>
-										<td align="center">#args.profiler.qbQueries.grouped[ sql ].len()#</td>
-										<td>#sql#</td>
+										<td align="center">
+											<div class="fw_badge_light">
+												#args.profiler.qbQueries.grouped[ sql ].len()#
+											</div>
+										</td>
+										<td>
+											<code>
+												#sql#
+											</code>
+										</td>
 									</tr>
-									<tr style="margin-right: 2em;">
+									<tr>
 										<td></td>
-										<td style="width: 100%;">
+										<td>
 											<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 												<thead>
 													<tr>
@@ -59,11 +106,20 @@
 												<tbody>
 													<cfloop array="#args.profiler.qbQueries.grouped[ sql ]#" index="q">
 														<tr>
-															<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
-															<td>#q.executionTime# ms</td>
+															<td align="center">
+																#TimeFormat( q.timestamp, "hh:MM:SS.l tt" )#
+															</td>
+															<td align="center">
+																#numberFormat( q.executionTime )# ms
+															</td>
 															<td>
 																<cfif NOT q.bindings.isEmpty()>
-																	<cfdump var="#q.bindings#" expand="false" />
+																	#getInstance( '@JSONPrettyPrint' ).formatJSON(
+																		json : serializeJSON( q.bindings ),
+																		spaceAfterColon : true
+																	)#
+																<cfelse>
+																	[]
 																</cfif>
 															</td>
 														</tr>
@@ -76,36 +132,49 @@
 							</tbody>
 						</table>
 					</div>
-					<div id="timelineQueries" style="display: none;">
+
+					<!--- Timeline Queries --->
+					<div id="cbdTimelineQueries" class="cbd-hide">
 						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<thead>
 								<tr>
-									<th>Timestamp</th>
-									<th width="80%">Query</th>
-									<th align="center">Execution Time</th>
-									<th>Bindings</th>
+									<th width="125">Timestamp</th>
+									<th>Query</th>
+									<th width="100" align="center">Execution Time</th>
 								</tr>
 							</thead>
 							<tbody>
 								<cfloop array="#args.profiler.qbQueries.all#" index="q">
 									<tr>
-										<td>#TimeFormat(q.timestamp,"hh:MM:SS.l tt")#</td>
-										<td>#q.sql#</td>
-										<td>#q.executionTime# ms</td>
-										<td><cfdump var="#q.bindings#" expand="false" /></td>
+										<td align="center">
+											#TimeFormat( q.timestamp,"hh:MM:SS.l tt" )#
+										</td>
+										<td>
+											<code>#q.sql#</code>
+
+											<cfif NOT q.bindings.isEmpty()>
+												<div class="mt10 mb5">
+													<div class="mb10">
+														<strong>Bindings: </strong>
+													</div>
+													<code>
+														#getInstance( '@JSONPrettyPrint' ).formatJSON(
+															json : serializeJSON( q.bindings ),
+															spaceAfterColon : true
+														)#
+													</code>
+												</div>
+											</cfif>
+										</td>
+										<td align="center">
+											#q.executionTime# ms
+										</td>
 									</tr>
 								</cfloop>
 							</tbody>
 						</table>
 					</div>
-					<div style="margin-top: 0.5em; margin-left: 1em;">
-						<div class="fw_debugTitleCell">
-							Total Execution Time:
-						</div>
-						<div class="fw_debugContentCell">
-							#totalExecutionTime# ms
-						</div>
-					</div>
+
 				</cfif>
 			</cfif>
 		</div>
