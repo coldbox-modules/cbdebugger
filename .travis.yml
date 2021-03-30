@@ -21,6 +21,9 @@ branches:
 dist: focal
 sudo: required
 
+services:
+  - mysql
+
 before_install:
   # CommandBox Keys
   - curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
@@ -34,6 +37,20 @@ install:
   - box install commandbox-cfconfig,commandbox-dotenv,commandbox-docbox
   # If using auto-publish, you will need to provide your API token with this line:
   - box config set endpoints.forgebox.APIToken=$FORGEBOX_API_TOKEN > /dev/null
+
+before_script:
+  # create database
+  - mysql -u root -e 'create database coolblog;'
+  # import database
+  - mysql -u root < $TRAVIS_BUILD_DIR/test-harness/tests/resources/coolblog.sql
+  - echo "Database created and loaded with test data"
+  # Seed .env
+  - echo "Seeding database .env file at /test-harness/.env"
+  - touch test-harness/.env
+  - printf "DB_HOST=localhost\n" >> test-harness/.env
+  - printf "DB_DATABASE=coolblog\n" >> test-harness/.env
+  - printf "DB_USER=root\n" >> test-harness/.env
+  - printf "DB_PASSWORD=\n" >> test-harness/.env
 
 script:
   # Set Current Version and Travis Tag
