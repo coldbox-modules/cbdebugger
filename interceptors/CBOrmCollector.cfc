@@ -66,34 +66,36 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen when request tracker is being recorded
 	 */
 	function onDebuggerProfilerRecording( event, interceptData, rc, prc ){
+		var requestTracker                = arguments.interceptData.requestTracker;
 		// Let's param our tracking variables.
-		param arguments.interceptData.requestTracker.cborm        = {};
-		param arguments.interceptData.requestTracker.cborm.lists  = [];
-		param arguments.interceptData.requestTracker.cborm.gets   = [];
-		param arguments.interceptData.requestTracker.cborm.counts = [];
+		param requestTracker.cborm        = {};
+		param requestTracker.cborm.lists  = [];
+		param requestTracker.cborm.gets   = [];
+		param requestTracker.cborm.counts = [];
 
 		// Store session stats
-		arguments.interceptData.requestTracker.cborm[ "sessionStats" ]         = variables.entityService.getSessionStatistics();
-		// Store totals
-		arguments.interceptData.requestTracker.cborm[ "totalCriteriaQueries" ] = arguments.interceptData.requestTracker.cborm.lists.len() +
-		arguments.interceptData.requestTracker.cborm.gets.len() +
-		arguments.interceptData.requestTracker.cborm.counts.len();
+		requestTracker.cborm[ "sessionStats" ] = variables.entityService.getSessionStatistics();
+
+		// Store total number of queries executed
+		requestTracker.cborm[ "totalCriteriaQueries" ] = requestTracker.cborm.lists.len() +
+		requestTracker.cborm.gets.len() +
+		requestTracker.cborm.counts.len();
+
 		// Total query execution times
-		arguments.interceptData.requestTracker.cborm[ "totalListsExecutionTime" ] = arguments.interceptData.requestTracker.cborm.lists.reduce( function( total, q ){
+		requestTracker.cborm[ "totalListsExecutionTime" ] = requestTracker.cborm.lists.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
-		arguments.interceptData.requestTracker.cborm[ "totalGetsExecutionTime" ] = arguments.interceptData.requestTracker.cborm.gets.reduce( function( total, q ){
+		requestTracker.cborm[ "totalGetsExecutionTime" ] = requestTracker.cborm.gets.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
-		arguments.interceptData.requestTracker.cborm[ "totalCountsExecutionTime" ] = arguments.interceptData.requestTracker.cborm.counts.reduce( function( total, q ){
+		requestTracker.cborm[ "totalCountsExecutionTime" ] = requestTracker.cborm.counts.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
+
 		// Total of totals
-		arguments.interceptData.requestTracker.cborm[ "totalCriteriaQueryExecutionTime" ] = arguments.interceptData.requestTracker.cborm[
-			"totalListsExecutionTime"
-		] +
-		arguments.interceptData.requestTracker.cborm[ "totalGetsExecutionTime" ] +
-		arguments.interceptData.requestTracker.cborm[ "totalCountsExecutionTime" ];
+		requestTracker.cborm[ "totalCriteriaQueryExecutionTime" ] = requestTracker.cborm[ "totalListsExecutionTime" ] +
+		requestTracker.cborm[ "totalGetsExecutionTime" ] +
+		requestTracker.cborm[ "totalCountsExecutionTime" ];
 	}
 
 	/**
