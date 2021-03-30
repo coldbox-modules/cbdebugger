@@ -47,6 +47,7 @@ before_script:
   # Seed .env
   - echo "Seeding database .env file at /test-harness/.env"
   - touch test-harness/.env
+  # ENV
   - printf "DB_HOST=localhost\n" >> test-harness/.env
   - printf "DB_DATABASE=coolblog\n" >> test-harness/.env
   - printf "DB_USER=root\n" >> test-harness/.env
