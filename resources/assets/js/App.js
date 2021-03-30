@@ -40,14 +40,15 @@ window.cbdScrollToProfilerReport = function(){
 };
 
 /**
- * Send an ajax command to render the profilers
+ * Send an ajax command to render the profiler report from the visualizer
  * @param {*} id The profiler id to load
+ * @param {*} isVisualizer Are we in visualizer mode or not
  */
-window.cbdGetProfilerReport = function( id ){
+window.cbdGetProfilerReport = function( id, isVisualizer ){
 	$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).addClass( "cbd-spinner" );
 	$cb.get(
 		cbDebuggerUrl + "cbDebugger/renderProfilerReport",
-		{ id: id },
+		{ id: id, isVisualizer: isVisualizer || false },
 		( response ) => {
 			$cb( "#cbd-profilers" ).html( response );
 			$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).removeClass( "cbd-spinner" );

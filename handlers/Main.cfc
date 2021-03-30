@@ -17,8 +17,9 @@ component extends="coldbox.system.RestHandler" {
 		action,
 		eventArguments
 	){
-		// Incoming Refresh frequency
-		event.paramValue( "frequency", 0 );
+		// Global params
+		event.paramValue( "frequency", 0 )
+			.paramValue( "isVisualizer", false );
 		// Don't show cf debug
 		cfsetting( showdebugoutput = "false" );
 		// If not enabled, just 404 it
@@ -116,7 +117,7 @@ component extends="coldbox.system.RestHandler" {
 				environment    : variables.debuggerService.getEnvironment(),
 				profiler       : variables.debuggerService.getProfilerById( rc.id ),
 				debuggerConfig : getModuleSettings( "cbdebugger" ),
-				isVisualizer : true
+				isVisualizer : rc.isVisualizer
 			},
 			prePostExempt: true
 		);

@@ -3,7 +3,22 @@
 
 	<!--- Header Panel --->
 	<div class="pl10 pr10 pt5" style="border-bottom:1px solid blue; background-color: ##dde1e6">
+
+		<!--- Reload Report Button --->
 		<div class="floatRight">
+			<!--- Back Only on Ajax --->
+			<cfif args.isVisualizer>
+				<button
+					type="button"
+					title="Back to profilers"
+					id="cbd-buttonBackToProfilers"
+					onClick="cbdRefreshProfilers()"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+					</svg>
+				</button>
+			</cfif>
 			<button
 				type="button"
 				title="Reload Report"
@@ -17,52 +32,40 @@
 		</div>
 
 		<h4>
-			<div>
-				<!--- Back --->
-				<cfif args.isVisualizer>
-					<button
-						type="button"
-						title="Back to profilers"
-						id="cbd-buttonBackToProfilers"
-						onClick="cbdRefreshProfilers()"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-						</svg>
-					</button>
-				</cfif>
-
-				<!--- Info --->
-				<span <cfif !args.isVisualizer>class="ml30"</cfif>>
-					#args.profiler.requestData.method#
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
-					#args.profiler.fullUrl#
-				</span>
-
-				<div
-					class="floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>fw_badge_light<cfelse>fw_badge_dark</cfif>"
-				>
-					<cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-						<span class="fw_redText">
-							#numberFormat( args.profiler.executionTime )# ms
-						</span>
-					<cfelse>
-						#numberFormat( args.profiler.executionTime )# ms
-					</cfif>
-				</div>
-
+			<!--- Info --->
+			<div
+				class="size13"
+			>
+				#args.profiler.requestData.method#
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+				#args.profiler.fullUrl#
 			</div>
 
-			<div class="mt5 ml30 size12 fw_badge_light">
+			<!--- Execution Time --->
+			<div
+				class="floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>fw_badge_light<cfelse>fw_badge_dark</cfif>"
+			>
+				<cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
+					<span class="fw_redText">
+						#numberFormat( args.profiler.executionTime )# ms
+					</span>
+				<cfelse>
+					#numberFormat( args.profiler.executionTime )# ms
+				</cfif>
+			</div>
+
+			<!--- Current Event --->
+			<div class="mt5 size12 fw_badge_light">
 				<strong>Event: </strong>
 				<span class="textBlue mr5">
 					#args.profiler.coldbox.event#
 				</span>
 			</div>
 
-			<div style="display: flex;" class="mt10 ml30 size10 textMuted">
+			<!--- Info Bar --->
+			<div class="cbd-flex mt10 size10 textMuted">
 
 				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -131,7 +134,6 @@
 					#args.profiler.response.contentType.listFirst( ";" )#
 				</div>
 			</div>
-
 		</h4>
 	</div>
 
