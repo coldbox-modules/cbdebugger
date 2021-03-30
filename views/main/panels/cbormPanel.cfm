@@ -1,11 +1,3 @@
-<cfscript>
-	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
-	totalQueries = args.profiler.keyExists( "qbQueries" ) ? args.profiler.qbQueries.all.len() : 0;
-	totalExecutionTime = !args.profiler.keyExists( "qbQueries" ) ? 0 : args.profiler.qbQueries.all.reduce( function( total, q ) {
-		return arguments.total + arguments.q.executionTime;
-	}, 0 );
-	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
-</cfscript>
 <cfoutput>
 	<!--- Panel Title --->
 	<div class="fw_titles"  onClick="fw_toggle( 'cbdCBOrmPanel' )" >
@@ -13,15 +5,24 @@
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
 		</svg>
-		cborm
+		cborm (#args.profiler.cborm.totalCriteriaQueries# / #numberFormat( args.profiler.cborm.totalCriteriaQueryExecutionTime )# ms)
 	</div>
 
 	<!--- Panel Content --->
 	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdCBOrmPanel">
+		<!--- Info Bar --->
+		<div class="floatRight mr5 mt10">
+			<div>
+				<strong>Total Execution Time:</strong>
+				<div class="fw_badge_light">
+					#numberFormat( args.profiler.cborm.totalListsExecutionTime )# ms
+				</div>
+			</div>
+		</div>
 
 		<!--- Timeline Queries --->
 		<div>
-			<h2>List() Queries</h2>
+			<h2>List() Queries (#arrayLen( args.profiler.cborm.lists )#)</h2>
 			<cfif !arrayLen( args.profiler.cborm.lists )>
 				<em class=textMuted>
 					No list() operations made
@@ -45,7 +46,7 @@
 									<code>#q.sql#</code>
 								</td>
 								<td align="center">
-									## ms
+									#q.executionTime# ms
 								</td>
 							</tr>
 						</cfloop>
@@ -53,7 +54,17 @@
 				</table>
 			</cfif>
 
-			<h2>Get() Queries</h2>
+			<!--- Info Bar --->
+			<div class="floatRight mr5 mt10">
+				<div>
+					<strong>Total Execution Time:</strong>
+					<div class="fw_badge_light">
+						#numberFormat( args.profiler.cborm.totalGetsExecutionTime )# ms
+					</div>
+				</div>
+			</div>
+
+			<h2>Get() Queries (#arrayLen( args.profiler.cborm.gets )#)</h2>
 			<cfif !arrayLen( args.profiler.cborm.gets )>
 				<em class=textMuted>
 					No get() operations made
@@ -77,7 +88,7 @@
 									<code>#q.sql#</code>
 								</td>
 								<td align="center">
-									## ms
+									#q.executionTime# ms
 								</td>
 							</tr>
 						</cfloop>
@@ -85,7 +96,17 @@
 				</table>
 			</cfif>
 
-			<h2>Count() Queries</h2>
+			<!--- Info Bar --->
+			<div class="floatRight mr5 mt10">
+				<div>
+					<strong>Total Execution Time:</strong>
+					<div class="fw_badge_light">
+						#numberFormat( args.profiler.cborm.totalCountsExecutionTime )# ms
+					</div>
+				</div>
+			</div>
+
+			<h2>Count() Queries (#arrayLen( args.profiler.cborm.counts )#)</h2>
 			<cfif !arrayLen( args.profiler.cborm.counts )>
 				<em class=textMuted>
 					No count() operations made
@@ -109,7 +130,7 @@
 									<code>#q.sql#</code>
 								</td>
 								<td align="center">
-									## ms
+									#q.executionTime# ms
 								</td>
 							</tr>
 						</cfloop>
