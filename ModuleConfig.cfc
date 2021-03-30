@@ -108,7 +108,9 @@ component {
 				// Before any individual profiler report panels are rendered
 				"beforeProfilerReportPanels",
 				// After any individual profiler report panels are rendered
-				"afterProfilerReportPanels"
+				"afterProfilerReportPanels",
+				// Before the request tracker is saved in the profiler, last chance to influence the recording
+				"onDebuggerProfilerRecording"
 			]
 		};
 
@@ -213,6 +215,17 @@ component {
 					interceptorName  = "QuickCollector@cbdebugger"
 				);
 		}
+
+		/******************** Register cborm Collector ************************************/
+
+		if ( controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+			controller
+				.getInterceptorService()
+				.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
+					interceptorName  = "CBOrmCollector@cbdebugger"
+				);
+		}
 	}
 
 	/**
@@ -224,6 +237,9 @@ component {
 		}
 		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
 			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
+		}
+		if ( controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
 		}
 	}
 

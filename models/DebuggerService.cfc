@@ -16,7 +16,8 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
-	property name="timerService" inject="Timer@cbdebugger";
+	property name="timerService"       inject="Timer@cbdebugger";
+	property name="interceptorService" inject="coldbox:interceptorService";
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -285,6 +286,12 @@ component
 				}
 			},
 			true
+		);
+
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerProfilerRecording",
+			{ requestTracker : request.cbDebugger }
 		);
 
 		// New Profiler record to store into the stack

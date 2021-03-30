@@ -448,6 +448,21 @@
 				</cfif>
 
 				<!--- **************************************************************--->
+				<!--- CBORM --->
+				<!--- **************************************************************--->
+				<cfif controller.getModuleService().isModuleRegistered( "cborm" )>
+					#renderView(
+						view : "main/panels/cbormPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig,
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
 				<!--- QB/QUICK --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.showQBPanel>

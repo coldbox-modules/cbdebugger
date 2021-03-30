@@ -4,6 +4,8 @@
 component {
 
 	property name="qb" inject="queryBuilder@qb";
+	property name="roleService" inject="entityService:Role";
+	property name="userService" inject="entityService:User";
 
 
 	/**
@@ -21,8 +23,9 @@ component {
 			.from( "blogEntries" )
 			.orderBy( "blogEntriesdateUpdated", "desc" )
 			.get();
-	}
 
+		prc.roles = variables.roleService.newCriteria().list();
+	}
 
 	// Index
 	any function index( event, rc, prc ){
@@ -52,6 +55,10 @@ component {
 			.where( "isActive", true )
 			.orderBy( "lastName" )
 			.get();
+
+		prc.ormUsers = variables.userService.newCriteria()
+			.isTrue( "isActive" )
+			.list( sortOrder = "lastName desc" );
 
 		prc.logs = getInstance( "Log" ).all();
 

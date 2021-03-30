@@ -38,7 +38,6 @@ component {
 
 	// Mappings
 	this.mappings[ "/root" ] = COLDBOX_APP_ROOT_PATH;
-	this.datasource          = "coolblog";
 
 	// Map back to its root
 	moduleRootPath = reReplaceNoCase(
@@ -55,6 +54,25 @@ component {
 	// Module Root + Path Mappings
 	this.mappings[ "/moduleroot" ]            = moduleRootPath;
 	this.mappings[ "/#request.MODULE_NAME#" ] = modulePath;
+	this.mappings[ "/cborm" ] = COLDBOX_APP_ROOT_PATH & "modules/cborm";
+	this.mappings[ "/quick" ] = COLDBOX_APP_ROOT_PATH & "modules/quick";
+
+	// ORM definitions
+	this.datasource = "coolblog";
+	this.ormEnabled = "true";
+
+	this.ormSettings = {
+		cfclocation           : [ "models" ],
+		logSQL                : true,
+		dbcreate              : "none",
+		secondarycacheenabled : false,
+		cacheProvider         : "ehcache",
+		automanageSession     : false,
+		flushAtRequestEnd     : false,
+		eventhandling         : true,
+		eventHandler          : "cborm.models.EventHandler",
+		skipcfcWithError      : false
+	};
 
 	// application start
 	public boolean function onApplicationStart(){
