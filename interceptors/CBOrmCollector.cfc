@@ -166,7 +166,7 @@ component extends="coldbox.system.Interceptor" {
 	private function logCriteriaQuery( event, interceptData, type ){
 		// Get the timer
 		var startCount    = arguments.interceptData.criteriaBuilder.getNativeCriteria().getComment();
-		var executionTime = 0
+		var executionTime = 0;
 		if ( len( startCount ) && isNumeric( startCount ) ) {
 			executionTime = getTickCount() - startCount;
 		}
