@@ -1,6 +1,6 @@
 <cfoutput>
 <!--- Title --->
-<div class="fw_titles" onClick="cbdToggle( 'cbd-executionTimers' )">
+<div class="cbd-titles" onClick="cbdToggle( 'cbd-executionTimers' )">
 	&nbsp;
 	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -8,7 +8,7 @@
 	Execution Timers (#arraylen( args.timers )#)
 </div>
 
-<div class="fw_debugContentView cbd-hide" id="cbd-executionTimers">
+<div class="cbd-contentView cbd-hide" id="cbd-executionTimers">
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 		<tr>
 			<th width="125" align="center" >Started At</th>
@@ -21,15 +21,15 @@
 		<cfif arrayLen( args.timers )>
 			<cfloop array="#args.timers#" index="thisTimer">
 				<cfif findnocase( "render", thisTimer.method )>
-					<cfset color = "fw_greenText">
+					<cfset color = "cbd-text-green">
 				<cfelseif findnocase( "interception", thisTimer.method )>
-					<cfset color = "fw_blackText">
+					<cfset color = "cbd-text-black">
 				<cfelseif findnocase( "runEvent",  thisTimer.method )>
-					<cfset color = "fw_blueText">
+					<cfset color = "cbd-text-blue">
 				<cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
-					<cfset color = "fw_purpleText">
+					<cfset color = "cbd-text-purple">
 				<cfelse>
-					<cfset color = "fw_greenText">
+					<cfset color = "cbd-text-green">
 				</cfif>
 				<tr>
 					<td align="center" >
@@ -40,7 +40,7 @@
 					</td>
 					<td align="center" >
 						<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-							<span class="fw_redText">
+							<span class="cbd-text-red">
 								#numberFormat( thisTimer.executionTime )#ms
 							</span>
 						<cfelse>

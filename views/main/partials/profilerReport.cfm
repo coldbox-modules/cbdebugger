@@ -1,11 +1,11 @@
 <cfoutput>
-<div class="rounded mt10 mb10 cbd-reportContainer">
+<div class="cbd-rounded mt10 mb10 cbd-reportContainer">
 
 	<!--- Header Panel --->
 	<div class="pl10 pr10 pt5 cbd-reportHeader">
 
 		<!--- Reload Report Button --->
-		<div class="floatRight">
+		<div class="cbd-floatRight">
 			<!--- Back Only on Ajax --->
 			<cfif args.isVisualizer>
 				<button
@@ -34,7 +34,7 @@
 		<h4>
 			<!--- Info --->
 			<div
-				class="size13"
+				class="cbd-size13"
 			>
 				#args.profiler.requestData.method#
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -45,10 +45,10 @@
 
 			<!--- Execution Time --->
 			<div
-				class="floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>fw_badge_light<cfelse>fw_badge_dark</cfif>"
+				class="cbd-floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
 			>
 				<cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-					<span class="fw_redText">
+					<span class="cbd-text-red">
 						#numberFormat( args.profiler.executionTime )# ms
 					</span>
 				<cfelse>
@@ -57,7 +57,7 @@
 			</div>
 
 			<!--- Current Event --->
-			<div class="mt5 size12 fw_badge_light">
+			<div class="mt5 cbd-size12 cbd-badge-light">
 				<strong>Event: </strong>
 				<span class="textBlue mr5">
 					#args.profiler.coldbox.event#
@@ -65,7 +65,7 @@
 			</div>
 
 			<!--- Info Bar --->
-			<div class="cbd-flex mt10 size10 textMuted">
+			<div class="cbd-flex mt10 size10 cbd-text-muted">
 
 				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,21 +104,21 @@
 
 				<div class="ml10" title="Status Code">
 					<cfif args.profiler.response.statusCode gte 200 && args.profiler.response.statusCode lt 300 >
-						<span class="fw_greenText">
+						<span class="cbd-text-green">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
 							#args.profiler.response.statusCode#
 						</span>
 					<cfelseif args.profiler.response.statusCode gte 300 && args.profiler.response.statusCode lt 400 >
-						<span class="fw_blueText">
+						<span class="cbd-text-blue">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
 							#args.profiler.response.statusCode#
 						</span>
 					<cfelseif args.profiler.response.statusCode gte 400>
-						<span class="fw_redText">
+						<span class="cbd-text-red">
 							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
 							</svg>
@@ -155,7 +155,7 @@
 				<cfif !args.profiler.exception.isEmpty()>
 					<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
 					<!--- Title --->
-					<div class="fw_titles" onClick="cbdToggle( 'cbd-exceptionData' )">
+					<div class="cbd-titles" onClick="cbdToggle( 'cbd-exceptionData' )">
 						&nbsp;
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
 							<path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd" />
@@ -163,7 +163,7 @@
 						Exception Data
 					</div>
 
-					<div class="fw_debugContentView" id="cbd-exceptionData">
+					<div class="cbd-contentView" id="cbd-exceptionData">
 						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 							<cfloop array="#args.profiler.exception.keyArray().sort( "textnocase" )#" item="thisItem" >
 								<cfif !isSimpleValue( args.profiler.exception[ thisItem ] ) OR len( args.profiler.exception[ thisItem ] )>
@@ -172,7 +172,7 @@
 											#thisItem# :
 										</th>
 										<td>
-											<div class="cellScroller">
+											<div class="cbd-cellScroller">
 												<!--- Simple value Exceptions --->
 												<cfif isSimpleValue( args.profiler.exception[ thisItem ] )>
 
@@ -194,7 +194,7 @@
 
 																<!--- Open in Editor--->
 																<cfif exceptionBean.openInEditorURL( event, thisTagContext ) NEQ "">
-																	<div class="floatRight">
+																	<div class="cbd-floatRight">
 																		<a
 																			class="cbd-button"
 																			target="_self"
@@ -218,7 +218,7 @@
 
 																<!--- Code Print --->
 																<cfif thisTagContext.keyExists( "codePrintHTML" )>
-																	<div class="mt5 textMuted">
+																	<div class="mt5 cbd-text-muted">
 																		<code>
 																			#thisTagContext.codePrintHTML#
 																		</code>
@@ -259,7 +259,7 @@
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
 				<!--- Title --->
-				<div class="fw_titles" onClick="cbdToggle( 'cbd-coldboxData' )">
+				<div class="cbd-titles" onClick="cbdToggle( 'cbd-coldboxData' )">
 					&nbsp;
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
@@ -275,7 +275,7 @@
 									#thisItem# :
 								</th>
 								<td>
-									<div class="cellScroller">
+									<div class="cbd-cellScroller">
 										<cfif isSimpleValue( args.profiler.coldbox[ thisItem ] )>
 											<cfif !isBoolean( args.profiler.coldbox[ thisItem ] ) && isJSON( args.profiler.coldbox[ thisItem ] )>
 												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.coldbox[ thisItem ] )#
@@ -283,7 +283,7 @@
 												<cfif len( args.profiler.coldbox[ thisItem ] )>
 													#args.profiler.coldbox[ thisItem ]#
 												<cfelse>
-													<em class="textMuted">
+													<em class="cbd-text-muted">
 														n/a
 													</em>
 												</cfif>
@@ -305,7 +305,7 @@
 				<!--- Request Data --->
 				<!--- **************************************************************--->
 				<!--- Title --->
-				<div class="fw_titles" onClick="cbdToggle( 'cbd-requestInfo' )">
+				<div class="cbd-titles" onClick="cbdToggle( 'cbd-requestInfo' )">
 					&nbsp;
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
@@ -329,14 +329,14 @@
 							<tr>
 								<th width="125" align="right">HTTP Content:</th>
 								<td>
-									<div class="cellScroller">
+									<div class="cbd-cellScroller">
 										<cfif isSimpleValue( args.profiler.requestData.content )>
 											<cfif !isBoolean( args.profiler.requestData.content ) && isJSON( args.profiler.requestData.content )>
 												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.requestData.content )#
 											<cfelseif len( args.profiler.requestData.content )>
 												#args.profiler.requestData.content#
 											<cfelse>
-												<em class="textMuted">empty</em>
+												<em class="cbd-text-muted">empty</em>
 											</cfif>
 										<cfelse>
 											<cfdump var="#args.profiler.requestData.content#">
@@ -356,7 +356,7 @@
 								</th>
 								<td >
 									<cfif thisHeader eq "cookie">
-										<div class="cellScroller">
+										<div class="cbd-cellScroller">
 											<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables"  style="table-layout: fixed">
 												<tr>
 													<th width="50%">
@@ -385,7 +385,7 @@
 											</table>
 										</div>
 									<cfelse>
-										<div class="cellScroller">
+										<div class="cbd-cellScroller">
 											<code>
 												#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
 											</code>
@@ -414,7 +414,7 @@
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
 				<cfif !args.isVisualizer and args.debuggerConfig.showRCPanel>
-					<div class="fw_titles"  onClick="cbdToggle( 'cbd-requestCollections' )" >
+					<div class="cbd-titles"  onClick="cbdToggle( 'cbd-requestCollections' )" >
 						&nbsp;
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -485,14 +485,14 @@
 
 			</div>
 		<cfelse>
-			<div class="textRed">
+			<div class="cbd-text-red">
 				Profiler with ID: #rc.id# not found!
 			</div>
 		</cfif>
 	</div>
 
 	<!--- Scroll to top --->
-	<div class="mt10 mb10 textCenter">
+	<div class="mt10 mb10 cbd-text-center">
 		<button
 			type="button"
 			title="Got to top of report"

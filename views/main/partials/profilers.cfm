@@ -31,14 +31,14 @@
 	</tr>
 
 	<cfloop array="#args.profilers#" index="thisProfiler">
-		<tr <cfif thisProfiler.response.statusCode gte 400>class="bgLightRed"</cfif>>
+		<tr <cfif thisProfiler.response.statusCode gte 400>class="cbd-bg-light-red"</cfif>>
 
 			<!--- TIMESTAMP + IP --->
 			<td align="left">
 				<div>
 					#timeformat( thisProfiler.timestamp, "hh:mm:ss.l tt" )#
 				</div>
-				<div class="textMuted">
+				<div class="cbd-text-muted">
 					<small>#dateformat( thisProfiler.timestamp, "mmm.dd.yyyy" )#</small>
 				</div>
 				<div class="mt5">
@@ -69,20 +69,20 @@
 			<td align="left">
 				<div>
 					<cfif thisProfiler.response.statusCode gte 200 && thisProfiler.response.statusCode lt 300 >
-						<span class="fw_greenText">
+						<span class="cbd-text-green">
 							#thisProfiler.response.statusCode#
 						</span>
 					<cfelseif thisProfiler.response.statusCode gte 300 && thisProfiler.response.statusCode lt 400 >
-						<span class="fw_blueText">
+						<span class="cbd-text-blue">
 							#thisProfiler.response.statusCode#
 						</span>
 					<cfelseif thisProfiler.response.statusCode gte 400>
-						<span class="fw_redText">
+						<span class="cbd-text-red">
 							#thisProfiler.response.statusCode#
 						</span>
 					</cfif>
 				</div>
-				<div class="mt5 textMuted">
+				<div class="mt5 cbd-text-muted">
 					#thisProfiler.response.contentType.listFirst( ";" )#
 				</div>
 			</td>
@@ -92,7 +92,7 @@
 				<div>
 					#thisProfiler.requestData.method#:#thisProfiler.fullUrl#
 				</div>
-				<div class="mt10 fw_blueText">
+				<div class="mt10 cbd-text-blue">
 					<strong>
 						Event:
 					</strong>
@@ -113,7 +113,7 @@
 			<!--- Execution Time --->
 			<td align="right">
 				<cfif thisProfiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
-					<span class="fw_redText">
+					<span class="cbd-text-red">
 						#numberFormat( thisProfiler.executionTime )#
 					</span>
 				<cfelse>
@@ -125,7 +125,7 @@
 			<td align="center">
 				<button
 					title="Show Request"
-					class="pt5 pb5 rounded"
+					class="pt5 pb5 cbd-rounded"
 					id="cbd-buttonGetProfilerReport-#thisProfiler.id#"
 					onClick="cbdGetProfilerReport( '#thisProfiler.id#', true )"
 				>

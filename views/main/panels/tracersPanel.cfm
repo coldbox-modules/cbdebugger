@@ -2,16 +2,16 @@
 	function getSeverityColor( severity ){
 		switch( arguments.severity ){
 			case "info" : {
-				return "fw_blueText";
+				return "cbd-text-blue";
 			}
 			case "debug" : {
-				return "fw_greenText";
+				return "cbd-text-green";
 			}
 			case "warn" : {
-				return "fw_orangeText";
+				return "cbd-text-orange";
 			}
 			case "error" : case "fatal" : {
-				return "fw_redText";
+				return "cbd-text-red";
 			}
 
 		}
@@ -19,7 +19,7 @@
 </cfscript>
 <cfoutput>
 	<!--- Title --->
-	<div class="fw_titles" onClick="cbdToggle( 'fw_tracer' )">
+	<div class="cbd-titles" onClick="cbdToggle( 'fw_tracer' )">
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
 			<path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd" />
@@ -30,7 +30,7 @@
 	<!--- Panel --->
 	<div class="fw_debugContent" id="fw_tracer">
 		<cfloop array="#args.tracers#" index="thisTracer">
-			<div class="fw_tracerMessage">
+			<div class="cbd-tracerMessage">
 
 				<!---
 				<span class='#severityStyle#'><b>#severity#</b></span> #timeFormat( loge.getTimeStamp(), "hh:MM:SS.l tt" )# <b>#loge.getCategory()#</b> <br/> #loge.getMessage()#"

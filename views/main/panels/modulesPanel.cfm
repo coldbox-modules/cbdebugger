@@ -1,6 +1,6 @@
 <cfoutput>
 <!--- Panel Header --->
-<div class="fw_titles"  onClick="cbdToggle('fw_modules')" >
+<div class="cbd-titles"  onClick="cbdToggle('fw_modules')" >
 	&nbsp;
 	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
@@ -9,10 +9,10 @@
 </div>
 
 <!--- Panel Content --->
-<div class="fw_debugContentView<cfif args.debuggerConfig.expandedModulesPanel> cbd-show<cfelse> cbd-hide</cfif>" id="fw_modules">
+<div class="cbd-contentView<cfif args.debuggerConfig.expandedModulesPanel> cbd-show<cfelse> cbd-hide</cfif>" id="fw_modules">
 
 	<!--- Toolbar --->
-	<div class="floatRight">
+	<div class="cbd-floatRight">
 		<!--- Reload All Modules --->
 		<button
 			type="button"
@@ -56,7 +56,7 @@
 						<strong>#thisModuleConfig.title#</strong>
 						<!--- Version --->
 						<cfif len( thisModuleConfig.version )>
-							<span class="fw_badge_light">
+							<span class="cbd-badge-light">
 								#thisModuleConfig.version#
 							</span>
 						</cfif>
@@ -69,7 +69,7 @@
 
 				<!--- Mapping --->
 				<td align="left">
-					<div class="fw_badge_light mt5">
+					<div class="cbd-badge-light mt5">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
 						</svg>

@@ -19,7 +19,7 @@
 				<!--- Simple Value --->
 				<cfif isSimpleValue( thisValue ) >
 					<cfif thisValue eq "">
-						<span class="fw_redText">N/A</span>
+						<span class="cbd-text-red">N/A</span>
 					<cfelse>
 						#encodeForHTML( thisValue )#
 					</cfif>

@@ -1,6 +1,6 @@
 <cfoutput>
 	<!--- Panel Title --->
-	<div class="fw_titles"  onClick="cbdToggle( 'cbdCBOrmPanel' )" >
+	<div class="cbd-titles"  onClick="cbdToggle( 'cbdCBOrmPanel' )" >
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
@@ -20,12 +20,12 @@
 			<!--- ExecuteQuery Queries --->
 			<h2>
 				ExecuteQuery()
-				<span class="fw_badge_dark">
+				<span class="cbd-badge-dark">
 					#arrayLen( args.profiler.cborm.executeQuery )#
 				</span>
 			</h2>
 			<cfif !arrayLen( args.profiler.cborm.executeQuery )>
-				<em class=textMuted>
+				<em class=cbd-text-muted>
 					No executeQuery() operations made
 				</em>
 			<cfelse>
@@ -69,10 +69,10 @@
 					</tbody>
 				</table>
 				<!--- Total Execution Time --->
-				<div class="floatRight mr5 mt5 mb10">
+				<div class="cbd-floatRight mr5 mt5 mb10">
 					<div>
 						<strong>Total Execution Time:</strong>
-						<div class="fw_badge_light">
+						<div class="cbd-badge-light">
 							#numberFormat( args.profiler.cborm.totalExecuteQueryExecutionTime )# ms
 						</div>
 					</div>
@@ -88,12 +88,12 @@
 			<!--- List --->
 			<h2>
 				List()
-				<span class="fw_badge_dark">
+				<span class="cbd-badge-dark">
 					#arrayLen( args.profiler.cborm.lists )#
 				</span>
 			</h2>
 			<cfif !arrayLen( args.profiler.cborm.lists )>
-				<em class=textMuted>
+				<em class=cbd-text-muted>
 					No list() operations made
 				</em>
 			<cfelse>
@@ -123,10 +123,10 @@
 				</table>
 
 				<!--- List Total Execution Time --->
-				<div class="floatRight mr5 mt5 mb10">
+				<div class="cbd-floatRight mr5 mt5 mb10">
 					<div>
 						<strong>Total Execution Time:</strong>
-						<div class="fw_badge_light">
+						<div class="cbd-badge-light">
 							#numberFormat( args.profiler.cborm.totalListsExecutionTime )# ms
 						</div>
 					</div>
@@ -141,12 +141,12 @@
 
 			<h2>
 				Get()
-				<span class="fw_badge_dark">
+				<span class="cbd-badge-dark">
 					#arrayLen( args.profiler.cborm.gets )#
 				</span>
 			</h2>
 			<cfif !arrayLen( args.profiler.cborm.gets )>
-				<em class=textMuted>
+				<em class=cbd-text-muted>
 					No get() operations made
 				</em>
 			<cfelse>
@@ -176,10 +176,10 @@
 				</table>
 
 				<!--- Get Execution Time --->
-				<div class="floatRight mr5 mt5 mb10">
+				<div class="cbd-floatRight mr5 mt5 mb10">
 					<div>
 						<strong>Total Execution Time:</strong>
-						<div class="fw_badge_light">
+						<div class="cbd-badge-light">
 							#numberFormat( args.profiler.cborm.totalGetsExecutionTime )# ms
 						</div>
 					</div>
@@ -195,12 +195,12 @@
 			<!--- Count Tables --->
 			<h2>
 				Count()
-				<span class="fw_badge_dark">
+				<span class="cbd-badge-dark">
 					#arrayLen( args.profiler.cborm.counts )#
 				</span>
 			</h2>
 			<cfif !arrayLen( args.profiler.cborm.counts )>
-				<em class=textMuted>
+				<em class=cbd-text-muted>
 					No count() operations made
 				</em>
 			<cfelse>
@@ -230,10 +230,10 @@
 				</table>
 
 				<!--- Info Bar --->
-				<div class="floatRight mr5 mt5 mb10">
+				<div class="cbd-floatRight mr5 mt5 mb10">
 					<div>
 						<strong>Total Execution Time:</strong>
-						<div class="fw_badge_light">
+						<div class="cbd-badge-light">
 							#numberFormat( args.profiler.cborm.totalCountsExecutionTime )# ms
 						</div>
 					</div>

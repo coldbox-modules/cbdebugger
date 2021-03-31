@@ -1,7 +1,7 @@
 <cfoutput>
 <!--- Start Rendering the Execution Profiler panel  --->
-<div class="fw_titles" onClick="cbdToggle( 'fw_executionprofiler' )">
-	<span class="floatRight">
+<div class="cbd-titles" onClick="cbdToggle( 'fw_executionprofiler' )">
+	<span class="cbd-floatRight">
 		v#getModuleConfig( "cbdebugger" ).version#
 	</span>
 	<div class="cbd-flex ml5">
@@ -15,10 +15,10 @@
 	</div>
 </div>
 
-<div class="fw_debugContentView" id="fw_executionprofiler">
+<div class="cbd-contentView" id="fw_executionprofiler">
 
 	<!--- Toolbar --->
-	<div class="floatRight">
+	<div class="cbd-floatRight">
 		<form name="fw_reinitcoldbox" id="fw_reinitcoldbox" action="#args.urlBase#" method="POST">
 			<input type="hidden" name="fwreinit" id="fwreinit" value="">
 
@@ -100,31 +100,31 @@
 	</p>
 
 	<!--- Machine Info --->
-	<div class="fw_debugTitleCell">
+	<div class="cbd-titleCell">
 		Framework Info:
 	</div>
-	<div class="fw_debugContentCell">
+	<div class="cbd-contentCell">
 		#controller.getColdboxSettings().codename#
 		#controller.getColdboxSettings().version#
 		#controller.getColdboxSettings().suffix#
 	</div>
 
 	<!--- App Name + Environment --->
-	<div class="fw_debugTitleCell">
+	<div class="cbd-titleCell">
 		Application Name:
 	</div>
-	<div class="fw_debugContentCell">
+	<div class="cbd-contentCell">
 		#controller.getSetting( "AppName" )#
-		<span class="fw_purpleText">
+		<span class="cbd-text-purple">
 			(environment=#controller.getSetting( "Environment" )#)
 		</span>
 	</div>
 
 	<!--- App Name + Environment --->
-	<div class="fw_debugTitleCell">
+	<div class="cbd-titleCell">
 		CFML Engine:
 	</div>
-	<div class="fw_debugContentCell">
+	<div class="cbd-contentCell">
 		#args.environment.cfmlEngine#
 		#args.environment.cfmlVersion#
 		/

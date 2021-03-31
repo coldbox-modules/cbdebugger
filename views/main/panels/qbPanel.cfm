@@ -9,7 +9,7 @@
 </cfscript>
 <cfoutput>
 	<!--- Panel Title --->
-	<div class="fw_titles"  onClick="cbdToggle( 'cbdQBPanel' )" >
+	<div class="cbd-titles"  onClick="cbdToggle( 'cbdQBPanel' )" >
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
@@ -29,10 +29,10 @@
 			<cfelse>
 
 				<!--- Info Bar --->
-				<div class="floatRight mr5 mt10">
+				<div class="cbd-floatRight mr5 mt10">
 					<div>
 						<strong>Total Execution Time:</strong>
-						<div class="fw_badge_light">
+						<div class="cbd-badge-light">
 							#totalExecutionTime# ms
 						</div>
 					</div>
@@ -64,7 +64,7 @@
 
 				<!--- Query Views --->
 				<cfif totalQueries EQ 0>
-					<div class="textMuted">
+					<div class="cbd-text-muted">
 						<em>No queries executed</em>
 					</div>
 				<cfelse>
@@ -82,7 +82,7 @@
 								<cfloop array="#args.profiler.qbQueries.grouped.keyArray()#" index="sql">
 									<tr>
 										<td align="center">
-											<div class="fw_badge_light">
+											<div class="cbd-badge-light">
 												#args.profiler.qbQueries.grouped[ sql ].len()#
 											</div>
 										</td>
@@ -187,11 +187,11 @@
 			<hr class="mt10 mb10" />
 
 			<div id="quickEntities" class="mt10">
-				<div class="fw_subtitles">&nbsp;Entities
-					<span class="fw_badge_dark ml5">#totalEntities#</span>
+				<div class="cbd-subtitles">&nbsp;Entities
+					<span class="cbd-badge-dark ml5">#totalEntities#</span>
 				</div>
 				<cfif totalEntities EQ 0>
-					<em class="textMuted">
+					<em class="cbd-text-muted">
 						No Quick entities loaded.
 					</em>
 				<cfelse>
