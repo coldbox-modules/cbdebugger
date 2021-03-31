@@ -49,9 +49,11 @@ before_script:
   - touch test-harness/.env
   # ENV
   - printf "DB_HOST=localhost\n" >> test-harness/.env
-  - printf "DB_DATABASE=coolblog\n" >> test-harness/.env
   - printf "DB_USER=root\n" >> test-harness/.env
   - printf "DB_PASSWORD=\n" >> test-harness/.env
+  - printf "DB_CLASS=com.mysql.cj.jdbc.Driver\n" >> test-harness/.env
+  - printf "DB_BUNDLEVERSION=8.0.19\n" >> test-harness/.env
+  - printf "DB_BUNDLENAME=com.mysql.cj\n" >> test-harness/.env
 
 script:
   # Set Current Version and Travis Tag
