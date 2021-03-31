@@ -147,58 +147,11 @@ window.cbdStopDebuggerMonitor = function(){
 /****************** MIGRATE BELOW ****************/
 
 /**
- * Toggle display from block to none
- * @param {*} targetDiv The target div
- * @param {*} displayStyle The display style to test
- */
-window.fw_toggleDiv = function( targetDiv, displayStyle ){
-	// toggle a div with styles, man I miss jquery
-	if ( displayStyle == null ){ displayStyle = "block"; }
-	var target = document.getElementById( targetDiv );
-	if ( target.style.display == displayStyle ){
-		target.style.display = "none";
-	}
-	else {
-		target.style.display = displayStyle;
-	}
-};
-
-/**
  * Toggle on/off debug content views
- * @param {*} divid The div id to change the class on
+ * @param {*} divid The div id to toggle on and off
  */
-window.fw_toggle = function( divid ){
-	if ( document.getElementById( divid ).className == "fw_debugContent" ){
-		document.getElementById( divid ).className = "fw_debugContentView";
-	}
-	else {
-		document.getElementById( divid ).className = "fw_debugContent";
-	}
-};
-
-/**
- * Toggle on/off a row
- * @param {*} divid The div id to change the class on
- */
-window.fw_toggleRow = function( divid ){
-	if ( document.getElementById( divid ).className == "fw_hide" ){
-		document.getElementById( divid ).className = "fw_showRow";
-	}
-	else {
-		document.getElementById( divid ).className = "fw_hide";
-	}
-};
-
-/**
- * Toggle on/off rc
- * @param {*} divid The div id to change the class on
- */
-window.fw_poprc = function( divid ){
-	var _div = document.getElementById( divid );
-	if ( _div.className == "hideRC" )
-		document.getElementById( divid ).className = "showRC";
-	else
-		document.getElementById( divid ).className = "hideRC";
+window.cbdToggle = function( divid ){
+	$cb( "#" + divid ).slideToggle();
 };
 
 /**
@@ -209,7 +162,7 @@ window.fw_poprc = function( divid ){
  * @param {*} h height
  * @param {*} features features to add
  */
-window.fw_openwindow = function( mypage,myname,w,h,features ) {
+window.cbdOpenWindow = function( mypage, myname, w, h, features ) {
 	if ( screen.width ){
 		var winl = ( screen.width-w )/2;
 		var wint = ( screen.height-h )/2;
@@ -233,7 +186,7 @@ window.fw_openwindow = function( mypage,myname,w,h,features ) {
  * Reinit ColdBox by submitting the reinit form
  * @param {*} usingPassword Are we using a password or not, if we do we ask the user for it
  */
-window.fw_reinitframework = function( usingPassword ){
+window.cbdReinitFramework = function( usingPassword ){
 	var reinitForm = document.getElementById( "fw_reinitcoldbox" );
 	if ( usingPassword ){
 		reinitForm.fwreinit.value = prompt( "Reinit Password?" );
@@ -243,22 +196,6 @@ window.fw_reinitframework = function( usingPassword ){
 	} else {
 		reinitForm.submit();
 	}
-};
-
-/**
- * Execute a URL command via Ajax
- * @param {*} commandURL The url + the debugCommand on it
- * @param {*} verb The HTTP Verb to use for the request
- * @returns The response text
- */
-window.fw_cboxCommand = function( commandURL, verb ){
-	if ( verb == null ){
-		verb = "GET";
-	}
-	var request = new XMLHttpRequest();
-	request.open( verb, commandURL, false );
-	request.send();
-	return request.responseText;
 };
 
 /**

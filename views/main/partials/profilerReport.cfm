@@ -155,7 +155,7 @@
 				<cfif !args.profiler.exception.isEmpty()>
 					<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
 					<!--- Title --->
-					<div class="fw_titles" onClick="fw_toggle( 'cbd-exceptionData' )">
+					<div class="fw_titles" onClick="cbdToggle( 'cbd-exceptionData' )">
 						&nbsp;
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
 							<path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd" />
@@ -259,7 +259,7 @@
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
 				<!--- Title --->
-				<div class="fw_titles" onClick="fw_toggle( 'cbd-coldboxData' )">
+				<div class="fw_titles" onClick="cbdToggle( 'cbd-coldboxData' )">
 					&nbsp;
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
@@ -305,7 +305,7 @@
 				<!--- Request Data --->
 				<!--- **************************************************************--->
 				<!--- Title --->
-				<div class="fw_titles" onClick="fw_toggle( 'cbd-requestInfo' )">
+				<div class="fw_titles" onClick="cbdToggle( 'cbd-requestInfo' )">
 					&nbsp;
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
@@ -414,7 +414,7 @@
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
 				<cfif !args.isVisualizer and args.debuggerConfig.showRCPanel>
-					<div class="fw_titles"  onClick="fw_toggle( 'cbd-requestCollections' )" >
+					<div class="fw_titles"  onClick="cbdToggle( 'cbd-requestCollections' )" >
 						&nbsp;
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
