@@ -3,7 +3,7 @@
  */
 component {
 
-	property name="qb" inject="queryBuilder@qb";
+	property name="qb"          inject="queryBuilder@qb";
 	property name="roleService" inject="entityService:Role";
 	property name="userService" inject="entityService:User";
 
@@ -56,13 +56,39 @@ component {
 			.orderBy( "lastName" )
 			.get();
 
-		prc.ormUsers = variables.userService.newCriteria()
+		prc.ormUsers = variables.userService
+			.newCriteria()
 			.isTrue( "isActive" )
 			.list( sortOrder = "lastName desc" );
 
+		prc.totalUsers = variables.userService
+			.newCriteria()
+			.isTrue( "isActive" )
+			.count();
+
+		prc.currentUser = variables.userService
+			.newCriteria()
+			.isTrue( "isActive" )
+			.isEq(
+				"user_id",
+				"88B73A03-FEFA-935D-AD8036E1B7954B76"
+			)
+			.get();
+
+		prc.data = variables.userService.executeQuery(
+			query: "
+				select new map( user_id as id, firstName as firstName, lastName as lastName, lastLogin as lastLogin )
+				from User
+				where isActive = :active and
+				lastLogin >= :lastLogin
+			",
+			params: {
+				"active"    : true,
+				"lastLogin" : createDate( 2011, 01, 01 )
+			}
+		);
+
 		prc.logs = getInstance( "Log" ).all();
-
-
 		log.info( "in the index event firing" );
 	}
 
