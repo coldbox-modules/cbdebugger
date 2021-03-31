@@ -16,12 +16,6 @@
 			Request
 		</th>
 		<th width="50">
-			Timers
-		</th>
-		<th width="50">
-			Tracers
-		</th>
-		<th width="50">
 			Time<br>
 			(ms)
 		</th>
@@ -98,16 +92,6 @@
 					</strong>
 					#thisProfiler.coldbox.event#
 				</div>
-			</td>
-
-			<!--- How Many Timers --->
-			<td align="center">
-				#arrayLen( thisProfiler.timers )#
-			</td>
-
-			<!--- How Many Tracers --->
-			<td align="center">
-				#arrayLen( thisProfiler.tracers ?: [] )#
 			</td>
 
 			<!--- Execution Time --->

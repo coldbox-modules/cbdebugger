@@ -18,7 +18,7 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdQBPanel">
+	<div class="cbd-contentView<cfif args.debuggerConfig.expandedQBPanel></cfif>" id="cbdQBPanel">
 		<div id="qbQueries">
 
 			<!--- If not installed --->

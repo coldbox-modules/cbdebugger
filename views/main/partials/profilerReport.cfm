@@ -22,8 +22,8 @@
 			<button
 				type="button"
 				title="Reload Report"
-				id="cbd-buttonRefreshProfilers"
-				onClick="cbdGetProfilerReport( '#args.profiler.id#' )"
+				id="cbd-buttonGetProfilerReport-#args.profiler.id#"
+				onClick="cbdGetProfilerReport( '#args.profiler.id#', #args.isVisualizer ? 'true' : 'false'# )"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -267,7 +267,7 @@
 					ColdBox Information
 				</div>
 
-				<div class="fw_debugContent" id="cbd-coldboxData">
+				<div class="cbd-contentView" id="cbd-coldboxData">
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 						<cfloop array="#args.profiler.coldbox.keyArray().sort( "textnocase" )#" item="thisItem" >
 							<tr>
@@ -314,7 +314,7 @@
 				</div>
 
 				<!--- Panel --->
-				<div class="fw_debugContent" id="cbd-requestInfo">
+				<div class="cbd-contentView" id="cbd-requestInfo">
 					<h2>HTTP Request Information</h2>
 					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 						<tr>
@@ -421,7 +421,7 @@
 						</svg>
 						ColdBox Request Structures
 					</div>
-					<div class="fw_debugContent<cfif args.debuggerConfig.expandedRCPanel>View</cfif>" id="cbd-requestCollections">
+					<div class="cbd-contentView <cfif args.debuggerConfig.expandedRCPanel>View</cfif>" id="cbd-requestCollections">
 						<!--- Public Collection --->
 						#renderView(
 							view : "main/panels/collectionPanel",

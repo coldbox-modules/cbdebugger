@@ -1,6 +1,6 @@
 <cfoutput>
 <!--- Start Rendering the Execution Profiler panel  --->
-<div class="cbd-titles" onClick="cbdToggle( 'fw_executionprofiler' )">
+<div class="cbd-titles" onClick="cbdToggle( 'cbdRequestTracker' )">
 	<span class="cbd-floatRight">
 		v#getModuleConfig( "cbdebugger" ).version#
 	</span>
@@ -15,11 +15,11 @@
 	</div>
 </div>
 
-<div class="cbd-contentView" id="fw_executionprofiler">
+<div class="cbd-contentView" id="cbdRequestTracker">
 
 	<!--- Toolbar --->
 	<div class="cbd-floatRight">
-		<form name="fw_reinitcoldbox" id="fw_reinitcoldbox" action="#args.urlBase#" method="POST">
+		<form name="cbdReinitColdBox" id="cbdReinitColdBox" action="#args.urlBase#" method="POST">
 			<input type="hidden" name="fwreinit" id="fwreinit" value="">
 
 			<!--- Auto Refresh Frequency --->

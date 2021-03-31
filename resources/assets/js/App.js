@@ -45,13 +45,13 @@ window.cbdScrollToProfilerReport = function(){
  * @param {*} isVisualizer Are we in visualizer mode or not
  */
 window.cbdGetProfilerReport = function( id, isVisualizer ){
-	$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).addClass( "cbd-spinner" );
+	$cb( "#cbd-buttonGetProfilerReport-" + id + " > svg" ).addClass( "cbd-spinner" );
 	$cb.get(
 		cbDebuggerUrl + "cbDebugger/renderProfilerReport",
 		{ id: id, isVisualizer: isVisualizer || false },
 		( response ) => {
 			$cb( "#cbd-profilers" ).html( response );
-			$cb( "#cbd-buttonGetProfilerReport" + id + " > svg" ).removeClass( "cbd-spinner" );
+			$cb( "#cbd-buttonGetProfilerReport-" + id + " > svg" ).removeClass( "cbd-spinner" );
 			cbdScrollToProfilerReport();
 		}
 	);
@@ -187,7 +187,7 @@ window.cbdOpenWindow = function( mypage, myname, w, h, features ) {
  * @param {*} usingPassword Are we using a password or not, if we do we ask the user for it
  */
 window.cbdReinitFramework = function( usingPassword ){
-	var reinitForm = document.getElementById( "fw_reinitcoldbox" );
+	var reinitForm = document.getElementById( "cbdReinitColdBox" );
 	if ( usingPassword ){
 		reinitForm.fwreinit.value = prompt( "Reinit Password?" );
 		if ( reinitForm.fwreinit.value.length ){

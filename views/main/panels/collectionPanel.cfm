@@ -12,10 +12,10 @@
 			<cfset thisValue = "<em>NULL</em>">
 		</cfif>
 		<tr>
-			<td align="right" width="15%" class="fw_debugTablesTitles">
+			<td align="right" width="15%">
 				<strong>#encodeForHTML( thisKey )#:</strong>
 			</td>
-			<td  class="fw_debugTablesCells">
+			<td>
 				<!--- Simple Value --->
 				<cfif isSimpleValue( thisValue ) >
 					<cfif thisValue eq "">

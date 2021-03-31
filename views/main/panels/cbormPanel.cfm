@@ -9,7 +9,7 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="fw_debugContent<cfif args.debuggerConfig.expandedQBPanel>View</cfif>" id="cbdCBOrmPanel">
+	<div class="cbd-contentView" id="cbdCBOrmPanel">
 
 		<div>
 
