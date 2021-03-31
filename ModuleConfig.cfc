@@ -32,60 +32,65 @@ component {
 		 * Settings
 		 */
 		variables.settings = {
-			// Turn the debugger on/off by default
+			// Turn the debugger on/off by default. You can always enable it via the URL using your debug password
 			debugMode : controller.getSetting(
 				name         = "environment",
 				defaultValue = "production"
 			) == "development",
 			// The URL password to use to activate it on demand
-			debugPassword                 : "cb:null",
-			// How many tracking profilers to keep in stack: Default is monitor the last 20 requests
-			maxPersistentRequestProfilers : 20,
-			// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data
-			profileHTTPBody               : false,
-			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
-			wireboxCreationProfiler       : false,
-			// How many rows to dump for object collections if the RC panel is activated
-			maxRCPanelQueryRows           : 50,
-			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
-			slowExecutionThreshold        : 1000,
-			// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
-			slowTimerThreshold            : 250,
-			// Profile model objects annotated with the `profile` annotation
-			profileObjects                : true,
-			// If enabled, will trace the results of any methods that are being profiled
-			traceObjectResults            : false,
-			// Profile Custom or Core interception points
-			profileInterceptions          : true,
-			// By default all interception events are excluded, you must include what you want to profile
-			includedInterceptions         : [],
-			// If enabled, the tracers will be cleaned upon rendering
-			clearTracersUponRendering     : true,
-			/**
-			 * PANEL VISIBILITY SETTINGS
-			 */
-			// Show the panel expanded by default
-			expandedTracerPanel  : true,
-			// Show the info tracking panel
-			showInfoPanel        : true,
-			// Show the panel expanded by default
-			expandedInfoPanel    : true,
-			// Show the cache report panel
-			showCachePanel       : true,
-			// Show the panel expanded by default
-			expandedCachePanel   : false,
-			// Show the RC/PRC collection panels
-			showRCPanel          : true,
-			// Show the panel expanded by default
-			expandedRCPanel      : false,
-			// Show the modules panel
-			showModulesPanel     : true,
-			// Show the panel expanded by default
-			expandedModulesPanel : false,
-			// Show the QB Panel
-			showQBPanel          : true,
-			// Show the panel expanded by default
-			expandedQBPanel      : false
+			debugPassword  : "cb:null",
+			// Request Tracker Options
+			requestTracker : {
+				// Expand by default the tracker panel or not
+				expanded                     : true,
+				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
+				slowExecutionThreshold       : 1000,
+				// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
+				maxProfilers                 : 25,
+				// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
+				profileWireBoxObjectCreation : false,
+				// Profile model objects annotated with the `profile` annotation
+				profileObjects               : true,
+				// If enabled, will trace the results of any methods that are being profiled
+				traceObjectResults           : false,
+				// Profile Custom or Core interception points
+				profileInterceptions         : true,
+				// By default all interception events are excluded, you must include what you want to profile
+				includedInterceptions        : [],
+				// Control the execution timers
+				executionTimers              : {
+					expanded           : true,
+					// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
+					slowTimerThreshold : 250
+				},
+				// Control the coldbox info reporting
+				coldboxInfo : { expanded : false },
+				// Control the http request reporting
+				httpRequest : {
+					expanded        : false,
+					// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data
+					profileHTTPBody : false
+				}
+			},
+			// ColdBox Tracer Appender Messages
+			tracers     : { enabled : true, expanded : false },
+			// Request Collections Reporting
+			collections : {
+				// Enable tracking
+				enabled      : false,
+				// Expanded panel or not
+				expanded     : false,
+				// How many rows to dump for object collections
+				maxQueryRows : 50
+			},
+			// CacheBox Reporting
+			cachebox : { enabled : false, expanded : false },
+			// Modules Reporting
+			modules  : { enabled : false, expanded : false },
+			// Quick and QB Reporting
+			qb       : { enabled : false, expanded : false },
+			// cborm Reporting
+			cborm    : { enabled : false, expanded : false }
 		};
 
 		// Visualizer Route
@@ -145,14 +150,14 @@ component {
 
 		/******************** PROFILE OBJECTS ************************************/
 
-		if ( variables.settings.profileObjects ) {
+		if ( variables.settings.requestTracker.profileObjects ) {
 			// Object Profiler Aspect
 			binder
 				.mapAspect( "ObjectProfiler" )
 				.to( "#moduleMapping#.aspects.ObjectProfiler" )
 				.initArg(
 					name  = "traceResults",
-					value = variables.settings.traceObjectResults
+					value = variables.settings.requestTracker.traceObjectResults
 				);
 
 			// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
@@ -170,7 +175,7 @@ component {
 
 		/******************** PROFILE INTERCEPTIONS ************************************/
 
-		if ( variables.settings.profileInterceptions ) {
+		if ( variables.settings.requestTracker.profileInterceptions ) {
 			// Register our interceptor profiler
 			binder
 				.mapAspect( "InterceptorProfiler" )
@@ -181,7 +186,7 @@ component {
 				)
 				.initArg(
 					name  = "includedInterceptions",
-					value = variables.settings.includedInterceptions
+					value = variables.settings.requestTracker.includedInterceptions
 				);
 			// Intercept all announcements
 			binder.bindAspect(
@@ -198,7 +203,7 @@ component {
 
 		/******************** Register QB Collector ************************************/
 
-		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
@@ -209,7 +214,7 @@ component {
 
 		/******************** Register Quick Collector ************************************/
 
-		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
@@ -220,7 +225,7 @@ component {
 
 		/******************** Register cborm Collector ************************************/
 
-		if ( controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+		if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
@@ -234,32 +239,34 @@ component {
 	 * Unloading
 	 */
 	function onUnload(){
-		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
 			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
 		}
-		if ( variables.settings.showQBPanel && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
 			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
 		}
-		if ( controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+		if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
 			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
 		}
 	}
 
 	/**
-	 * Register our tracer appender after the configuration loads
+	 * Register our tracer appender after the aspects loads
 	 */
-	function afterConfigurationLoad(){
-		var logBox = controller.getLogBox();
-		logBox.registerAppender(
-			"tracer",
-			"cbdebugger.appenders.TracerAppender"
-		);
-		var appenders = logBox.getAppendersMap( "tracer" );
-		// Register the appender with the root loggger, and turn the logger on.
-		var root      = logBox.getRootLogger();
-		root.addAppender( appenders[ "tracer" ] );
-		root.setLevelMax( 4 );
-		root.setLevelMin( 0 );
+	function afterAspectsLoad(){
+		if ( variables.settings.tracers.enabled ) {
+			var logBox = controller.getLogBox();
+			logBox.registerAppender(
+				"tracer",
+				"cbdebugger.appenders.TracerAppender"
+			);
+			var appenders = logBox.getAppendersMap( "tracer" );
+			// Register the appender with the root loggger, and turn the logger on.
+			var root      = logBox.getRootLogger();
+			root.addAppender( appenders[ "tracer" ] );
+			root.setLevelMax( 4 );
+			root.setLevelMin( 0 );
+		}
 	}
 
 	/**

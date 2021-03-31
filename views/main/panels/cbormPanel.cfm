@@ -9,7 +9,10 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="cbd-contentView" id="cbdCBOrmPanel">
+	<div
+		class="cbd-contentView<cfif args.debuggerConfig.cborm.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+		id="cbdCBOrmPanel"
+	>
 
 		<div>
 

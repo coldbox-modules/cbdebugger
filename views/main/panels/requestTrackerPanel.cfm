@@ -1,9 +1,6 @@
 <cfoutput>
 <!--- Start Rendering the Execution Profiler panel  --->
 <div class="cbd-titles" onClick="cbdToggle( 'cbdRequestTracker' )">
-	<span class="cbd-floatRight">
-		v#getModuleConfig( "cbdebugger" ).version#
-	</span>
 	<div class="cbd-flex ml5">
 		<div>
 			<img src="#event.getModuleRoot( 'cbDebugger' )#/includes/images/coldbox_16.png" class="">
@@ -11,11 +8,41 @@
 
 		<div class="ml5">
 			ColdBox Request Tracker
+
+			<!--- If not expanded and not in visualizer mode --->
+			<cfif !args.debuggerConfig.requestTracker.expanded && !args.isVisualizer>
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+
+				#args.currentProfiler.requestData.method#
+
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+
+				#args.currentProfiler.coldbox.event#
+
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+
+				#args.currentProfiler.response.statusCode#
+
+				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+				</svg>
+
+				#numberFormat( args.currentProfiler.executionTime )# ms
+			</cfif>
 		</div>
 	</div>
 </div>
 
-<div class="cbd-contentView" id="cbdRequestTracker">
+<div
+	class="cbd-contentView<cfif args.debuggerConfig.requestTracker.expanded or args.isVisualizer> cbd-show<cfelse> cbd-hide</cfif>"
+	id="cbdRequestTracker"
+>
 
 	<!--- Toolbar --->
 	<div class="cbd-floatRight">

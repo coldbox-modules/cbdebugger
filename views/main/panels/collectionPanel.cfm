@@ -25,13 +25,13 @@
 					</cfif>
 				<cfelse>
 					<!--- Max Display For Queries  --->
-					<cfif isQuery( thisValue ) and ( thisValue.recordCount gt args.debuggerConfig.maxRCPanelQueryRows )>
-						<cfquery name="thisValue" dbType="query" maxrows="#args.debuggerConfig.maxRCPanelQueryRows#">
+					<cfif isQuery( thisValue ) and ( thisValue.recordCount gt args.debuggerConfig.collections.maxQueryRows )>
+						<cfquery name="thisValue" dbType="query" maxrows="#args.debuggerConfig.collections.maxQueryRows#">
 							select * from thisValue
 						</cfquery>
 						<cfdump
 							var="#thisValue#"
-							label="Query Truncated to #args.debuggerConfig.maxRCPanelQueryRows# records. Click to expand"
+							label="Query Truncated to #args.debuggerConfig.collections.maxQueryRows# records. Click to expand"
 							expand="false"
 							>
 					<!--- Objects --->

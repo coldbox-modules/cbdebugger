@@ -38,7 +38,7 @@ debugger = {
     debugMode = true,
     // Setup a password for the panel
     debugPassword = "",
-    maxPersistentRequestProfilers = 10,
+    maxRequestProfilers = 10,
     maxRCPanelQueryRows = 50,
     expandedTracerPanel = true,
     showInfoPanel = true,

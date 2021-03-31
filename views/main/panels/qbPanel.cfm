@@ -18,7 +18,10 @@
 	</div>
 
 	<!--- Panel Content --->
-	<div class="cbd-contentView<cfif args.debuggerConfig.expandedQBPanel></cfif>" id="cbdQBPanel">
+	<div
+		class="cbd-contentView<cfif args.debuggerConfig.qb.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+		id="cbdQBPanel"
+	>
 		<div id="qbQueries">
 
 			<!--- If not installed --->

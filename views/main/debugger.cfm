@@ -1,17 +1,18 @@
 <!---
 This main debugger view collects all the different panels to present to the user
+We use cfinclude to be fast and sneaky
 --->
 <cfoutput>
 <div>
 	<!--- **************************************************************--->
-	<!--- PROFILER REPORTS --->
+	<!--- REQUEST TRACKER REPORTS --->
 	<!--- **************************************************************--->
-	<cfinclude template="panels/profilersPanel.cfm">
+	<cfinclude template="panels/requestTrackerPanel.cfm">
 
 	<!--- **************************************************************--->
 	<!--- MODULES PANEL --->
 	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.showModulesPanel>
+	<cfif args.debuggerConfig.modules.enabled>
 		<cfinclude template="panels/modulesPanel.cfm">
 	</cfif>
 
@@ -19,16 +20,19 @@ This main debugger view collects all the different panels to present to the user
 	<!--- **************************************************************--->
 	<!--- CACHE PANEL --->
 	<!--- **************************************************************--->
-	<cfif args.debuggerConfig.showCachePanel>
-		<cfmodule template="/coldbox/system/cache/report/monitor.cfm"
-				cacheFactory="#controller.getCacheBox()#"
-				expandedPanel="#args.debuggerConfig.expandedCachePanel#">
+	<cfif args.debuggerConfig.cachebox.enabled>
+		<cfinclude template="panels/cacheBoxPanel.cfm">
 	</cfif>
+
+	<!--- Debugger Version --->
+	<span class="mt10 mb10 cbd-floatRight">
+		ColdBox Debugger v#getModuleConfig( "cbdebugger" ).version#
+	</span>
 
 	<!--- Final Rendering --->
 	<div class="mt10 mb10">
 		<em>
-			ColdBox Debug Rendering Time: #getTickCount() - args.debugStartTime# ms
+			Debug Rendering Time: #getTickCount() - args.debugStartTime# ms
 		</em>
 	</div>
 </div>

@@ -9,7 +9,10 @@
 </div>
 
 <!--- Panel Content --->
-<div class="cbd-contentView<cfif args.debuggerConfig.expandedModulesPanel> cbd-show<cfelse> cbd-hide</cfif>" id="cbdModules">
+<div
+	class="cbd-contentView<cfif args.debuggerConfig.modules.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+	id="cbdModules"
+>
 
 	<!--- Toolbar --->
 	<div class="cbd-floatRight">

@@ -6,6 +6,7 @@ component extends="coldbox.system.RestHandler" {
 	// DI
 	property name="debuggerService" inject="debuggerService@cbdebugger";
 	property name="timerService"    inject="timer@cbdebugger";
+	property name="debuggerConfig"  inject="coldbox:modulesettings:cbdebugger";
 
 	/**
 	 * Executes before all handler actions
@@ -18,10 +19,11 @@ component extends="coldbox.system.RestHandler" {
 		eventArguments
 	){
 		// Global params
-		event.paramValue( "frequency", 0 )
-			.paramValue( "isVisualizer", false );
+		event.paramValue( "frequency", 0 ).paramValue( "isVisualizer", false );
+
 		// Don't show cf debug
 		cfsetting( showdebugoutput = "false" );
+
 		// If not enabled, just 404 it
 		if ( !variables.debuggerService.getDebugMode() ) {
 			event.setHTTPHeader(
@@ -54,19 +56,21 @@ component extends="coldbox.system.RestHandler" {
 			view      : "main/debugger",
 			viewModule: "cbdebugger",
 			args      : {
-				isVisualizer : isVisualizer,
+				isVisualizer     : isVisualizer,
 				pageTitle        : "ColdBox Debugger",
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
-				loadedModules    : variables.controller.getModuleService().getLoadedModules(),
-				moduleSettings   : getSetting( "modules" ),
-				debuggerConfig   : getModuleSettings( "cbdebugger" ),
-				debuggerService  : variables.debuggerService,
-				environment      : variables.debuggerService.getEnvironment(),
-				profilers        : variables.debuggerService.getProfilers(),
+				loadedModules    : variables.debuggerConfig.modules.enabled ? variables.controller
+					.getModuleService()
+					.getLoadedModules() : [],
+				moduleSettings  : variables.debuggerConfig.modules.enabled ? getSetting( "modules" ) : {},
+				debuggerConfig  : variables.debuggerConfig,
+				debuggerService : variables.debuggerService,
+				environment     : variables.debuggerService.getEnvironment(),
+				profilers       : variables.debuggerService.getProfilers(),
 				currentProfiler : variables.debuggerService.getProfilers()[ 1 ],
-				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
+				manifestRoot    : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);
 	}
@@ -75,10 +79,10 @@ component extends="coldbox.system.RestHandler" {
 	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){
-		// Return the debugger layout+view
 		return renderView(
-			view  : "main/cacheMonitor",
-			module: "cbdebugger"
+			view  : "main/panels/cacheBoxPanel",
+			module: "cbdebugger",
+			args  : { debuggerConfig : variables.debuggerConfig }
 		);
 	}
 
@@ -100,7 +104,7 @@ component extends="coldbox.system.RestHandler" {
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
 				profilers      : variables.debuggerService.getProfilers(),
-				debuggerConfig : getModuleSettings( "cbdebugger" )
+				debuggerConfig : variables.debuggerConfig
 			},
 			prePostExempt: true
 		);
@@ -116,8 +120,8 @@ component extends="coldbox.system.RestHandler" {
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
 				profiler       : variables.debuggerService.getProfilerById( rc.id ),
-				debuggerConfig : getModuleSettings( "cbdebugger" ),
-				isVisualizer : rc.isVisualizer
+				debuggerConfig : variables.debuggerConfig,
+				isVisualizer   : rc.isVisualizer
 			},
 			prePostExempt: true
 		);

@@ -28,7 +28,10 @@
 	</div>
 
 	<!--- Panel --->
-	<div class="cbd-contentView" id="cbdTracers">
+	<div
+		class="cbd-contentView<cfif args.debuggerConfig.tracers.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+		id="cbdTracers"
+	>
 		<cfloop array="#args.tracers#" index="thisTracer">
 			<div class="cbd-tracerMessage">
 

@@ -193,7 +193,7 @@ component
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"timers"        : [],
 			"tracers"       : [],
-			"requestData"   : getHTTPRequestData( variables.debuggerConfig.profileHTTPBody ),
+			"requestData"   : getHTTPRequestData( variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody ),
 			"response"      : { "statusCode" : 0, "contentType" : "" },
 			"coldbox"       : {},
 			"exception"     : {}
@@ -237,7 +237,7 @@ component
 		exception = {}
 	){
 		// size check, if passed, pop one
-		if ( arrayLen( variables.profilers ) gte variables.debuggerConfig.maxPersistentRequestProfilers ) {
+		if ( arrayLen( variables.profilers ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
 			popProfiler();
 		}
 
@@ -356,6 +356,11 @@ component
 		timestamp = now(),
 		extraInfo = ""
 	){
+		// Don't allow if not enabled
+		if ( !variables.debuggerConfig.tracers.enabled ) {
+			return this;
+		}
+
 		// Ensure we have the tracers array for the request
 		if ( isNull( request.tracers ) ) {
 			request.tracers = [];

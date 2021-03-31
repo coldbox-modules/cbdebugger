@@ -45,9 +45,9 @@
 
 			<!--- Execution Time --->
 			<div
-				class="cbd-floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
+				class="cbd-floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
 			>
-				<cfif args.profiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
+				<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
 					<span class="cbd-text-red">
 						#numberFormat( args.profiler.executionTime )# ms
 					</span>
@@ -153,91 +153,15 @@
 				<!--- Exception Data --->
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
-					<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
-					<!--- Title --->
-					<div class="cbd-titles" onClick="cbdToggle( 'cbd-exceptionData' )">
-						&nbsp;
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-							<path fill-rule="evenodd" d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.072 1 1 0 01-1.415-1.415 3 3 0 000-4.242 1 1 0 010-1.415zM10 9a1 1 0 011 1v.01a1 1 0 11-2 0V10a1 1 0 011-1z" clip-rule="evenodd" />
-						</svg>
-						Exception Data
-					</div>
-
-					<div class="cbd-contentView" id="cbd-exceptionData">
-						<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-							<cfloop array="#args.profiler.exception.keyArray().sort( "textnocase" )#" item="thisItem" >
-								<cfif !isSimpleValue( args.profiler.exception[ thisItem ] ) OR len( args.profiler.exception[ thisItem ] )>
-									<tr>
-										<th width="200" align="right">
-											#thisItem# :
-										</th>
-										<td>
-											<div class="cbd-cellScroller">
-												<!--- Simple value Exceptions --->
-												<cfif isSimpleValue( args.profiler.exception[ thisItem ] )>
-
-													<cfif thisItem eq "stacktrace">
-														<code>
-															#exceptionBean.processStackTrace( args.profiler.exception[ thisItem ] )#
-														</code>
-													<cfelse>
-														#args.profiler.exception[ thisItem ]#
-													</cfif>
-
-												<!--- Complex Value Exception data --->
-												<cfelse>
-													<!--- Tag Context Rendering --->
-													<cfif thisItem eq "tagContext">
-														<cfset appPath = getSetting( "ApplicationPath" )>
-														<cfloop array="#args.profiler.exception[ thisItem ]#" item="thisTagContext">
-															<div class="mb10 mt10 cbd-bindings">
-
-																<!--- Open in Editor--->
-																<cfif exceptionBean.openInEditorURL( event, thisTagContext ) NEQ "">
-																	<div class="cbd-floatRight">
-																		<a
-																			class="cbd-button"
-																			target="_self"
-																			rel   ="noreferrer noopener"
-																			title="Open in Editor"
-																			href="#exceptionBean.openInEditorURL( event, thisTagContext )#"
-																		>
-																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-																				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-																			</svg>
-																		</a>
-																	</div>
-																</cfif>
-
-																<!--- Line --->
-																<div>
-																	<strong>
-																		#replaceNoCase( thisTagContext.template, appPath, "" )#:#thisTagContext.line#
-																	</strong>
-																</div>
-
-																<!--- Code Print --->
-																<cfif thisTagContext.keyExists( "codePrintHTML" )>
-																	<div class="mt5 cbd-text-muted">
-																		<code>
-																			#thisTagContext.codePrintHTML#
-																		</code>
-																	</div>
-																</cfif>
-															</div>
-														</cfloop>
-													<!--- Other Rendering --->
-													<cfelse>
-														<cfdump var="#args.profiler.exception[ thisItem ]#">
-													</cfif>
-												</cfif>
-											</div>
-										</td>
-									</tr>
-								</cfif>
-							</cfloop>
-						</table>
-					</div>
+					#renderView(
+						view : "main/panels/exceptionPanel",
+						module : "cbdebugger",
+						args : {
+							debuggerConfig : args.debuggerConfig,
+							profiler : args.profiler
+						},
+						prePostExempt : true
+					)#
 				</cfif>
 
 
@@ -245,7 +169,7 @@
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/partials/debugTimers",
+					view : "main/panels/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
 						timers : args.profiler.timers,
@@ -258,162 +182,49 @@
 				<!--- **************************************************************--->
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
-				<!--- Title --->
-				<div class="cbd-titles" onClick="cbdToggle( 'cbd-coldboxData' )">
-					&nbsp;
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
-					</svg>
-					ColdBox Information
-				</div>
-
-				<div class="cbd-contentView" id="cbd-coldboxData">
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-						<cfloop array="#args.profiler.coldbox.keyArray().sort( "textnocase" )#" item="thisItem" >
-							<tr>
-								<th width="200" align="right">
-									#thisItem# :
-								</th>
-								<td>
-									<div class="cbd-cellScroller">
-										<cfif isSimpleValue( args.profiler.coldbox[ thisItem ] )>
-											<cfif !isBoolean( args.profiler.coldbox[ thisItem ] ) && isJSON( args.profiler.coldbox[ thisItem ] )>
-												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.coldbox[ thisItem ] )#
-											<cfelse>
-												<cfif len( args.profiler.coldbox[ thisItem ] )>
-													#args.profiler.coldbox[ thisItem ]#
-												<cfelse>
-													<em class="cbd-text-muted">
-														n/a
-													</em>
-												</cfif>
-											</cfif>
-										<cfelse>
-											<cfdump
-												var="#args.profiler.coldbox[ thisItem ]#"
-												label="Click to expand..."
-												expand="false">
-										</cfif>
-									</div>
-								</td>
-							</tr>
-						</cfloop>
-					</table>
-				</div>
-
-				<!--- **************************************************************--->
-				<!--- Request Data --->
-				<!--- **************************************************************--->
-				<!--- Title --->
-				<div class="cbd-titles" onClick="cbdToggle( 'cbd-requestInfo' )">
-					&nbsp;
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
-					</svg>
-					HTTP Request
-				</div>
-
-				<!--- Panel --->
-				<div class="cbd-contentView" id="cbd-requestInfo">
-					<h2>HTTP Request Information</h2>
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-						<tr>
-							<th width="125" align="right">HTTP Method:</th>
-							<td>#args.profiler.requestData.method#</td>
-						</tr>
-						<tr>
-							<th width="125" align="right">HTTP URL:</th>
-							<td>#args.profiler.fullUrl#</td>
-						</tr>
-						<cfif !isNull( args.profiler.requestData.content )>
-							<tr>
-								<th width="125" align="right">HTTP Content:</th>
-								<td>
-									<div class="cbd-cellScroller">
-										<cfif isSimpleValue( args.profiler.requestData.content )>
-											<cfif !isBoolean( args.profiler.requestData.content ) && isJSON( args.profiler.requestData.content )>
-												#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.requestData.content )#
-											<cfelseif len( args.profiler.requestData.content )>
-												#args.profiler.requestData.content#
-											<cfelse>
-												<em class="cbd-text-muted">empty</em>
-											</cfif>
-										<cfelse>
-											<cfdump var="#args.profiler.requestData.content#">
-										</cfif>
-									</div>
-								</td>
-							</tr>
-						</cfif>
-					</table>
-
-					<h2>Headers</h2>
-					<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-						<cfloop array="#args.profiler.requestData.headers.keyArray().sort( "textnocase" )#" item="thisHeader" >
-							<tr>
-								<th width="175" align="right">
-									#thisHeader#
-								</th>
-								<td >
-									<cfif thisHeader eq "cookie">
-										<div class="cbd-cellScroller">
-											<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables"  style="table-layout: fixed">
-												<tr>
-													<th width="50%">
-														Cookie Name
-													</th>
-													<th>
-														Cookie Value
-													</th>
-												</tr>
-												<cfloop array="#args.profiler.requestData.headers.cookie.listToArray( ";" ).sort( "textNoCase" )#" index="thisHeader">
-													<tr>
-														<td class="cbd-cellBreak">
-															<em class="textBlue">
-																#getToken( thisHeader, 1, "=" )#
-															</em>
-														</td>
-														<td class="cbd-cellBreak">
-															<cfif !isBoolean( getToken( thisHeader, 2, "=" ) ) && isJSON( getToken( thisHeader, 2, "=" ) )>
-																#getInstance( '@JSONPrettyPrint' ).formatJSON( getToken( thisHeader, 2, "=" ) )#
-															<cfelse>
-																#getToken( thisHeader, 2, "=" )#
-															</cfif>
-														</td>
-													</tr>
-												</cfloop>
-											</table>
-										</div>
-									<cfelse>
-										<div class="cbd-cellScroller">
-											<code>
-												#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
-											</code>
-										</div>
-									</cfif>
-								</td>
-							</tr>
-						</cfloop>
-					</table>
-				</div>
-
-				<!--- **************************************************************--->
-				<!--- Tracers --->
-				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/tracersPanel",
+					view : "main/panels/coldboxPanel",
 					module : "cbdebugger",
 					args : {
-						tracers : args.profiler.tracers
+						profiler : args.profiler,
+						debuggerConfig : args.debuggerConfig
 					},
 					prePostExempt : true
 				)#
 
 				<!--- **************************************************************--->
+				<!--- HTTP Request Data --->
+				<!--- **************************************************************--->
+				#renderView(
+					view : "main/panels/httpRequestPanel",
+					module : "cbdebugger",
+					args : {
+						profiler : args.profiler,
+						debuggerConfig : args.debuggerConfig
+					},
+					prePostExempt : true
+				)#
+
+				<!--- **************************************************************--->
+				<!--- Tracers --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.tracers.enabled>
+					#renderView(
+						view : "main/panels/tracersPanel",
+						module : "cbdebugger",
+						args : {
+							tracers : args.profiler.tracers,
+							debuggerConfig : args.debuggerConfig
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
 				<!--- COLLECTIONS --->
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
-				<cfif !args.isVisualizer and args.debuggerConfig.showRCPanel>
+				<cfif !args.isVisualizer and args.debuggerConfig.collections.enabled>
 					<div class="cbd-titles"  onClick="cbdToggle( 'cbd-requestCollections' )" >
 						&nbsp;
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -421,7 +232,10 @@
 						</svg>
 						ColdBox Request Structures
 					</div>
-					<div class="cbd-contentView <cfif args.debuggerConfig.expandedRCPanel>View</cfif>" id="cbd-requestCollections">
+					<div
+						class="cbd-contentView<cfif args.debuggerConfig.collections.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+						id="cbd-requestCollections"
+					>
 						<!--- Public Collection --->
 						#renderView(
 							view : "main/panels/collectionPanel",
@@ -450,7 +264,7 @@
 				<!--- **************************************************************--->
 				<!--- CBORM --->
 				<!--- **************************************************************--->
-				<cfif controller.getModuleService().isModuleRegistered( "cborm" )>
+				<cfif args.debuggerConfig.cborm.enabled>
 					#renderView(
 						view : "main/panels/cbormPanel",
 						module : "cbdebugger",
@@ -465,7 +279,7 @@
 				<!--- **************************************************************--->
 				<!--- QB/QUICK --->
 				<!--- **************************************************************--->
-				<cfif args.debuggerConfig.showQBPanel>
+				<cfif args.debuggerConfig.qb.enabled>
 					#renderView(
 						view : "main/panels/qbPanel",
 						module : "cbdebugger",

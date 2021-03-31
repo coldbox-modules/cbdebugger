@@ -8,7 +8,10 @@
 	Execution Timers (#arraylen( args.timers )#)
 </div>
 
-<div class="cbd-contentView cbd-hide" id="cbd-executionTimers">
+<div
+	class="cbd-contentView<cfif args.debuggerConfig.requestTracker.executionTimers.expanded> cbd-show<cfelse> cbd-hide</cfif>"
+	id="cbd-executionTimers"
+>
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 		<tr>
 			<th width="125" align="center" >Started At</th>
@@ -39,7 +42,7 @@
 						#timeFormat( thisTimer.stoppedAt, "hh:MM:SS.l tt" )#
 					</td>
 					<td align="center" >
-						<cfif thisTimer.executionTime gt args.debuggerConfig.slowExecutionThreshold>
+						<cfif thisTimer.executionTime gt args.debuggerConfig.requestTracker.executionTimers.slowTimerThreshold>
 							<span class="cbd-text-red">
 								#numberFormat( thisTimer.executionTime )#ms
 							</span>
@@ -54,7 +57,7 @@
 			</cfloop>
 		<cfelse>
 			<tr>
-				<td colspan="5">No Timers Found...</td>
+				<td colspan="4">No Timers Found...</td>
 			</tr>
 		</cfif>
 
@@ -65,7 +68,7 @@
 			}
 		</cfscript>
 		<tr>
-			<th colspan="5">
+			<th colspan="4">
 				Total ColdBox Request Execution Time: #numberFormat( args.executionTime )# ms
 			</th>
 		</tr>

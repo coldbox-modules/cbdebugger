@@ -214,7 +214,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen before wirebox objects are created
 	 */
 	public function beforeInstanceCreation( event, interceptData, rc, prc ){
-		if ( variables.debuggerConfig.wireboxCreationProfiler ) {
+		if ( variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation ) {
 			request.$timerHashes[ arguments.interceptData.mapping.getName() ] = variables.timerService.start(
 				"[Wirebox Creation] #arguments.interceptData.mapping.getName()#"
 			);
@@ -227,7 +227,7 @@ component extends="coldbox.system.Interceptor" {
 	public function afterInstanceCreation( event, interceptData, rc, prc ){
 		// so many checks, due to chicken and the egg problems
 		if (
-			variables.debuggerConfig.wireboxCreationProfiler
+			variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation
 			and structKeyExists( request, "cbdebugger" )
 			and structKeyExists(
 				request.$timerHashes,

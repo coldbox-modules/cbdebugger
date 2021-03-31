@@ -96,7 +96,7 @@
 
 			<!--- Execution Time --->
 			<td align="right">
-				<cfif thisProfiler.executionTime gt args.debuggerConfig.slowExecutionThreshold>
+				<cfif thisProfiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
 					<span class="cbd-text-red">
 						#numberFormat( thisProfiler.executionTime )#
 					</span>
