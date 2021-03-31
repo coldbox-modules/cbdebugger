@@ -198,6 +198,13 @@ component
 			"coldbox"       : {},
 			"exception"     : {}
 		};
+
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerRequestTrackerCreation",
+			{ requestTracker : request.cbDebugger }
+		);
+
 		return request.cbDebugger;
 	}
 

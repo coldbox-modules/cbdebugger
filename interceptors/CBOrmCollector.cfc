@@ -9,6 +9,68 @@ component extends="coldbox.system.Interceptor" {
 	property name="entityService"   inject="entityService";
 
 	/**
+	 * Configure this interceptor
+	 */
+	function configure(){
+		// get formatter for sql string beautification: ACF vs Lucee
+		if (
+			findNoCase(
+				"coldfusion",
+				server.coldfusion.productName
+			)
+		) {
+			// Formatter Support
+			variables.formatter = createObject(
+				"java",
+				"org.hibernate.engine.jdbc.internal.BasicFormatterImpl"
+			);
+		}
+		// Old Lucee Hibernate 3
+		else {
+			variables.formatter = createObject(
+				"java",
+				"org.hibernate.jdbc.util.BasicFormatterImpl"
+			);
+		}
+	}
+
+	/**
+	 * Listen to when the tracker gets created
+	 */
+	function onDebuggerRequestTrackerCreation( event, interceptData, rc, prc ){
+		arguments.interceptData.requestTracker[ "cborm" ] = {
+			"lists"        : [],
+			"gets"         : [],
+			"counts"       : [],
+			"executeQuery" : []
+		};
+	}
+
+	/**
+	 * Listen before executeQuery() operations
+	 */
+	function beforeOrmExecuteQuery( event, interceptData, rc, prc ){
+		arguments.interceptData.options.startCount = getTickCount();
+	}
+
+	/**
+	 * Listen after executeQuery() operations
+	 */
+	function afterOrmExecuteQuery( event, interceptData, rc, prc ){
+		// Get the request tracker so we can add our timing goodness!
+		var requestTracker = variables.debuggerService.getRequestTracker();
+		// Log the sql according to type
+		requestTracker.cborm[ "executeQuery" ].append( {
+			"timestamp"     : now(),
+			"sql"           : variables.formatter.format( arguments.interceptData.query ),
+			"params"        : serializeJSON( arguments.interceptData.params ),
+			"unique"        : arguments.interceptData.unique,
+			"options"       : serializeJSON( arguments.interceptData.options ),
+			"executionTime" : getTickCount() - arguments.interceptData.options.startCount
+		} );
+	}
+
+	/**
 	 * Listen before list() operations
 	 */
 	function beforeCriteriaBuilderList( event, interceptData, rc, prc ){
@@ -66,12 +128,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen when request tracker is being recorded
 	 */
 	function onDebuggerProfilerRecording( event, interceptData, rc, prc ){
-		var requestTracker                = arguments.interceptData.requestTracker;
-		// Let's param our tracking variables.
-		param requestTracker.cborm        = {};
-		param requestTracker.cborm.lists  = [];
-		param requestTracker.cborm.gets   = [];
-		param requestTracker.cborm.counts = [];
+		var requestTracker = arguments.interceptData.requestTracker;
 
 		// Store session stats
 		requestTracker.cborm[ "sessionStats" ] = variables.entityService.getSessionStatistics();
@@ -79,9 +136,10 @@ component extends="coldbox.system.Interceptor" {
 		// Store total number of queries executed
 		requestTracker.cborm[ "totalCriteriaQueries" ] = requestTracker.cborm.lists.len() +
 		requestTracker.cborm.gets.len() +
-		requestTracker.cborm.counts.len();
+		requestTracker.cborm.counts.len() +
+		requestTracker.cborm.executeQuery.len();
 
-		// Total query execution times
+		// Total query execution times for each section
 		requestTracker.cborm[ "totalListsExecutionTime" ] = requestTracker.cborm.lists.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
@@ -91,11 +149,15 @@ component extends="coldbox.system.Interceptor" {
 		requestTracker.cborm[ "totalCountsExecutionTime" ] = requestTracker.cborm.counts.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
+		requestTracker.cborm[ "totalExecuteQueryExecutionTime" ] = requestTracker.cborm.executeQuery.reduce( function( total, q ){
+			return arguments.total + arguments.q.executionTime;
+		}, 0 );
 
 		// Total of totals
 		requestTracker.cborm[ "totalCriteriaQueryExecutionTime" ] = requestTracker.cborm[ "totalListsExecutionTime" ] +
 		requestTracker.cborm[ "totalGetsExecutionTime" ] +
-		requestTracker.cborm[ "totalCountsExecutionTime" ];
+		requestTracker.cborm[ "totalCountsExecutionTime" ] +
+		requestTracker.cborm[ "totalExecuteQueryExecutionTime" ];
 	}
 
 	/**
@@ -108,16 +170,8 @@ component extends="coldbox.system.Interceptor" {
 		if ( len( startCount ) && isNumeric( startCount ) ) {
 			executionTime = getTickCount() - startCount;
 		}
-
 		// Get the request tracker so we can add our timing goodness!
 		var requestTracker = variables.debuggerService.getRequestTracker();
-
-		// Let's param our tracking variables.
-		param requestTracker.cborm        = {};
-		param requestTracker.cborm.lists  = [];
-		param requestTracker.cborm.gets   = [];
-		param requestTracker.cborm.counts = [];
-
 		// Log the sql according to type
 		requestTracker.cborm[ arguments.type ].append( {
 			"timestamp" : now(),

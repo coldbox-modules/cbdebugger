@@ -109,6 +109,8 @@ component {
 				"beforeProfilerReportPanels",
 				// After any individual profiler report panels are rendered
 				"afterProfilerReportPanels",
+				// When the request tracker has been created and placed in request scope
+				"onDebuggerRequestTrackerCreation",
 				// Before the request tracker is saved in the profiler, last chance to influence the recording
 				"onDebuggerProfilerRecording"
 			]
