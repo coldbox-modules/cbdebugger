@@ -5,45 +5,14 @@ component extends="coldbox.system.Interceptor" {
 
 	// DI
 	property name="debuggerService" inject="debuggerService@cbdebugger";
-	property name="timerService"    inject="Timer@cbdebugger";
+	property name="debuggerConfig"  inject="coldbox:moduleSettings:cbdebugger";
 	property name="entityService"   inject="entityService";
-
-	/**
-	 * Configure this interceptor
-	 */
-	function configure(){
-		// get formatter for sql string beautification: ACF vs Lucee
-		if (
-			findNoCase(
-				"coldfusion",
-				server.coldfusion.productName
-			)
-		) {
-			// Formatter Support
-			variables.formatter = createObject(
-				"java",
-				"org.hibernate.engine.jdbc.internal.BasicFormatterImpl"
-			);
-		}
-		// Old Lucee Hibernate 3
-		else {
-			variables.formatter = createObject(
-				"java",
-				"org.hibernate.jdbc.util.BasicFormatterImpl"
-			);
-		}
-	}
 
 	/**
 	 * Listen to when the tracker gets created
 	 */
 	function onDebuggerRequestTrackerCreation( event, interceptData, rc, prc ){
-		arguments.interceptData.requestTracker[ "cborm" ] = {
-			"lists"        : [],
-			"gets"         : [],
-			"counts"       : [],
-			"executeQuery" : []
-		};
+		arguments.interceptData.requestTracker[ "cborm" ] = { "grouped" : {}, "all" : [] };
 	}
 
 	/**
@@ -59,15 +28,40 @@ component extends="coldbox.system.Interceptor" {
 	function afterOrmExecuteQuery( event, interceptData, rc, prc ){
 		// Get the request tracker so we can add our timing goodness!
 		var requestTracker = variables.debuggerService.getRequestTracker();
-		// Log the sql according to type
-		requestTracker.cborm[ "executeQuery" ].append( {
+		// Hash the incoming sql, this is our key lookup
+		var sqlHash        = hash( arguments.interceptData.query );
+
+		// Do grouping check by hash
+		if (
+			!structKeyExists(
+				requestTracker.cborm.grouped,
+				sqlHash
+			)
+		) {
+			requestTracker.cborm.grouped[ sqlHash ] = {
+				"sql"     : arguments.interceptData.query,
+				"count"   : 0,
+				"records" : []
+			};
+		}
+
+		// Prepare log struct
+		var logData = {
 			"timestamp"     : now(),
-			"sql"           : variables.formatter.format( arguments.interceptData.query ),
-			"params"        : serializeJSON( arguments.interceptData.params ),
+			"type"          : "executeQuery()",
+			"sql"           : arguments.interceptData.query,
+			"params"        : variables.debuggerConfig.cborm.logParams ? serializeJSON( arguments.interceptData.params ) : {},
 			"unique"        : arguments.interceptData.unique,
 			"options"       : serializeJSON( arguments.interceptData.options ),
 			"executionTime" : getTickCount() - arguments.interceptData.options.startCount
-		} );
+		};
+
+		// Log by Group
+		requestTracker.cborm.grouped[ sqlHash ].count++;
+		requestTracker.cborm.grouped[ sqlHash ].records.append( logData );
+
+		// Log by timeline
+		requestTracker.cborm.all.append( logData );
 	}
 
 	/**
@@ -84,7 +78,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"lists"
+			"list()"
 		);
 	}
 
@@ -102,7 +96,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"counts"
+			"count()"
 		);
 	}
 
@@ -120,7 +114,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"gets"
+			"get()"
 		);
 	}
 
@@ -134,37 +128,17 @@ component extends="coldbox.system.Interceptor" {
 		requestTracker.cborm[ "sessionStats" ] = variables.entityService.getSessionStatistics();
 
 		// Store total number of queries executed
-		requestTracker.cborm[ "totalCriteriaQueries" ] = requestTracker.cborm.lists.len() +
-		requestTracker.cborm.gets.len() +
-		requestTracker.cborm.counts.len() +
-		requestTracker.cborm.executeQuery.len();
-
-		// Total query execution times for each section
-		requestTracker.cborm[ "totalListsExecutionTime" ] = requestTracker.cborm.lists.reduce( function( total, q ){
+		requestTracker.cborm[ "totalQueries" ]       = requestTracker.cborm.all.len();
+		requestTracker.cborm[ "totalExecutionTime" ] = requestTracker.cborm.all.reduce( function( total, q ){
 			return arguments.total + arguments.q.executionTime;
 		}, 0 );
-		requestTracker.cborm[ "totalGetsExecutionTime" ] = requestTracker.cborm.gets.reduce( function( total, q ){
-			return arguments.total + arguments.q.executionTime;
-		}, 0 );
-		requestTracker.cborm[ "totalCountsExecutionTime" ] = requestTracker.cborm.counts.reduce( function( total, q ){
-			return arguments.total + arguments.q.executionTime;
-		}, 0 );
-		requestTracker.cborm[ "totalExecuteQueryExecutionTime" ] = requestTracker.cborm.executeQuery.reduce( function( total, q ){
-			return arguments.total + arguments.q.executionTime;
-		}, 0 );
-
-		// Total of totals
-		requestTracker.cborm[ "totalCriteriaQueryExecutionTime" ] = requestTracker.cborm[ "totalListsExecutionTime" ] +
-		requestTracker.cborm[ "totalGetsExecutionTime" ] +
-		requestTracker.cborm[ "totalCountsExecutionTime" ] +
-		requestTracker.cborm[ "totalExecuteQueryExecutionTime" ];
 	}
 
 	/**
 	 * Log the criteria queries
 	 */
 	private function logCriteriaQuery( event, interceptData, type ){
-		// Get the timer
+		// Get the timer start count
 		var startCount    = arguments.interceptData.criteriaBuilder.getNativeCriteria().getComment();
 		var executionTime = 0;
 		if ( len( startCount ) && isNumeric( startCount ) ) {
@@ -172,15 +146,44 @@ component extends="coldbox.system.Interceptor" {
 		}
 		// Get the request tracker so we can add our timing goodness!
 		var requestTracker = variables.debuggerService.getRequestTracker();
-		// Log the sql according to type
-		requestTracker.cborm[ arguments.type ].append( {
-			"timestamp" : now(),
-			"sql"       : arguments.interceptData.criteriaBuilder.getSQL(
-				returnExecutableSql: true,
-				formatSql          : true
-			),
+		// Hash the incoming sql, this is our key lookup
+		var sql            = arguments.interceptData.criteriaBuilder.getSQL(
+			returnExecutableSql: variables.debuggerConfig.cborm.logParams,
+			formatSql          : false
+		);
+		var sqlHash = hash( sql );
+
+		// Do grouping check by hash
+		if (
+			!structKeyExists(
+				requestTracker.cborm.grouped,
+				sqlHash
+			)
+		) {
+			requestTracker.cborm.grouped[ sqlHash ] = {
+				"sql"     : sql,
+				"count"   : 0,
+				"records" : []
+			};
+		}
+
+		// Prepare log struct
+		var logData = {
+			"timestamp"     : now(),
+			"type"          : arguments.type,
+			"sql"           : sql,
+			"params"        : {},
+			"unique"        : arguments.type eq "list" ? false : true,
+			"options"       : {},
 			"executionTime" : executionTime
-		} );
+		};
+
+		// Log by Group
+		requestTracker.cborm.grouped[ sqlHash ].count++;
+		requestTracker.cborm.grouped[ sqlHash ].records.append( logData );
+
+		// Log by timeline
+		requestTracker.cborm.all.append( logData );
 	}
 
 }

@@ -196,7 +196,12 @@ component
 			"requestData"   : getHTTPRequestData( variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody ),
 			"response"      : { "statusCode" : 0, "contentType" : "" },
 			"coldbox"       : {},
-			"exception"     : {}
+			"exception"     : {},
+			"userAgent"     : cgi.HTTP_USER_AGENT,
+			"queryString"   : cgi.QUERY_STRING,
+			"httpHost"      : cgi.HTTP_HOST,
+			"httpReferer"   : cgi.HTTP_REFERER,
+			"formData"      : serializeJSON( form ?: {} )
 		};
 
 		// Event before recording

@@ -1,3 +1,4 @@
+<cfset jsonFormatter = getInstance( '@JSONPrettyPrint' )>
 <cfoutput>
 <!--- Title --->
 <div class="cbd-titles" onClick="cbdToggle( 'cbd-requestInfo' )">
@@ -13,16 +14,40 @@
 	class="cbd-contentView<cfif args.debuggerConfig.requestTracker.httpRequest.expanded> cbd-show<cfelse> cbd-hide</cfif>"
 	id="cbd-requestInfo"
 >
-	<h2>HTTP Request Information</h2>
+	<h2>Request Information</h2>
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
+		<!--- Method --->
 		<tr>
 			<th width="125" align="right">HTTP Method:</th>
 			<td>#args.profiler.requestData.method#</td>
 		</tr>
+		<!--- Full URL --->
 		<tr>
 			<th width="125" align="right">HTTP URL:</th>
 			<td>#args.profiler.fullUrl#</td>
 		</tr>
+		<!--- HTTP Host --->
+		<tr>
+			<th width="125" align="right">HTTP Host:</th>
+			<td>#args.profiler.httpHost#</td>
+		</tr>
+		<!--- HTTP referer --->
+		<tr>
+			<th width="125" align="right">HTTP Referer:</th>
+			<td>
+				<cfif len( args.profiler.httpReferer )>
+					#args.profiler.httpReferer#
+				<cfelse>
+					<em>n/a</em>
+				</cfif>
+			</td>
+		</tr>
+		<!--- User Agent --->
+		<tr>
+			<th width="125" align="right">User Agent:</th>
+			<td>#args.profiler.userAgent#</td>
+		</tr>
+		<!--- Body Content --->
 		<cfif !isNull( args.profiler.requestData.content )>
 			<tr>
 				<th width="125" align="right">HTTP Content:</th>
@@ -30,7 +55,7 @@
 					<div class="cbd-cellScroller">
 						<cfif isSimpleValue( args.profiler.requestData.content )>
 							<cfif !isBoolean( args.profiler.requestData.content ) && isJSON( args.profiler.requestData.content )>
-								#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.requestData.content )#
+								<code><pre>#getInstance( '@JSONPrettyPrint' ).formatJSON( args.profiler.requestData.content )#</pre></code>
 							<cfelseif len( args.profiler.requestData.content )>
 								#args.profiler.requestData.content#
 							<cfelse>
@@ -39,6 +64,19 @@
 						<cfelse>
 							<cfdump var="#args.profiler.requestData.content#">
 						</cfif>
+					</div>
+				</td>
+			</tr>
+		</cfif>
+		<!--- Form Params --->
+		<cfif len( args.profiler.formData )>
+			<tr>
+				<th width="125" align="right">Form Params:</th>
+				<td>
+					<div class="cbd-cellScroller">
+						<code>
+							<pre>#jsonFormatter.formatJSON( args.profiler.formData )#</pre>
+						</code>
 					</div>
 				</td>
 			</tr>

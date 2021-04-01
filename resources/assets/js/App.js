@@ -203,7 +203,7 @@ window.cbdReinitFramework = function( usingPassword ){
  */
 window.cbdShowGroupedQueries = function() {
 	// Watch out for double toggles
-	if ( $cb( "#groupedQueries" ).css( "display" ) == "block" ){
+	if ( $cb( "#cbdGroupedQueries" ).css( "display" ) == "block" ){
 		return;
 	}
 	$cb( "#cbdButtonGroupedQueries" ).addClass( "cbd-selected" );
@@ -217,11 +217,39 @@ window.cbdShowGroupedQueries = function() {
  */
 window.cbdShowTimelineQueries = function() {
 	// Watch out for double toggles
-	if ( $cb( "#timelineQueries" ).css( "display" ) == "block" ){
+	if ( $cb( "#cbdTimelineQueries" ).css( "display" ) == "block" ){
 		return;
 	}
 	$cb( "#cbdButtonTimelineQueries" ).addClass( "cbd-selected" );
 	$cb( "#cbdButtonGroupedQueries" ).removeClass( "cbd-selected" );
 	$cb( "#cbdTimelineQueries" ).slideDown();
 	$cb( "#cbdGroupedQueries" ).slideUp();
+};
+
+/**
+ * Show group queries and hide timeline queries for orm
+ */
+window.cbdShowGroupedOrmQueries = function() {
+	// Watch out for double toggles
+	if ( $cb( "#cbdGroupedOrmQueries" ).css( "display" ) == "block" ){
+		return;
+	}
+	$cb( "#cbdButtonGroupedOrmQueries" ).addClass( "cbd-selected" );
+	$cb( "#cbdButtonTimelineOrmQueries" ).removeClass( "cbd-selected" );
+	$cb( "#cbdTimelineOrmQueries" ).slideUp();
+	$cb( "#cbdGroupedOrmQueries" ).slideDown();
+};
+
+/**
+ * Show timeline queries and hide group queries for orm
+ */
+window.cbdShowTimelineOrmQueries = function() {
+	// Watch out for double toggles
+	if ( $cb( "#timelineQueries" ).css( "display" ) == "block" ){
+		return;
+	}
+	$cb( "#cbdButtonTimelineOrmQueries" ).addClass( "cbd-selected" );
+	$cb( "#cbdButtonGroupedOrmQueries" ).removeClass( "cbd-selected" );
+	$cb( "#cbdTimelineOrmQueries" ).slideDown();
+	$cb( "#cbdGroupedOrmQueries" ).slideUp();
 };

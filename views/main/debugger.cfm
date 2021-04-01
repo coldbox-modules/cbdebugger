@@ -4,6 +4,7 @@ We use cfinclude to be fast and sneaky
 --->
 <cfoutput>
 <div>
+
 	<!--- **************************************************************--->
 	<!--- REQUEST TRACKER REPORTS --->
 	<!--- **************************************************************--->
@@ -15,7 +16,6 @@ We use cfinclude to be fast and sneaky
 	<cfif args.debuggerConfig.modules.enabled>
 		<cfinclude template="panels/modulesPanel.cfm">
 	</cfif>
-
 
 	<!--- **************************************************************--->
 	<!--- CACHE PANEL --->
