@@ -1,4 +1,6 @@
 <cfscript>
+	sqlFormatter = getInstance( "SqlFormatter@cbdebugger" );
+	jsonFormatter = getInstance( '@JSONPrettyPrint' );
 	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
 	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
 	totalQueries = args.profiler.keyExists( "qbQueries" ) ? args.profiler.qbQueries.all.len() : 0;
@@ -106,7 +108,7 @@
 										</td>
 										<td>
 											<code>
-												#sql#
+												#sqlFormatter.formatSql( sql )#
 											</code>
 										</td>
 									</tr>
@@ -170,7 +172,7 @@
 											#TimeFormat( q.timestamp,"hh:MM:SS.l tt" )#
 										</td>
 										<td>
-											<code>#q.sql#</code>
+											<code>#sqlFormatter.formatSql( q.sql )#</code>
 
 											<cfif NOT q.bindings.isEmpty()>
 												<div class="mt10 mb5 cbd-bindings">
