@@ -148,7 +148,7 @@ component extends="coldbox.system.Interceptor" {
 		var requestTracker = variables.debuggerService.getRequestTracker();
 		// Hash the incoming sql, this is our key lookup
 		var sql            = arguments.interceptData.criteriaBuilder.getSQL(
-			returnExecutableSql: variables.debuggerConfig.cborm.logParams,
+			returnExecutableSql: false,
 			formatSql          : false
 		);
 		var sqlHash = hash( sql );
@@ -172,7 +172,7 @@ component extends="coldbox.system.Interceptor" {
 			"timestamp"     : now(),
 			"type"          : arguments.type,
 			"sql"           : sql,
-			"params"        : {},
+			"params"        : variables.debuggerConfig.cborm.logParams ? arguments.interceptData.criteriaBuilder.getSqlHelper().getPositionalSQLParameters() : [],
 			"unique"        : arguments.type eq "list" ? false : true,
 			"options"       : {},
 			"executionTime" : executionTime

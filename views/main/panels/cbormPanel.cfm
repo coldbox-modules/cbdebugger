@@ -132,16 +132,9 @@
 														#q.type#
 													</td>
 													<td>
-														<code>
-															<cfif NOT q.params.isEmpty()>
-																#jsonFormatter.formatJSON(
-																	json : q.params,
-																	spaceAfterColon : true
-																)#
-															<cfelse>
-																<em>[]</em>
-															</cfif>
-														</code>
+														<cfif NOT q.params.isEmpty()>
+															<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
+														</cfif>
 													</td>
 												</tr>
 											</cfloop>
@@ -183,12 +176,7 @@
 											<div class="mb10">
 												<strong>Params: </strong>
 											</div>
-											<code>
-												#jsonFormatter.formatJSON(
-													json : q.params,
-													spaceAfterColon : true
-												)#
-											</code>
+											<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
 										</div>
 									</cfif>
 								</td>
