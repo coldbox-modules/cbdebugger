@@ -88,9 +88,9 @@ component {
 			// Modules Reporting
 			modules  : { enabled : false, expanded : false },
 			// Quick and QB Reporting
-			qb       : { enabled : false, expanded : false },
+			qb       : { enabled : true, expanded : false },
 			// cborm Reporting
-			cborm    : { enabled : false, expanded : false }
+			cborm    : { enabled : true, expanded : false }
 		};
 
 		// Visualizer Route
