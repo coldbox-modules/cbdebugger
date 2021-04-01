@@ -60,18 +60,6 @@
 				<td colspan="4">No Timers Found...</td>
 			</tr>
 		</cfif>
-
-		<cfscript>
-			param name="args.executionTime" default="0";
-			if( isNull( args.executionTime ) && structKeyExists( request, "fwExecTime" ) ){
-				args.executionTime = request.fwExecTime;
-			}
-		</cfscript>
-		<tr>
-			<th colspan="4">
-				Total ColdBox Request Execution Time: #numberFormat( args.executionTime )# ms
-			</th>
-		</tr>
 	</table>
 </div>
 </cfoutput>

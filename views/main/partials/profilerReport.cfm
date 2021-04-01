@@ -45,7 +45,8 @@
 
 			<!--- Execution Time --->
 			<div
-				class="cbd-floatRight mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
+				class="cbd-floatRight cbd-size14 mt10 mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
+				title="Total ColdBox Request Execution Time"
 			>
 				<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
 					<span class="cbd-text-red">
