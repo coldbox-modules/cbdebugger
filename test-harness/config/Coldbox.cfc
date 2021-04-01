@@ -64,31 +64,6 @@
 
 		// Debugger Settings
 		moduleSettings = {
-			cbdebugger : {
-				// Debugger
-				debugMode                     : true,
-				debugPassword                 : "",
-				maxRequestProfilers : 20,
-				maxRCPanelQueryRows           : 50,
-				profileHTTPBody               : true,
-				// Profile model objects annotated with the `profile` annotation
-				profileObjects                : true,
-				// If enabled, will trace the results of any methods that are being profiled
-				traceObjectResults            : true,
-				profileInterceptions          : true,
-				includedInterceptions         : [ "preProcess" ],
-				// Panels
-				expandedTracerPanel           : true,
-				showInfoPanel                 : true,
-				expandedInfoPanel             : true,
-				showCachePanel                : true,
-				expandedCachePanel            : false,
-				showRCPanel                   : true,
-				expandedRCPanel               : false,
-				showModulesPanel              : true,
-				expandedModulesPanel          : false,
-				wireboxCreationProfiler       : true
-			}
 		};
 	}
 

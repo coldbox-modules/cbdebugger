@@ -98,7 +98,7 @@ component {
 			.route( "/" )
 			.to( "Main.index" )
 			.route( "/:action" )
-			.toHandler( "Main" )
+			.toHandler( "Main" );
 		;
 
 		/**
@@ -251,9 +251,9 @@ component {
 	}
 
 	/**
-	 * Register our tracer appender after the aspects loads
+	 * Register our tracer appender after the configuration loads
 	 */
-	function afterAspectsLoad(){
+	function afterConfigurationLoad(){
 		if ( variables.settings.tracers.enabled ) {
 			var logBox = controller.getLogBox();
 			logBox.registerAppender(
