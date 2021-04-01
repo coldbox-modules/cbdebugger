@@ -133,16 +133,9 @@
 																#numberFormat( q.executionTime )# ms
 															</td>
 															<td>
-																<code>
-																	<cfif NOT q.bindings.isEmpty()>
-																		#getInstance( '@JSONPrettyPrint' ).formatJSON(
-																			json : serializeJSON( q.bindings ),
-																			spaceAfterColon : true
-																		)#
-																	<cfelse>
-																		[]
-																	</cfif>
-																</code>
+																<cfif NOT q.bindings.isEmpty()>
+																	<code><pre>#jsonFormatter.formatJSON( json : q.bindings, spaceAfterColon : true )#</pre></code>
+																</cfif>
 															</td>
 														</tr>
 													</cfloop>
@@ -173,18 +166,12 @@
 										</td>
 										<td>
 											<code>#sqlFormatter.formatSql( q.sql )#</code>
-
 											<cfif NOT q.bindings.isEmpty()>
 												<div class="mt10 mb5 cbd-bindings">
 													<div class="mb10">
-														<strong>Bindings: </strong>
+														<strong>Params: </strong>
 													</div>
-													<code>
-														#getInstance( '@JSONPrettyPrint' ).formatJSON(
-															json : serializeJSON( q.bindings ),
-															spaceAfterColon : true
-														)#
-													</code>
+													<code><pre>#jsonFormatter.formatJSON( json : q.bindings, spaceAfterColon : true )#</pre></code>
 												</div>
 											</cfif>
 										</td>
