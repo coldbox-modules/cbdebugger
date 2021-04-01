@@ -28,11 +28,17 @@
 		border-radius: 10px;
 		padding: 5px 5px;
 		border: 1px solid #eaeaea;
+		color: black;
 
 		&:hover{
 			border: 1px solid #333333;
 			background-color: #f7f7f7;
 			cursor: pointer;
+			color: #2694E8;
+		}
+
+		&:active, &:focus{
+			color: #2694E8;
 		}
 	}
 
