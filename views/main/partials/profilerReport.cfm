@@ -270,7 +270,7 @@
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							debuggerConfig : args.debuggerConfig
 						},
 						prePostExempt : true
 					)#
@@ -285,7 +285,7 @@
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							debuggerConfig : args.debuggerConfig
 						},
 						prePostExempt : true
 					)#
