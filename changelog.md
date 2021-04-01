@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-* New setting to clear tracers upon viewing them: `clearTracersUponRendering` which defaults to true
+* Completely rewritten debugger
 * Updated tracers to match all logbox options so we can use them for display instead of hardcoding them in the push operation
 * Complete migration to elixir for assets
 * Complete migration to runnable events to make things easier for rendering and debugging

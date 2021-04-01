@@ -1,58 +1,112 @@
-[![Build Status](https://travis-ci.org/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.org/coldbox-modules/cbox-debugger)
+[![Build Status](https://travis-ci.com/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.com/coldbox-modules/cbox-debugger)
 
-# WELCOME TO THE COLDBOX DEBUGGER MODULE
+# Welcome To The ColdBox Debugger Module
 
-This module will enhance your application with debugger capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
+This module will enhance your application with debugger and profiling capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
 ## LICENSE
 
 Apache License, Version 2.0.
 
-## IMPORTANT LINKS
+## Important Links
 
 - https://github.com/coldbox-modules/cbox-debugger
-- http://www.forgebox.io/view/cbdebugger
+- https://www.forgebox.io/view/cbdebugger
+- https://community.ortussolutions.com/c/box-modules/cbdebugger/38
 - [Changelog](changelog.md)
 
-## SYSTEM REQUIREMENTS
+## System Requirements
 
 - Lucee 5+
 - ColdFusion 2016+
+- ColdBox 6+
 
-# INSTRUCTIONS
+# Instructions
 
 Just drop into your **modules** folder or use CommandBox to install
 
 `box install cbdebugger`
 
-This will activate the debugger in your application and render out at the end of a request.
+This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
 
 ## Settings
 
-This will also allow you to use several settings in your parent application or you can modify the settings in the `ModuleConfig` if desired. We recommend placing your debugger settings in your main `ColdBox.cfc` configuration file under a `debugger` struct.
+The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you active, the slower your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
+
+Open your `config/coldbox.cfc` configuration object and add into the `moduleSettings` the `cbDebugger` key with the following options:
 
 ```js
-// Debugger Settings
-debugger = {
-    // Activate debugger for everybody
-    debugMode = true,
-    // Setup a password for the panel
-    debugPassword = "",
-    maxRequestProfilers = 10,
-    maxRCPanelQueryRows = 50,
-    expandedTracerPanel = true,
-    showInfoPanel = true,
-    expandedInfoPanel = true,
-    showCachePanel = true,
-    expandedCachePanel = false,
-    showRCPanel = true,
-    expandedRCPanel = false,
-    showModulesPanel = true,
-    expandedModulesPanel = false,
-    showQBPanel = true,
-    expandedQBPanel = false,
-    wireboxCreationProfiler=false
-};
+moduleSettings = {
+	// Debugger Settings
+	cbDebugger = {
+		// Turn the debugger on/off by default. You can always enable it via the URL using your debug password
+		debugMode : true,
+		// The URL password to use to activate it on demand
+		debugPassword  : "cb:null",
+		// Request Tracker Options
+		requestTracker : {
+			// Expand by default the tracker panel or not
+			expanded                     : true,
+			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
+			slowExecutionThreshold       : 1000,
+			// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
+			maxProfilers                 : 25,
+			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
+			profileWireBoxObjectCreation : false,
+			// Profile model objects annotated with the `profile` annotation
+			profileObjects               : false,
+			// If enabled, will trace the results of any methods that are being profiled
+			traceObjectResults           : false,
+			// Profile Custom or Core interception points
+			profileInterceptions         : false,
+			// By default all interception events are excluded, you must include what you want to profile
+			includedInterceptions        : [],
+			// Control the execution timers
+			executionTimers              : {
+				expanded           : true,
+				// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
+				slowTimerThreshold : 250
+			},
+			// Control the coldbox info reporting
+			coldboxInfo : { expanded : false },
+			// Control the http request reporting
+			httpRequest : {
+				expanded        : false,
+				// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data
+				profileHTTPBody : false
+			}
+		},
+		// ColdBox Tracer Appender Messages
+		tracers     : { enabled : true, expanded : false },
+		// Request Collections Reporting
+		collections : {
+			// Enable tracking
+			enabled      : false,
+			// Expanded panel or not
+			expanded     : false,
+			// How many rows to dump for object collections
+			maxQueryRows : 50
+		},
+		// CacheBox Reporting
+		cachebox : { enabled : false, expanded : false },
+		// Modules Reporting
+		modules  : { enabled : false, expanded : false },
+		// Quick and QB Reporting
+		qb       : {
+			enabled   : true,
+			expanded  : false,
+			// Log the binding parameters
+			logParams : true
+		},
+		// cborm Reporting
+		cborm : {
+			enabled   : true,
+			expanded  : false,
+			// Log the binding parameters
+			logParams : true
+		}
+	}
+}
 ```
 
 ## WireBox Mappings

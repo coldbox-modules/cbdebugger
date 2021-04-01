@@ -50,11 +50,11 @@ component {
 				// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 				profileWireBoxObjectCreation : false,
 				// Profile model objects annotated with the `profile` annotation
-				profileObjects               : true,
+				profileObjects               : false,
 				// If enabled, will trace the results of any methods that are being profiled
 				traceObjectResults           : false,
 				// Profile Custom or Core interception points
-				profileInterceptions         : true,
+				profileInterceptions         : false,
 				// By default all interception events are excluded, you must include what you want to profile
 				includedInterceptions        : [],
 				// Control the execution timers
