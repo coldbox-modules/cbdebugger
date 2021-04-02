@@ -125,7 +125,7 @@
 													<tr>
 														<th width="15%">Timestamp</th>
 														<th width="15%">Execution Time</th>
-														<th>Bindings</th>
+														<th>Params</th>
 													</tr>
 												</thead>
 												<tbody>

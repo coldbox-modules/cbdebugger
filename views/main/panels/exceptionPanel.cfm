@@ -36,7 +36,7 @@
 									<cfif thisItem eq "tagContext">
 										<cfset appPath = getSetting( "ApplicationPath" )>
 										<cfloop array="#args.profiler.exception[ thisItem ]#" item="thisTagContext">
-											<div class="mb10 mt10 cbd-bindings">
+											<div class="mb10 mt10 cbd-params">
 
 												<!--- Open in Editor--->
 												<cfif exceptionBean.openInEditorURL( event, thisTagContext ) NEQ "">

@@ -53,7 +53,8 @@ component extends="coldbox.system.Interceptor" {
 			"params"        : variables.debuggerConfig.cborm.logParams ? serializeJSON( arguments.interceptData.params ) : {},
 			"unique"        : arguments.interceptData.unique,
 			"options"       : serializeJSON( arguments.interceptData.options ),
-			"executionTime" : getTickCount() - arguments.interceptData.options.startCount
+			"executionTime" : getTickCount() - arguments.interceptData.options.startCount,
+			"caller"        : variables.debuggerService.discoverCallingStack( "executeQuery" )
 		};
 
 		// Log by Group
@@ -78,7 +79,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"list()"
+			"list"
 		);
 	}
 
@@ -96,7 +97,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"count()"
+			"count"
 		);
 	}
 
@@ -114,7 +115,7 @@ component extends="coldbox.system.Interceptor" {
 		logCriteriaQuery(
 			arguments.event,
 			arguments.interceptData,
-			"get()"
+			"get"
 		);
 	}
 
@@ -169,13 +170,16 @@ component extends="coldbox.system.Interceptor" {
 
 		// Prepare log struct
 		var logData = {
-			"timestamp"     : now(),
-			"type"          : arguments.type,
-			"sql"           : sql,
-			"params"        : variables.debuggerConfig.cborm.logParams ? arguments.interceptData.criteriaBuilder.getSqlHelper().getPositionalSQLParameters() : [],
+			"timestamp" : now(),
+			"type"      : arguments.type,
+			"sql"       : sql,
+			"params"    : variables.debuggerConfig.cborm.logParams ? arguments.interceptData.criteriaBuilder
+				.getSqlHelper()
+				.getPositionalSQLParameters() : [],
 			"unique"        : arguments.type eq "list" ? false : true,
 			"options"       : {},
-			"executionTime" : executionTime
+			"executionTime" : executionTime,
+			"caller"        : variables.debuggerService.discoverCallingStack( arguments.type, "CriteriaBuilder" )
 		};
 
 		// Log by Group

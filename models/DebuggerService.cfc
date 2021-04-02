@@ -447,4 +447,51 @@ component
 		return getCurrentThread().getName();
 	}
 
+	/**
+	 * This function tries to discover from where a target method was called from
+	 * by investigating the call stack
+	 *
+	 * @targetMethod The target method we are trying to pin point
+	 * @templateMatch A string fragment to further narrow down the location, we match this against the template path
+	 *
+	 * @return Struct of { function, lineNumber, line, template }
+	 */
+	struct function discoverCallingStack( required targetMethod, templateMatch ){
+		var callstack   = callStackGet();
+		var targetIndex = callstack
+			.map( function( item, index, array ){
+				// Do we have template matches or simple tests?
+				if ( !isNull( templateMatch ) ) {
+					if (
+						arguments.item.function == targetMethod && findNoCase(
+							templateMatch,
+							arguments.item.template
+						)
+					) {
+						return arguments.index;
+					};
+				} else {
+					if ( arguments.item.function == targetMethod ) {
+						return arguments.index;
+					};
+				}
+			} )
+			.filter( function( item ){
+				return !isNull( arguments.item );
+			} );
+
+		if ( targetIndex.len() ) {
+			var results       = callStack[ targetIndex.last() + 1 ];
+			results[ "line" ] = results.lineNumber;
+			return results;
+		}
+
+		return {
+			"function"   : "",
+			"line"       : 0,
+			"lineNumber" : 0,
+			"template"   : ""
+		};
+	}
+
 }

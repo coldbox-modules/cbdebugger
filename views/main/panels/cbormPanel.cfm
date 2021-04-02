@@ -1,5 +1,7 @@
 <cfset sqlFormatter = getInstance( "SqlFormatter@cbdebugger" )>
 <cfset jsonFormatter = getInstance( '@JSONPrettyPrint' )>
+<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
+<cfset appPath = getSetting( "ApplicationPath" )>
 <cfoutput>
 	<!--- Panel Title --->
 	<div class="cbd-titles"  onClick="cbdToggle( 'cbdCBOrmPanel' )" >
@@ -116,7 +118,7 @@
 												<th width="15%">Timestamp</th>
 												<th width="10%">Execution Time</th>
 												<th width="10%">Type</th>
-												<th>Bindings</th>
+												<th>Caller + Params</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -132,6 +134,35 @@
 														#q.type#
 													</td>
 													<td>
+														<cfif q.caller.template.len()>
+															<div class="mb10 mt10 cbd-params">
+																<!--- Title --->
+																<strong>Called From: </strong>
+																<!--- Open in Editor--->
+																<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+																	<div class="cbd-floatRight">
+																		<a
+																			class="cbd-button"
+																			target="_self"
+																			rel   ="noreferrer noopener"
+																			title="Open in Editor"
+																			href="#exceptionBean.openInEditorURL( event, q.caller )#"
+																		>
+																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+																			</svg>
+																		</a>
+																	</div>
+																</cfif>
+																<!--- Line --->
+																<div>
+																	<strong>
+																		#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+																	</strong>
+																</div>
+															</div>
+														</cfif>
+
 														<cfif NOT q.params.isEmpty()>
 															<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
 														</cfif>
@@ -169,10 +200,39 @@
 									#q.type#
 								</td>
 								<td>
+									<cfif q.caller.template.len()>
+										<div class="mb10 mt10 cbd-params">
+											<!--- Title --->
+											<strong>Called From: </strong>
+											<!--- Open in Editor--->
+											<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+												<div class="cbd-floatRight">
+													<a
+														class="cbd-button"
+														target="_self"
+														rel   ="noreferrer noopener"
+														title="Open in Editor"
+														href="#exceptionBean.openInEditorURL( event, q.caller )#"
+													>
+														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+														</svg>
+													</a>
+												</div>
+											</cfif>
+											<!--- Line --->
+											<div>
+												<strong>
+													#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+												</strong>
+											</div>
+										</div>
+									</cfif>
+
 									<code>#sqlFormatter.formatSql( q.sql )#</code>
 
 									<cfif NOT q.params.isEmpty()>
-										<div class="mt10 mb5 cbd-bindings">
+										<div class="mt10 mb5 cbd-params">
 											<div class="mb10">
 												<strong>Params: </strong>
 											</div>
