@@ -40,14 +40,14 @@
 							var="#thisValue#"
 							expand="false"
 							label="Click to expand"
-							top="5">
+							top="#args.debuggerConfig.collections.maxDumpTop#">
 					<!--- Anything Else --->
 					<cfelse>
 						<cfdump
 							var="#thisValue#"
 							expand="false"
 							label="Click to expand"
-							top="5">
+							top="#args.debuggerConfig.collections.maxDumpTop#">
 					</cfif>
 				</cfif>
 			</td>

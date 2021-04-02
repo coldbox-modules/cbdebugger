@@ -39,7 +39,11 @@ Open your `config/coldbox.cfc` configuration object and add into the `moduleSett
 moduleSettings = {
 	// Debugger Settings
 	cbDebugger = {
-		// Turn the debugger on/off by default. You can always enable it via the URL using your debug password
+		// Master switch to enable/disable request tracking into storage facilities
+		enabled : true,
+		// Turn the debugger UI on/off by default. You can always enable it via the URL using your debug password
+		// Please note that this is not the same as the master switch above
+		// The debug mode can be false and the debugger will still collect request tracking
 		debugMode : true,
 		// The URL password to use to activate it on demand
 		debugPassword  : "cb:null",
@@ -85,7 +89,9 @@ moduleSettings = {
 			// Expanded panel or not
 			expanded     : false,
 			// How many rows to dump for object collections
-			maxQueryRows : 50
+			maxQueryRows : 50,
+			// Max number to use when dumping objects via the top argument
+			maxDumpTop: 5
 		},
 		// CacheBox Reporting
 		cachebox : { enabled : false, expanded : false },

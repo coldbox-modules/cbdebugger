@@ -108,8 +108,8 @@ component {
 	any function onAppInit( event, rc, prc ){
 		var logBox = controller.getLogBox();
 		logBox.registerAppender(
-		"tracer",
-		"cbdebugger.appenders.TracerAppender"
+			"tracer",
+			"cbdebugger.appenders.TracerAppender"
 		);
 		var appenders = logBox.getAppendersMap( "tracer" );
 		// Register the appender with the root loggger, and turn the logger on.

@@ -32,7 +32,11 @@ component {
 		 * Settings
 		 */
 		variables.settings = {
-			// Turn the debugger on/off by default. You can always enable it via the URL using your debug password
+			// This flag enables/disables the tracking of request data to our storage facilities
+			// To disable all tracking, turn this master key off
+			enabled   : true,
+			// This setting controls if you will activate the debugger for visualizations ONLY
+			// The debugger will still track requests even in non debug mode.
 			debugMode : controller.getSetting(
 				name         = "environment",
 				defaultValue = "production"
@@ -81,7 +85,9 @@ component {
 				// Expanded panel or not
 				expanded     : false,
 				// How many rows to dump for object collections
-				maxQueryRows : 50
+				maxQueryRows : 50,
+				// How many levels to output on dumps for objects
+				maxDumpTop   : 5
 			},
 			// CacheBox Reporting
 			cachebox : { enabled : false, expanded : false },
@@ -137,10 +143,6 @@ component {
 		if ( !isAOPMixerLoaded() ) {
 			loadAOPMixer();
 		}
-
-		/******************** DEBUGGER INTERCEPTORS ************************************/
-
-		variables.interceptors = [ { class : "cbdebugger.interceptors.RequestCollector" } ];
 	}
 
 	/**
@@ -158,105 +160,122 @@ component {
 		// Configure the debugging mode from the loaded app settings
 		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
 
-		/******************** PROFILE OBJECTS ************************************/
+		// Only activate interceptions and collectors if master switch is on
+		if ( variables.settings.enabled ) {
+			/******************** REQUEST COLLECTOR ************************************/
 
-		if ( variables.settings.requestTracker.profileObjects ) {
-			// Object Profiler Aspect
-			binder
-				.mapAspect( "ObjectProfiler" )
-				.to( "#moduleMapping#.aspects.ObjectProfiler" )
-				.initArg(
-					name  = "traceResults",
-					value = variables.settings.requestTracker.traceObjectResults
-				);
-
-			// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
-			binder.bindAspect(
-				classes = binder.match().any(),
-				methods = binder.match().annotatedWith( "profile" ),
-				aspects = "ObjectProfiler"
-			);
-			binder.bindAspect(
-				classes = binder.match().annotatedWith( "profile" ),
-				methods = binder.match().any(),
-				aspects = "ObjectProfiler"
-			);
-		}
-
-		/******************** PROFILE INTERCEPTIONS ************************************/
-
-		if ( variables.settings.requestTracker.profileInterceptions ) {
-			// Register our interceptor profiler
-			binder
-				.mapAspect( "InterceptorProfiler" )
-				.to( "#moduleMapping#.aspects.InterceptorProfiler" )
-				.initArg(
-					name  = "excludedInterceptions",
-					value = controller.getInterceptorService().getInterceptionPoints()
-				)
-				.initArg(
-					name  = "includedInterceptions",
-					value = variables.settings.requestTracker.includedInterceptions
-				);
-			// Intercept all announcements
-			binder.bindAspect(
-				classes = binder.match().mappings( "coldbox.system.services.InterceptorService" ),
-				methods = binder.match().methods( "announce" ),
-				aspects = "InterceptorProfiler"
-			);
-			// Apply AOP
-			wirebox.autowire(
-				target   = controller.getInterceptorService(),
-				targetID = "coldbox.system.services.InterceptorService"
-			);
-		}
-
-		/******************** Register QB Collector ************************************/
-
-		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
 			controller
 				.getInterceptorService()
 				.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.QBCollector",
-					interceptorName  = "QBCollector@cbdebugger"
+					interceptorClass = "#moduleMapping#.interceptors.RequestCollector",
+					interceptorName  = "RequestCollector@cbdebugger"
 				);
-		}
 
-		/******************** Register Quick Collector ************************************/
+			/******************** PROFILE OBJECTS ************************************/
 
-		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-			controller
-				.getInterceptorService()
-				.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
-					interceptorName  = "QuickCollector@cbdebugger"
+			if ( variables.settings.requestTracker.profileObjects ) {
+				// Object Profiler Aspect
+				binder
+					.mapAspect( "ObjectProfiler" )
+					.to( "#moduleMapping#.aspects.ObjectProfiler" )
+					.initArg(
+						name  = "traceResults",
+						value = variables.settings.requestTracker.traceObjectResults
+					);
+
+				// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
+				binder.bindAspect(
+					classes = binder.match().any(),
+					methods = binder.match().annotatedWith( "profile" ),
+					aspects = "ObjectProfiler"
 				);
-		}
-
-		/******************** Register cborm Collector ************************************/
-
-		if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-			controller
-				.getInterceptorService()
-				.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
-					interceptorName  = "CBOrmCollector@cbdebugger"
+				binder.bindAspect(
+					classes = binder.match().annotatedWith( "profile" ),
+					methods = binder.match().any(),
+					aspects = "ObjectProfiler"
 				);
+			}
+
+			/******************** PROFILE INTERCEPTIONS ************************************/
+
+			if ( variables.settings.requestTracker.profileInterceptions ) {
+				// Register our interceptor profiler
+				binder
+					.mapAspect( "InterceptorProfiler" )
+					.to( "#moduleMapping#.aspects.InterceptorProfiler" )
+					.initArg(
+						name  = "excludedInterceptions",
+						value = controller.getInterceptorService().getInterceptionPoints()
+					)
+					.initArg(
+						name  = "includedInterceptions",
+						value = variables.settings.requestTracker.includedInterceptions
+					);
+				// Intercept all announcements
+				binder.bindAspect(
+					classes = binder.match().mappings( "coldbox.system.services.InterceptorService" ),
+					methods = binder.match().methods( "announce" ),
+					aspects = "InterceptorProfiler"
+				);
+				// Apply AOP
+				wirebox.autowire(
+					target   = controller.getInterceptorService(),
+					targetID = "coldbox.system.services.InterceptorService"
+				);
+			}
+
+			/******************** QB COLLECTOR ************************************/
+
+			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.QBCollector",
+						interceptorName  = "QBCollector@cbdebugger"
+					);
+			}
+
+			/******************** QUICK COLLECTOR ************************************/
+
+			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
+						interceptorName  = "QuickCollector@cbdebugger"
+					);
+			}
+
+			/******************** CBORM COLLECTOR ************************************/
+
+			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
+						interceptorName  = "CBOrmCollector@cbdebugger"
+					);
+			}
 		}
+		// end master switch
 	}
 
 	/**
 	 * Unloading
 	 */
 	function onUnload(){
-		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
-			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
-		}
-		if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
-		}
-		if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
+		// Only if we are enabled
+		if ( variables.settings.enabled ) {
+			controller.getInterceptorService().unregister( "RequestCollector@cbdebugger" );
+			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
+				controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
+			}
+			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+				controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
+			}
+			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+				controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
+			}
 		}
 	}
 
@@ -264,7 +283,7 @@ component {
 	 * Register our tracer appender after the configuration loads
 	 */
 	function afterConfigurationLoad(){
-		if ( variables.settings.tracers.enabled ) {
+		if ( variables.settings.enabled && variables.settings.tracers.enabled ) {
 			var logBox = controller.getLogBox();
 			logBox.registerAppender(
 				"tracer",

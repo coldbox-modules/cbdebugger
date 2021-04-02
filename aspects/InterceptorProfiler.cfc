@@ -31,8 +31,14 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		// state
 		if ( structKeyExists( targetArgs, "state" ) ) {
 			var state = targetArgs.state;
-		} else if ( structKeyExists( targetArgs, 1 ) and isSimpleValue( targetArgs[ 1 ] ) ) {
+		} else if ( structKeyExists( targetArgs, 1 ) ) {
 			var state = targetArgs[ 1 ];
+		}
+		// data
+		if ( structKeyExists( targetArgs, "data" ) ) {
+			var data = targetArgs.data;
+		} else if ( structKeyExists( targetArgs, 2 ) ) {
+			var data = targetArgs[ 2 ];
 		}
 
 		// Do we need to profile it or not?
@@ -48,9 +54,15 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 			return arguments.invocation.proceed();
 		}
 
-		var txName    = "[Interception] ";
+		var txName    = "[Interception] #state#";
+
+		// Is this an entity interception? If so, log it to assist
+		if( data.keyExists( "entity" ) ){
+			txName &= "( #getEntityName( data )# )";
+		}
+
 		// create FR tx with method name
-		var labelHash = variables.timerService.start( txName & state );
+		var labelHash = variables.timerService.start( txName );
 		// proceed invocation
 		var results   = arguments.invocation.proceed();
 		// close tx
@@ -58,6 +70,24 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		// return results
 		if ( !isNull( results ) ) {
 			return results;
+		}
+	}
+
+	/**
+	 * Try to discover an entity name from the passed intercept data
+	 */
+	private string function getEntityName( required data ){
+		// If passed, just relay it back
+		if( arguments.data.keyExists( "entityName" ) ){
+			return arguments.data.entityName;
+		}
+
+		// Short-cut discovery via ActiveEntity
+		if ( structKeyExists( arguments.data.entity, "getEntityName" ) ) {
+			return arguments.data.entity.getEntityName();
+		} else {
+			// it must be in session.
+			return ormGetSession().getEntityName( arguments.data.entity );
 		}
 	}
 
