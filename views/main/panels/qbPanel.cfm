@@ -3,10 +3,6 @@
 	jsonFormatter = getInstance( '@JSONPrettyPrint' );
 	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
 	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
-	totalQueries = args.profiler.keyExists( "qbQueries" ) ? args.profiler.qbQueries.all.len() : 0;
-	totalExecutionTime = !args.profiler.keyExists( "qbQueries" ) ? 0 : args.profiler.qbQueries.all.reduce( function( total, q ) {
-		return arguments.total + arguments.q.executionTime;
-	}, 0 );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
 </cfscript>
 <cfoutput>
@@ -26,12 +22,12 @@
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
 		</svg>
-		#totalQueries#
+		##args.profiler.qbQueries.totalQueries##
 
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 		</svg>
-		#numberFormat( totalExecutionTime )# ms
+		#numberFormat( args.profiler.qbQueries.totalExecutionTime )# ms
 	</div>
 
 	<!--- Panel Content --->
@@ -49,11 +45,18 @@
 			<cfelse>
 
 				<!--- Info Bar --->
-				<div class="cbd-floatRight mr5 mt10">
+				<div class="cbd-floatRight mr5 mt10 mb10">
+					<div>
+						<strong>Total Queries:</strong>
+						<div class="cbd-badge-light">
+							#args.profiler.qbQueries.totalQueries#
+						</div>
+					</div>
+
 					<div>
 						<strong>Total Execution Time:</strong>
 						<div class="cbd-badge-light">
-							#totalExecutionTime# ms
+							#args.profiler.qbQueries.totalExecutionTime# ms
 						</div>
 					</div>
 				</div>
@@ -83,7 +86,7 @@
 				</div>
 
 				<!--- Query Views --->
-				<cfif totalQueries EQ 0>
+				<cfif args.profiler.qbQueries.totalQueries EQ 0>
 					<div class="cbd-text-muted">
 						<em>No queries executed</em>
 					</div>
@@ -99,16 +102,18 @@
 								</tr>
 							</thead>
 							<tbody>
-								<cfloop array="#args.profiler.qbQueries.grouped.keyArray()#" index="sql">
+								<cfloop array="#args.profiler.qbQueries.grouped.keyArray()#" index="sqlHash">
 									<tr>
 										<td align="center">
 											<div class="cbd-badge-light">
-												#args.profiler.qbQueries.grouped[ sql ].len()#
+												#args.profiler.qbQueries.grouped[ sqlHash ].count#
 											</div>
 										</td>
 										<td>
 											<code>
-												#sqlFormatter.formatSql( sql )#
+												#sqlFormatter.formatSql(
+													args.profiler.qbQueries.grouped[ sqlHash ].sql
+												)#
 											</code>
 										</td>
 									</tr>
@@ -124,7 +129,7 @@
 													</tr>
 												</thead>
 												<tbody>
-													<cfloop array="#args.profiler.qbQueries.grouped[ sql ]#" index="q">
+													<cfloop array="#args.profiler.qbQueries.grouped[ sqlHash ].records#" index="q">
 														<tr>
 															<td align="center">
 																#TimeFormat( q.timestamp, "hh:MM:SS.l tt" )#
@@ -133,8 +138,8 @@
 																#numberFormat( q.executionTime )# ms
 															</td>
 															<td>
-																<cfif NOT q.bindings.isEmpty()>
-																	<code><pre>#jsonFormatter.formatJSON( json : q.bindings, spaceAfterColon : true )#</pre></code>
+																<cfif NOT q.params.isEmpty()>
+																	<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
 																</cfif>
 															</td>
 														</tr>
@@ -166,12 +171,12 @@
 										</td>
 										<td>
 											<code>#sqlFormatter.formatSql( q.sql )#</code>
-											<cfif NOT q.bindings.isEmpty()>
-												<div class="mt10 mb5 cbd-bindings">
+											<cfif NOT q.params.isEmpty()>
+												<div class="mt10 mb5 cbd-params">
 													<div class="mb10">
 														<strong>Params: </strong>
 													</div>
-													<code><pre>#jsonFormatter.formatJSON( json : q.bindings, spaceAfterColon : true )#</pre></code>
+													<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
 												</div>
 											</cfif>
 										</td>
