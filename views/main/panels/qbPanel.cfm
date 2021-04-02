@@ -4,6 +4,8 @@
 	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
 	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
+	exceptionBean = new coldbox.system.web.context.ExceptionBean();
+	appPath = getSetting( "ApplicationPath" );
 </cfscript>
 <cfoutput>
 	<!--- Panel Title --->
@@ -22,7 +24,7 @@
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
 		</svg>
-		##args.profiler.qbQueries.totalQueries##
+		#args.profiler.qbQueries.totalQueries#
 
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -138,6 +140,35 @@
 																#numberFormat( q.executionTime )# ms
 															</td>
 															<td>
+																<cfif q.caller.template.len()>
+																	<div class="mb10 mt10 cbd-params">
+																		<!--- Title --->
+																		<strong>Called From: </strong>
+																		<!--- Open in Editor--->
+																		<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+																			<div class="cbd-floatRight">
+																				<a
+																					class="cbd-button"
+																					target="_self"
+																					rel   ="noreferrer noopener"
+																					title="Open in Editor"
+																					href="#exceptionBean.openInEditorURL( event, q.caller )#"
+																				>
+																					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+																					</svg>
+																				</a>
+																			</div>
+																		</cfif>
+																		<!--- Line --->
+																		<div>
+																			<strong>
+																				#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+																			</strong>
+																		</div>
+																	</div>
+																</cfif>
+
 																<cfif NOT q.params.isEmpty()>
 																	<code><pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre></code>
 																</cfif>
@@ -170,6 +201,35 @@
 											#TimeFormat( q.timestamp,"hh:MM:SS.l tt" )#
 										</td>
 										<td>
+											<cfif q.caller.template.len()>
+												<div class="mb10 mt10 cbd-params">
+													<!--- Title --->
+													<strong>Called From: </strong>
+													<!--- Open in Editor--->
+													<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+														<div class="cbd-floatRight">
+															<a
+																class="cbd-button"
+																target="_self"
+																rel   ="noreferrer noopener"
+																title="Open in Editor"
+																href="#exceptionBean.openInEditorURL( event, q.caller )#"
+															>
+																<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+																</svg>
+															</a>
+														</div>
+													</cfif>
+													<!--- Line --->
+													<div>
+														<strong>
+															#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+														</strong>
+													</div>
+												</div>
+											</cfif>
+
 											<code>#sqlFormatter.formatSql( q.sql )#</code>
 											<cfif NOT q.params.isEmpty()>
 												<div class="mt10 mb5 cbd-params">

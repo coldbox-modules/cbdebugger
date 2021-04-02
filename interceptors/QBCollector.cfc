@@ -54,7 +54,8 @@ component extends="coldbox.system.Interceptor" {
 			"sql"           : arguments.interceptData.sql,
 			"params"        : variables.debuggerConfig.cborm.logParams ? arguments.interceptData.bindings : [],
 			"options"       : arguments.interceptData.options,
-			"executionTime" : arguments.interceptData.executionTime
+			"executionTime" : arguments.interceptData.executionTime,
+			"caller"        : variables.debuggerService.discoverCallingStack( "get", "QueryBuilder" )
 		};
 
 		// Log by Group
