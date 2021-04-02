@@ -82,6 +82,11 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 			return arguments.data.entityName;
 		}
 
+		// Check if we have a quick entity
+		if( structKeyExists( arguments.data.entity, "mappingName" ) ){
+			return arguments.data.entity.mappingName();
+		}
+
 		// Short-cut discovery via ActiveEntity
 		if ( structKeyExists( arguments.data.entity, "getEntityName" ) ) {
 			return arguments.data.entity.getEntityName();
