@@ -46,7 +46,7 @@ component {
 			// Request Tracker Options
 			requestTracker : {
 				// Expand by default the tracker panel or not
-				expanded                     : true,
+				expanded                     : false,
 				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 				slowExecutionThreshold       : 1000,
 				// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
