@@ -3,8 +3,8 @@
 # Welcome To The ColdBox Debugger Module
 
 This module will enhance your application with debugger and profiling capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
-
-<img src="Screenshot_2021-04-03 Screenshot.png">
+****
+<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/Screenshot_2021-04-03%20Screenshot.png">
 
 ## LICENSE
 
@@ -31,6 +31,25 @@ Just drop into your **modules** folder or use CommandBox to install
 
 This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
 
+## Capabilities
+
+The ColdBox debugger is a full fledged lightweith performance monitor for your ColdBox applications.  It tracks your requests, whether Ajax, traditional or REST, it's environment, execution and much more.  Here is a listing of some of the capabilities you get with the ColdBox Debugger:
+
+- Track all incoming requests to your applications in memory or offloaded cache
+- Track exceptions and execution environment
+- Track incoming http requests, parameters, body and much more
+- Track request collections
+- Track Hibernate and `cborm` queries, criteria queries and session stats
+- Track `qb` and `quick` queries, entities and stats
+- Tap into LogBox via our Tracer messages and discover logging on a per request basis
+- Profile execution and results of **ANY** model object
+- Profile execution of any ColdBox interception point
+- Custom Timer helpers for adding timing methods and annotations anywhere in -our code
+- Profile your production or development apps with ease
+- Track ColdBox modules and lifecycles
+- Highly configurable
+- Highly extensible
+
 ## Settings
 
 The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you active, the slower your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
@@ -41,7 +60,7 @@ Open your `config/coldbox.cfc` configuration object and add into the `moduleSett
 moduleSettings = {
 	// Debugger Settings
 	cbDebugger = {
-		// Master switch to enable/disable request tracking into storage facilities
+		// Master switch to enable/disable request tracking into storage facilities.
 		enabled : true,
 		// Turn the debugger UI on/off by default. You can always enable it via the URL using your debug password
 		// Please note that this is not the same as the master switch above
@@ -119,53 +138,85 @@ moduleSettings = {
 
 ## WireBox Mappings
 
-The module will also register two model objects for you:
+The module will also register the following model objects for you:
 
-* `debuggerService@cbdebugger`
-* `timer@cbdebugger`
-
+- `debuggerService@cbdebugger`
+- `timer@cbdebugger`
+  
 The `DebuggerService` can be used a-la-carte for your debugging purposes.
 The `Timer` object will allow you to time code execution and send the results to the debugger panel.
 
-## Mixins
+## Helper Mixins
 
-This module will also register a few methods in all your handlers/interceptors/layouts and views:
-
-```js
-/**
-* Method to turn on the rendering of the debug panel on a reqquest
-*/
-any function showDebugger()
-
-/**
-* Method to turn off the rendering of the debug panel on a reqquest
-*/
-any function hideDebugger()
-
-/**
-* See if the debugger will be rendering or not
-*/
-boolean function isDebuggerRendering()
-```
-
-## LogBox Appender
-
-This module also comes with a LogBox appender called `cbdebugger.appenders.TracerAppender` so your application can log to the debugger's tracer.  You won't be able to configure the appender in your main LogBox configuration since modules aren't loaded until after LogBox is already created.  What you can do though is add the appender programmatically to LogBox using the `afterConfigurationLoad` interception point.  Here's an example of what that might look like:
+This module will also register a few methods in all your handlers/interceptors/layouts and views.  You can use them for turning the debugger panel on/off, timing code execution and much more.
 
 ```js
-// This appender is part of a module, so we need to register it after the modules have been loaded.
-function afterConfigurationLoad() {
-    var logBox = controller.getLogBox();
-    logBox.registerAppender( 'tracer', 'cbdebugger.appenders.TracerAppender' );
-    var appenders = logBox.getAppendersMap( 'tracer' );
+	/**
+	 * Method to turn on the rendering of the debug panel on a reqquest
+	 */
+	any function showDebugger()
 
-    // Register the appender with the root loggger, and turn the logger on.
-    var root = logBox.getRootLogger();
-    root.addAppender( appenders['tracer'] );
-    root.setLevelMax( 4 );
-    root.setLevelMin( 0 );
-}
+	/**
+	 * Method to turn off the rendering of the debug panel on a reqquest
+	 */
+	any function hideDebugger()
+
+	/**
+	 * See if the debugger will be rendering or not
+	 */
+	boolean function isDebuggerRendering()
+
+	/**
+	 * Start a timer with a tracking label
+	 *
+	 * @label The tracking label to register
+	 *
+	 * @return A unique tracking hash you must use to stop the timer
+	 */
+	function startCBTimer( required label )
+
+	/**
+	 * End a code timer with a tracking hash. If the tracking hash is not tracked we ignore it
+	 *
+	 * @labelHash The timer label hash to stop
+	 */
+	function stopCBTimer( required labelHash )
+
+	/**
+	 * Time the execution of the passed closure that we will execution for you
+	 *
+	 * @label The label to use as a timer label
+	 * @closure The target to execute and time
+	 */
+	function cbTimeIt( required label, required closure )
+
+	/**
+	 * Shortcut to get a reference to the ColdBox Debugger Service
+	 */
+	function getCBDebugger()
+
+	/**
+	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
+	 * the same patterns
+	 *
+	 * @message The message to trace
+	 * @severity The severity of the message
+	 * @category The tracking category the message came from
+	 * @timestamp The timestamp of the message
+	 * @extraInfo Extra info to store in the tracer
+	 */
+	DebuggerService function cbTracer(
+		required message,
+		severity  = "info",
+		category  = "",
+		timestamp = now(),
+		extraInfo = ""
+	)
 ```
+
+## Deubgger Events
+
+
 
 ********************************************************************************
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
