@@ -4,6 +4,8 @@
 
 This module will enhance your application with debugger and profiling capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
+<img src="Screenshot_2021-04-03 Screenshot.png">
+
 ## LICENSE
 
 Apache License, Version 2.0.
