@@ -36,10 +36,10 @@ component extends="coldbox.system.RestHandler" {
 
 
 	/**
-	 * Visualize the debugger as an incoming event
+	 * Visualize the request tracker
 	 */
 	any function index( event, rc, prc ){
-		return "";
+		return renderDebugger( argumentCollection = arguments );
 	}
 
 	/**

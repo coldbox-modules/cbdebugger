@@ -76,8 +76,10 @@ component extends="coldbox.system.Interceptor" {
 		prc,
 		buffer
 	){
-		// If we are in a command or panel rendering, exit
-		if ( arguments.event.getTrimValue( "debugPanel", "" ).len() ) {
+		// Determine if we are in a debugger call so we can ignore it or not?
+		if (
+			arguments.event.getCurrentModule() == "cbdebugger" && !variables.debuggerConfig.requestTracker.trackDebuggerEvents
+		) {
 			return;
 		}
 
@@ -268,9 +270,7 @@ component extends="coldbox.system.Interceptor" {
 				var cache = renderView(
 					view         : "main/panels/cacheBoxPanel",
 					module       : "cbdebugger",
-					args : {
-						debuggerConfig : variables.debuggerConfig
-					},
+					args         : { debuggerConfig : variables.debuggerConfig },
 					prePostExempt: true
 				);
 				break;

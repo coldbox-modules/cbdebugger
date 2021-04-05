@@ -75,6 +75,7 @@
 				debugPassword  : "cb:null",
 				// Request Tracker Options
 				requestTracker : {
+					trackDebuggerEvents : false,
 					// Expand by default the tracker panel or not
 					expanded                     : true,
 					// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
