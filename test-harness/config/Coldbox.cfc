@@ -120,9 +120,9 @@
 					maxDumpTop   : 5
 				},
 				// CacheBox Reporting
-				cachebox : { enabled : false, expanded : false },
+				cachebox : { enabled : true, expanded : false },
 				// Modules Reporting
-				modules  : { enabled : false, expanded : false },
+				modules  : { enabled : true, expanded : false },
 				// Quick and QB Reporting
 				qb       : {
 					enabled   : true,
