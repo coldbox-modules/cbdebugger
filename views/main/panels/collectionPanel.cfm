@@ -1,10 +1,12 @@
+<cfset collectionKeys = args.collection.keyArray()>
+<cfset collectionKeys.sort( "textnocase" )>
 <cfoutput>
 <!--- Public Collection --->
 <table border="0" cellpadding="0" cellspacing="1" class="cbd-tables" width="100%">
 	<tr>
 		<th colspan="2">#args.collectionType# Collection</th>
 	</tr>
-	<cfloop array="#args.collection.keyArray().sort( "textnocase" )#" index="thisKey">
+	<cfloop array="#collectionKeys#" index="thisKey">
 		<!--- Identify Value or null --->
 		<cfif !isNull( args.collection[ thisKey ] )>
 			<cfset thisValue = args.collection[ thisKey ]>

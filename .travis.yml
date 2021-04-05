@@ -10,6 +10,7 @@ env:
     - MODULE_ID=cbdebugger
   matrix:
     - ENGINE=lucee@5
+    - ENGINE=adobe@2016
     - ENGINE=adobe@2018
 
 branches:

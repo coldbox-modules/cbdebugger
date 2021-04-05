@@ -1,5 +1,7 @@
-<cfoutput>
 <cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
+<cfset exceptionKeys = args.profiler.exception.keyArray()>
+<cfset exceptionKeys.sort( "textnocase" )>
+<cfoutput>
 	<!--- Title --->
 	<div class="cbd-titles" onClick="cbdToggle( 'cbd-exceptionData' )">
 		&nbsp;
@@ -11,7 +13,7 @@
 
 	<div class="cbd-contentView" id="cbd-exceptionData">
 		<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-			<cfloop array="#args.profiler.exception.keyArray().sort( "textnocase" )#" item="thisItem" >
+			<cfloop array="#exceptionKeys#" item="thisItem" >
 				<cfif !isSimpleValue( args.profiler.exception[ thisItem ] ) OR len( args.profiler.exception[ thisItem ] )>
 					<tr>
 						<th width="100" align="right">

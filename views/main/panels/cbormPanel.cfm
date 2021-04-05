@@ -271,7 +271,9 @@
 						#args.profiler.cborm.totalQueries#
 					</td>
 				</tr>
-				<cfloop array="#args.profiler.cborm.sessionStats.keyArray().sort( "textnocase" )#" item="thisItem" >
+				<cfset stats = args.profiler.cborm.sessionStats.keyArray()>
+				<cfset stats.sort( "textnocase" )>
+				<cfloop array="#stats#" item="thisItem" >
 					<tr>
 						<th width="200" align="right">
 							#thisItem# :

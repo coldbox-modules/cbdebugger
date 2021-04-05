@@ -460,7 +460,7 @@ component
 		var callstack   = callStackGet();
 		var targetIndex = callstack
 			.map( function( item, index, array ){
-				// Do we have template matches or simple tests?
+				// Do we have template matches or simple function equality?
 				if ( !isNull( templateMatch ) ) {
 					if (
 						arguments.item.function == targetMethod && findNoCase(
@@ -480,8 +480,9 @@ component
 				return !isNull( arguments.item );
 			} );
 
+		// Only return if we have matches, else default return struct
 		if ( targetIndex.len() ) {
-			var results       = callStack[ targetIndex.last() + 1 ];
+			var results       = callStack[ targetIndex[ arrayLen( targetIndex ) ] + 1 ];
 			results[ "line" ] = results.lineNumber;
 			return results;
 		}

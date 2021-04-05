@@ -83,9 +83,11 @@
 		</cfif>
 	</table>
 
+	<cfset headerKeys = args.profiler.requestData.headers.keyArray()>
+	<cfset headerKeys.sort( "textnocase" )>
 	<h2>Headers</h2>
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-		<cfloop array="#args.profiler.requestData.headers.keyArray().sort( "textnocase" )#" item="thisHeader" >
+		<cfloop array="#headerKeys#" item="thisHeader" >
 			<tr>
 				<th width="175" align="right">
 					#thisHeader#
@@ -102,18 +104,21 @@
 										Cookie Value
 									</th>
 								</tr>
-								<cfloop array="#args.profiler.requestData.headers.cookie.listToArray( ";" ).sort( "textNoCase" )#" index="thisHeader">
+								<!--- Sort Cookies --->
+								<cfset cookieKeys = args.profiler.requestData.headers.cookie.listToArray( ";" )>
+								<cfset cookieKeys.sort( "textnocase" )>
+								<cfloop array="#cookieKeys#" index="thisCookie">
 									<tr>
 										<td class="cbd-cellBreak">
 											<em class="textBlue">
-												#getToken( thisHeader, 1, "=" )#
+												#getToken( thisCookie, 1, "=" )#
 											</em>
 										</td>
 										<td class="cbd-cellBreak">
-											<cfif !isBoolean( getToken( thisHeader, 2, "=" ) ) && isJSON( getToken( thisHeader, 2, "=" ) )>
-												#getInstance( '@JSONPrettyPrint' ).formatJSON( getToken( thisHeader, 2, "=" ) )#
+											<cfif !isBoolean( getToken( thisCookie, 2, "=" ) ) && isJSON( getToken( thisCookie, 2, "=" ) )>
+												#getInstance( '@JSONPrettyPrint' ).formatJSON( getToken( thisCookie, 2, "=" ) )#
 											<cfelse>
-												#getToken( thisHeader, 2, "=" )#
+												#getToken( thisCookie, 2, "=" )#
 											</cfif>
 										</td>
 									</tr>

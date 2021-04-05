@@ -1,3 +1,6 @@
+<!--- Sort keys --->
+<cfset coldboxKeys = args.profiler.coldbox.keyArray()>
+<cfset coldboxKeys.sort( "textnocase" )>
 <cfoutput>
 <!--- Title --->
 <div class="cbd-titles" onClick="cbdToggle( 'cbd-coldboxData' )">
@@ -13,7 +16,7 @@
 	id="cbd-coldboxData"
 >
 	<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-		<cfloop array="#args.profiler.coldbox.keyArray().sort( "textnocase" )#" item="thisItem" >
+		<cfloop array="#coldboxKeys#" item="thisItem" >
 			<tr>
 				<th width="200" align="right">
 					#thisItem# :
