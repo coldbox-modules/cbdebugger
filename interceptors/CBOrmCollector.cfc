@@ -48,7 +48,7 @@ component extends="coldbox.system.Interceptor" {
 		// Prepare log struct
 		var logData = {
 			"timestamp"     : now(),
-			"type"          : "executeQuery()",
+			"type"          : "executeQuery",
 			"sql"           : arguments.interceptData.query,
 			"params"        : variables.debuggerConfig.cborm.logParams ? serializeJSON( arguments.interceptData.params ) : {},
 			"unique"        : arguments.interceptData.unique,
