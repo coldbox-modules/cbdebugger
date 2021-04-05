@@ -66,7 +66,7 @@
 			</div>
 
 			<!--- Info Bar --->
-			<div class="cbd-flex mt10 size10 cbd-text-muted">
+			<div class="cbd-flex mt10 cbd-size11 cbd-text-muted">
 
 				<div>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
