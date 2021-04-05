@@ -37,7 +37,7 @@
 	<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables">
 		<tr >
 			<th align="left">Module / Version</th>
-			<th align="left" width="300">Mapping</th>
+			<th align="left" width="40%">Mapping</th>
 			<th align="center" width="100" >CMDS</th>
 		</tr>
 
@@ -71,8 +71,8 @@
 				</td>
 
 				<!--- Mapping --->
-				<td align="left">
-					<div class="cbd-badge-light mt5">
+				<td align="left" class="cbd-cellBreak">
+					<div class="cbd-badge-light mt5 cbd-text-left">
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
 						</svg>
