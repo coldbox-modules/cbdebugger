@@ -61,9 +61,6 @@ component extends="coldbox.system.RestHandler" {
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
-				loadedModules    : variables.debuggerConfig.modules.enabled ? variables.controller
-					.getModuleService()
-					.getLoadedModules() : [],
 				moduleSettings  : variables.debuggerConfig.modules.enabled ? getSetting( "modules" ) : {},
 				debuggerConfig  : variables.debuggerConfig,
 				debuggerService : variables.debuggerService,
