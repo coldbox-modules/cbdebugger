@@ -266,8 +266,11 @@ component extends="coldbox.system.Interceptor" {
 			case "gc": {
 				// Relay this to the cache monitor
 				var cache = renderView(
-					view         : "main/cacheMonitor",
+					view         : "main/panels/cacheBoxPanel",
 					module       : "cbdebugger",
+					args : {
+						debuggerConfig : variables.debuggerConfig
+					},
 					prePostExempt: true
 				);
 				break;
