@@ -2,9 +2,19 @@
 
 # Welcome To The ColdBox Debugger Module
 
-This module will enhance your application with debugger and profiling capabilities, a nice debugging panel and much more to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
+The ColdBox Debugger module is a light-weigth performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 ****
-<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/Screenshot_2021-04-03%20Screenshot.png">
+<p align="center">
+	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
+	Debugger Request Visualizer
+</p>
+
+<br>
+
+<p align="center">
+	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-collapsed.png">
+	Request Tracker Collapsed
+</p>
 
 ## LICENSE
 
