@@ -23,13 +23,13 @@
 		<!--- Show Timers if any are found --->
 		<cfif arrayLen( args.timers )>
 			<cfloop array="#args.timers#" index="thisTimer">
-				<cfif findnocase( "render", thisTimer.method )>
-					<cfset color = "cbd-text-green">
-				<cfelseif findnocase( "interception", thisTimer.method )>
+				<cfif findnocase( "[render", thisTimer.method )>
+					<cfset color = "cbd-text-orange">
+				<cfelseif findnocase( "[Interception]", thisTimer.method )>
 					<cfset color = "cbd-text-black">
-				<cfelseif findnocase( "runEvent",  thisTimer.method )>
+				<cfelseif findnocase( "[runEvent]",  thisTimer.method )>
 					<cfset color = "cbd-text-blue">
-				<cfelseif findnocase( "pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
+				<cfelseif findnocase( "[pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
 					<cfset color = "cbd-text-purple">
 				<cfelse>
 					<cfset color = "cbd-text-green">
