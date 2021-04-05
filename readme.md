@@ -4,18 +4,22 @@
 
 The ColdBox Debugger module is a light-weigth performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
-<br>
-
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
-	Debugger Request Visualizer
+</p>
+
+<p align="center">
+Debugger Request Visualizer
 </p>
 
 <br>
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-collapsed.png">
-	Request Tracker Collapsed
+</p>
+
+<p align="center">
+Request Tracker Collapsed
 </p>
 
 ## License
@@ -284,7 +288,10 @@ There will be cases where you need to test the performance of the creation of ce
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-timers.png">
-	Debug Timers
+</p>
+
+<p align="center">
+Debug Timers
 </p>
 
 In an event-driven framework like ColdBox, there are tons of events that fire within traditional request/response transactions.  You can activate our tracker and we will trace and profile interception calls.  Activate it via the settings first:
@@ -302,6 +309,8 @@ Once activated, you can add a collection of interception points to profile in yo
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-http.png">
+</p>
+<p align="center">
 	HTTP Visualizer
 </p>
 
@@ -322,6 +331,9 @@ requestTracker = {
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-tracers.png">
+</p>
+
+<p align="center">
 	ColdBox Tracers
 </p>
 
@@ -338,6 +350,8 @@ Please note that by default the tracer appender will log any logging level from 
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-cborm-grouped.png">
+</p>
+<p align="center">
 	Grouped cborm calls
 </p>
 
@@ -359,6 +373,8 @@ The grouped view you see above will give you an aggregate look of all the sql ca
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-cborm-grouped.png">
+</p>
+<p align="center">
 	Timeline cborm calls
 </p>
 
@@ -368,6 +384,8 @@ The timeline view gives you a track of all the sql requests made via cborm from 
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-qb.png">
+</p>
+<p align="center">
 	qb/quick calls
 </p>
 
@@ -389,6 +407,8 @@ Also remember that you can activate the bidining parameters to the sql calls.
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-modules.png">
+</p>
+<p align="center">
 	Modules Tracker
 </p>
 
@@ -405,6 +425,8 @@ From the panel you will be able to analyze the registration and activation of al
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-cachebox.png">
+</p>
+<p align="center">
 	CacheBox Monitor
 </p>
 
@@ -419,6 +441,8 @@ cachebox : { enabled : true, expanded : false },
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
+</p>
+<p align="center">
 	Debugger Visualizer
 </p>
 
