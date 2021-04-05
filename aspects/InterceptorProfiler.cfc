@@ -26,19 +26,20 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	 * The AOP method invocation
 	 */
 	any function invokeMethod( required invocation ){
+
+		// Quick exit check: If no included interceptions, just bail
+		if( !arrayLen( variables.includedInterceptions ) ){
+			return arguments.invocation.proceed();
+		}
+
+		// Start target checks
 		var targetArgs = arguments.invocation.getArgs();
 
-		// state
+		// Get the state either by name or position
 		if ( structKeyExists( targetArgs, "state" ) ) {
 			var state = targetArgs.state;
-		} else if ( structKeyExists( targetArgs, 1 ) ) {
+		} else {
 			var state = targetArgs[ 1 ];
-		}
-		// data
-		if ( structKeyExists( targetArgs, "data" ) ) {
-			var data = targetArgs.data;
-		} else if ( structKeyExists( targetArgs, 2 ) ) {
-			var data = targetArgs[ 2 ];
 		}
 
 		// Do we need to profile it or not?
@@ -54,7 +55,15 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 			return arguments.invocation.proceed();
 		}
 
-		var txName    = "[Interception] #state#";
+		// Build Transaction name
+		var txName = "[Interception] #state#";
+
+		// Get intercept data by name or position
+		if ( structKeyExists( targetArgs, "data" ) ) {
+			var data = targetArgs.data;
+		} else {
+			var data = targetArgs[ 2 ];
+		}
 
 		// Is this an entity interception? If so, log it to assist
 		if( data.keyExists( "entity" ) ){
