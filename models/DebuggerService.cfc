@@ -31,11 +31,6 @@ component
 	property name="cookieName";
 
 	/**
-	 * The collection of request profilers we track in the debugger
-	 */
-	property name="profilers" type="array";
-
-	/**
 	 * The debugger configuration struct
 	 */
 	property name="debuggerConfig" type="struct";
@@ -98,13 +93,24 @@ component
 			"coldboxName"         : variables.controller.getColdBoxSettings().codename,
 			"coldboxVersion"      : variables.controller.getColdBoxSettings().version,
 			"coldboxSuffix"       : variables.controller.getColdBoxSettings().suffix,
-			"coldboxModules"      : variables.controller.getModuleService().getLoadedModules()
+			"appName"             : variables.controller.getSetting( "appName" ),
+			"appPath"             : variables.controller.getSetting( "applicationPath" ),
+			"appHash"             : variables.controller.getAppHash(),
+			"dockerHost"          : ( isNull( cgi.local_host ) ? "" : cgi.local_host ),
+			"dockerIp"            : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
 		};
 
 		// Initialize secret key
 		rotateSecretKey();
 
 		return this;
+	}
+
+	/**
+	 * Get the cache region configured for the debugger
+	 */
+	private function getCacheRegion(){
+		return variables.controller.getCacheBox().getCache( variables.debuggerConfig.requestTracker.cacheName );
 	}
 
 	/**
@@ -222,11 +228,39 @@ component
 	}
 
 	/**
+	 * Get the key used in the off heap storage
+	 */
+	function getStorageKey(){
+		return "cbDebugger-#variables.environment.appName.replace( " ", "-", "all" )#";
+	}
+
+	/**
 	 * Reset the request tracking profilers
 	 */
 	DebuggerService function resetProfilers(){
-		variables.profilers = [];
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			getCacheRegion().set( getStorageKey(), [], 0, 0 );
+		} else {
+			variables.profilers = [];
+		}
 		return this;
+	}
+
+	/**
+	 * Get the profiler storage array depending on the storage options
+	 */
+	array function getProfilerStorage(){
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			return getCacheRegion().getOrSet(
+				getStorageKey(),
+				function(){
+					return [];
+				},
+				0
+			);
+		} else {
+			return variables.profilers;
+		}
 	}
 
 	/**
@@ -241,9 +275,14 @@ component
 		required executionTime,
 		exception = {}
 	){
+		var targetStorage = getProfilerStorage();
+
 		// size check, if passed, pop one
-		if ( arrayLen( variables.profilers ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
-			popProfiler();
+		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
+			arrayDeleteAt(
+				targetStorage,
+				arrayLen( targetStorage )
+			);
 		}
 
 		// Build out the exception data to trace if any?
@@ -306,11 +345,14 @@ component
 			{ requestTracker : request.cbDebugger }
 		);
 
-		// New Profiler record to store into the stack
-		arrayPrepend(
-			variables.profilers,
-			request.cbDebugger
-		);
+		// New Profiler record to store into the singleton stack
+		arrayPrepend( targetStorage, request.cbDebugger );
+
+		// Are we using cache storage
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			// store indefintely using the debugger and app hash
+			getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+		}
 
 		return this;
 	}
@@ -323,7 +365,7 @@ component
 	 * @return The profiler requested or an empty struct if not found
 	 */
 	struct function getProfilerById( required id ){
-		return variables.profilers
+		return getProfilerStorage()
 			.filter( function( thisItem ){
 				return arguments.thisItem.id.toString() == id;
 			} )
@@ -331,17 +373,6 @@ component
 				arguments.results = arguments.thisItem;
 				return arguments.results;
 			}, {} );
-	}
-
-	/**
-	 * Pop a profiler record from the top
-	 */
-	DebuggerService function popProfiler(){
-		arrayDeleteAt(
-			variables.profilers,
-			arrayLen( variables.profilers )
-		);
-		return this;
 	}
 
 	/**

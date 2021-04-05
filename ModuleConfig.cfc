@@ -45,14 +45,18 @@ component {
 			debugPassword  : "cb:null",
 			// Request Tracker Options
 			requestTracker : {
+				// Store the request profilers in heap memory or in cachebox, default is cachebox
+				storage                      : "cachebox",
+				// Which cache region to store the profilers in
+				cacheName                    : "template",
 				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 				trackDebuggerEvents          : false,
 				// Expand by default the tracker panel or not
 				expanded                     : false,
 				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 				slowExecutionThreshold       : 1000,
-				// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
-				maxProfilers                 : 25,
+				// How many tracking profilers to keep in stack
+				maxProfilers                 : 50,
 				// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 				profileWireBoxObjectCreation : false,
 				// Profile model objects annotated with the `profile` annotation

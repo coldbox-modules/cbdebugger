@@ -75,6 +75,8 @@
 				debugPassword  : "cb:null",
 				// Request Tracker Options
 				requestTracker : {
+					storage : "cachebox",
+					cacheName : "template",
 					trackDebuggerEvents : false,
 					// Expand by default the tracker panel or not
 					expanded                     : true,

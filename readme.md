@@ -86,12 +86,16 @@ moduleSettings = {
 		debugPassword  : "cb:null",
 		// Request Tracker Options
 		requestTracker : {
+			// Store the request profilers in heap memory or in cachebox, default is cachebox
+			storage                      : "cachebox",
+			// Which cache region to store the profilers in
+			cacheName                    : "template",
 			// Expand by default the tracker panel or not
 			expanded                     : true,
 			// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 			slowExecutionThreshold       : 1000,
 			// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
-			maxProfilers                 : 25,
+			maxProfilers                 : 50,
 			// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 			profileWireBoxObjectCreation : false,
 			// Profile model objects annotated with the `profile` annotation

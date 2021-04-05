@@ -36,11 +36,36 @@
 			<div
 				class="cbd-size13"
 			>
-				#args.profiler.requestData.method#
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-				</svg>
-				#args.profiler.fullUrl#
+				<span title="Status Code">
+					<cfif args.profiler.response.statusCode gte 200 && args.profiler.response.statusCode lt 300 >
+						<span class="cbd-text-green">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							#args.profiler.response.statusCode#
+						</span>
+					<cfelseif args.profiler.response.statusCode gte 300 && args.profiler.response.statusCode lt 400 >
+						<span class="cbd-text-blue">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							#args.profiler.response.statusCode#
+						</span>
+					<cfelseif args.profiler.response.statusCode gte 400>
+						<span class="cbd-text-red">
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+							</svg>
+							#args.profiler.response.statusCode#
+						</span>
+					</cfif>
+				</span>
+
+				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+				  </svg>
+
+				#args.profiler.requestData.method# : #args.profiler.fullUrl#
 			</div>
 
 			<!--- Execution Time --->
@@ -103,30 +128,14 @@
 					#args.profiler.threadInfo.replaceNoCase( "Thread", "" )#
 				</div>
 
-				<div class="ml10" title="Status Code">
-					<cfif args.profiler.response.statusCode gte 200 && args.profiler.response.statusCode lt 300 >
-						<span class="cbd-text-green">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 300 && args.profiler.response.statusCode lt 400 >
-						<span class="cbd-text-blue">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 400>
-						<span class="cbd-text-red">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					</cfif>
-				</div>
+				<cfif len( args.environment.dockerHost )>
+					<div class="ml10" title="Docker Info">
+						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+						</svg>
+						#args.environment.dockerHost# / #args.environment.dockerIp#
+					</div>
+				</cfif>
 
 				<div class="ml10" title="Response Content Type">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

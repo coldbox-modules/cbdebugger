@@ -61,13 +61,13 @@ component extends="coldbox.system.RestHandler" {
 				debugStartTime   : getTickCount(),
 				refreshFrequency : rc.frequency,
 				urlBase          : event.buildLink( "" ),
-				moduleSettings  : variables.debuggerConfig.modules.enabled ? getSetting( "modules" ) : {},
-				debuggerConfig  : variables.debuggerConfig,
-				debuggerService : variables.debuggerService,
-				environment     : variables.debuggerService.getEnvironment(),
-				profilers       : variables.debuggerService.getProfilers(),
-				currentProfiler : variables.debuggerService.getProfilers()[ 1 ],
-				manifestRoot    : event.getModuleRoot( "cbDebugger" ) & "/includes"
+				moduleSettings   : variables.debuggerConfig.modules.enabled ? getSetting( "modules" ) : {},
+				debuggerConfig   : variables.debuggerConfig,
+				debuggerService  : variables.debuggerService,
+				environment      : variables.debuggerService.getEnvironment(),
+				profilers        : variables.debuggerService.getProfilerStorage(),
+				currentProfiler  : variables.debuggerService.getProfilerStorage()[ 1 ],
+				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);
 	}
@@ -100,7 +100,7 @@ component extends="coldbox.system.RestHandler" {
 			module: "cbdebugger",
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
-				profilers      : variables.debuggerService.getProfilers(),
+				profilers      : variables.debuggerService.getProfilerStorage(),
 				debuggerConfig : variables.debuggerConfig
 			},
 			prePostExempt: true
