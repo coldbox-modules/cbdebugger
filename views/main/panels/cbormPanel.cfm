@@ -127,9 +127,9 @@
 									<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 										<thead>
 											<tr>
-												<th width="15%">Timestamp</th>
-												<th width="10%">Execution Time</th>
-												<th width="10%">Type</th>
+												<th width="15%" align="center">Timestamp</th>
+												<th width="10%" align="center">Execution Time</th>
+												<th width="10%" align="center">Type</th>
 												<th>Caller + Params</th>
 											</tr>
 										</thead>
