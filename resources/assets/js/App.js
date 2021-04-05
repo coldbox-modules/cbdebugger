@@ -253,3 +253,26 @@ window.cbdShowTimelineOrmQueries = function() {
 	$cb( "#cbdTimelineOrmQueries" ).slideDown();
 	$cb( "#cbdGroupedOrmQueries" ).slideUp();
 };
+
+/**
+ * Copy a div's code to the clipboard
+ * @param {*} id The id of the element's content to copy to the clipboard
+ */
+window.copyToClipboard = function( id ) {
+	var elm = document.getElementById( id );
+	// for Internet Explorer
+	if ( document.body.createTextRange ) {
+		var range = document.body.createTextRange();
+		range.moveToElementText( elm );
+		range.select();
+		document.execCommand( "Copy" );
+	} else if ( window.getSelection ) {
+		// other browsers
+		var selection = window.getSelection();
+		var range = document.createRange();
+		range.selectNodeContents( elm );
+		selection.removeAllRanges();
+		selection.addRange( range );
+		document.execCommand( "Copy" );
+	}
+};
