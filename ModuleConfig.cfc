@@ -167,9 +167,7 @@ component {
 		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
 
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
-		if (
-			variables.settings.enabled
-		) {
+		if ( variables.settings.enabled ) {
 			/******************** REQUEST COLLECTOR ************************************/
 
 			controller
