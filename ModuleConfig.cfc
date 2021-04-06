@@ -168,10 +168,7 @@ component {
 
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		if (
-			variables.settings.enabled && !findNoCase(
-				"MockController",
-				getMetadata( controller ).name
-			)
+			variables.settings.enabled
 		) {
 			/******************** REQUEST COLLECTOR ************************************/
 
