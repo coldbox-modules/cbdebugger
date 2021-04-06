@@ -128,14 +128,12 @@
 					#args.profiler.threadInfo.replaceNoCase( "Thread", "" )#
 				</div>
 
-				<cfif len( args.profiler.dockerHost )>
-					<div class="ml10" title="Docker Info">
-						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-						</svg>
-						#args.profiler.dockerHost# / #args.profiler.dockerIp#
-					</div>
-				</cfif>
+				<div class="ml10" title="Machine Ip">
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+					</svg>
+					#args.profiler.localIp#
+				</div>
 
 				<div class="ml10" title="Response Content Type">
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

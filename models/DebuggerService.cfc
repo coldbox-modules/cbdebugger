@@ -206,8 +206,7 @@ component
 			"httpReferer"   : cgi.HTTP_REFERER,
 			"formData"      : serializeJSON( form ?: {} ),
 			"inetHost"      : discoverInetHost(),
-			"dockerHost"    : ( isNull( cgi.local_host ) ? "" : cgi.local_host ),
-			"dockerIp"      : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr ),
+			"localIp"       : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr ),
 			"luceeId"       : ( server.keyExists( "lucee" ) ? getLuceeID() : {} )
 		};
 

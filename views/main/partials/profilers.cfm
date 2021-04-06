@@ -60,17 +60,9 @@
 					#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 				</div>
 
-				<cfif len( thisProfiler.dockerHost ) and thisProfiler.inetHost neq thisProfiler.dockerHost>
-					<div class="mt5">
-						#thisProfiler.dockerHost#
-					</div>
-				</cfif>
-
-				<cfif thisProfiler.dockerIp neq "127.0.0.1">
-					<div class="mt5">
-						#thisProfiler.dockerIp#
-					</div>
-				</cfif>
+				<div class="mt5">
+					#thisProfiler.localIp#
+				</div>
 			</td>
 
 			<!--- Response & Content TYPE --->
