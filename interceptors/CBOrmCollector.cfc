@@ -27,9 +27,12 @@ component extends="coldbox.system.Interceptor" {
 	 */
 	function afterOrmExecuteQuery( event, interceptData, rc, prc ){
 		// Get the request tracker so we can add our timing goodness!
-		var requestTracker = variables.debuggerService.getRequestTracker();
+		var requestTracker                 = variables.debuggerService.getRequestTracker();
+		param requestTracker.cborm         = {};
+		param requestTracker.cborm.grouped = {};
+		param requestTracker.cborm.all     = [];
 		// Hash the incoming sql, this is our key lookup
-		var sqlHash        = hash( arguments.interceptData.query );
+		var sqlHash                        = hash( arguments.interceptData.query );
 
 		// Do grouping check by hash
 		if (
@@ -146,9 +149,12 @@ component extends="coldbox.system.Interceptor" {
 			executionTime = getTickCount() - startCount;
 		}
 		// Get the request tracker so we can add our timing goodness!
-		var requestTracker = variables.debuggerService.getRequestTracker();
+		var requestTracker                 = variables.debuggerService.getRequestTracker();
+		param requestTracker.cborm         = {};
+		param requestTracker.cborm.grouped = {};
+		param requestTracker.cborm.all     = [];
 		// Hash the incoming sql, this is our key lookup
-		var sql            = arguments.interceptData.criteriaBuilder.getSQL(
+		var sql                            = arguments.interceptData.criteriaBuilder.getSQL(
 			returnExecutableSql: false,
 			formatSql          : false
 		);
