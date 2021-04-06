@@ -207,7 +207,8 @@ component
 			"formData"      : serializeJSON( form ?: {} ),
 			"inetHost"      : discoverInetHost(),
 			"dockerHost"    : ( isNull( cgi.local_host ) ? "" : cgi.local_host ),
-			"dockerIp"      : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
+			"dockerIp"      : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr ),
+			"luceeId"       : ( server.keyExists( "lucee" ) ? getLuceeID() : {} )
 		};
 
 		// Event before recording
