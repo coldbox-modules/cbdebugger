@@ -166,8 +166,13 @@ component {
 		// Configure the debugging mode from the loaded app settings
 		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
 
-		// Only activate interceptions and collectors if master switch is on
-		if ( variables.settings.enabled ) {
+		// Only activate interceptions and collectors if master switch is on or in test mode disable it
+		if (
+			variables.settings.enabled && !findNoCase(
+				"MockController",
+				getMetadata( controller ).name
+			)
+		) {
 			/******************** REQUEST COLLECTOR ************************************/
 
 			controller
