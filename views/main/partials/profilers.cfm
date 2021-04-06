@@ -6,12 +6,10 @@
 			Ip
 		</th>
 		<th align="left" width="150">
-			Server<br>
-			Thread<br>
-			Docker Info
+			Server Info
 		</th>
 		<th align="left" width="75">
-			Response Type
+			Response
 		</th>
 		<th align="left">
 			Request
@@ -54,16 +52,23 @@
 
 			<!--- Machine Info + Thread Info --->
 			<td>
-				<div>
+				<div title="Machine Host">
 					#thisProfiler.inetHost#
 				</div>
-				<div class="mt5">
+
+				<div class="mt5" title="Thread Info">
 					#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 				</div>
 
-				<cfif len( thisProfiler.dockerHost )>
+				<cfif len( thisProfiler.dockerHost ) and thisProfiler.inetHost neq thisProfiler.dockerHost>
 					<div class="mt5">
-						#thisProfiler.dockerHost# / #thisProfiler.dockerIp#
+						#thisProfiler.dockerHost#
+					</div>
+				</cfif>
+
+				<cfif thisProfiler.dockerIp neq "127.0.0.1">
+					<div class="mt5">
+						#thisProfiler.dockerIp#
 					</div>
 				</cfif>
 			</td>
