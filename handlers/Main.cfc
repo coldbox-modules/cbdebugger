@@ -66,7 +66,7 @@ component extends="coldbox.system.RestHandler" {
 				debuggerService  : variables.debuggerService,
 				environment      : variables.debuggerService.getEnvironment(),
 				profilers        : variables.debuggerService.getProfilerStorage(),
-				currentProfiler  : variables.debuggerService.getProfilerStorage()[ 1 ] ?: {},
+				currentProfiler  : variables.debuggerService.getCurrentProfiler(),
 				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
 			}
 		);

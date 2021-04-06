@@ -247,6 +247,21 @@ component
 	}
 
 	/**
+	 * Get the current profiler for the current request. Basically the first in the stack
+	 *
+	 * @return The current request profiler or an empty struct if none found.
+	 */
+	struct function getCurrentProfiler(){
+		var profilers = getProfilerStorage();
+
+		if( arrayLen( profilers ) ){
+			return profilers[ 1 ];
+		}
+
+		return {};
+	}
+
+	/**
 	 * Get the profiler storage array depending on the storage options
 	 */
 	array function getProfilerStorage(){
