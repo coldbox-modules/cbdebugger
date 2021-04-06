@@ -69,7 +69,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen before list() operations
 	 */
 	function beforeCriteriaBuilderList( event, interceptData, rc, prc ){
-		arguments.interceptData.criteriaBuilder.getNativeCriteria().setComment( getTickCount() );
+		arguments.interceptData.criteriaBuilder._cbdStartCount = getTickCount();
 	}
 
 	/**
@@ -87,7 +87,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen before count() operations
 	 */
 	function beforeCriteriaBuilderCount( event, interceptData, rc, prc ){
-		arguments.interceptData.criteriaBuilder.getNativeCriteria().setComment( getTickCount() );
+		arguments.interceptData.criteriaBuilder._cbdStartCount = getTickCount();
 	}
 
 	/**
@@ -105,7 +105,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen before get() operations
 	 */
 	function beforeCriteriaBuilderGet( event, interceptData, rc, prc ){
-		arguments.interceptData.criteriaBuilder.getNativeCriteria().setComment( getTickCount() );
+		arguments.interceptData.criteriaBuilder._cbdStartCount = getTickCount();
 	}
 
 	/**
@@ -140,7 +140,7 @@ component extends="coldbox.system.Interceptor" {
 	 */
 	private function logCriteriaQuery( event, interceptData, type ){
 		// Get the timer start count
-		var startCount    = arguments.interceptData.criteriaBuilder.getNativeCriteria().getComment();
+		var startCount    = arguments.interceptData.criteriaBuilder._cbdStartCount;
 		var executionTime = 0;
 		if ( len( startCount ) && isNumeric( startCount ) ) {
 			executionTime = getTickCount() - startCount;
