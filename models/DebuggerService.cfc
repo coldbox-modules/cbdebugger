@@ -83,7 +83,6 @@ component
 
 		// Store Environment struct
 		variables.environment = {
-			"inetHost"            : discoverInetHost(),
 			"cfmlEngine"          : server.coldfusion.productName,
 			"cfmlVersion"         : ( server.keyExists( "lucee" ) ? server.lucee.version : server.coldfusion.productVersion ),
 			"javaVersion"         : variables.jvmRuntime.version().toString(),
@@ -95,9 +94,7 @@ component
 			"coldboxSuffix"       : variables.controller.getColdBoxSettings().suffix,
 			"appName"             : variables.controller.getSetting( "appName" ),
 			"appPath"             : variables.controller.getSetting( "applicationPath" ),
-			"appHash"             : variables.controller.getAppHash(),
-			"dockerHost"          : ( isNull( cgi.local_host ) ? "" : cgi.local_host ),
-			"dockerIp"            : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
+			"appHash"             : variables.controller.getAppHash()
 		};
 
 		// Initialize secret key
@@ -207,7 +204,10 @@ component
 			"queryString"   : cgi.QUERY_STRING,
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
-			"formData"      : serializeJSON( form ?: {} )
+			"formData"      : serializeJSON( form ?: {} ),
+			"inetHost"      : discoverInetHost(),
+			"dockerHost"    : ( isNull( cgi.local_host ) ? "" : cgi.local_host ),
+			"dockerIp"      : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
 		};
 
 		// Event before recording
@@ -313,6 +313,7 @@ component
 		}
 
 		// Close out the profiler
+		param request.cbDebugger.startCount = 0;
 		request.cbDebugger.append(
 			{
 				"timers"        : variables.timerService.getSortedTimers(),

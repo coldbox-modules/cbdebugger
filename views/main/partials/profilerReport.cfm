@@ -118,7 +118,7 @@
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
 					</svg>
-					#args.environment.inetHost#
+					#args.profiler.inetHost#
 				</div>
 
 				<div class="ml10" title="Thread Info">
@@ -128,12 +128,12 @@
 					#args.profiler.threadInfo.replaceNoCase( "Thread", "" )#
 				</div>
 
-				<cfif len( args.environment.dockerHost )>
+				<cfif len( args.profiler.dockerHost )>
 					<div class="ml10" title="Docker Info">
 						<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
 						</svg>
-						#args.environment.dockerHost# / #args.environment.dockerIp#
+						#args.profiler.dockerHost# / #args.profiler.dockerIp#
 					</div>
 				</cfif>
 
