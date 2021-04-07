@@ -20,14 +20,12 @@
 							#thisItem# :
 						</th>
 						<td class="cbd-cellBreak">
-							<div class="cbd-cellScroller">
+							<div>
 								<!--- Simple value Exceptions --->
 								<cfif isSimpleValue( args.profiler.exception[ thisItem ] )>
 
 									<cfif thisItem eq "stacktrace">
-										<code>
-											#exceptionBean.processStackTrace( args.profiler.exception[ thisItem ] )#
-										</code>
+										<code><pre>#exceptionBean.processStackTrace( args.profiler.exception[ thisItem ] )#</pre></code>
 									<cfelse>
 										#args.profiler.exception[ thisItem ]#
 									</cfif>
@@ -65,11 +63,9 @@
 												</div>
 
 												<!--- Code Print --->
-												<cfif thisTagContext.keyExists( "codePrintHTML" )>
+												<cfif thisTagContext.keyExists( "codePrintPlain" )>
 													<div class="mt5 cbd-text-muted">
-														<code>
-															#thisTagContext.codePrintHTML#
-														</code>
+														<code><pre>#thisTagContext.codePrintPlain#</pre></code>
 													</div>
 												</cfif>
 											</div>
