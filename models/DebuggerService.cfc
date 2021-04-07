@@ -1,183 +1,147 @@
-<!-----------------------------------------------------------------------
-********************************************************************************
-Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
-www.coldbox.org | www.luismajano.com | www.ortussolutions.com
-********************************************************************************
-Author      	    :	Luis Majano
-Date               :	January 18, 2007
-Description :
-This is the service that powers the ColdBox Debugger.
------------------------------------------------------------------------>
-<cfcomponent output="false" extends="coldbox.system.web.services.BaseService" accessors="true" singleton>
-	<!------------------------------------------- CONSTRUCTOR ------------------------------------------->
+/**
+ * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
+ * www.ortussolutions.com
+ * ---
+ * This service powers the ColdBox debugger
+ */
+component
+	accessors="true"
+	extends  ="coldbox.system.web.services.BaseService"
+	singleton
+{
 
-	<cffunction name="init" access="public" output="false" returntype="DebuggerService" hint="Constructor">
-		<cfargument name="controller" inject="coldbox">
-		<cfscript>
+	/**
+	 * --------------------------------------------------------------------------
+	 * DI
+	 * --------------------------------------------------------------------------
+	 */
+
+	property name="timerService"       inject="Timer@cbdebugger";
+	property name="interceptorService" inject="coldbox:interceptorService";
+
+	/**
+	 * --------------------------------------------------------------------------
+	 * Tracking Properties
+	 * --------------------------------------------------------------------------
+	 */
+
+	/**
+	 * The cookie name used for tracking the debug mode
+	 */
+	property name="cookieName";
+
+	/**
+	 * The debugger configuration struct
+	 */
+	property name="debuggerConfig" type="struct";
+
+	/**
+	 * The controlling debug mode flag
+	 */
+	property name="debugMode" type="boolean";
+
+	/**
+	 * The debugging password we track for activation/deactivation
+	 */
+	property name="debugPassword";
+
+	/**
+	 * Get the runtime environment
+	 */
+	property name="environment" type="struct";
+
+	/**
+	 * Constructor
+	 *
+	 * @controller The ColdBox controller
+	 * @controller.inject coldbox
+	 * @settings Module Settings
+	 * @settings.inject coldbox:modulesettings:cbdebugger
+	 */
+	function init(
+		required controller,
+		required settings
+	){
 		// setup controller
-		variables.controller = arguments.controller;
-
-		// Set the unique cookie name per ColdBox application
-		instance.cookieName     = "coldbox_debugmode_#controller.getAppHash()#";
-		// This will store the secret key
-		instance.secretKey      = "";
-		// Create persistent profilers
-		instance.profilers      = arrayNew( 1 );
-		// Create persistent tracers
-		instance.tracers        = arrayNew( 1 );
-		// Set a maximum tracers possible
-		instance.maxTracers     = 75;
-		// Runtime
-		instance.jvmRuntime     = createObject( "java", "java.lang.Runtime" );
+		variables.controller     = arguments.controller;
 		// config
-		instance.debuggerConfig = controller.getSetting( "debugger" );
+		variables.debuggerConfig = arguments.settings;
+		// Set the unique cookie name per ColdBox application
+		variables.cookieName     = "coldbox_debugmode_#arguments.controller.getAppHash()#";
+		// This will store the secret key
+		variables.secretKey      = "";
+		// Create persistent profilers
+		variables.profilers      = [];
+		// Runtime
+		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" ).getRuntime();
+		variables.Thread         = createObject( "java", "java.lang.Thread" );
 		// run modes
-		instance.debugMode      = instance.debuggerConfig.debugMode;
-		instance.debugPassword  = instance.debuggerConfig.debugPassword;
+		variables.debugMode      = variables.debuggerConfig.debugMode;
+		variables.debugPassword  = variables.debuggerConfig.debugPassword;
+		// uuid helper
+		variables.uuid           = createObject( "java", "java.util.UUID" );
+
+		// Store Environment struct
+		variables.environment = {
+			"cfmlEngine"          : server.coldfusion.productName,
+			"cfmlVersion"         : ( server.keyExists( "lucee" ) ? server.lucee.version : server.coldfusion.productVersion ),
+			"javaVersion"         : variables.jvmRuntime.version().toString(),
+			"totalMemory"         : variables.jvmRuntime.totalMemory(),
+			"maxMemory"           : variables.jvmRuntime.maxMemory(),
+			"availableProcessors" : variables.jvmRuntime.availableProcessors(),
+			"coldboxName"         : variables.controller.getColdBoxSettings().codename,
+			"coldboxVersion"      : variables.controller.getColdBoxSettings().version,
+			"coldboxSuffix"       : variables.controller.getColdBoxSettings().suffix,
+			"appName"             : variables.controller.getSetting( "appName" ),
+			"appPath"             : variables.controller.getSetting( "applicationPath" ),
+			"appHash"             : variables.controller.getAppHash()
+		};
 
 		// Initialize secret key
 		rotateSecretKey();
 
 		return this;
-		</cfscript>
-	</cffunction>
+	}
 
-	<!------------------------------------------- PUBLIC ------------------------------------------->
+	/**
+	 * Get the cache region configured for the debugger
+	 */
+	private function getCacheRegion(){
+		return variables.controller.getCacheBox().getCache( variables.debuggerConfig.requestTracker.cacheName );
+	}
 
-	<!--- timersExist --->
-	<cffunction
-		name      ="timersExist"
-		output    ="false"
-		access    ="public"
-		returntype="any"
-		hint      ="Do we have any request timers. Boolean"
-	>
-		<cfreturn structKeyExists( request, "DebugTimers" )>
-	</cffunction>
+	/**
+	 * I generate a secret key value for the cookie which enables debug mode
+	 */
+	function rotateSecretKey(){
+		/*
+			This secret key is what the value of the user's cookie must equal to enable debug mode.
+			This key will be different every time it is generated.  It is unique based on the application,
+			current debugPassword and a random salt.  The salt also protects against someone being able to
+			reverse engineer the orignal password from an intercepted cookie value.
+		*/
+		var salt            = createUUID();
+		variables.secretKey =
+		hash(
+			variables.controller.getAppHash() & variables.debugPassword & salt,
+			"SHA-256"
+		);
+		return this;
+	}
 
-	<!--- getTimers --->
-	<cffunction
-		name      ="getTimers"
-		output    ="false"
-		access    ="public"
-		returntype="any"
-		hint      ="Get the timers query from the request. Empty query if it does not exist. Query"
-	>
-		<cfscript>
-		if ( NOT timersExist() ) {
-			request.debugTimers = queryNew( "ID,Method,Time,Timestamp,RC,PRC" );
-		}
-		return request.debugTimers;
-		</cfscript>
-	</cffunction>
-
-	<!--- timerStart --->
-	<cffunction
-		name      ="timerStart"
-		output    ="false"
-		access    ="public"
-		returntype="any"
-		hint      ="Start an internal code timer and get a hash of the timer storage"
-	>
-		<cfargument name="label" type="any" required="true" hint="The timer label to record"/>
-		<cfscript>
-		var labelHash = 0;
-		var timerInfo = 0;
-
-		// Verify Debug Mode
-		if ( getDebugMode() ) {
-			// Check if DebugTimers Query is set, else create it for this request
-			getTimers();
-
-			// Create Timer Hash
-			labelHash = hash( arguments.label );
-
-			// Create timer Info
-			timerInfo       = structNew();
-			timerInfo.stime = getTickCount();
-			timerInfo.label = arguments.label;
-
-			// Persist in request for timing
-			request[ labelHash ] = timerInfo;
-		}
-		return labelHash;
-		</cfscript>
-	</cffunction>
-
-	<!--- timerEnd --->
-	<cffunction name="timerEnd" output="false" access="public" returntype="void" hint="End an internal code timer">
-		<cfargument name="labelHash" type="any" required="true" default="" hint="The timer label hash to stop"/>
-		<cfscript>
-		var timerInfo = 0;
-		var qTimers   = "";
-		var context   = "";
-
-		// Verify Debug Mode and timer label exists, else do nothing.
-		if ( getDebugMode() and structKeyExists( request, arguments.labelHash ) ) {
-			// Get Timer Info
-			timerInfo = request[ arguments.labelHash ];
-			qTimers   = getTimers();
-			context   = controller.getRequestService().getContext();
-
-			// Save timer
-			queryAddRow( qTimers, 1 );
-			querySetCell(
-				qTimers,
-				"ID",
-				hash( getTickCount() & timerInfo.label )
-			);
-			querySetCell( qTimers, "Method", timerInfo.label );
-			querySetCell(
-				qTimers,
-				"Time",
-				getTickCount() - timerInfo.stime
-			);
-			querySetCell( qTimers, "Timestamp", now() );
-
-			// RC Snapshot
-			if ( NOT findNoCase( "rendering", timerInfo.label ) AND instance.debuggerConfig.showRCSnapshots ) {
-				// Save collection
-				querySetCell(
-					qTimers,
-					"RC",
-					htmlEditFormat( left( context.getCollection().toString(), 5000 ) )
-				);
-				querySetCell(
-					qTimers,
-					"PRC",
-					htmlEditFormat( left( context.getCollection( private = true ).toString(), 5000 ) )
-				);
-			} else {
-				querySetCell( qTimers, "RC", "" );
-				querySetCell( qTimers, "PRC", "" );
-			}
-
-			// Cleanup
-			structDelete( request, arguments.labelHash );
-		}
-		</cfscript>
-	</cffunction>
-
-	<!--- Get the debug mode flag --->
-	<cffunction
-		name      ="getDebugMode"
-		access    ="public"
-		hint      ="I Get the current user's debugmode. Boolean"
-		returntype="any"
-		output    ="false"
-	>
-		<cfscript>
-		var secretKey = getSecretKey();
-
+	/**
+	 * Get the debug mode marker
+	 */
+	boolean function getDebugMode(){
 		// If no secretKey has been set, don't allow debug mode
-		if ( not ( len( secretKey ) ) ) {
+		if ( not ( len( variables.secretKey ) ) ) {
 			return false;
 		}
 
 		// If Cookie exists, it's value is used.
 		if ( isDebugCookieValid() ) {
 			// Must be equal to the current secret key
-			if ( cookie[ instance.cookieName ] == secretKey ) {
+			if ( cookie[ variables.cookieName ] == variables.secretKey ) {
 				return true;
 			} else {
 				return false;
@@ -185,288 +149,396 @@ This is the service that powers the ColdBox Debugger.
 		}
 
 		// If there is no cookie, then use default to app setting
-		return instance.debugMode;
-		</cfscript>
-	</cffunction>
+		return variables.debugMode;
+	}
 
-	<!--- isDebugCookieValid --->
-	<cffunction
-		name      ="isDebugCookieValid"
-		output    ="false"
-		access    ="public"
-		returntype="any"
-		hint      ="Checks if the debug cookie is a valid cookie. Boolean"
-	>
-		<cfscript>
-		return structKeyExists( cookie, instance.cookieName );
-		</cfscript>
-	</cffunction>
+	/**
+	 * Checks if the debug cookie is a valid cookie. Boolean
+	 */
+	boolean function isDebugCookieValid(){
+		return structKeyExists( cookie, variables.cookieName );
+	}
 
-	<!--- Set the debug mode flag --->
-	<cffunction
-		name      ="setDebugMode"
-		access    ="public"
-		hint      ="I set the current user's debugmode"
-		returntype="void"
-		output    ="false"
-	>
-		<cfargument name="mode" type="boolean" required="true">
-
-		<!--- True --->
-		<cfif arguments.mode>
-			<cfcookie name="#getCookieName()#" value="#getSecretKey()#">
-			<!--- False --->
-		<cfelse>
-			<cfcookie name="#getCookieName()#" value="_disabled_">
-		</cfif>
-	</cffunction>
-
-	<!--- Generate a new secret key. --->
-	<cffunction
-		name      ="rotateSecretKey"
-		access    ="public"
-		hint      ="I generate a secret key value for the cookie which enables debug mode"
-		returntype="void"
-		output    ="false"
-	>
-		<cfscript>
-		/*
-				This secret key is what the value of the user's cookie must equal to enable debug mode.
-				This key will be different every time it is generated.  It is unique based on the application,
-				current debugPassword and a random salt.  The salt also protects against someone being able to
-				reverse engineer the orignal password from an intercepted cookie value.
-			*/
-		var salt    = createUUID();
-		var appHash = controller.getAppHash();
-		setSecretKey( hash( appHash & instance.debugPassword & salt, "SHA-256" ) );
-		</cfscript>
-	</cffunction>
-
-	<!--- render the debug log --->
-	<cffunction name="renderDebugLog" access="public" hint="Return the debug log." output="false" returntype="Any">
-		<cfset var renderedDebugging = "">
-		<cfif getDebugMode()>
-			<cfset var event = controller.getRequestService().getContext()>
-			<cfset var rc = event.getCollection()>
-			<cfset var prc = event.getCollection( private = true )>
-			<cfset var loc = structNew()>
-
-			<!--- Setup Local Variables --->
-			<cfset var debugStartTime = getTickCount()>
-			<cfset var thisCollection = "">
-			<cfset var thisCollectionType = "">
-			<cfset var debugTimers = getTimers()>
-			<cfset var loadedModules = arrayNew( 1 )>
-			<cfset var moduleSettings = structNew()>
-
-			<!--- Debug Rendering Type --->
-			<cfset var renderType = "main">
-
-			<!--- URL Base --->
-			<cfset var URLBase = event.getsesBaseURL()>
-
-			<!--- Modules Stuff --->
-			<cfset loadedModules = controller.getModuleService().getLoadedModules()>
-			<cfset moduleSettings = controller.getSetting( "modules" )>
-
-			<!--- URL Base --->
-			<cfif NOT event.isSES()>
-				<cfset URLBase = listLast( cgi.script_name, "/" )>
-			</cfif>
-
-			<!--- Render debuglog --->
-			<cfsavecontent variable="renderedDebugging">
-				<!--- Pre Panel --->
-				<cfoutput>#controller.getInterceptorService().processState( "beforeDebuggerPanel" )#</cfoutput>
-				<!--- Main Panel --->
-				<cfinclude template="/cbdebugger/includes/debug.cfm">
-				<!--- Post Panel --->
-				<cfoutput>#controller.getInterceptorService().processState( "afterDebuggerPanel" )#</cfoutput>
-			</cfsavecontent>
-		</cfif>
-
-		<cfreturn renderedDebugging>
-	</cffunction>
-
-	<!--- Render Profilers --->
-	<cffunction
-		name      ="renderProfiler"
-		access    ="public"
-		hint      ="Renders the execution profilers."
-		output    ="false"
-		returntype="Any"
-	>
-		<cfset var profilerContents = "">
-		<cfset var profilers = instance.profilers>
-		<cfset var profilersCount = arrayLen( profilers )>
-		<cfset var x = 1>
-		<cfset var refLocal = structNew()>
-		<cfset var event = controller.getRequestService().getContext()>
-		<cfset var URLBase = event.getsesBaseURL()>
-
-		<!--- URL Base --->
-		<cfif NOT event.isSES()>
-			<cfset URLBase = listLast( cgi.script_name, "/" )>
-		</cfif>
-
-		<cfsavecontent variable="profilerContents">
-			<cfinclude template="/cbdebugger/includes/panels/profilerPanel.cfm">
-		</cfsavecontent>
-
-		<cfreturn profilerContents>
-	</cffunction>
-
-	<cffunction
-		name      ="renderCachePanel"
-		access    ="public"
-		hint      ="Renders the execution profilers."
-		output    ="false"
-		returntype="Any"
-	>
-		<cfsavecontent variable="cachepanel">
-			<cfmodule template="/coldbox/system/cache/report/monitor.cfm" cacheFactory="#controller.getCacheBox()#">
-		</cfsavecontent>
-
-		<cfreturn cachepanel>
-	</cffunction>
-
-	<!--- Get set the cookie name --->
-	<cffunction name="getCookieName" access="public" output="false" returntype="any" hint="Get cookieName">
-		<cfreturn instance.cookieName/>
-	</cffunction>
-	<cffunction name="setCookieName" access="public" output="false" returntype="void" hint="Set cookieName">
-		<cfargument name="cookieName" type="string" required="true"/>
-		<cfset instance.cookieName = arguments.cookieName/>
-	</cffunction>
-
-	<!--- Get set the secret key --->
-	<cffunction name="getSecretKey" access="private" output="false" returntype="any" hint="Get secret key">
-		<cfreturn instance.secretKey/>
-	</cffunction>
-	<cffunction name="setSecretKey" access="private" output="false" returntype="void" hint="Set secret key">
-		<cfargument name="secretKey" type="string" required="true"/>
-		<cfset instance.secretKey = arguments.secretKey/>
-	</cffunction>
-
-	<!--- Persistent Profilers --->
-	<cffunction name="getProfilers" access="public" output="false" returntype="array" hint="Get Profilers">
-		<cfreturn instance.profilers/>
-	</cffunction>
-	<cffunction name="setProfilers" access="public" output="false" returntype="void" hint="Set Profilers">
-		<cfargument name="Profilers" type="array" required="true"/>
-		<cfset instance.profilers = arguments.Profilers/>
-	</cffunction>
-
-	<!--- resetProfilers --->
-	<cffunction name="resetProfilers" output="false" access="public" returntype="void" hint="Reset all profilers">
-		<cfset instance.profilers = arrayNew( 1 )>
-	</cffunction>
-
-	<!--- recordProfiler --->
-	<cffunction
-		name      ="recordProfiler"
-		output    ="false"
-		access    ="public"
-		returntype="void"
-		hint      ="This method will try to push a profiler record"
-	>
-		<cfscript>
-		if ( getDebugMode() AND timersExist() ) {
-			pushProfiler( getTimers() );
+	/**
+	 * I set the current user's debugmode
+	 */
+	DebuggerService function setDebugMode( required boolean mode ){
+		if ( arguments.mode ) {
+			cfcookie(
+				name  = getCookieName(),
+				value = variables.secretKey
+			);
+		} else {
+			cfcookie(
+				name  = getCookieName(),
+				value = "_disabled_"
+			);
 		}
-		</cfscript>
-	</cffunction>
+		return this;
+	}
 
-	<!--- Push a profiler --->
-	<cffunction name="pushProfiler" access="public" returntype="void" hint="Push a profiler record" output="false">
-		<cfargument name="profilerRecord" required="true" type="query" hint="The profiler query for this request">
-		<cfscript>
-		// are persistent profilers activated
-		if ( NOT instance.debuggerConfig.persistentRequestProfiler ) {
-			return;
-		}
-
-		// size check
-		if ( arrayLen( instance.profilers ) gte instance.debuggerConfig.maxPersistentRequestProfilers ) {
-			popProfiler();
-		}
-
-		// New Profiler
-		var newRecord = {
-			dateTime    : now(),
-			ip          : getLocalhostIP(),
-			timers      : arguments.profilerRecord,
-			requestData : getHTTPRequestData(),
-			statusCode  : 0,
-			contentType : ""
+	/**
+	 * Create a new request tracking structure
+	 *
+	 * @event The ColdBox context we will start the tracker on
+	 */
+	struct function createRequestTracker( required event ){
+		// Init the request tracers
+		request.tracers    = [];
+		// Init the request debugger tracking
+		request.cbDebugger = {
+			"id"            : variables.uuid.randomUUID(),
+			"timestamp"     : now(),
+			"ip"            : getRealIP(),
+			"threadInfo"    : getCurrentThread().toString(),
+			"startCount"    : getTickCount(),
+			"executionTime" : 0,
+			"fullUrl"       : arguments.event.getFullUrl(),
+			"timers"        : [],
+			"tracers"       : [],
+			"requestData"   : getHTTPRequestData( variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody ),
+			"response"      : { "statusCode" : 0, "contentType" : "" },
+			"coldbox"       : {},
+			"exception"     : {},
+			"userAgent"     : cgi.HTTP_USER_AGENT,
+			"queryString"   : cgi.QUERY_STRING,
+			"httpHost"      : cgi.HTTP_HOST,
+			"httpReferer"   : cgi.HTTP_REFERER,
+			"formData"      : serializeJSON( form ?: {} ),
+			"inetHost"      : discoverInetHost(),
+			"localIp"       : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
 		};
-		// stupid Adobe CF does not support status and content type from response implementation
-		if ( findNoCase( "railo,lucee", server.coldfusion.productname ) ) {
-			newRecord.statusCode  = getPageContext().getResponse().getStatus();
-			newRecord.contentType = getPageContext().getResponse().getContentType();
+
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerRequestTrackerCreation",
+			{ requestTracker : request.cbDebugger }
+		);
+
+		return request.cbDebugger;
+	}
+
+	/**
+	 * Get the current request tracker struct
+	 */
+	struct function getRequestTracker(){
+		param request.cbDebugger = {};
+		return request.cbDebugger;
+	}
+
+	/**
+	 * Get the key used in the off heap storage
+	 */
+	function getStorageKey(){
+		return "cbDebugger-#variables.environment.appName.replace( " ", "-", "all" )#";
+	}
+
+	/**
+	 * Reset the request tracking profilers
+	 */
+	DebuggerService function resetProfilers(){
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			getCacheRegion().set( getStorageKey(), [], 0, 0 );
+		} else {
+			variables.profilers = [];
 		}
-		// add it to profilers
-		arrayAppend( instance.profilers, newRecord );
-		</cfscript>
-	</cffunction>
+		return this;
+	}
 
-	<!--- Pop a profiler --->
-	<cffunction name="popProfiler" access="public" returntype="void" hint="Pop a profiler record" output="false">
-		<cfscript>
-		arrayDeleteAt( instance.profilers, 1 );
-		</cfscript>
-	</cffunction>
+	/**
+	 * Get the current profiler for the current request. Basically the first in the stack
+	 *
+	 * @return The current request profiler or an empty struct if none found.
+	 */
+	struct function getCurrentProfiler(){
+		var profilers = getProfilerStorage();
 
-	<!--- Get Set Tracers --->
-	<cffunction name="getTracers" access="public" output="false" returntype="array" hint="Get Tracers">
-		<cfreturn instance.tracers/>
-	</cffunction>
-	<cffunction name="setTracers" access="public" output="false" returntype="void" hint="Set Tracers">
-		<cfargument name="Tracers" type="array" required="true"/>
-		<cfset instance.tracers = arguments.Tracers/>
-	</cffunction>
-
-	<!--- Push a tracer --->
-	<cffunction name="pushTracer" access="public" returntype="void" hint="Push a new tracer" output="false">
-		<cfargument name="message" required="true" type="string" hint="Message to Send">
-		<cfargument name="extraInfo" required="false" type="any" default="" hint="Extra Information to dump on the trace">
-		<cfscript>
-		var tracerEntry = structNew();
-
-		// Max Check
-		if ( arrayLen( instance.tracers ) gte instance.maxTracers ) {
-			resetTracers();
+		if( arrayLen( profilers ) ){
+			return profilers[ 1 ];
 		}
 
-		// Create Message
-		tracerEntry[ "message" ]   = arguments.message;
-		tracerEntry[ "extraInfo" ] = arguments.extraInfo;
+		return {};
+	}
 
-		arrayAppend( instance.tracers, tracerEntry );
-		</cfscript>
-	</cffunction>
+	/**
+	 * Get the profiler storage array depending on the storage options
+	 */
+	array function getProfilerStorage(){
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			return getCacheRegion().getOrSet(
+				getStorageKey(),
+				function(){
+					return [];
+				},
+				0
+			);
+		} else {
+			return variables.profilers;
+		}
+	}
 
-	<!--- removeTracers --->
-	<cffunction name="resetTracers" output="false" access="public" returntype="void" hint="Reset all Tracers">
-		<cfset instance.tracers = arrayNew( 1 )>
-	</cffunction>
+	/**
+	 * Record a profiler and it's timers internally
+	 *
+	 * @event The request context that requested the record
+	 * @executionTime The time it took for th request to finish
+	 * @exception If there is an exception in the request, track it
+	 */
+	DebuggerService function recordProfiler(
+		required event,
+		required executionTime,
+		exception = {}
+	){
+		var targetStorage = getProfilerStorage();
 
-	<!--- get Inet Host --->
-	<cffunction
-		name      ="getInetHost"
-		access    ="public"
-		returntype="string"
-		output    ="false"
-		hint      ="Get the hostname of the executing machine."
-	>
-		<cfscript>
+		// size check, if passed, pop one
+		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
+			arrayDeleteAt(
+				targetStorage,
+				arrayLen( targetStorage )
+			);
+		}
+
+		// Build out the exception data to trace if any?
+		var exceptionData = {};
+		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
+			exceptionData = {
+				"stackTrace"      : arguments.exception.stacktrace ?: "",
+				"type"            : arguments.exception.type ?: "",
+				"detail"          : arguments.exception.detail ?: "",
+				"tagContext"      : arguments.exception.tagContext ?: [],
+				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
+				"sqlState"        : arguments.exception.sqlState ?: "",
+				"sql"             : arguments.exception.sql ?: "",
+				"queryError"      : arguments.exception.queryError ?: "",
+				"where"           : arguments.exception.where ?: "",
+				"errNumber"       : arguments.exception.errNumber ?: "",
+				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"lockName"        : arguments.exception.lockName ?: "",
+				"lockOperation"   : arguments.exception.lockOperation ?: "",
+				"errorCode"       : arguments.exception.errorCode ?: "",
+				"extendedInfo"    : arguments.exception.extendedInfo ?: ""
+			};
+		}
+
+		// Verify we have the tracking struct, we might not have it due to exceptions
+		if ( !request.keyExists( "cbDebugger" ) ) {
+			createRequestTracker( arguments.event );
+		}
+
+		// Close out the profiler
+		param request.cbDebugger.startCount = 0;
+		request.cbDebugger.append(
+			{
+				"timers"        : variables.timerService.getSortedTimers(),
+				"tracers"       : getTracers(),
+				"exception"     : exceptionData,
+				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
+				"response"      : {
+					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
+					"contentType" : getPageContextResponse().getContentType()
+				},
+				"coldbox" : {
+					"RoutedUrl"        : arguments.event.getCurrentRoutedUrl(),
+					"Route"            : arguments.event.getCurrentRoute(),
+					"RouteMetadata"    : serializeJSON( arguments.event.getCurrentRouteMeta() ),
+					"RouteName"        : arguments.event.getCurrentRouteName(),
+					"Event"            : arguments.event.getCurrentEvent(),
+					"isEventCacheable" : arguments.event.isEventCacheable(),
+					"View"             : arguments.event.getCurrentView(),
+					"ViewModule"       : arguments.event.getCurrentViewModule(),
+					"Layout"           : arguments.event.getCurrentLayout(),
+					"LayoutModule"     : arguments.event.getCurrentLayoutModule()
+				}
+			},
+			true
+		);
+
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerProfilerRecording",
+			{ requestTracker : request.cbDebugger }
+		);
+
+		// New Profiler record to store into the singleton stack
+		arrayPrepend( targetStorage, request.cbDebugger );
+
+		// Are we using cache storage
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			// store indefintely using the debugger and app hash
+			getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+		}
+
+		return this;
+	}
+
+	/**
+	 * Retrieve the profiler by incoming id
+	 *
+	 * @id The unique profiler id to get
+	 *
+	 * @return The profiler requested or an empty struct if not found
+	 */
+	struct function getProfilerById( required id ){
+		return getProfilerStorage()
+			.filter( function( thisItem ){
+				return arguments.thisItem.id.toString() == id;
+			} )
+			.reduce( function( results, thisItem ){
+				arguments.results = arguments.thisItem;
+				return arguments.results;
+			}, {} );
+	}
+
+	/**
+	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
+	 * the same patterns
+	 *
+	 * @message The message to trace
+	 * @severity The severity of the message
+	 * @category The tracking category the message came from
+	 * @timestamp The timestamp of the message
+	 * @extraInfo Extra info to store in the tracer
+	 */
+	DebuggerService function pushTracer(
+		required message,
+		severity  = "info",
+		category  = "",
+		timestamp = now(),
+		extraInfo = ""
+	){
+		// Don't allow if not enabled
+		if ( !variables.debuggerConfig.tracers.enabled ) {
+			return this;
+		}
+
+		// Ensure we have the tracers array for the request
+		if ( isNull( request.tracers ) ) {
+			request.tracers = [];
+		}
+
+		// Push it
+		arrayPrepend( request.tracers, arguments );
+
+		return this;
+	}
+
+	/**
+	 * Reset all tracers back to zero
+	 */
+	DebuggerService function resetTracers(){
+		request.tracers = [];
+		return this;
+	}
+
+	/**
+	 * Get all the request tracers array
+	 */
+	array function getTracers(){
+		return request.tracers ?: [];
+	}
+
+	/**
+	 * Get the hostname of the executing machine.
+	 */
+	function discoverInetHost(){
 		try {
 			return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
 		} catch ( any e ) {
-			return cgi.http_host;
+			return cgi.SERVER_NAME;
 		}
-		</cfscript>
-	</cffunction>
+	}
 
-	<!------------------------------------------- PRIVATE ------------------------------------------->
-</cfcomponent>
+	/**
+	 * Get Real IP, by looking at clustered, proxy headers and locally.
+	 */
+	function getRealIP(){
+		var headers = getHTTPRequestData().headers;
+
+		// Very balanced headers
+		if ( structKeyExists( headers, "x-cluster-client-ip" ) ) {
+			return headers[ "x-cluster-client-ip" ];
+		}
+		if ( structKeyExists( headers, "X-Forwarded-For" ) ) {
+			return headers[ "X-Forwarded-For" ];
+		}
+
+		return len( CGI.REMOTE_ADDR ) ? trim( listFirst( CGI.REMOTE_ADDR ) ) : "127.0.0.1";
+	}
+
+	/**
+	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
+	 */
+	function getPageContextResponse(){
+		var response = getPageContext().getResponse();
+		try {
+			response.getStatus();
+			return response;
+		} catch ( any e ) {
+			return response.getResponse();
+		}
+	}
+
+	/**
+	 * Get the current thread java object
+	 */
+	function getCurrentThread(){
+		return variables.Thread.currentThread();
+	}
+
+	/**
+	 * Get the current thread name
+	 */
+	function getThreadName(){
+		return getCurrentThread().getName();
+	}
+
+	/**
+	 * This function tries to discover from where a target method was called from
+	 * by investigating the call stack
+	 *
+	 * @targetMethod The target method we are trying to pin point
+	 * @templateMatch A string fragment to further narrow down the location, we match this against the template path
+	 *
+	 * @return Struct of { function, lineNumber, line, template }
+	 */
+	struct function discoverCallingStack( required targetMethod, templateMatch ){
+		var callstack   = callStackGet();
+		var targetIndex = callstack
+			.map( function( item, index, array ){
+				// Do we have template matches or simple function equality?
+				if ( !isNull( templateMatch ) ) {
+					if (
+						arguments.item.function == targetMethod && findNoCase(
+							templateMatch,
+							arguments.item.template
+						)
+					) {
+						return arguments.index;
+					};
+				} else {
+					if ( arguments.item.function == targetMethod ) {
+						return arguments.index;
+					};
+				}
+			} )
+			.filter( function( item ){
+				return !isNull( arguments.item );
+			} );
+
+		// Only return if we have matches, else default return struct
+		if ( targetIndex.len() ) {
+			var results       = callStack[ targetIndex[ arrayLen( targetIndex ) ] + 1 ];
+			results[ "line" ] = results.lineNumber;
+			return results;
+		}
+
+		return {
+			"function"   : "",
+			"line"       : 0,
+			"lineNumber" : 0,
+			"template"   : ""
+		};
+	}
+
+}

@@ -1,96 +1,102 @@
-﻿<!-----------------------------------------------------------------------
-Template    : MessageBox.cfc
-Author      	 : Luis Majano
-Date            : 3/13/2007 8:28:31 AM
-Description :
-This is a Timer plugin
-Modification History:
-3/13/2007 - Created Template
----------------------------------------------------------------------->
-<cfcomponent
-	name  ="Timer"
-	hint  ="This is the Timer Debugger Model. It is used to time executions. Facade for request variable"
-	output="false"
-	singleton
->
-	<cfproperty name="debuggerService" inject="debuggerService@cbdebugger">
+﻿/**
+ * Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
+ * www.ortussolutions.com
+ * ---
+ * This component tracks execution times in our internal request facilities.
+ */
+component accessors="true" singleton {
 
-	<!------------------------------------------- CONSTRUCTOR ------------------------------------------->
-
-	<cffunction name="init" access="public" returntype="Timer" output="false" hint="Constructor">
-		<cfscript>
+	/**
+	 * Constructor
+	 */
+	Timer function init(){
 		return this;
-		</cfscript>
-	</cffunction>
+	}
 
-	<!------------------------------------------- PUBLIC ------------------------------------------->
+	/**
+	 * Start a timer with a tracking label
+	 *
+	 * @label The tracking label to register
+	 *
+	 * @return A unique tracking hash you must use to stop the timer
+	 */
+	string function start( required label ){
+		// Create Timer Hash
+		var labelHash        = hash( getTickCount() & arguments.label );
+		// Store the timer record
+		request[ labelHash ] = {
+			"id"            : labelHash,
+			"startedAt"     : now(),
+			"startCount"    : getTickCount(),
+			"method"        : arguments.label,
+			"stoppedAt"     : now(),
+			"executionTime" : 0
+		};
+		return labelHash;
+	}
 
-	<cffunction name="start" access="public" returntype="void" output="false" hint="Start the Timer with label.">
-		<cfargument name="Label" required="true" type="string">
-		<!--- Create request Timer --->
-		<cfset var timerStruct = structNew()>
-		<cfset timerStruct.stime = getTickCount()>
-		<cfset timerStruct.label = arguments.label>
-		<!--- Place timer struct in request scope --->
-		<cfset request[ hash( arguments.label ) ] = timerStruct>
-	</cffunction>
+	/**
+	 * Stop a code timer with a tracking hash. If the tracking hash is not tracked we ignore it
+	 *
+	 * @labelHash The timer label hash to stop
+	 */
+	Timer function stop( required labelHash ){
+		// Verify tracking hash
+		if ( structKeyExists( request, arguments.labelHash ) ) {
+			// Get Timer Info
+			var timerInfo           = request[ arguments.labelHash ];
+			// Stop the timer
+			timerInfo.stoppedAt     = now();
+			timerInfo.executionTime = getTickCount() - timerInfo.startCount;
+			// Append the timer information
+			getTimers().prepend( timerInfo );
+			// Cleanup
+			structDelete( request, arguments.labelHash );
+		}
 
-	<cffunction name="stop" access="public" returntype="void" output="false" hint="Stop the timer with label">
-		<cfargument name="Label" required="true" type="string">
-		<cfset var stopTime = getTickCount()>
-		<cfset var timerStruct = "">
-		<cfset var labelhash = hash( arguments.label )>
+		return this;
+	}
 
-		<!--- Check if the label exists --->
-		<cfif structKeyExists( request, labelhash )>
-			<cfset timerStruct = request[ labelhash ]>
-			<cfset addRow( timerStruct.label, stopTime - timerStruct.stime )>
-		<cfelse>
-			<cfset addRow( "#arguments.label# invalid", 0 )>
-		</cfif>
-	</cffunction>
+	/**
+	 * Time the execution of the passed closure that we will execution for you
+	 *
+	 * @label The label to use as a timer label
+	 * @closure The target to execute and time
+	 */
+	function timeIt( required label, required closure ){
+		var labelhash = this.start( arguments.label );
+		var results   = arguments.closure();
+		this.stop( labelhash );
+		if ( !isNull( results ) ) {
+			return results;
+		}
+	}
 
-	<cffunction
-		name      ="logTime"
-		access    ="public"
-		returntype="void"
-		output    ="false"
-		hint      ="Use this method to add a new timer entry to the timers."
-	>
-		<cfargument name="Label" required="true" type="string" hint="The lable of the timer.">
-		<cfargument name="Tickcount" required="true" type="string" hint="The tickcounts of the time.">
-		<cfset addRow( arguments.label, arguments.tickcount )>
-	</cffunction>
+	/**
+	 * Do we have any timers in request
+	 */
+	boolean function timersExist(){
+		return request.keyExists( "debugTimers" );
+	}
 
-	<cffunction
-		name      ="getTimerScope"
-		access    ="public"
-		returntype="query"
-		output    ="false"
-		hint      ="Returns the entire timer query from the request scope."
-	>
-		<cfreturn debuggerService.getTimers()>
-	</cffunction>
+	/**
+	 * Return the timers from the request. If they don't exist, we initialize them
+	 */
+	array function getTimers(){
+		if ( !request.keyExists( "debugTimers" ) ) {
+			request.debugTimers = [];
+		}
+		return request.debugTimers;
+	}
 
-	<!------------------------------------------- PRIVATE ------------------------------------------->
+	/**
+	 * Get a sorted timers collection. We sort them by execution start
+	 */
+	array function getSortedTimers(){
+		getTimers().sort( function( e1, e2 ){
+			return dateCompare( e1.startedAt, e2.startedAt );
+		} );
+		return getTimers();
+	}
 
-	<cffunction name="addRow" access="private" returntype="void" output="false" hint="Add a new timer row.">
-		<cfargument name="label" required="true" type="string" hint="The lable of the timer.">
-		<cfargument name="tickcount" required="true" type="string" hint="The tickcounts of the time.">
-		<cfscript>
-		var qTimers = getTimerScope();
-
-		queryAddRow( qTimers, 1 );
-		querySetCell(
-			qTimers,
-			"ID",
-			hash( arguments.label & now() )
-		);
-		querySetCell( qTimers, "Method", arguments.label );
-		querySetCell( qTimers, "Time", arguments.tickcount );
-		querySetCell( qTimers, "Timestamp", now() );
-		querySetCell( qTimers, "RC", "" );
-		querySetCell( qTimers, "PRC", "" );
-		</cfscript>
-	</cffunction>
-</cfcomponent>
+}

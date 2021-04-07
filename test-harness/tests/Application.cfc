@@ -36,4 +36,46 @@ component {
 	this.mappings[ "/moduleroot" ]            = moduleRootPath;
 	this.mappings[ "/#request.MODULE_NAME#" ] = moduleRootPath & "#request.MODULE_NAME#";
 
+	this.mappings[ "/cborm" ] = rootPath & "modules/cborm";
+	this.mappings[ "/quick" ] = rootPath & "modules/quick";
+
+	// ORM definitions
+	this.datasource = "coolblog";
+	this.ormEnabled = "true";
+
+	this.ormSettings = {
+		cfclocation           : [ rootPath & "models" ],
+		logSQL                : true,
+		dbcreate              : "none",
+		secondarycacheenabled : false,
+		cacheProvider         : "ehcache",
+		automanageSession     : false,
+		flushAtRequestEnd     : false,
+		eventhandling         : true,
+		eventHandler          : "cborm.models.EventHandler",
+		skipcfcWithError      : false
+	};
+
+	// request start
+	public boolean function onRequestStart( String targetPage ){
+		if ( url.keyExists( "fwreinit" ) ) {
+			ormReload();
+			if ( structKeyExists( server, "lucee" ) ) {
+				pagePoolClear();
+			}
+		}
+
+		return true;
+	}
+
+	public function onRequestEnd(){
+		// CB 6 graceful shutdown
+		if ( !isNull( application.cbController ) ) {
+			application.cbController.getLoaderService().processShutdown();
+		}
+
+		structDelete( application, "cbController" );
+		structDelete( application, "wirebox" );
+	}
+
 }

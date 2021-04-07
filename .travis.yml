@@ -18,23 +18,42 @@ branches:
   - development
   - master
 
-dist: trusty
-
+dist: focal
 sudo: required
+
+services:
+  - mysql
 
 before_install:
   # CommandBox Keys
   - curl -fsSl https://downloads.ortussolutions.com/debs/gpg | sudo apt-key add -
-  - sudo echo "deb http://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a
+  - sudo echo "deb https://downloads.ortussolutions.com/debs/noarch /" | sudo tee -a
     /etc/apt/sources.list.d/commandbox.list
 
 install:
   # Install Commandbox
-  - sudo apt-get update && sudo apt-get --assume-yes install rsync jq commandbox
+  - sudo apt-get update && sudo apt-get --assume-yes install jq commandbox nodejs
   # Install CommandBox Supporting Librarires
   - box install commandbox-cfconfig,commandbox-dotenv,commandbox-docbox
   # If using auto-publish, you will need to provide your API token with this line:
   - box config set endpoints.forgebox.APIToken=$FORGEBOX_API_TOKEN > /dev/null
+
+before_script:
+  # create database
+  - mysql -u root -e 'create database coolblog;'
+  # import database
+  - mysql -u root < $TRAVIS_BUILD_DIR/test-harness/tests/resources/coolblog.sql
+  - echo "Database created and loaded with test data"
+  # Seed .env
+  - echo "Seeding database .env file at /test-harness/.env"
+  - touch test-harness/.env
+  # ENV
+  - printf "DB_HOST=localhost\n" >> test-harness/.env
+  - printf "DB_USER=root\n" >> test-harness/.env
+  - printf "DB_PASSWORD=\n" >> test-harness/.env
+  - printf "DB_CLASS=com.mysql.cj.jdbc.Driver\n" >> test-harness/.env
+  - printf "DB_BUNDLEVERSION=8.0.19\n" >> test-harness/.env
+  - printf "DB_BUNDLENAME=com.mysql.cj\n" >> test-harness/.env
 
 script:
   # Set Current Version and Travis Tag
@@ -43,6 +62,12 @@ script:
   - echo "Starting build for ${MODULE_ID} v${TARGET_VERSION}"
   # Replace version so builder can issue it
   - box package set version=@build.version@+@build.number@
+  # Build the Debugger UI
+  - node -v
+  - npm i npm@latest -g
+  - npm install
+  - npm run prod
+  - rm -Rf node_modules
   # Startup the harness
   - cd test-harness
   # run our dependency install to ensure the workbench is in place
@@ -50,7 +75,7 @@ script:
   # run our matrix server
   - box server start serverConfigFile="server-${ENGINE}.json"
   # Startup the app
-  - curl http://localhost:60299
+  #- curl http://localhost:60299
   # Debugging of tests
   #- curl http://localhost:60299/tests/runner.cfm?reporter=json -o testresults.json && cat testresults.json
   # move back to build dir to build it

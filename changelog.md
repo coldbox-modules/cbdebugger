@@ -7,6 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [3.0.0]
+
+### Added
+
+* Completely rewritten debugger
+* Updated tracers to match all logbox options so we can use them for display instead of hardcoding them in the push operation
+* Complete migration to elixir for assets
+* Complete migration to runnable events to make things easier for rendering and debugging
+* New interceptor profiling via AOP `announce` interceptions
+* New object profiling via metadata AOP aspects via new settings: `profileObjects`, `traceObjectResults`
+* New visualizer route `/cbdebugger` that if you are in debug mode, you can visualize the panels. Great for API apps
+* New method: `timer.timeIt()` so you can time code execution via a closure wrapper
+* New Helper Methods: `startCBTimer(), stopCBTimer(), cbTimeIt()`
+* Added the route record to the info panel so you can debug the selected route
+* Highlights transactions that take over `200ms` or using the `slowExecutionThreshold` setting
+* Refactored to use array of structs instead of queries for even faster timer performance
+
+### Changed
+
+* Encapsualted request timers UI into a single template
+* `Timer` is now built in script and optimized
+* Show timers as they start instead of how they end, huge UI update to visualize the timers
+* Refactored the logbox appenders from `includes/appenders` to `appenders`
+
+### Security
+
+* `Dumpar` facilities removed due to security concerns
+
+### Removed
+
+* Old `debugger` settings instead use the `modulesettings.cbdebugger` according to ColdBox 5+ standards
+* Old helper code to remove helpers
+* Removed the loaded modules as it just produced noise
+* Removed the rc/prc snapshot comparisons, causes too much noise and not helpful anymore
+
+----
+
 ## [2.2.0] => 2020-MAY-18
 
 ### Added

@@ -2,7 +2,7 @@
     "name":"ColdBox Debugger",
     "author":"Ortus Solutions <info@ortussolutions.com",
     "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbdebugger/@build.version@/cbdebugger-@build.version@.zip",
-    "version":"2.2.0",
+    "version":"3.0.0",
     "slug":"cbdebugger",
     "type":"modules",
     "homepage":"https://github.com/coldbox-modules/cbdebugger",
@@ -26,13 +26,25 @@
     ],
     "ignore":[
         "**/.*",
-        "tests",
+        "package-lock.json",
+        "package.json",
+        "webpack.config.js",
+        "build/**",
+        "node_modules/**",
+        "resources/**",
+        "test-harness/**",
         "*/.md"
     ],
     "scripts":{
         "release":"recipe build/release.boxr",
-        "format":"cfformat run includes/,interceptors/,models/,test-harness/tests/ --overwrite",
-        "format:watch":"cfformat watch includes/,interceptors/,models/,test-harness/tests/",
-        "format:check":"cfformat check includes/,interceptors/,models/,test-harness/tests/"
+        "format":"cfformat run handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc --overwrite",
+        "format:watch":"cfformat watch handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
+        "format:check":"cfformat check handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc"
+    },
+    "dependencies":{
+        "JSONPrettyPrint":"^1.4.1"
+    },
+    "installPaths":{
+        "JSONPrettyPrint":"modules/JSONPrettyPrint/"
     }
 }

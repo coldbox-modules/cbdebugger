@@ -1,0 +1,28 @@
+{
+    "private": true,
+    "devDependencies": {
+        "autoprefixer": "^9.7.6",
+        "babel-eslint": "^10.0.1",
+        "coldbox-elixir": "^3.0.0",
+        "copy-webpack-plugin": "^6.4.1",
+        "css-loader": "^3.5.3",
+        "eslint": "^7.21.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-loader": "^4.0.2",
+        "eslint-plugin-vue": "^7.6.0",
+        "expose-loader": "^1.0.0",
+        "node-sass": "^4.14.1",
+        "postcss-loader": "^3.0.0",
+        "sass-loader": "^10.0.0",
+        "style-loader": "^1.2.1"
+    },
+    "dependencies": {
+        "jquery": "^3.6.0"
+    },
+    "scripts": {
+        "dev": "cross-env NODE_ENV=development webpack --env.NODE_ENV=development --hide-modules",
+        "dev:analyze": "cross-env NODE_ENV=development WEBPACK_ANALYZER=true webpack --env.NODE_ENV=development --hide-modules",
+        "watch": "npm run dev -- --watch",
+        "prod": "cross-env NODE_ENV=production webpack -p --env.NODE_ENV=production --hide-modules"
+    }
+}
