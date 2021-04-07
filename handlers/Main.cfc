@@ -95,12 +95,41 @@ component extends="coldbox.system.RestHandler" {
 	 * Get the profilers via ajax
 	 */
 	function renderProfilers( event, rc, prc ){
+		// Sorting: timestamp, executionTime
+		event.paramValue( "sortBy", "timestamp" )
+			.paramValue( "sortOrder", "desc" );
+
+		// Get the profilers
+		var aProfilers = variables.debuggerService.getProfilerStorage();
+
+		// Sorting?
+		switch( rc.sortBy ){
+			case "executionTime" : {
+				arraySort( aProfilers, function( e1, e2 ){
+					if( rc.sortOrder == "asc" ){
+						return ( arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1 );
+					}
+					return ( arguments.e1.executionTime > arguments.e2.executionTime ? -1 : 1 );
+				} );
+				break;
+			}
+			default: {
+				arraySort( aProfilers, function( e1, e2 ){
+					if( rc.sortOrder == "asc" ){
+						return dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
+					}
+					return dateCompare( arguments.e2.timestamp, arguments.e1.timestamp );
+				} );
+				break;
+			}
+		}
+
 		return renderView(
 			view  : "main/partials/profilers",
 			module: "cbdebugger",
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
-				profilers      : variables.debuggerService.getProfilerStorage(),
+				profilers      : aProfilers,
 				debuggerConfig : variables.debuggerConfig
 			},
 			prePostExempt: true
