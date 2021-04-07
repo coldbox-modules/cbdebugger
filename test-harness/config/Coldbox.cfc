@@ -96,7 +96,7 @@
 					includedInterceptions        : [ "ORMPostLoad", "ORMPostNew" ],
 					// Control the execution timers
 					executionTimers              : {
-						expanded           : true,
+						expanded           : false,
 						// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
 						slowTimerThreshold : 250
 					},
@@ -140,6 +140,16 @@
 					// Log the binding parameters
 					logParams : true
 				}
+			}
+		};
+
+		executors = {
+			"debugger-tasks" : {
+				"type" : "scheduled",
+				"threads" : 5
+			},
+			"cachebound-tasks" : {
+				"type" : "cached"
 			}
 		};
 	}

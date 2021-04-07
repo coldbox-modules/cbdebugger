@@ -151,6 +151,11 @@ moduleSettings = {
 			expanded  : false,
 			// Log the binding parameters
 			logParams : true
+		},
+		// Async Manager Reporting
+		async : {
+			enabled : true,
+			expanded : false
 		}
 	}
 }

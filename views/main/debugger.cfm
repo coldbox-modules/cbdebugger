@@ -18,11 +18,22 @@ We use cfinclude to be fast and sneaky
 	</cfif>
 
 	<!--- **************************************************************--->
+	<!--- ASYNC PANEL --->
+	<!--- **************************************************************--->
+	<cfif args.debuggerConfig.async.enabled>
+		<cfinclude template="panels/asyncPanel.cfm">
+	</cfif>
+
+	<!--- **************************************************************--->
 	<!--- CACHE PANEL --->
 	<!--- **************************************************************--->
 	<cfif args.debuggerConfig.cachebox.enabled>
 		<cfinclude template="panels/cacheBoxPanel.cfm">
 	</cfif>
+
+	<!--- **************************************************************--->
+	<!--- FOOTER --->
+	<!--- **************************************************************--->
 
 	<!--- Debugger Version --->
 	<span class="mt10 mb10 cbd-floatRight">
