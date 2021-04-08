@@ -6,7 +6,7 @@
     "slug":"cbdebugger",
     "type":"modules",
     "homepage":"https://github.com/coldbox-modules/cbdebugger",
-    "bugs":"https://github.com/coldbox-modules/cbdebugger/issues",
+    "bugs":"https://ortussolutions.atlassian.net/browse/CBDEBUGGER",
     "documentation":"https://github.com/coldbox-modules/cbdebugger",
     "repository":{
         "type":"git",

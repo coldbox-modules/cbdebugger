@@ -28,9 +28,10 @@ Apache License, Version 2.0.
 
 ## Important Links
 
-- https://github.com/coldbox-modules/cbox-debugger
-- https://www.forgebox.io/view/cbdebugger
-- https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Source: https://github.com/coldbox-modules/cbox-debugger
+- ForgeBox: https://www.forgebox.io/view/cbdebugger
+- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
 - [Changelog](changelog.md)
 
 ## System Requirements
