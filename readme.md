@@ -178,12 +178,12 @@ This module will also register a few methods in all your handlers/interceptors/l
 
 ```js
 	/**
-	 * Method to turn on the rendering of the debug panel on a reqquest
+	 * Method to turn on the rendering of the debug panel on a request
 	 */
 	any function showDebugger()
 
 	/**
-	 * Method to turn off the rendering of the debug panel on a reqquest
+	 * Method to turn off the rendering of the debug panel on a request
 	 */
 	any function hideDebugger()
 
