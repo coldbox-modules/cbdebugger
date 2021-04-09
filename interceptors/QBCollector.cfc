@@ -52,7 +52,7 @@ component extends="coldbox.system.Interceptor" {
 		var logData = {
 			"timestamp"     : arguments.interceptData.timestamp,
 			"sql"           : arguments.interceptData.sql,
-			"params"        : variables.debuggerConfig.cborm.logParams ? arguments.interceptData.bindings : [],
+			"params"        : variables.debuggerConfig.qb.logParams ? arguments.interceptData.bindings : [],
 			"options"       : arguments.interceptData.options,
 			"executionTime" : arguments.interceptData.executionTime,
 			"caller"        : variables.debuggerService.discoverCallingStack( "get", "QueryBuilder" )
