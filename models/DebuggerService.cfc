@@ -85,7 +85,7 @@ component
 		variables.environment = {
 			"cfmlEngine"          : server.coldfusion.productName,
 			"cfmlVersion"         : ( server.keyExists( "lucee" ) ? server.lucee.version : server.coldfusion.productVersion ),
-			"javaVersion"         : variables.jvmRuntime.version().toString(),
+			"javaVersion"         : createObject( "java", "java.lang.System" ).getProperty( "java.version" ),
 			"totalMemory"         : variables.jvmRuntime.totalMemory(),
 			"maxMemory"           : variables.jvmRuntime.maxMemory(),
 			"availableProcessors" : variables.jvmRuntime.availableProcessors(),
