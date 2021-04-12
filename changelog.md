@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-* Made `cborm` and `qb` disabled by default
+* [CBDEBUGGER-2] - Made `cborm` and `qb` disabled by default
 
 ----
 
