@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.0] => 2021-APR
 
+### Fixed
+
+* [CBDEBUGGER-1] - Lucee debugger no longer shows below the cbDebugger. Turn off only on Ajax Calls
+
 ### Changed
 
 * [CBDEBUGGER-2] - Made `cborm` and `qb` disabled by default
