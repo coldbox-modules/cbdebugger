@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [3.0.0]
+## [3.1.0] => 2021-APR
+
+### Changed
+
+* Made `cborm` and `qb` disabled by default
+
+----
+
+## [3.0.0] => 2021-APR-07
 
 ### Added
 
