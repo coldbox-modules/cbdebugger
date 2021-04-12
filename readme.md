@@ -150,7 +150,7 @@ moduleSettings = {
 		cborm : {
 			enabled   : true,
 			expanded  : false,
-			// Log the binding parameters
+			// Log the binding parameters (requires CBORM 3.2.0+)
 			logParams : true
 		},
 		// Async Manager Reporting
@@ -372,7 +372,7 @@ We have a dedicated panel in the debugger that will track all criteria queries a
 cborm : {
 	enabled   : true,
 	expanded  : false,
-	// Log the binding parameters
+	// Log the binding parameters (requires CBORM 3.2.0+)
 	logParams : true
 }
 ```
