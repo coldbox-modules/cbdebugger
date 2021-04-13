@@ -377,7 +377,9 @@ cborm : {
 }
 ```
 
-You can also select to `logParams` and we will track the original executable parameters of the query so you can debug the actual values of these executions.  We will also track from WHERE in the application the sql execution came from and you can even open the file to that specific line number using our code editor integrations by clicking our **open in editor** buttons.
+You can also enable `logParams` and we will track the original executable parameters of the query so you can debug the actual values of these executions.  We will also track from WHERE in the application the sql execution came from and you can even open the file to that specific line number using our code editor integrations by clicking our **open in editor** buttons.
+
+> **Note**: CBDebugger's `cborm.logParams` setting requires CBORM 3.2.0 or higher.
 
 The grouped view you see above will give you an aggregate look of all the sql calls made during the request and their frequency of execution.  It will also give you a mini report of those specific sql groups with data about where the query originated from in your source code and the binding parameters, if activated.
 
