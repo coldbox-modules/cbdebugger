@@ -87,6 +87,8 @@ moduleSettings = {
 		debugPassword  : "cb:null",
 		// Request Tracker Options
 		requestTracker : {
+			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
+			trackDebuggerEvents          : false,
 			// Store the request profilers in heap memory or in cachebox, default is cachebox
 			storage                      : "cachebox",
 			// Which cache region to store the profilers in
