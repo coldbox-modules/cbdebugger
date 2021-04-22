@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+* Look at the renderdata content type instead of type as it's more consistent in order to turn off the debugger on multi-marshalled sites
 * [CBDEBUGGER-1] - Lucee debugger no longer shows below the cbDebugger. Turn off only on Ajax Calls
 
 ### Changed
