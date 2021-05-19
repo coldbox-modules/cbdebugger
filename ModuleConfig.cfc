@@ -101,14 +101,14 @@ component {
 			modules  : { enabled : false, expanded : false },
 			// Quick and QB Reporting
 			qb       : {
-				enabled   : true,
+				enabled   : false,
 				expanded  : false,
 				// Log the binding parameters
 				logParams : true
 			},
 			// cborm Reporting
 			cborm : {
-				enabled   : true,
+				enabled   : false,
 				expanded  : false,
 				// Log the binding parameters
 				logParams : true

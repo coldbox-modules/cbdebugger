@@ -7,7 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [3.0.0]
+## [3.1.0] => 2021-MAy-19
+
+### Fixed
+
+* Fix wrong cborm reference on QBCollector
+* Look at the renderdata content type instead of type as it's more consistent in order to turn off the debugger on multi-marshalled sites
+* [CBDEBUGGER-1] - Lucee debugger no longer shows below the cbDebugger. Turn off only on Ajax Calls
+
+### Changed
+
+* Use Java property for version to work with jdk8+
+* [CBDEBUGGER-2] - Made `cborm` and `qb` disabled by default
+
+----
+
+## [3.0.0] => 2021-APR-07
 
 ### Added
 

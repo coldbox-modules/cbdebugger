@@ -28,9 +28,10 @@ Apache License, Version 2.0.
 
 ## Important Links
 
-- https://github.com/coldbox-modules/cbox-debugger
-- https://www.forgebox.io/view/cbdebugger
-- https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Source: https://github.com/coldbox-modules/cbox-debugger
+- ForgeBox: https://www.forgebox.io/view/cbdebugger
+- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
 - [Changelog](changelog.md)
 
 ## System Requirements
@@ -86,6 +87,8 @@ moduleSettings = {
 		debugPassword  : "cb:null",
 		// Request Tracker Options
 		requestTracker : {
+			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
+			trackDebuggerEvents          : false,
 			// Store the request profilers in heap memory or in cachebox, default is cachebox
 			storage                      : "cachebox",
 			// Which cache region to store the profilers in
@@ -149,7 +152,7 @@ moduleSettings = {
 		cborm : {
 			enabled   : true,
 			expanded  : false,
-			// Log the binding parameters
+			// Log the binding parameters (requires CBORM 3.2.0+)
 			logParams : true
 		},
 		// Async Manager Reporting
@@ -177,12 +180,12 @@ This module will also register a few methods in all your handlers/interceptors/l
 
 ```js
 	/**
-	 * Method to turn on the rendering of the debug panel on a reqquest
+	 * Method to turn on the rendering of the debug panel on a request
 	 */
 	any function showDebugger()
 
 	/**
-	 * Method to turn off the rendering of the debug panel on a reqquest
+	 * Method to turn off the rendering of the debug panel on a request
 	 */
 	any function hideDebugger()
 
@@ -371,12 +374,14 @@ We have a dedicated panel in the debugger that will track all criteria queries a
 cborm : {
 	enabled   : true,
 	expanded  : false,
-	// Log the binding parameters
+	// Log the binding parameters (requires CBORM 3.2.0+)
 	logParams : true
 }
 ```
 
-You can also select to `logParams` and we will track the original executable parameters of the query so you can debug the actual values of these executions.  We will also track from WHERE in the application the sql execution came from and you can even open the file to that specific line number using our code editor integrations by clicking our **open in editor** buttons.
+You can also enable `logParams` and we will track the original executable parameters of the query so you can debug the actual values of these executions.  We will also track from WHERE in the application the sql execution came from and you can even open the file to that specific line number using our code editor integrations by clicking our **open in editor** buttons.
+
+> **Note**: CBDebugger's `cborm.logParams` setting requires CBORM 3.2.0 or higher.
 
 The grouped view you see above will give you an aggregate look of all the sql calls made during the request and their frequency of execution.  It will also give you a mini report of those specific sql groups with data about where the query originated from in your source code and the binding parameters, if activated.
 

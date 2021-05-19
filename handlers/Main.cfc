@@ -21,8 +21,10 @@ component extends="coldbox.system.RestHandler" {
 		// Global params
 		event.paramValue( "frequency", 0 ).paramValue( "isVisualizer", false );
 
-		// Don't show cf debug
-		cfsetting( showdebugoutput = "false" );
+		// Don't show cf debug on ajax calls
+		if( event.isAjax() ){
+			cfsetting( showdebugoutput = "false" );
+		}
 
 		// If not enabled, just 404 it
 		if ( !variables.debuggerService.getDebugMode() ) {
