@@ -95,6 +95,8 @@ component extends="coldbox.system.Interceptor" {
 
 		// Determine if we can render the debugger at the bottom of the request
 		if (
+			// Check content type on request
+			findNoCase( "html", getPageContextResponse().getContentType() ) AND
 			// Is the debug mode turned on
 			variables.debuggerService.getDebugMode() AND
 			// Has it not been disabled by the user programmatically
@@ -241,6 +243,19 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/************************************** PRIVATE METHODS *********************************************/
+
+	/**
+	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
+	 **/
+	 private function getPageContextResponse(){
+		var response = getPageContext().getResponse();
+		try {
+			response.getStatus();
+			return response;
+		} catch ( any e ) {
+			return response.getResponse();
+		}
+	}
 
 	/**
 	 * Execute Debugger Commands
