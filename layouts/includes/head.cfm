@@ -1,7 +1,7 @@
 <cfoutput>
 	<!---css --->
 	<link href="#event.getModuleRoot( "cbdebugger" )##html.elixirPath(
-		fileName : "css/App.css",
+		fileName : "css/Cbdebugger.css",
 		manifestRoot : args.manifestRoot
 	)#"
 	rel="stylesheet">
