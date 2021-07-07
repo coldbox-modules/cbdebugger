@@ -9,7 +9,7 @@
 		manifestRoot : args.manifestRoot
 	)#"></script>
 	<script async="async" defer="defer" src="#event.getModuleRoot( "cbDebugger" )##html.elixirPath(
-		fileName : "js/Cbdebugger.js",
+		fileName : "js/App.js",
 		manifestRoot : args.manifestRoot
 	)#"></script>
 </cfoutput>
