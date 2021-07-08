@@ -46,8 +46,8 @@ module.exports = elixir( mix => {
 
 	// Mix App styles
 	mix
-		.js( "App.js" )
-		.sass( "App.scss" )
+		.js( "cbdebugger.js" )
+		.sass( "cbdebugger.scss" )
 		.js(
 			[ "node_modules/jquery/dist/jquery.min.js" ],
 			{
