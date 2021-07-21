@@ -114,10 +114,7 @@ component {
 				logParams : true
 			},
 			// Async Manager Reporting
-			async : {
-				enabled : true,
-				expanded : false
-			}
+			async : { enabled : true, expanded : false }
 		};
 
 		// Visualizer Route

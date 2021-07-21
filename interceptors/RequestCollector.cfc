@@ -96,13 +96,18 @@ component extends="coldbox.system.Interceptor" {
 		// Determine if we can render the debugger at the bottom of the request
 		if (
 			// Check content type on request
-			findNoCase( "html", getPageContextResponse().getContentType() ) AND
+			findNoCase(
+				"html",
+				getPageContextResponse().getContentType()
+			) AND
 			// Is the debug mode turned on
 			variables.debuggerService.getDebugMode() AND
 			// Has it not been disabled by the user programmatically
 			arguments.event.getPrivateValue( "cbox_debugger_show", true ) AND
 			// We don't have any render data OR the render data is HTML
-			( structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().contentType == "text/html" ) AND
+			(
+				structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().contentType == "text/html"
+			) AND
 			// Don't render in ajax calls
 			!arguments.event.isAjax() AND
 			// Don't render in testing mode
@@ -247,7 +252,7 @@ component extends="coldbox.system.Interceptor" {
 	/**
 	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
 	 **/
-	 private function getPageContextResponse(){
+	private function getPageContextResponse(){
 		var response = getPageContext().getResponse();
 		try {
 			response.getStatus();
