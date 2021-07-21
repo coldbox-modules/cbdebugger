@@ -22,7 +22,7 @@ component extends="coldbox.system.RestHandler" {
 		event.paramValue( "frequency", 0 ).paramValue( "isVisualizer", false );
 
 		// Don't show cf debug on ajax calls
-		if( event.isAjax() ){
+		if ( event.isAjax() ) {
 			cfsetting( showdebugoutput = "false" );
 		}
 
@@ -98,17 +98,16 @@ component extends="coldbox.system.RestHandler" {
 	 */
 	function renderProfilers( event, rc, prc ){
 		// Sorting: timestamp, executionTime
-		event.paramValue( "sortBy", "timestamp" )
-			.paramValue( "sortOrder", "desc" );
+		event.paramValue( "sortBy", "timestamp" ).paramValue( "sortOrder", "desc" );
 
 		// Get the profilers
 		var aProfilers = variables.debuggerService.getProfilerStorage();
 
 		// Sorting?
-		switch( rc.sortBy ){
-			case "executionTime" : {
+		switch ( rc.sortBy ) {
+			case "executionTime": {
 				arraySort( aProfilers, function( e1, e2 ){
-					if( rc.sortOrder == "asc" ){
+					if ( rc.sortOrder == "asc" ) {
 						return ( arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1 );
 					}
 					return ( arguments.e1.executionTime > arguments.e2.executionTime ? -1 : 1 );
@@ -117,10 +116,16 @@ component extends="coldbox.system.RestHandler" {
 			}
 			default: {
 				arraySort( aProfilers, function( e1, e2 ){
-					if( rc.sortOrder == "asc" ){
-						return dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
+					if ( rc.sortOrder == "asc" ) {
+						return dateCompare(
+							arguments.e1.timestamp,
+							arguments.e2.timestamp
+						);
 					}
-					return dateCompare( arguments.e2.timestamp, arguments.e1.timestamp );
+					return dateCompare(
+						arguments.e2.timestamp,
+						arguments.e1.timestamp
+					);
 				} );
 				break;
 			}

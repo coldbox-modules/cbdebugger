@@ -253,7 +253,7 @@ component
 	struct function getCurrentProfiler(){
 		var profilers = getProfilerStorage();
 
-		if( arrayLen( profilers ) ){
+		if ( arrayLen( profilers ) ) {
 			return profilers[ 1 ];
 		}
 
