@@ -128,7 +128,7 @@
 					<cfelse>
 						<div class="cbd-cellScroller">
 							<code>
-								#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#
+								<pre>#replace( args.profiler.requestData.headers[ thisHeader ], ";", "<br>", "all" )#</pre>
 							</code>
 						</div>
 					</cfif>
