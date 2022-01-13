@@ -28,11 +28,12 @@ component extends="coldbox.system.RestHandler" {
 
 		// If not enabled, just 404 it
 		if ( !variables.debuggerService.getDebugMode() ) {
-			event.setHTTPHeader(
+			event.renderData(
 				statusCode = 404,
-				statusText = "page not found"
+				statusText = "Not Found",
+				type = "text",
+				data = "Page Not Found"
 			);
-			return "Page Not Found";
 		}
 	}
 
