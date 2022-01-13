@@ -31,8 +31,8 @@ component extends="coldbox.system.RestHandler" {
 			event.renderData(
 				statusCode = 404,
 				statusText = "Not Found",
-				type = "text",
-				data = "Page Not Found"
+				type       = "text",
+				data       = "Page Not Found"
 			);
 		}
 	}
