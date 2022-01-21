@@ -40,6 +40,11 @@ Apache License, Version 2.0.
 - ColdFusion 2016+
 - ColdBox 6+
 
+## Debugger Requirements
+
+- Hibernate extension (on Lucee)
+- ORM package (on ACF 2021)
+
 # Instructions
 
 Just drop into your **modules** folder or use CommandBox to install
