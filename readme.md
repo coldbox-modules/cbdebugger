@@ -42,7 +42,8 @@ Apache License, Version 2.0.
 
 ## Debugger Requirements
 
-- If you're using Adobe Coldfusion 2021: `orm` package 
+- Hibernate extension (on Lucee)
+- ORM package (on ACF 2021)
 
 # Instructions
 
