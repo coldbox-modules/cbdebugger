@@ -40,6 +40,10 @@ Apache License, Version 2.0.
 - ColdFusion 2016+
 - ColdBox 6+
 
+## Debugger Requirements
+
+- If you're using Adobe Coldfusion 2021: `orm` package 
+
 # Instructions
 
 Just drop into your **modules** folder or use CommandBox to install
