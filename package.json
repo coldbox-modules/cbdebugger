@@ -11,7 +11,7 @@
         "eslint-loader": "^4.0.2",
         "eslint-plugin-vue": "^7.6.0",
         "expose-loader": "^1.0.0",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.0",
         "postcss-loader": "^3.0.0",
         "sass-loader": "^10.0.0",
         "style-loader": "^1.2.1"
