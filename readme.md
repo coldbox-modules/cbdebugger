@@ -2,7 +2,7 @@
 
 # Welcome To The ColdBox Debugger Module
 
-The ColdBox Debugger module is a light-weigth performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
+The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
@@ -249,7 +249,7 @@ This module will also register a few methods in all your handlers/interceptors/l
 
 ## Debugger Events
 
-The debugger also announces several events that you can listen to and extend the debuging and profiling capabilities:
+The debugger also announces several events that you can listen to and extend the debugging and profiling capabilities:
 
 ```js
 // Before the debugger panel is rendered
@@ -299,7 +299,7 @@ Profiling objects is great because you can just annotate and forget. Nothing to 
 
 ## WireBox Object Creation Profiling
 
-There will be cases where you need to test the performance of the creation of certain objects in WireBox.  YOu can do so by activating the `profileWireBoxObjectCreation` setting in the `requestTracker`.  Once enabled, you will see the profiling of all objects created by WireBox in the debug timers.
+There will be cases where you need to test the performance of the creation of certain objects in WireBox.  You can do so by activating the `profileWireBoxObjectCreation` setting in the `requestTracker`.  Once enabled, you will see the profiling of all objects created by WireBox in the debug timers.
 
 ## Profiling Interceptions
 
@@ -420,7 +420,7 @@ qb       : {
 },
 ```
 
-Also remember that you can activate the bidining parameters to the sql calls.
+Also remember that you can activate the binding parameters to the sql calls.
 
 ## Modules Panel
 
