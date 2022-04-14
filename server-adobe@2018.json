@@ -11,13 +11,13 @@
         "rewrites":{
             "enable":"true"
         },
-		"webroot":"test-harness",
+        "webroot":"test-harness",
         "aliases":{
             "/moduleroot/cbdebugger":"./"
         }
     },
     "openBrowser":"false",
-	"cfconfig":{
+    "cfconfig":{
         "file":".cfconfig.json"
     }
 }

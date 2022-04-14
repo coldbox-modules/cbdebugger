@@ -48,6 +48,7 @@
 		logBox = {
 			// Define Appenders
 			appenders : {
+				myConsole : { class : "ConsoleAppender" },
 				files : {
 					class      : "coldbox.system.logging.appenders.RollingFileAppender",
 					properties : {

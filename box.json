@@ -24,6 +24,15 @@
         "Brad Wood <bdw429s@gmail.com>",
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
+	"dependencies":{
+        "JSONPrettyPrint":"^1.4.1"
+    },
+	"devDependencies":{
+        "commandbox-cfformat":"*",
+        "commandbox-docbox":"*",
+        "commandbox-dotenv":"*",
+        "commandbox-cfconfig":"*"
+    },
     "ignore":[
         "**/.*",
         "package-lock.json",
@@ -32,19 +41,22 @@
         "build/**",
         "node_modules/**",
         "resources/**",
-        "test-harness/**",
-        "*/.md"
+        "test-harness",
+        "/server*.json"
     ],
+	"testbox":{
+        "runner":"http://localhost:60299/tests/runner.cfm"
+    },
     "scripts":{
+        "build:module":"task run taskFile=build/Build.cfc :projectName=`package show slug` :version=`package show version`",
+        "build:docs":"task run taskFile=build/Build.cfc target=docs :projectName=`package show slug` :version=`package show version`",
         "release":"recipe build/release.boxr",
         "format":"cfformat run handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc --overwrite",
         "format:watch":"cfformat watch handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
-        "format:check":"cfformat check handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc"
-    },
-    "dependencies":{
-        "JSONPrettyPrint":"^1.4.1"
-    },
-    "installPaths":{
-        "JSONPrettyPrint":"modules/JSONPrettyPrint/"
+        "format:check":"cfformat check handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc",
+		"cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
+        "cfpm:install":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\" install ${1}' | run",
+        "install:2021":"run-script cfpm:install zip,debugger",
+        "install:dependencies":"install && cd test-harness && install"
     }
 }

@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Migration to use new module template approaches that supports github releases, compilation and more
 
+### Fixed
+
+* Actually show a 404 if debug mode is off
+* JS Bumps
+
 
 ----
 
