@@ -24,10 +24,10 @@
         "Brad Wood <bdw429s@gmail.com>",
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
-	"dependencies":{
+    "dependencies":{
         "JSONPrettyPrint":"^1.4.1"
     },
-	"devDependencies":{
+    "devDependencies":{
         "commandbox-cfformat":"*",
         "commandbox-docbox":"*",
         "commandbox-dotenv":"*",
@@ -44,7 +44,7 @@
         "test-harness",
         "/server*.json"
     ],
-	"testbox":{
+    "testbox":{
         "runner":"http://localhost:60299/tests/runner.cfm"
     },
     "scripts":{
@@ -54,9 +54,12 @@
         "format":"cfformat run handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc --overwrite",
         "format:watch":"cfformat watch handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc ./.cfformat.json",
         "format:check":"cfformat check handlers,helpers,interceptors/,models/,test-harness/tests/,ModuleConfig.cfc",
-		"cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
+        "cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
         "cfpm:install":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\" install ${1}' | run",
-        "install:2021":"run-script cfpm:install zip,debugger",
+        "install:2021":"run-script cfpm:install zip,debugger,orm,mysql,postgresql,sqlserver,feed",
         "install:dependencies":"install && cd test-harness && install"
+    },
+    "installPaths":{
+        "JSONPrettyPrint":"modules/JSONPrettyPrint/"
     }
 }
