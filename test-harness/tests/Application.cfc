@@ -6,8 +6,12 @@ www.ortussolutions.com
 */
 component {
 
+	// UPDATE THE NAME OF THE MODULE IN TESTING BELOW
+	request.MODULE_NAME = "cbdebugger";
+	request.MODULE_PATH = "cbdebugger";
+
 	// APPLICATION CFC PROPERTIES
-	this.name               = "ColdBoxTestingSuite" & hash( getCurrentTemplatePath() );
+	this.name               = "#request.MODULE_NAME# testing suite";
 	this.sessionManagement  = true;
 	this.sessionTimeout     = createTimespan( 0, 0, 15, 0 );
 	this.applicationTimeout = createTimespan( 0, 0, 15, 0 );
@@ -17,20 +21,13 @@ component {
 	this.mappings[ "/tests" ] = getDirectoryFromPath( getCurrentTemplatePath() );
 
 	// The application root
-	rootPath = reReplaceNoCase(
-		this.mappings[ "/tests" ],
-		"tests(\\|/)",
-		""
-	);
+	rootPath                 = reReplaceNoCase( this.mappings[ "/tests" ], "tests(\\|/)", "" );
 	this.mappings[ "/root" ] = rootPath;
-
-	// UPDATE THE NAME OF THE MODULE IN TESTING BELOW
-	request.MODULE_NAME = "cbdebugger";
 
 	// The module root path
 	moduleRootPath = reReplaceNoCase(
-		this.mappings[ "/root" ],
-		"#request.module_name#(\\|/)test-harness(\\|/)",
+		rootPath,
+		"#request.MODULE_PATH#(\\|/)test-harness(\\|/)",
 		""
 	);
 	this.mappings[ "/moduleroot" ]            = moduleRootPath;
@@ -65,15 +62,17 @@ component {
 			}
 		}
 
+		// Cleanup
+		if ( !isNull( application.cbController ) ) {
+			application.cbController.getLoaderService().processShutdown();
+		}
+		structDelete( application, "cbController" );
+		structDelete( application, "wirebox" );
+
 		return true;
 	}
 
 	public function onRequestEnd(){
-		// CB 6 graceful shutdown
-		if ( !isNull( application.cbController ) ) {
-			application.cbController.getLoaderService().processShutdown();
-		}
-
 		structDelete( application, "cbController" );
 		structDelete( application, "wirebox" );
 	}

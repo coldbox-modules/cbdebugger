@@ -1,21 +1,22 @@
-# Ide
-.vscode
-
-# build artifacts
+# Artifacts and temp folders
 .artifacts/**
 .tmp/**
 
-# Module Dependencies
-modules/**
+# Engine + Secrets + databases
+.env
+.engine/**
+.db/**
 
-# Test harness dependencies
-test-harness/.engine/**
+# Dependencies
+modules/**
 test-harness/coldbox/**
 test-harness/docbox/**
 test-harness/testbox/**
 test-harness/logs/**
 test-harness/modules/**
-test-harness/.env
+
+# log files
+logs/**
 
 # UI Build Process
 includes/**
