@@ -92,7 +92,6 @@ component extends="coldbox.system.Interceptor" {
 			event        : arguments.event,
 			executionTime: getTickCount()
 		);
-
 		// Determine if we can render the debugger at the bottom of the request
 		if (
 			// Check content type on request

@@ -53,15 +53,12 @@ component
 	/**
 	 * Constructor
 	 *
-	 * @controller The ColdBox controller
+	 * @controller        The ColdBox controller
 	 * @controller.inject coldbox
-	 * @settings Module Settings
-	 * @settings.inject coldbox:modulesettings:cbdebugger
+	 * @settings          Module Settings
+	 * @settings.inject   coldbox:modulesettings:cbdebugger
 	 */
-	function init(
-		required controller,
-		required settings
-	){
+	function init( required controller, required settings ){
 		// setup controller
 		variables.controller     = arguments.controller;
 		// config
@@ -103,6 +100,10 @@ component
 		return this;
 	}
 
+	function onDIComplete(){
+		variables.debugMode = variables.debuggerConfig.debugMode;
+	}
+
 	/**
 	 * Get the cache region configured for the debugger
 	 */
@@ -122,10 +123,7 @@ component
 		*/
 		var salt            = createUUID();
 		variables.secretKey =
-		hash(
-			variables.controller.getAppHash() & variables.debugPassword & salt,
-			"SHA-256"
-		);
+		hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" );
 		return this;
 	}
 
@@ -137,7 +135,6 @@ component
 		if ( not ( len( variables.secretKey ) ) ) {
 			return false;
 		}
-
 		// If Cookie exists, it's value is used.
 		if ( isDebugCookieValid() ) {
 			// Must be equal to the current secret key
@@ -164,15 +161,9 @@ component
 	 */
 	DebuggerService function setDebugMode( required boolean mode ){
 		if ( arguments.mode ) {
-			cfcookie(
-				name  = getCookieName(),
-				value = variables.secretKey
-			);
+			cfcookie( name = getCookieName(), value = variables.secretKey );
 		} else {
-			cfcookie(
-				name  = getCookieName(),
-				value = "_disabled_"
-			);
+			cfcookie( name = getCookieName(), value = "_disabled_" );
 		}
 		return this;
 	}
@@ -196,17 +187,19 @@ component
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"timers"        : [],
 			"tracers"       : [],
-			"requestData"   : getHTTPRequestData( variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody ),
-			"response"      : { "statusCode" : 0, "contentType" : "" },
-			"coldbox"       : {},
-			"exception"     : {},
-			"userAgent"     : cgi.HTTP_USER_AGENT,
-			"queryString"   : cgi.QUERY_STRING,
-			"httpHost"      : cgi.HTTP_HOST,
-			"httpReferer"   : cgi.HTTP_REFERER,
-			"formData"      : serializeJSON( form ?: {} ),
-			"inetHost"      : discoverInetHost(),
-			"localIp"       : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
+			"requestData"   : getHTTPRequestData(
+				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
+			),
+			"response"    : { "statusCode" : 0, "contentType" : "" },
+			"coldbox"     : {},
+			"exception"   : {},
+			"userAgent"   : cgi.HTTP_USER_AGENT,
+			"queryString" : cgi.QUERY_STRING,
+			"httpHost"    : cgi.HTTP_HOST,
+			"httpReferer" : cgi.HTTP_REFERER,
+			"formData"    : serializeJSON( form ?: {} ),
+			"inetHost"    : discoverInetHost(),
+			"localIp"     : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
 		};
 
 		// Event before recording
@@ -280,9 +273,9 @@ component
 	/**
 	 * Record a profiler and it's timers internally
 	 *
-	 * @event The request context that requested the record
+	 * @event         The request context that requested the record
 	 * @executionTime The time it took for th request to finish
-	 * @exception If there is an exception in the request, track it
+	 * @exception     If there is an exception in the request, track it
 	 */
 	DebuggerService function recordProfiler(
 		required event,
@@ -293,10 +286,7 @@ component
 
 		// size check, if passed, pop one
 		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
-			arrayDeleteAt(
-				targetStorage,
-				arrayLen( targetStorage )
-			);
+			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
 		}
 
 		// Build out the exception data to trace if any?
@@ -394,9 +384,9 @@ component
 	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
 	 * the same patterns
 	 *
-	 * @message The message to trace
-	 * @severity The severity of the message
-	 * @category The tracking category the message came from
+	 * @message   The message to trace
+	 * @severity  The severity of the message
+	 * @category  The tracking category the message came from
 	 * @timestamp The timestamp of the message
 	 * @extraInfo Extra info to store in the tracer
 	 */
@@ -497,7 +487,7 @@ component
 	 * This function tries to discover from where a target method was called from
 	 * by investigating the call stack
 	 *
-	 * @targetMethod The target method we are trying to pin point
+	 * @targetMethod  The target method we are trying to pin point
 	 * @templateMatch A string fragment to further narrow down the location, we match this against the template path
 	 *
 	 * @return Struct of { function, lineNumber, line, template }

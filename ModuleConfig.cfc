@@ -34,13 +34,10 @@ component {
 		variables.settings = {
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
-			enabled   : true,
+			enabled        : true,
 			// This setting controls if you will activate the debugger for visualizations ONLY
 			// The debugger will still track requests even in non debug mode.
-			debugMode : controller.getSetting(
-				name         = "environment",
-				defaultValue = "production"
-			) == "development",
+			debugMode      : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
 			debugPassword  : "cb:null",
 			// Request Tracker Options
@@ -113,6 +110,8 @@ component {
 				// Log the binding parameters
 				logParams : true
 			},
+			// cfquery sql reporting
+			cfsql : { enabled : false, expanded : false, logParams : true },
 			// Async Manager Reporting
 			async : { enabled : true, expanded : false }
 		};
@@ -166,7 +165,7 @@ component {
 		}
 
 		// Configure the debugging mode from the loaded app settings
-		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
+		wirebox.getInstance( "debuggerService@cbDebugger" );
 
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		if ( variables.settings.enabled ) {
@@ -186,10 +185,7 @@ component {
 				binder
 					.mapAspect( "ObjectProfiler" )
 					.to( "#moduleMapping#.aspects.ObjectProfiler" )
-					.initArg(
-						name  = "traceResults",
-						value = variables.settings.requestTracker.traceObjectResults
-					);
+					.initArg( name = "traceResults", value = variables.settings.requestTracker.traceObjectResults );
 
 				// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
 				binder.bindAspect(
@@ -264,6 +260,17 @@ component {
 						interceptorName  = "CBOrmCollector@cbdebugger"
 					);
 			}
+
+			/******************** CFSQL COLLECTOR ************************************/
+
+			if ( variables.settings.cfsql.enabled ) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.CFSqlCollector",
+						interceptorName  = "CFSqlCollector@cbdebugger"
+					);
+			}
 		}
 		// end master switch
 	}
@@ -293,10 +300,7 @@ component {
 	function afterConfigurationLoad(){
 		if ( variables.settings.enabled && variables.settings.tracers.enabled ) {
 			var logBox = controller.getLogBox();
-			logBox.registerAppender(
-				"tracer",
-				"cbdebugger.appenders.TracerAppender"
-			);
+			logBox.registerAppender( "tracer", "cbdebugger.appenders.TracerAppender" );
 			var appenders = logBox.getAppendersMap( "tracer" );
 			// Register the appender with the root loggger, and turn the logger on.
 			var root      = logBox.getRootLogger();
@@ -310,33 +314,24 @@ component {
 	 * Loads the AOP mixer if not loaded in the application
 	 */
 	private function loadAOPMixer(){
-		var mixer = new coldbox.system.aop.Mixer();
-		// configure it
-		mixer.configure( wirebox, {} );
+		var mixer = new coldbox.system.aop.Mixer().configure( wirebox, {} );
 		// register it
 		controller
 			.getInterceptorService()
-			.registerInterceptor(
-				interceptorObject = mixer,
-				interceptorName   = "AOPMixer"
-			);
+			.registerInterceptor( interceptorObject = mixer, interceptorName = "AOPMixer" );
 	}
 
 	/**
 	 * Verify if wirebox aop mixer is loaded
 	 */
 	private boolean function isAOPMixerLoaded(){
-		var listeners = wirebox.getBinder().getListeners();
-		var results   = false;
-
-		for ( var thisListener in listeners ) {
-			if ( thisListener.class eq "coldbox.system.aop.Mixer" ) {
-				results = true;
-				break;
-			}
-		}
-
-		return results;
+		return wirebox
+			.getBinder()
+			.getListeners()
+			.filter( function( thisListener ){
+				return thisListener.class eq "coldbox.system.aop.Mixer";
+			} )
+			.len() > 0 ? true : false;
 	}
 
 }

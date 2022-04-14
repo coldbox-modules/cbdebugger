@@ -140,6 +140,12 @@
 					expanded  : false,
 					// Log the binding parameters
 					logParams : true
+				},
+				// cfquery sql reporting
+				cfsql : {
+					enabled : false,
+					expanded : false,
+					logParams : true
 				}
 			}
 		};

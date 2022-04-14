@@ -1,4 +1,8 @@
 import $cb from "jquery";
+import $cbAlpine from "alpinejs";
+
+window.$cbAlpine = $cbAlpine;
+$cbAlpine.start();
 
 $cb( document ).ready( function(){
 	window.cbDebuggerUrl = $cb( "#cbd-debugger" ).data().appurl;
