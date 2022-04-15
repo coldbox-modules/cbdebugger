@@ -270,6 +270,21 @@
 				</cfif>
 
 				<!--- **************************************************************--->
+				<!--- ACFSQL --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.acfSql.enabled>
+					#renderView(
+						view : "main/panels/acfSqlPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
 				<!--- CBORM --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>

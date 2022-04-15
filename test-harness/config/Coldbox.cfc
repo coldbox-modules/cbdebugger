@@ -142,8 +142,8 @@
 					logParams : true
 				},
 				// cfquery sql reporting
-				cfsql : {
-					enabled : false,
+				acfSql : {
+					enabled : true,
 					expanded : false,
 					logParams : true
 				}

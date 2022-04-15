@@ -110,10 +110,10 @@ component {
 				// Log the binding parameters
 				logParams : true
 			},
-			// cfquery sql reporting
-			cfsql : { enabled : false, expanded : false, logParams : true },
+			// Adobe ColdFusion SQL Collector
+			acfSql : { enabled : false, expanded : false, logParams : true },
 			// Async Manager Reporting
-			async : { enabled : true, expanded : false }
+			async  : { enabled : true, expanded : false }
 		};
 
 		// Visualizer Route
@@ -263,12 +263,12 @@ component {
 
 			/******************** CFSQL COLLECTOR ************************************/
 
-			if ( variables.settings.cfsql.enabled ) {
+			if ( variables.settings.acfSql.enabled ) {
 				controller
 					.getInterceptorService()
 					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.CFSqlCollector",
-						interceptorName  = "CFSqlCollector@cbdebugger"
+						interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
+						interceptorName  = "ACFSqlCollector@cbdebugger"
 					);
 			}
 		}
@@ -282,15 +282,10 @@ component {
 		// Only if we are enabled
 		if ( variables.settings.enabled ) {
 			controller.getInterceptorService().unregister( "RequestCollector@cbdebugger" );
-			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
-				controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
-			}
-			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-				controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
-			}
-			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-				controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
-			}
+			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "ACFSqlCollector@cbdebugger" );
 		}
 	}
 
@@ -314,11 +309,13 @@ component {
 	 * Loads the AOP mixer if not loaded in the application
 	 */
 	private function loadAOPMixer(){
-		var mixer = new coldbox.system.aop.Mixer().configure( wirebox, {} );
 		// register it
 		controller
 			.getInterceptorService()
-			.registerInterceptor( interceptorObject = mixer, interceptorName = "AOPMixer" );
+			.registerInterceptor(
+				interceptorObject : new coldbox.system.aop.Mixer().configure( wirebox, {} ),
+				interceptorName : "AOPMixer"
+			);
 	}
 
 	/**
