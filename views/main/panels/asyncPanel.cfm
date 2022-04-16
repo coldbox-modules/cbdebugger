@@ -5,8 +5,24 @@
 	arraySort( executorKeys, "textnocase" );
 </cfscript>
 <cfoutput>
+<cbd-async
+	x-data="{
+		panelOpen : #args.debuggerConfig.async.expanded ? 'true' : 'false'#,
+		showExecutor : '',
+		toggleTasks( executor ){
+			if( this.showExecutor == executor ){
+				this.showExecutor = ''
+			} else {
+				this.showExecutor = executor
+			}
+		}
+	}"
+>
 	<!--- Title --->
-	<div class="cbd-titles" onClick="cbdToggle( 'cbdAsync' )">
+	<div
+		class="cbd-titles"
+		@click="panelOpen=!panelOpen"
+	>
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -16,8 +32,10 @@
 
 	<!--- Panel --->
 	<div
-		class="cbd-contentView<cfif args.debuggerConfig.async.expanded> cbd-show<cfelse> cbd-hide</cfif>"
-		id="cbdAsync"
+		class="cbd-contentView"
+		x-show="panelOpen"
+		x-cloak
+		x-transition
 	>
 
 		<!--- Info Bar --->
@@ -71,7 +89,7 @@
 					<td align="center">
 						<button
 							title="View Tasks"
-							onclick="cbdToggle( 'cbdExecutorReport-#executorName#' )"
+							@click="toggleTasks( '#executorName#' )"
 						>
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16l2.879-2.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -81,7 +99,12 @@
 				</tr>
 
 				<!--- Task Report --->
-				<tr class="cbd-hide cbd-bg-gray" id="cbdExecutorReport-#executorName#">
+				<tr
+					class="cbd-bg-gray"
+					x-show="showExecutor == '#executorName#'"
+					x-cloak
+					x-transition
+				>
 					<td colspan="8" class="p20">
 						<cfset queue = thisExecutor.getQueue().toArray()>
 						<cfif arrayLen( queue )>
@@ -141,4 +164,5 @@
 		</table>
 
 	</div>
+</cbd-async>
 </cfoutput>

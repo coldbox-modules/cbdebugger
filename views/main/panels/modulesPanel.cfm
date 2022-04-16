@@ -71,6 +71,7 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 	<div
 		class="cbd-contentView"
 		x-show="panelOpen"
+		x-cloak
 		x-transition
 	>
 
