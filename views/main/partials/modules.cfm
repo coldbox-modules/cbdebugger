@@ -50,8 +50,8 @@
 							return arrayContainsNoCase( thisModuleConfig.childModules, moduleKey );
 						} );
 					</cfscript>
-					<!--- Panel Header --->
-					<div
+					<!--- Child Modules --->
+					<child-module
 						x-data = "{
 							childModule : '',
 							toggleChildModule( moduleId ){
@@ -90,7 +90,7 @@
 								prePostExempt : true
 							)#
 						</div>
-					</div>
+					</child-module>
 				</cfif>
 
 			</td>
