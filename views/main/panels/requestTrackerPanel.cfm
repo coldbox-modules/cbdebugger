@@ -1,3 +1,4 @@
+<!--- Included by the debugger.cfm --->
 <cfoutput>
 <!--- Start Rendering the Execution Profiler panel  --->
 <div class="cbd-titles" onClick="cbdToggle( 'cbdRequestTracker' )">
@@ -180,6 +181,7 @@
 				view : "main/partials/profilerReport",
 				module : "cbdebugger",
 				args : {
+					debuggerService : args.debuggerService,
 					environment : args.environment,
 					profiler       : args.currentProfiler,
 					debuggerConfig : args.debuggerConfig,

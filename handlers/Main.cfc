@@ -11,13 +11,7 @@ component extends="coldbox.system.RestHandler" {
 	/**
 	 * Executes before all handler actions
 	 */
-	any function preHandler(
-		event,
-		rc,
-		prc,
-		action,
-		eventArguments
-	){
+	any function preHandler( event, rc, prc, action, eventArguments ){
 		// Global params
 		event.paramValue( "frequency", 0 ).paramValue( "isVisualizer", false );
 
@@ -53,24 +47,39 @@ component extends="coldbox.system.RestHandler" {
 		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
 
 		// Return the debugger layout+view
+		// We pass in all the variables needed, to avoid prc/rc conflicts
 		return renderLayout(
 			layout    : isVisualizer ? "Monitor" : "Main",
 			module    : "cbdebugger",
 			view      : "main/debugger",
 			viewModule: "cbdebugger",
 			args      : {
-				isVisualizer     : isVisualizer,
-				pageTitle        : "ColdBox Debugger",
-				debugStartTime   : getTickCount(),
-				refreshFrequency : rc.frequency,
-				urlBase          : event.buildLink( "" ),
-				moduleSettings   : variables.debuggerConfig.modules.enabled ? getSetting( "modules" ) : {},
-				debuggerConfig   : variables.debuggerConfig,
-				debuggerService  : variables.debuggerService,
-				environment      : variables.debuggerService.getEnvironment(),
-				profilers        : variables.debuggerService.getProfilerStorage(),
+				// Get the current profiler for the current request. Basically the first in the stack
 				currentProfiler  : variables.debuggerService.getCurrentProfiler(),
-				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes"
+				// Module Config
+				debuggerConfig   : variables.debuggerConfig,
+				// Service pointer
+				debuggerService  : variables.debuggerService,
+				// When debugging starts
+				debugStartTime   : getTickCount(),
+				// Env struct
+				environment      : variables.debuggerService.getEnvironment(),
+				// Visualizer mode or panel at bottom mode
+				isVisualizer     : isVisualizer,
+				// Manifest Root
+				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes",
+				// Module Root
+				moduleRoot       : event.getModuleRoot( "cbDebugger" ),
+				// All Module Settings
+				moduleSettings   : getSetting( "modules" ),
+				// Rendering page title
+				pageTitle        : "ColdBox Debugger",
+				// Profilers storage to display
+				profilers        : variables.debuggerService.getProfilerStorage(),
+				// Incoming frequency if in visualizer mode
+				refreshFrequency : rc.frequency,
+				// Url build base
+				urlBase          : event.buildLink( "" )
 			}
 		);
 	}
@@ -118,15 +127,9 @@ component extends="coldbox.system.RestHandler" {
 			default: {
 				arraySort( aProfilers, function( e1, e2 ){
 					if ( rc.sortOrder == "asc" ) {
-						return dateCompare(
-							arguments.e1.timestamp,
-							arguments.e2.timestamp
-						);
+						return dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
 					}
-					return dateCompare(
-						arguments.e2.timestamp,
-						arguments.e1.timestamp
-					);
+					return dateCompare( arguments.e2.timestamp, arguments.e1.timestamp );
 				} );
 				break;
 			}
@@ -152,10 +155,11 @@ component extends="coldbox.system.RestHandler" {
 			view  : "main/partials/profilerReport",
 			module: "cbdebugger",
 			args  : {
-				environment    : variables.debuggerService.getEnvironment(),
-				profiler       : variables.debuggerService.getProfilerById( rc.id ),
-				debuggerConfig : variables.debuggerConfig,
-				isVisualizer   : rc.isVisualizer
+				debuggerService : variables.debuggerService,
+				environment     : variables.debuggerService.getEnvironment(),
+				profiler        : variables.debuggerService.getProfilerById( rc.id ),
+				debuggerConfig  : variables.debuggerConfig,
+				isVisualizer    : rc.isVisualizer
 			},
 			prePostExempt: true
 		);

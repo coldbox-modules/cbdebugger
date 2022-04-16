@@ -1,3 +1,8 @@
+<!--- View Inputs --->
+<cfparam name="args.environment">
+<cfparam name="args.profiler">
+<cfparam name="args.debuggerConfig">
+<cfparam name="args.isVisualizer">
 <cfoutput>
 <div class="cbd-rounded mt10 mb10 cbd-reportContainer">
 
@@ -323,7 +328,7 @@
 			</div>
 		<cfelse>
 			<div class="cbd-text-red">
-				Profiler with ID: #rc.id# not found!
+				Profiler with ID: #encodeForHTML( rc.id )# not found!
 			</div>
 		</cfif>
 	</div>

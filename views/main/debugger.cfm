@@ -2,6 +2,19 @@
 This main debugger view collects all the different panels to present to the user
 We use cfinclude to be fast and sneaky
 --->
+<cfparam name="args.currentProfiler">
+<cfparam name="args.debuggerConfig">
+<cfparam name="args.debuggerService">
+<cfparam name="args.debugStartTime">
+<cfparam name="args.environment">
+<cfparam name="args.isVisualizer">
+<cfparam name="args.manifestRoot">
+<cfparam name="args.moduleRoot">
+<cfparam name="args.moduleSettings">
+<cfparam name="args.pageTitle">
+<cfparam name="args.profilers">
+<cfparam name="args.refreshFrequency">
+<cfparam name="args.urlBase">
 <cfoutput>
 <div>
 
@@ -37,7 +50,7 @@ We use cfinclude to be fast and sneaky
 
 	<!--- Debugger Version --->
 	<span class="mt10 mb10 cbd-floatRight">
-		ColdBox Debugger v#getModuleConfig( "cbdebugger" ).version#
+		ColdBox Debugger v#args.moduleSettings[ "cbdebugger" ].version#
 	</span>
 
 	<!--- Final Rendering --->
