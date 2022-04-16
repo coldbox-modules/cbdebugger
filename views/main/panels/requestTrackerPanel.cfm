@@ -171,7 +171,8 @@
 				args : {
 					environment : args.environment,
 					profilers : args.profilers,
-					debuggerConfig : args.debuggerConfig
+					debuggerConfig : args.debuggerConfig,
+					debuggerService : args.debuggerService
 				},
 				prePostExempt : true
 			)#

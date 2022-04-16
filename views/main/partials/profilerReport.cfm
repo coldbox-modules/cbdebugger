@@ -159,7 +159,8 @@
 				<!--- Event --->
 				#announce( "beforeProfilerReportPanels", {
 					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig
+					debuggerConfig : args.debuggerConfig,
+					debuggerService : args.debuggerService
 				} )#
 
 				<!--- **************************************************************--->
@@ -171,7 +172,8 @@
 						module : "cbdebugger",
 						args : {
 							debuggerConfig : args.debuggerConfig,
-							profiler : args.profiler
+							profiler : args.profiler,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -187,7 +189,8 @@
 					args : {
 						timers : args.profiler.timers,
 						debuggerConfig : args.debuggerConfig,
-						executionTime : args.profiler.executionTime
+						executionTime : args.profiler.executionTime,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -200,7 +203,8 @@
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig
+						debuggerConfig : args.debuggerConfig,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -213,7 +217,8 @@
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig
+						debuggerConfig : args.debuggerConfig,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -227,7 +232,8 @@
 						module : "cbdebugger",
 						args : {
 							tracers : args.profiler.tracers,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -256,7 +262,8 @@
 							args : {
 								collection : rc,
 								collectionType : "Public",
-								debuggerConfig : args.debuggerConfig
+								debuggerConfig : args.debuggerConfig,
+								debuggerService : args.debuggerService
 							},
 							prePostExempt : true
 						)#
@@ -267,7 +274,8 @@
 							args : {
 								collection : prc,
 								collectionType : "Private",
-								debuggerConfig : args.debuggerConfig
+								debuggerConfig : args.debuggerConfig,
+								debuggerService : args.debuggerService
 							},
 							prePostExempt : true
 						)#
@@ -283,7 +291,8 @@
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -298,7 +307,8 @@
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -313,7 +323,8 @@
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -322,7 +333,8 @@
 				<!--- Event --->
 				#announce( "afterProfilerReportPanels", {
 					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig
+					debuggerConfig : args.debuggerConfig,
+					debuggerService : args.debuggerService
 				} )#
 
 			</div>

@@ -513,7 +513,7 @@ component
 	 *
 	 * @return coldbox.system.web.context.ExceptionBean
 	 */
-	function getExceptionBeanHelper(){
+	function getExceptionBean(){
 		if ( isNull( variables.exceptionBean ) ) {
 			variables.exceptionBean = new coldbox.system.web.context.ExceptionBean();
 		}
