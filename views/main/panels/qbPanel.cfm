@@ -4,7 +4,6 @@
 	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
 	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
-	exceptionBean = new coldbox.system.web.context.ExceptionBean();
 	appPath = getSetting( "ApplicationPath" );
 </cfscript>
 <cfoutput>
@@ -158,14 +157,14 @@
 																		<!--- Title --->
 																		<strong>Called From: </strong>
 																		<!--- Open in Editor--->
-																		<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+																		<cfif args.debuggerService.openInEditorURL( event, q.caller ) NEQ "">
 																			<div class="cbd-floatRight">
 																				<a
 																					class="cbd-button"
 																					target="_self"
 																					rel   ="noreferrer noopener"
 																					title="Open in Editor"
-																					href="#exceptionBean.openInEditorURL( event, q.caller )#"
+																					href="#args.debuggerService.openInEditorURL( event, q.caller )#"
 																				>
 																					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 																						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -239,14 +238,14 @@
 													<!--- Title --->
 													<strong>Called From: </strong>
 													<!--- Open in Editor--->
-													<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+													<cfif args.debuggerService.openInEditorURL( event, q.caller ) NEQ "">
 														<div class="cbd-floatRight">
 															<a
 																class="cbd-button"
 																target="_self"
 																rel   ="noreferrer noopener"
 																title="Open in Editor"
-																href="#exceptionBean.openInEditorURL( event, q.caller )#"
+																href="#args.debuggerService.openInEditorURL( event, q.caller )#"
 															>
 																<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />

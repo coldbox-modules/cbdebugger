@@ -18,6 +18,8 @@ component
 
 	property name="timerService"       inject="Timer@cbdebugger";
 	property name="interceptorService" inject="coldbox:interceptorService";
+	property name="jsonFormatter"      inject="JSONPrettyPrint@JSONPrettyPrint";
+	property name="sqlFormatter"       inject="sqlFormatter@cbdebugger";
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -481,6 +483,41 @@ component
 	 */
 	function getThreadName(){
 		return getCurrentThread().getName();
+	}
+
+	/**
+	 * Process Stack trace for errors
+	 *
+	 * @str The stacktrace to process
+	 *
+	 * @return The nicer trace
+	 */
+	function processStackTrace( required str ){
+		return getExceptionBean().processStackTrace( argumentCollection = arguments );
+	}
+
+	/**
+	 * Compose a screen for a file to open in an editor
+	 *
+	 * @event    The request context
+	 * @instance An instance of a tag context array
+	 *
+	 * @return The string for the IDE
+	 */
+	function openInEditorURL( required event, required struct instance ){
+		return getExceptionBean().openInEditorURL( argumentCollection = arguments );
+	}
+
+	/**
+	 * Get the exception bean helper lazy loaded
+	 *
+	 * @return coldbox.system.web.context.ExceptionBean
+	 */
+	function getExceptionBeanHelper(){
+		if ( isNull( variables.exceptionBean ) ) {
+			variables.exceptionBean = new coldbox.system.web.context.ExceptionBean();
+		}
+		return variables.exceptionBean;
 	}
 
 	/**

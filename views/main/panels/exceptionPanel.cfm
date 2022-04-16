@@ -1,4 +1,3 @@
-<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
 <cfset exceptionKeys = args.profiler.exception.keyArray()>
 <cfset exceptionKeys.sort( "textnocase" )>
 <cfoutput>
@@ -25,7 +24,7 @@
 								<cfif isSimpleValue( args.profiler.exception[ thisItem ] )>
 
 									<cfif thisItem eq "stacktrace">
-										<code><pre>#exceptionBean.processStackTrace( args.profiler.exception[ thisItem ] )#</pre></code>
+										<code><pre>#args.debuggerService.processStackTrace( args.profiler.exception[ thisItem ] )#</pre></code>
 									<cfelse>
 										#args.profiler.exception[ thisItem ]#
 									</cfif>
@@ -39,14 +38,14 @@
 											<div class="mb10 mt10 cbd-params">
 
 												<!--- Open in Editor--->
-												<cfif exceptionBean.openInEditorURL( event, thisTagContext ) NEQ "">
+												<cfif args.debuggerService.openInEditorURL( event, thisTagContext ) NEQ "">
 													<div class="cbd-floatRight">
 														<a
 															class="cbd-button"
 															target="_self"
 															rel   ="noreferrer noopener"
 															title="Open in Editor"
-															href="#exceptionBean.openInEditorURL( event, thisTagContext )#"
+															href="#args.debuggerService.openInEditorURL( event, thisTagContext )#"
 														>
 															<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 																<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
