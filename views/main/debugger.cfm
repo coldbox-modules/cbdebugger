@@ -17,7 +17,6 @@ We use cfinclude to be fast and sneaky
 <cfparam name="args.urlBase">
 <cfoutput>
 <div>
-
 	<!--- **************************************************************--->
 	<!--- REQUEST TRACKER REPORTS --->
 	<!--- **************************************************************--->

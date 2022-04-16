@@ -166,14 +166,6 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * Reload all modules
-	 */
-	function reloadAllModules( event, rc, prc ){
-		variables.controller.getModuleService().reloadAll();
-		event.getResponse().addMessage( "Modules Reloaded!" );
-	}
-
-	/**
 	 * Unload a modules
 	 */
 	function unloadModule( event, rc, prc ){

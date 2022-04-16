@@ -21,6 +21,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Actually show a 404 if debug mode is off
 * JS Bumps
 
+### Removed
+
+* Reload all modules. Makes no sense as you can just reinit.
 
 ----
 

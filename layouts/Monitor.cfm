@@ -2,7 +2,6 @@
 <cfoutput>
 <!--- Incoming Refresh Frequency --->
 <cfparam name="args.refreshFrequency" default="0">
-
 <!--- If we are in standalone mode, produce the full HTML Layout --->
 <html>
 	<head>
@@ -16,13 +15,17 @@
 	</head>
 	<body>
 		<div
+			x-data = "{
+				appUrl : '#encodeForJavaScript( event.buildLink( '' ) )#'
+			}"
 			class="cbd-debugger"
 			id="cbd-debugger"
-			data-appurl="#event.buildLink( '' )#">
-
+			data-appurl="#event.buildLink( '' )#"
+		>
 			<!--- Event --->
 			#announce( "beforeDebuggerPanel", {
-				debuggerConfig : args.debuggerConfig
+				debuggerConfig : args.debuggerConfig,
+				debuggerService : args.debuggerService
 			} )#
 
 			<!--- Rendering --->
@@ -32,7 +35,8 @@
 
 			<!--- Event --->
 			#announce( "afterDebuggerPanel", {
-				debuggerConfig : args.debuggerConfig
+				debuggerConfig : args.debuggerConfig,
+				debuggerService : args.debuggerService
 			} )#
 		</div>
 
