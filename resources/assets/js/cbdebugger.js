@@ -11,9 +11,7 @@ Alpine.start();
 /**
  * Listen to dom load
  */
-window.document.addEventListener( "DOMContentLoaded",function(){
-	console.log( "ColdBox Debugger Loaded!" );
-} );
+window.onload = ()=> console.log( "ColdBox Debugger Loaded!" );
 
 /**
  * Scroll to the top of the profiler report

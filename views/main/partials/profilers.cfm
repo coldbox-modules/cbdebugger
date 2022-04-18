@@ -28,7 +28,10 @@
 		</tr>
 
 		<cfloop array="#args.profilers#" index="thisProfiler">
-			<tr <cfif thisProfiler.response.statusCode gte 400>class="cbd-bg-light-red"</cfif>>
+			<tr
+				@dblclick="loadProfilerReport( '#thisProfiler.id#' )"
+				<cfif thisProfiler.response.statusCode gte 400>class="cbd-bg-light-red"</cfif>
+			>
 
 				<!--- TIMESTAMP + IP --->
 				<td align="left">
