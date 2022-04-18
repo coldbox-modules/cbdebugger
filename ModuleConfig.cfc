@@ -261,9 +261,9 @@ component {
 					);
 			}
 
-			/******************** CFSQL COLLECTOR ************************************/
+			/******************** ACFSQL COLLECTOR ************************************/
 
-			if ( variables.settings.acfSql.enabled ) {
+			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) ) {
 				controller
 					.getInterceptorService()
 					.registerInterceptor(
