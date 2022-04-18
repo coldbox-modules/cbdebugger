@@ -313,8 +313,8 @@ component {
 		controller
 			.getInterceptorService()
 			.registerInterceptor(
-				interceptorObject : new coldbox.system.aop.Mixer().configure( wirebox, {} ),
-				interceptorName : "AOPMixer"
+				interceptorObject: new coldbox.system.aop.Mixer().configure( wirebox, {} ),
+				interceptorName  : "AOPMixer"
 			);
 	}
 
