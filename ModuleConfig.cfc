@@ -263,13 +263,16 @@ component {
 
 			/******************** ACFSQL COLLECTOR ************************************/
 
-			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) ) {
+			// Do not load on lucee or ACF 2016
+			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016" ) {
 				controller
 					.getInterceptorService()
 					.registerInterceptor(
 						interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
 						interceptorName  = "ACFSqlCollector@cbdebugger"
 					);
+			} else {
+				variables.settings.acfSql.enabled = false;
 			}
 		}
 		// end master switch

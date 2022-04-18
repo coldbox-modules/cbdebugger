@@ -1,8 +1,8 @@
 <cfscript>
 	sqlFormatter = getInstance( "SqlFormatter@cbdebugger" );
 	jsonFormatter = getInstance( '@JSONPrettyPrint' );
-	isQuickInstalled = getController().getModuleService().isModuleRegistered( "quick" );
-	isQBInstalled = getController().getModuleService().isModuleRegistered( "qb" );
+	isQuickInstalled = controller.getModuleService().isModuleRegistered( "quick" );
+	isQBInstalled = controller.getModuleService().isModuleRegistered( "qb" );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;
 	appPath = getSetting( "ApplicationPath" );
 </cfscript>
