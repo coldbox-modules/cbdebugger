@@ -1,10 +1,12 @@
 <!--- Included by the debugger.cfm --->
 <cfoutput>
-<cbd-request-tracker
+<div
+	id="cbd-request-tracker"
 	x-data = "{
 		panelOpen : #args.debuggerConfig.requestTracker.expanded ? 'true' : 'false'#,
 		refreshFrequency : #args.refreshFrequency#,
 		usingReinitPassword : #controller.getSetting( 'ReinitPassword' ).length() ? 'true' : 'false'#,
+		isVisualizer : #args.isVisualizer ? 'true' : 'false'#,
 
 		reinitFramework(){
 			$refs.reinitLoader.classList.add( 'cbd-spinner' )
@@ -23,6 +25,23 @@
 				}
 				$refs.reinitLoader.classList.remove( 'cbd-spinner' )
 			})
+		},
+		loadProfilerReport( id ){
+			fetch( `${this.appUrl}cbDebugger/renderProfilerReport`, {
+				method: 'POST',
+				headers : {
+					'x-Requested-With' : 'XMLHttpRequest'
+				},
+				body: JSON.stringify( {
+					id : id,
+					isVisualizer : this.isVisualizer
+				} )
+			} )
+			.then( response => response.text() )
+				.then( html => {
+					$refs[ 'cbd-profilers' ].innerHTML = html
+					window.cbdScrollTo( 'cbd-request-tracker' )
+				} )
 		},
 		refreshProfilers(){
 			$refs.refreshLoader.classList.add( 'cbd-spinner' )

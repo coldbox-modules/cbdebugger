@@ -8,45 +8,22 @@ window.Alpine = Alpine;
 Alpine.plugin( morph );
 Alpine.start();
 
-$cb( document ).ready( function(){
-	window.cbDebuggerUrl = $cb( "#cbd-debugger" ).data().appurl;
-	console.log( "ColdBox Debugger Loaded at " + window.cbDebuggerUrl );
-} );
-
 /**
- * Send an ajax command to render the profilers
+ * Listen to dom load
  */
-window.cbdRefreshProfilers = function(){
-	$cb( "#cbd-buttonRefreshProfilers > svg" ).addClass( "cbd-spinner" );
-	$cb.get( cbDebuggerUrl + "cbDebugger/renderProfilers", ( response ) => {
-		$cb( "#cbd-buttonRefreshProfilers > svg" ).removeClass( "cbd-spinner" );
-		$cb( "#cbd-profilers" ).html( response );
-	} );
-};
+window.document.addEventListener( "DOMContentLoaded",function(){
+	console.log( "ColdBox Debugger Loaded!" );
+} );
 
 /**
  * Scroll to the top of the profiler report
  */
-window.cbdScrollToProfilerReport = function(){
-	$cb( document ).scrollTop( $cb( "#cbd-profilers" ).offset().top - 10 );
-};
-
-/**
- * Send an ajax command to render the profiler report from the visualizer
- * @param {*} id The profiler id to load
- * @param {*} isVisualizer Are we in visualizer mode or not
- */
-window.cbdGetProfilerReport = function( id, isVisualizer ){
-	$cb( "#cbd-buttonGetProfilerReport-" + id + " > svg" ).addClass( "cbd-spinner" );
-	$cb.get(
-		cbDebuggerUrl + "cbDebugger/renderProfilerReport",
-		{ id: id, isVisualizer: isVisualizer || false },
-		( response ) => {
-			$cb( "#cbd-profilers" ).html( response );
-			$cb( "#cbd-buttonGetProfilerReport-" + id + " > svg" ).removeClass( "cbd-spinner" );
-			cbdScrollToProfilerReport();
-		}
-	);
+window.cbdScrollTo = function( id ){
+	let top = id == undefined ? 0 : document.getElementById( id ).offsetTop - 10;
+	window.scroll( {
+		top      : top,
+		behavior : "smooth"
+	} );
 };
 
 

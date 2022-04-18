@@ -4,7 +4,13 @@
 <cfparam name="args.debuggerConfig">
 <cfparam name="args.isVisualizer">
 <cfoutput>
-<div class="cbd-rounded mt10 mb10 cbd-reportContainer">
+<div
+	id="cbd-profiler-report"
+	class="cbd-rounded mt10 mb10 cbd-reportContainer"
+	x-data="{
+
+	}"
+>
 
 	<!--- Header Panel --->
 	<div class="pl10 pr10 pt5 cbd-reportHeader">
@@ -16,24 +22,13 @@
 				<button
 					type="button"
 					title="Back to profilers"
-					id="cbd-buttonBackToProfilers"
-					onClick="cbdRefreshProfilers()"
+					@click="refreshProfilers"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
 					</svg>
 				</button>
 			</cfif>
-			<button
-				type="button"
-				title="Reload Report"
-				id="cbd-buttonGetProfilerReport-#args.profiler.id#"
-				onClick="cbdGetProfilerReport( '#args.profiler.id#', #args.isVisualizer ? 'true' : 'false'# )"
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-				</svg>
-			</button>
 		</div>
 
 		<h4>
@@ -350,7 +345,7 @@
 		<button
 			type="button"
 			title="Got to top of report"
-			onClick="cbdScrollToProfilerReport()"
+			onClick="cbdScrollTo( 'cbd-request-tracker' )"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
