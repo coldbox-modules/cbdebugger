@@ -14,22 +14,6 @@ $cb( document ).ready( function(){
 } );
 
 /**
- * Send an ajax command to clear the profilers
- */
-window.cbdClearProfilers = function(){
-	$cb( "#cbd-buttonClearProfilers > svg" ).addClass( "cbd-spinner" );
-	$cb.getJSON( cbDebuggerUrl + "cbDebugger/clearProfilers", ( data ) => {
-		if ( data.error ){
-			alert( data.messages.toString() );
-		} else {
-			$cb( "#cbd-profilers" ).html( data.messages.toString() );
-		}
-		$cb( "#cbd-buttonClearProfilers > svg" ).removeClass( "cbd-spinner" );
-		cbdRefreshProfilers();
-	} );
-};
-
-/**
  * Send an ajax command to render the profilers
  */
 window.cbdRefreshProfilers = function(){
@@ -65,30 +49,6 @@ window.cbdGetProfilerReport = function( id, isVisualizer ){
 	);
 };
 
-/**
- * Activate the request tracker monitor reloading frequency
- * @param {*} frequency The frequency in seconds to refresh
- */
-window.cbdStartDebuggerMonitor = function( frequency ){
-	if ( frequency == 0 ){
-		cbdStopDebuggerMonitor();
-		return;
-	}
-	window.cbdRefreshMonitor = setInterval( cbdRefreshProfilers, frequency * 1000 );
-
-	// Start it
-	console.log( "Started ColdBox Debugger Profiler Refresh using " + frequency + " seconds" );
-};
-
-/**
- * Stop the debugger refresh monitor
- */
-window.cbdStopDebuggerMonitor = function(){
-	if ( "cbdRefreshMonitor" in window ){
-		clearInterval( window.cbdRefreshMonitor );
-		console.log( "Stopped ColdBox Debugger Profiler Refresh" );
-	}
-};
 
 /****************** MIGRATE BELOW ****************/
 
@@ -126,22 +86,6 @@ window.cbdOpenWindow = function( mypage, myname, w, h, features ) {
 	settings += features;
 	win = window.open( mypage,myname,settings );
 	win.window.focus();
-};
-
-/**
- * Reinit ColdBox by submitting the reinit form
- * @param {*} usingPassword Are we using a password or not, if we do we ask the user for it
- */
-window.cbdReinitFramework = function( usingPassword ){
-	var reinitForm = document.getElementById( "cbdReinitColdBox" );
-	if ( usingPassword ){
-		reinitForm.fwreinit.value = prompt( "Reinit Password?" );
-		if ( reinitForm.fwreinit.value.length ){
-			reinitForm.submit();
-		}
-	} else {
-		reinitForm.submit();
-	}
 };
 
 /**

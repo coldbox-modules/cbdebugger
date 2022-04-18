@@ -17,7 +17,7 @@ component extends="coldbox.system.RestHandler" {
 
 		// Don't show cf debug on ajax calls
 		if ( event.isAjax() ) {
-			cfsetting( showdebugoutput = "false" );
+			setting showdebugoutput=false;
 		}
 
 		// If not enabled, just 404 it
@@ -45,7 +45,7 @@ component extends="coldbox.system.RestHandler" {
 	function renderDebugger( event, rc, prc ){
 		// are we in visualizer mode?
 		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
-
+		setting showdebugoutput=false;
 		// Return the debugger layout+view
 		// We pass in all the variables needed, to avoid prc/rc conflicts
 		return renderLayout(
@@ -134,7 +134,6 @@ component extends="coldbox.system.RestHandler" {
 				break;
 			}
 		}
-
 		return renderView(
 			view  : "main/partials/profilers",
 			module: "cbdebugger",
