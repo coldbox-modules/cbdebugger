@@ -8,15 +8,7 @@ elixir.config.mergeConfig( {
 			"$"             : "jquery",
 			"jQuery"        : "jquery",
 			"window.jQuery" : "jquery",
-			"window.$"      : "jquery",
-			"Vue"           : [
-				"vue/dist/vue.esm.js",
-				"default"
-			],
-			"window.Vue" : [
-				"vue/dist/vue.esm.js",
-				"default"
-			]
+			"window.$"      : "jquery"
 		} )
 	],
 	module : {
