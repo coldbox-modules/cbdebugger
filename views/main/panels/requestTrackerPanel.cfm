@@ -6,9 +6,9 @@
 		refreshFrequency : #args.refreshFrequency#,
 
 		refreshProfilers(){
+			console.log( 'refreshing profilers ' + this.appUrl )
 			fetch( `${this.appUrl}cbDebugger/renderProfilers` )
-				.then( response => response.json() )
-				.then( data => $refs[ 'cbd-profilers' ].innerHTML = data )
+				.then( response => $refs[ 'cbd-profilers' ].innerHTML = response )
 		},
 		stopDebuggerMonitor(){
 			if ( 'cbdRefreshMonitor' in window ){
@@ -20,19 +20,19 @@
 			if ( frequency == 0 ){
 				return this.stopDebuggerMonitor()
 			}
-			window.cbdRefreshMonitor = setInterval( cbdRefreshProfilers, frequency * 1000 );
+			window.cbdRefreshMonitor = setInterval( this.refreshProfilers, frequency * 1000 );
 			console.log( 'Started ColdBox Debugger Profiler Refresh using ' + frequency + ' seconds' );
 		}
 	}"
 >
-	<!--- Start Rendering the Execution Profiler panel  --->
+	<!--- Title --->
 	<div
 		class="cbd-titles"
 		@click="panelOpen=!panelOpen"
 	>
 		<div class="cbd-flex ml5">
 			<div>
-				<img src="#event.getModuleRoot( 'cbDebugger' )#/includes/images/coldbox_16.png" class="">
+				<img src="#args.moduleRoot#/includes/images/coldbox_16.png" class="">
 			</div>
 
 			<div class="ml5">
@@ -68,6 +68,7 @@
 		</div>
 	</div>
 
+	<!--- Panel --->
 	<div
 		class="cbd-contentView"
 		x-show="panelOpen"
@@ -102,8 +103,7 @@
 					<button
 						type="button"
 						title="Refresh the profilers"
-						id="cbd-buttonRefreshProfilers"
-						onClick="cbdRefreshProfilers()"
+						@click="refreshProfilers"
 					>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />

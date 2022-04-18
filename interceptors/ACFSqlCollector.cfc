@@ -19,7 +19,7 @@ component extends="coldbox.system.Interceptor" {
 		// Get the debugger but verify it, since if it is recently enabled it might be null
 		variables.acfDebugger = variables.acfDebuggingService.getDebugger();
 		if ( isNull( variables.acfDebugger ) ) {
-			variables.acfDebuggingService.reset( javacast( "int", 1 ) )
+			variables.acfDebuggingService.reset( javacast( "int", 1 ) );
 			variables.acfDebugger = variables.acfDebuggingService.getDebugger();
 		}
 	}
