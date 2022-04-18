@@ -1,6 +1,8 @@
 import $cb from "jquery";
 import Alpine from "alpinejs";
-import morph from "@alpinejs/morph";
+// Using common js due to NOT being on webpack5, the esm was giving us issues
+// Once we update to elixir 4, try it again
+import morph from "@alpinejs/morph/dist/module.cjs";
 
 window.Alpine = Alpine;
 Alpine.plugin( morph );
