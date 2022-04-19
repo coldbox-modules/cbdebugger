@@ -19,8 +19,7 @@
     },
     "dependencies": {
         "@alpinejs/morph": "^3.9.6",
-        "alpinejs": "^3.9.6",
-        "jquery": "^3.6.0"
+        "alpinejs": "^3.9.6"
     },
     "scripts": {
         "dev": "cross-env NODE_ENV=development webpack --env.NODE_ENV=development --hide-modules",
