@@ -254,6 +254,9 @@
 					<tbody>
 						<cfloop query="#args.profiler.cfQueries.all#">
 							<cfset q = args.profiler.cfQueries.all>
+							<cfif q.type neq "SqlQuery">
+								<cfcontinue>
+							</cfif>
 							<cfset rowId = createUUID()>
 							<tr>
 								<td align="center">
