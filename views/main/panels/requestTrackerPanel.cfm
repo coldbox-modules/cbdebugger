@@ -102,7 +102,11 @@
 				ColdBox Request Tracker
 
 				<!--- If not expanded and not in visualizer mode --->
-				<cfif !args.debuggerConfig.requestTracker.expanded && !args.isVisualizer>
+				<span
+					x-show="!panelOpen && !isVisualizer"
+					x-cloak
+					x-transition
+				>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
 					</svg>
@@ -126,7 +130,7 @@
 					</svg>
 
 					#numberFormat( args.currentProfiler.executionTime )# ms
-				</cfif>
+				</span>
 			</div>
 		</div>
 	</div>
