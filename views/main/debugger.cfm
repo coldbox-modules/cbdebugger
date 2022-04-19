@@ -55,7 +55,7 @@ We use cfinclude to be fast and sneaky
 	<!--- Final Rendering --->
 	<div class="mt10 mb10">
 		<em>
-			Debug Rendering Time: #getTickCount() - args.debugStartTime# ms
+			Debug Rendering Time: #numberFormat( getTickCount() - args.debugStartTime )# ms
 		</em>
 	</div>
 </div>
