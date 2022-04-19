@@ -257,7 +257,7 @@
 								</td>
 
 								<td align="center">
-									#numberFormat( q.endTime - q.startTime )# ms
+									#numberFormat( ( q.endTime - q.startTime ) )# ms
 								</td>
 
 								<td align="center">
