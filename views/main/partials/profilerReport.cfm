@@ -1,4 +1,5 @@
 <!--- View Inputs --->
+<cfparam name="args.debuggerService">
 <cfparam name="args.environment">
 <cfparam name="args.profiler">
 <cfparam name="args.debuggerConfig">
@@ -8,21 +9,36 @@
 	id="cbd-profiler-report"
 	class="cbd-rounded mt10 mb10 cbd-reportContainer"
 	x-data="{
-
+		profilerId : '#args.profiler.id#'
 	}"
 >
 
 	<!--- Header Panel --->
 	<div class="pl10 pr10 pt5 cbd-reportHeader">
 
-		<!--- Reload Report Button --->
+		<!--- Toolbar --->
 		<div class="cbd-floatRight">
-			<!--- Back Only on Ajax --->
+			<!--- VISUALIZER TOOLBAR --->
 			<cfif args.isVisualizer>
+
+				<button
+					type="button"
+					title="Refresh"
+					@click="loadProfilerReport( profilerId )"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+					</svg>
+				</button>
+
 				<button
 					type="button"
 					title="Back to profilers"
-					@click="refreshProfilers"
+					@click="refreshProfilers()"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
@@ -163,7 +179,7 @@
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
 					#renderView(
-						view : "main/panels/exceptionPanel",
+						view : "main/panels/requestTracker/exceptionPanel",
 						module : "cbdebugger",
 						args : {
 							debuggerConfig : args.debuggerConfig,
@@ -179,7 +195,7 @@
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/debugTimersPanel",
+					view : "main/panels/requestTracker/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
 						timers : args.profiler.timers,
@@ -194,7 +210,7 @@
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/coldboxPanel",
+					view : "main/panels/requestTracker/coldboxPanel",
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,
@@ -208,7 +224,7 @@
 				<!--- HTTP Request Data --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/httpRequestPanel",
+					view : "main/panels/requestTracker/httpRequestPanel",
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,

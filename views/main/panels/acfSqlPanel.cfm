@@ -1,8 +1,9 @@
 <cfparam name="args.profiler">
 <cfparam name="args.debuggerConfig">
+<cfparam name="args.debuggerService">
 <cfscript>
-	sqlFormatter = getInstance( "SqlFormatter@cbdebugger" );
-	jsonFormatter = getInstance( '@JSONPrettyPrint' );
+	sqlFormatter = args.debuggerService.getSqlFormatter();
+	jsonFormatter = args.debuggerService.getjsonFormatter();
 	appPath = getSetting( "ApplicationPath" );
 </cfscript>
 

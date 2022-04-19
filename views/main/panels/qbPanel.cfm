@@ -1,6 +1,9 @@
+<cfparam name="args.profiler">
+<cfparam name="args.debuggerConfig">
+<cfparam name="args.debuggerService">
 <cfscript>
-	sqlFormatter = getInstance( "SqlFormatter@cbdebugger" );
-	jsonFormatter = getInstance( '@JSONPrettyPrint' );
+	sqlFormatter = args.debuggerService.getSqlFormatter();
+	jsonFormatter = args.debuggerService.getjsonFormatter();
 	isQuickInstalled = controller.getModuleService().isModuleRegistered( "quick" );
 	isQBInstalled = controller.getModuleService().isModuleRegistered( "qb" );
 	totalEntities = args.profiler.keyExists( "quick" ) ? args.profiler.quick.total : 0;

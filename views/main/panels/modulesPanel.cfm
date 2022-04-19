@@ -17,7 +17,8 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 } );
 </cfscript>
 <cfoutput>
-<cbd-modules
+<div
+	id="cbd-modules"
 	x-data="{
 		panelOpen : #args.debuggerConfig.modules.expanded ? 'true' : 'false'#,
 		isLoading : false,
@@ -106,5 +107,5 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 		)#
 
 	</div>
-</cbd-modules>
+</div>
 </cfoutput>

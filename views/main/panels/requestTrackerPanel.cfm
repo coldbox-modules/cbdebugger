@@ -279,7 +279,7 @@
 			id="cbd-profilers"
 			x-ref="cbd-profilers"
 		>
-			<!--- Render Profilers or a single report --->
+			<!--- If visualizer, show all the profilers--->
 			<cfif args.isVisualizer>
 				#renderView(
 					view : "main/partials/profilers",
@@ -292,8 +292,8 @@
 					},
 					prePostExempt : true
 				)#
+			<!--- Else it's a single report request --->
 			<cfelse>
-				<!--- Render Profiler Report --->
 				#renderView(
 					view : "main/partials/profilerReport",
 					module : "cbdebugger",

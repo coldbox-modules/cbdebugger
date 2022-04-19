@@ -51,7 +51,7 @@
 						} );
 					</cfscript>
 					<!--- Child Modules --->
-					<child-module
+					<cbd-child-module
 						x-data = "{
 							childModule : '',
 							toggleChildModule( moduleId ){
@@ -90,7 +90,7 @@
 								prePostExempt : true
 							)#
 						</div>
-					</child-module>
+					</cbd-child-module>
 				</cfif>
 
 			</td>
