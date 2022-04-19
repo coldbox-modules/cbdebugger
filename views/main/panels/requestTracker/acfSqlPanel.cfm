@@ -9,7 +9,8 @@
 
 <cfoutput>
 <!--- Panel Component --->
-<acf-sql-panel
+<div
+	id="cbd-acfsql-panel"
 	x-data="{
 		panelOpen : #args.debuggerConfig.acfSql.expanded ? 'true' : 'false'#,
 		queryView : 'grouped',
@@ -51,7 +52,9 @@
 	<!--- Panel Content --->
 	<div
 		class="cbd-contentView p20"
+		id="cbd-acsqlData"
 		x-show="panelOpen"
+		x-cloak
 		x-transition
 	>
 
@@ -84,8 +87,8 @@
 				Grouped
 			</button>
 			<button
-			:class="{ 'cbd-selected' : isTimelineView() }"
-			@click="queryView='timeline'"
+				:class="{ 'cbd-selected' : isTimelineView() }"
+				@click="queryView='timeline'"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -344,6 +347,6 @@
 		</cfif>
 	</div>
 
-</acf-sql-panel>
+</div>
 <!--- End acfsql component --->
 </cfoutput>

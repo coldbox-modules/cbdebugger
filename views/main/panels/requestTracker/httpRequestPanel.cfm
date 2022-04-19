@@ -27,7 +27,7 @@
 	<!--- Panel --->
 	<div
 		class="cbd-contentView"
-		id="cbd-requestInfo"
+		id="cbd-httpData"
 		x-transition
 		x-cloak
 		x-show="panelOpen"

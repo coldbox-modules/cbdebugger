@@ -239,9 +239,10 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.tracers.enabled>
 					#renderView(
-						view : "main/panels/tracersPanel",
+						view : "main/panels/requestTracker/tracersPanel",
 						module : "cbdebugger",
 						args : {
+							profiler : args.profiler,
 							tracers : args.profiler.tracers,
 							debuggerConfig : args.debuggerConfig,
 							debuggerService : args.debuggerService
@@ -298,7 +299,7 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.acfSql.enabled>
 					#renderView(
-						view : "main/panels/acfSqlPanel",
+						view : "main/panels/requestTracker/acfSqlPanel",
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
@@ -314,7 +315,7 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>
 					#renderView(
-						view : "main/panels/cbormPanel",
+						view : "main/panels/requestTracker/cbormPanel",
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
@@ -330,7 +331,7 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.qb.enabled>
 					#renderView(
-						view : "main/panels/qbPanel",
+						view : "main/panels/requestTracker/qbPanel",
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,

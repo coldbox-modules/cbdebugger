@@ -6,10 +6,25 @@
 	jsonFormatter = args.debuggerService.getjsonFormatter();
 	appPath = getSetting( "ApplicationPath" );
 </cfscript>
-
 <cfoutput>
+<div
+	id="cbd-cborm-panel"
+	x-data="{
+		panelOpen : #args.debuggerConfig.cborm.expanded ? 'true' : 'false'#,
+		queryView : 'grouped',
+		isGroupView(){
+			return this.queryView == 'grouped'
+		},
+		isTimelineView(){
+			return this.queryView == 'timeline'
+		}
+	}"
+>
 	<!--- Panel Title --->
-	<div class="cbd-titles"  onClick="cbdToggle( 'cbdCBOrmPanel' )" >
+	<div
+		class="cbd-titles"
+		@click="panelOpen=!panelOpen"
+	>
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
@@ -34,8 +49,11 @@
 
 	<!--- Panel Content --->
 	<div
-		class="cbd-contentView<cfif args.debuggerConfig.cborm.expanded> cbd-show<cfelse> cbd-hide</cfif>"
-		id="cbdCBOrmPanel"
+		class="cbd-contentView"
+		id="cbd-cbormData"
+		x-transition
+		x-cloak
+		x-show="panelOpen"
 	>
 
 		<!--- Info Bar --->
@@ -58,9 +76,8 @@
 		<!--- ToolBar --->
 		<div class="p10">
 			<button
-				class="cbd-selected"
-				id="cbdButtonGroupedOrmQueries"
-				onClick="cbdShowGroupedOrmQueries()"
+				:class="{ 'cbd-selected' : isGroupView() }"
+				@click="queryView='grouped'"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -68,9 +85,8 @@
 				Grouped
 			</button>
 			<button
-				class=""
-				id="cbdButtonTimelineOrmQueries"
-				onClick="cbdShowTimelineOrmQueries()"
+				:class="{ 'cbd-selected' : isTimelineView() }"
+				@click="queryView='timeline'"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -88,7 +104,10 @@
 		<cfelse>
 
 			<!--- Grouped Queries --->
-			<div id="cbdGroupedOrmQueries">
+			<div
+				x-show="isGroupView"
+				x-transition
+			>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 					<thead>
 						<tr>
@@ -215,7 +234,10 @@
 			<!--- End Grouped Queries --->
 
 			<!--- Timeline Queries --->
-			<div id="cbdTimelineOrmQueries" class="cbd-hide">
+			<div
+				x-show="isTimelineView"
+				x-transition
+			>
 				<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 					<thead>
 						<tr>
@@ -370,4 +392,5 @@
 			</table>
 		</div>
 	</div>
+</div>
 </cfoutput>
