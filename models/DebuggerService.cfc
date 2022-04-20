@@ -124,7 +124,7 @@ component
 			current debugPassword and a random salt.  The salt also protects against someone being able to
 			reverse engineer the orignal password from an intercepted cookie value.
 		*/
-		var salt            = createUUID();
+		var salt            = variables.uuid.randomUUID();
 		variables.secretKey =
 		hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" );
 		return this;
@@ -172,7 +172,8 @@ component
 	}
 
 	/**
-	 * Create a new request tracking structure
+	 * Create a new request tracking structure. Called by the Request collector when it's ready
+	 * to start tracking
 	 *
 	 * @event The ColdBox context we will start the tracker on
 	 */
@@ -202,7 +203,7 @@ component
 			"httpReferer" : cgi.HTTP_REFERER,
 			"formData"    : serializeJSON( form ?: {} ),
 			"inetHost"    : discoverInetHost(),
-			"localIp"     : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
+			"localIp"     : getServerIp()
 		};
 
 		// Event before recording
@@ -436,10 +437,33 @@ component
 	 */
 	function discoverInetHost(){
 		try {
-			return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
+			return getInetAddress().getLocalHost().getHostName();
 		} catch ( any e ) {
 			return cgi.SERVER_NAME;
 		}
+	}
+
+	/**
+	 * Get the server IP Address
+	 */
+	string function getServerIp(){
+		try {
+			return getInetAddress().getLocalHost().getHostAddress();
+		} catch ( any e ) {
+			return "0.0.0.0";
+		}
+	}
+
+	/**
+	 * Get the Java InetAddress object
+	 *
+	 * @return java.net.InetAddress
+	 */
+	private function getInetAddress(){
+		if ( isNull( variables.inetAddress ) ) {
+			variables.inetAddress = createObject( "java", "java.net.InetAddress" );
+		}
+		return variables.inetAddress;
 	}
 
 	/**

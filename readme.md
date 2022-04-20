@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.com/coldbox-modules/cbox-debugger)
+[![cbdebugger CI](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml)
 
 # Welcome To The ColdBox Debugger Module
 
@@ -28,7 +28,7 @@ Apache License, Version 2.0.
 
 ## Important Links
 
-- Source: https://github.com/coldbox-modules/cbox-debugger
+- Source: https://github.com/coldbox-modules/cbdebugger
 - ForgeBox: https://www.forgebox.io/view/cbdebugger
 - Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
 - Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
@@ -37,14 +37,20 @@ Apache License, Version 2.0.
 ## System Requirements
 
 - Lucee 5+
-- ColdFusion 2016+
+- ColdFusion 2018+
 - ColdBox 6+
 
-## Debugger Requirements
+## Optional Debugger Requirements
+
+### cborm Collector
 
 - Hibernate extension (on Lucee)
-- ORM package (on ACF 2021)
-- Adobe ColdFusion SQL Collector (ColdFusion 2018+)
+- `orm` package on ACF 2021
+
+### Adobe SQL Collector
+
+- `cbdebugger` package on ACF 2021
+  - Check `Database Activity` on the debugger page or cfconfig setting (`debuggingShowDatabase : true`)
 
 # Instructions
 
@@ -76,7 +82,7 @@ The ColdBox debugger is a light-weigth performance monitor and profiler for your
 
 ## Settings
 
-The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you active, the slower your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
+The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
 
 Open your `config/coldbox.cfc` configuration object and add into the `moduleSettings` the `cbDebugger` key with the following options:
 
@@ -92,6 +98,9 @@ moduleSettings = {
 		debugMode : true,
 		// The URL password to use to activate it on demand
 		debugPassword  : "cb:null",
+		// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
+		// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
+		requestPanelDock : true,
 		// Request Tracker Options
 		requestTracker : {
 			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!

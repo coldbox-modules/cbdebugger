@@ -11,11 +11,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* New setting `requestPanelDock` to show/hide the request panel in the dock
 * Migration to use new module template approaches that supports github releases, compilation and more
 * Exception bean delegations in debugger service to avoid multi-instantiations `performance`
 * Refactoring to increase `performance` and reusability
 * Migration to AlpineJS from jquery
 * New `sqlformatter` module from @michaelborn
+* Updated to faster wasy to get a local ip and local hostname
 
 ### Fixed
 

@@ -40,6 +40,9 @@ component {
 			debugMode      : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
 			debugPassword  : "cb:null",
+			// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
+			// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
+			requestPanelDock : true,
 			// Request Tracker Options
 			requestTracker : {
 				// Store the request profilers in heap memory or in cachebox, default is cachebox
