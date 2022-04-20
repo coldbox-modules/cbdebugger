@@ -11,6 +11,7 @@
 </cfscript>
 <cfoutput>
 <div
+	id="cbd-qb-panel"
 	x-data="{
 		panelOpen : #args.debuggerConfig.qb.expanded ? 'true' : 'false'#,
 		queryView : 'grouped',
