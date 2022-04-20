@@ -8,6 +8,7 @@ component
 	accessors="true"
 	extends  ="coldbox.system.web.services.BaseService"
 	singleton
+	threadsafe
 {
 
 	/**
@@ -16,10 +17,10 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
-	property name="timerService"       inject="Timer@cbdebugger";
 	property name="interceptorService" inject="coldbox:interceptorService";
-	property name="jsonFormatter"      inject="JSONPrettyPrint@JSONPrettyPrint";
-	property name="sqlFormatter"       inject="sqlFormatter@cbdebugger";
+	property name="timerService"       inject="provider:Timer@cbdebugger";
+	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
+	property name="sqlFormatter"       inject="provider:sqlFormatter@cbdebugger";
 
 	/**
 	 * --------------------------------------------------------------------------
