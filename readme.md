@@ -44,6 +44,7 @@ Apache License, Version 2.0.
 
 - Hibernate extension (on Lucee)
 - ORM package (on ACF 2021)
+- Adobe ColdFusion SQL Collector (ColdFusion 2018+)
 
 # Instructions
 
@@ -71,6 +72,7 @@ The ColdBox debugger is a light-weigth performance monitor and profiler for your
 - Track ColdBox modules and lifecycles
 - Highly configurable
 - Highly extensible
+- Track Adobe ColdFusion Queries (ColdFusion 2018+)
 
 ## Settings
 
@@ -160,6 +162,13 @@ moduleSettings = {
 			// Log the binding parameters (requires CBORM 3.2.0+)
 			logParams : true
 		},
+  		// Adobe ColdFusion SQL Collector
+ 		acfSql : {
+			enabled   : true,
+			expanded  : false,
+			// Log the binding parameters
+			logParams : true
+		},
 		// Async Manager Reporting
 		async : {
 			enabled : true,
@@ -175,7 +184,7 @@ The module will also register the following model objects for you:
 
 - `debuggerService@cbdebugger`
 - `timer@cbdebugger`
-  
+
 The `DebuggerService` can be used a-la-carte for your debugging purposes.
 The `Timer` object will allow you to time code execution and send the results to the debugger panel.
 
@@ -421,6 +430,20 @@ qb       : {
 ```
 
 Also remember that you can activate the binding parameters to the sql calls.
+
+## Adobe ColdFusion SQL Tracking
+
+We have also created an `ACF Sql` panel which will track all SQL calls made during your request.  We offer the same grouped or timeline visualizer for all these sql calls and even the capability to track from where the calls where made from and open them in your favorite editor to the line number.  All you have to do is activate it:
+
+```js
+// Adobe ColdFusion SQL Collector
+acfSql : {
+	enabled : true,
+	expanded : false,
+	logParams : true
+},
+```
+**Note:** This feature works with `ColdFusion 2018+` and requires the `Database Activity` box to be checked in the ACF `Debugging & Logging` page. If using ColdFusion 2021, you will need the `CF debugger` module installed as well. You can use the ACF CLI package manager, or the CommandBox command of `cfpm install debugger`. If it is not installed, install it and then restart the server before using this module.
 
 ## Modules Panel
 
