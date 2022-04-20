@@ -10,7 +10,7 @@ component extends="coldbox.system.Interceptor" {
 	/**
 	 * Ensure the ACF Debugger is online and scoped
 	 */
-	private function ensureDebugger(){
+	private function ensureACFDebugger(){
 		variables.acfDebuggingService = createObject( "Java", "coldfusion.server.ServiceFactory" ).getDebuggingService();
 		// If disabled, turn it on
 		if ( !variables.acfDebuggingService.isEnabled() ) {
@@ -29,7 +29,7 @@ component extends="coldbox.system.Interceptor" {
 	 */
 	function onDebuggerRequestTrackerCreation( event, interceptData, rc, prc ){
 		// Ensure debugger is on
-		ensureDebugger();
+		ensureACFDebugger();
 		// prep collector
 		arguments.interceptData.requestTracker[ "cfQueries" ] = {
 			"all"                : queryNew( "" ),
@@ -43,12 +43,18 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen when request tracker is being recorded
 	 */
 	function onDebuggerProfilerRecording( event, interceptData, rc, prc ){
-		var requestTracker                = arguments.interceptData.requestTracker;
+		var requestTracker           = arguments.interceptData.requestTracker;
 		// Get the query tracker data
-		requestTracker.cfQueries[ "all" ] = variables.acfDebugger
+		requestTracker.cfQueries.all = variables.acfDebugger
 			.getData()
+			// Store only sql query items
 			.filter( function( row ){
 				return arguments.row.type == "SqlQuery";
+			} )
+			// Remove results, we don't want those stored
+			.map( function( row ){
+				row.delete( "Result" );
+				return row;
 			} );
 		// Process grouped sql
 		requestTracker.cfQueries.all.each( function( row ){

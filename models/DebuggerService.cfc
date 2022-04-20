@@ -182,28 +182,30 @@ component
 		request.tracers    = [];
 		// Init the request debugger tracking
 		request.cbDebugger = {
-			"id"            : variables.uuid.randomUUID(),
-			"timestamp"     : now(),
-			"ip"            : getRealIP(),
-			"threadInfo"    : getCurrentThread().toString(),
-			"startCount"    : getTickCount(),
+			"coldbox"       : {},
+			"exception"     : {},
 			"executionTime" : 0,
+			"endFreeMemory" : 0,
+			"formData"      : serializeJSON( form ?: {} ),
 			"fullUrl"       : arguments.event.getFullUrl(),
-			"timers"        : [],
-			"tracers"       : [],
+			"httpHost"      : cgi.HTTP_HOST,
+			"httpReferer"   : cgi.HTTP_REFERER,
+			"id"            : variables.uuid.randomUUID(),
+			"inetHost"      : discoverInetHost(),
+			"ip"            : getRealIP(),
+			"localIp"       : getServerIp(),
+			"queryString"   : cgi.QUERY_STRING,
 			"requestData"   : getHTTPRequestData(
 				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
 			),
-			"response"    : { "statusCode" : 0, "contentType" : "" },
-			"coldbox"     : {},
-			"exception"   : {},
-			"userAgent"   : cgi.HTTP_USER_AGENT,
-			"queryString" : cgi.QUERY_STRING,
-			"httpHost"    : cgi.HTTP_HOST,
-			"httpReferer" : cgi.HTTP_REFERER,
-			"formData"    : serializeJSON( form ?: {} ),
-			"inetHost"    : discoverInetHost(),
-			"localIp"     : getServerIp()
+			"response"        : { "statusCode" : 0, "contentType" : "" },
+			"startCount"      : getTickCount(),
+			"startFreeMemory" : variables.jvmRuntime.freeMemory(),
+			"threadInfo"      : getCurrentThread().toString(),
+			"timers"          : [],
+			"timestamp"       : now(),
+			"tracers"         : [],
+			"userAgent"       : cgi.HTTP_USER_AGENT
 		};
 
 		// Event before recording
@@ -297,21 +299,21 @@ component
 		var exceptionData = {};
 		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
 			exceptionData = {
-				"stackTrace"      : arguments.exception.stacktrace ?: "",
-				"type"            : arguments.exception.type ?: "",
 				"detail"          : arguments.exception.detail ?: "",
-				"tagContext"      : arguments.exception.tagContext ?: [],
-				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
-				"sqlState"        : arguments.exception.sqlState ?: "",
-				"sql"             : arguments.exception.sql ?: "",
-				"queryError"      : arguments.exception.queryError ?: "",
-				"where"           : arguments.exception.where ?: "",
 				"errNumber"       : arguments.exception.errNumber ?: "",
-				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"errorCode"       : arguments.exception.errorCode ?: "",
+				"extendedInfo"    : arguments.exception.extendedInfo ?: "",
 				"lockName"        : arguments.exception.lockName ?: "",
 				"lockOperation"   : arguments.exception.lockOperation ?: "",
-				"errorCode"       : arguments.exception.errorCode ?: "",
-				"extendedInfo"    : arguments.exception.extendedInfo ?: ""
+				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
+				"queryError"      : arguments.exception.queryError ?: "",
+				"sql"             : arguments.exception.sql ?: "",
+				"sqlState"        : arguments.exception.sqlState ?: "",
+				"stackTrace"      : arguments.exception.stacktrace ?: "",
+				"tagContext"      : arguments.exception.tagContext ?: [],
+				"type"            : arguments.exception.type ?: "",
+				"where"           : arguments.exception.where ?: ""
 			};
 		}
 
@@ -324,15 +326,10 @@ component
 		param request.cbDebugger.startCount = 0;
 		request.cbDebugger.append(
 			{
-				"timers"        : variables.timerService.getSortedTimers(),
-				"tracers"       : getTracers(),
+				"endFreeMemory" : variables.jvmRuntime.freeMemory(),
 				"exception"     : exceptionData,
 				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
-				"response"      : {
-					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
-					"contentType" : getPageContextResponse().getContentType()
-				},
-				"coldbox" : {
+				"coldbox"       : {
 					"RoutedUrl"        : arguments.event.getCurrentRoutedUrl(),
 					"Route"            : arguments.event.getCurrentRoute(),
 					"RouteMetadata"    : serializeJSON( arguments.event.getCurrentRouteMeta() ),
@@ -343,7 +340,13 @@ component
 					"ViewModule"       : arguments.event.getCurrentViewModule(),
 					"Layout"           : arguments.event.getCurrentLayout(),
 					"LayoutModule"     : arguments.event.getCurrentLayoutModule()
-				}
+				},
+				"response" : {
+					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
+					"contentType" : getPageContextResponse().getContentType()
+				},
+				"timers"  : variables.timerService.getSortedTimers(),
+				"tracers" : getTracers()
 			},
 			true
 		);
