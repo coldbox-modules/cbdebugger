@@ -25,7 +25,8 @@
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
     "dependencies":{
-        "JSONPrettyPrint":"^1.4.1"
+        "JSONPrettyPrint":"^1.4.1",
+        "sqlformatter":"^1.0.1"
     },
     "devDependencies":{
         "commandbox-cfformat":"*",
@@ -58,20 +59,21 @@
         "cfpm:install":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\" install ${1}' | run",
         "install:2021":"run-script cfpm:install zip,debugger,orm,mysql,postgresql,sqlserver,feed",
         "install:dependencies":"install && cd test-harness && install",
-		"start:lucee": "server start serverConfigFile=server-lucee@5.json",
-		"start:2016": "server start serverConfigFile=server-adobe@2016.json",
-		"start:2018": "server start serverConfigFile=server-adobe@2018.json",
-		"start:2021": "server start serverConfigFile=server-adobe@2021.json",
-		"stop:lucee": "server stop name=cbdebugger-lucee@5",
-		"stop:2016": "server stop name=cbdebugger-adobe@2016",
-		"stop:2018": "server stop name=cbdebugger-adobe@2018",
-		"stop:2021": "server stop name=cbdebugger-adobe@2021",
-		"logs:lucee": "server log name=cbdebugger-lucee@5 --follow",
-		"logs:2016": "server log name=cbdebugger-adobe@2016 --follow",
-		"logs:2018": "server log name=cbdebugger-adobe@2018 --follow",
-		"logs:2021": "server log name=cbdebugger-adobe@2021 --follow"
+        "start:lucee":"server start serverConfigFile=server-lucee@5.json",
+        "start:2016":"server start serverConfigFile=server-adobe@2016.json",
+        "start:2018":"server start serverConfigFile=server-adobe@2018.json",
+        "start:2021":"server start serverConfigFile=server-adobe@2021.json",
+        "stop:lucee":"server stop name=cbdebugger-lucee@5",
+        "stop:2016":"server stop name=cbdebugger-adobe@2016",
+        "stop:2018":"server stop name=cbdebugger-adobe@2018",
+        "stop:2021":"server stop name=cbdebugger-adobe@2021",
+        "logs:lucee":"server log name=cbdebugger-lucee@5 --follow",
+        "logs:2016":"server log name=cbdebugger-adobe@2016 --follow",
+        "logs:2018":"server log name=cbdebugger-adobe@2018 --follow",
+        "logs:2021":"server log name=cbdebugger-adobe@2021 --follow"
     },
     "installPaths":{
-        "JSONPrettyPrint":"modules/JSONPrettyPrint/"
+        "JSONPrettyPrint":"modules/JSONPrettyPrint/",
+        "sqlformatter":"modules/sqlformatter/"
     }
 }
