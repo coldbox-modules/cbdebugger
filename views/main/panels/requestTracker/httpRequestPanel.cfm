@@ -60,6 +60,19 @@
 					</cfif>
 				</td>
 			</tr>
+			<!--- Memory --->
+			<tr>
+				<th width="125" align="right">Initial Free Memory:</th>
+				<td>
+					#numberFormat( args.profiler.startFreeMemory / 1048576 )#MB
+				</td>
+			</tr>
+			<tr>
+				<th width="125" align="right">Ending Free Memory:</th>
+				<td>
+					#numberFormat( args.profiler.endFreeMemory / 1048576 )#MB
+				</td>
+			</tr>
 			<!--- User Agent --->
 			<tr>
 				<th width="125" align="right">User Agent:</th>

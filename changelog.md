@@ -13,7 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Asynchronous saving of storage at end of requests
 * Asynchronous size checks of storage
-* Ability for each profiler to track how much memory they used during the course of the transaction
+* Free memory diff in the visualizers
+* Ability for each profiler to track how much memory they used during the course of the transaction by analyzing free memory
 * New setting `requestPanelDock` to show/hide the request panel in the dock
 * Migration to use new module template approaches that supports github releases, compilation and more
 * Exception bean delegations in debugger service to avoid multi-instantiations `performance`
