@@ -37,9 +37,9 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/root" {
 						event         = "main.index",
 						renderResults = true
 					);
-					expect( timer.getTimers() ).notToBeEmpty();
-					expect( debuggerService.getProfilerStorage() ).notToBeEmpty();
-					expect( debuggerService.getTracers() ).notToBeEmpty();
+					expect( timer.getTimers() ).notToBeEmpty( "Timers should not be empty" );
+					expect( debuggerService.getProfilerStorage() ).notToBeEmpty( "profiler storage should not be empty" );
+					expect( debuggerService.getTracers() ).notToBeEmpty( "Tracers should not be empty" );
 				} );
 
 				debug( timer.getTimers() );
