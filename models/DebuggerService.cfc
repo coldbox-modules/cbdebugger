@@ -379,7 +379,7 @@ component
 	 * Do a storage size check and pop if necessary
 	 */
 	function storageSizeCheck(){
-		var targetStorage = getProfilerStorage()
+		var targetStorage = getProfilerStorage();
 		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
 			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
 		}
