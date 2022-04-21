@@ -2,7 +2,7 @@
     "name":"ColdBox Debugger",
     "author":"Ortus Solutions <info@ortussolutions.com",
     "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbdebugger/@build.version@/cbdebugger-@build.version@.zip",
-    "version":"3.3.1",
+    "version":"3.4.0",
     "slug":"cbdebugger",
     "type":"modules",
     "homepage":"https://github.com/coldbox-modules/cbdebugger",
