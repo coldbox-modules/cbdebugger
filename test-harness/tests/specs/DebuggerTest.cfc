@@ -38,13 +38,11 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/root" {
 						renderResults = true
 					);
 					expect( timer.getTimers() ).notToBeEmpty( "Timers should not be empty" );
-					expect( debuggerService.getProfilerStorage() ).notToBeEmpty( "profiler storage should not be empty" );
 					expect( debuggerService.getTracers() ).notToBeEmpty( "Tracers should not be empty" );
+					expect( request.cbDebugger ).notToBeEmpty( "request debugger should not be empty" );
 				} );
 
-				debug( timer.getTimers() );
-				debug( debuggerService.getProfilerStorage() );
-				debug( debuggerService.getTracers() );
+				debug( request.cbDebugger );
 			} );
 		} );
 	}
