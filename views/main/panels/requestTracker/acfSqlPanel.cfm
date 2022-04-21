@@ -138,7 +138,7 @@
 											stroke="currentColor"
 											title="Copy SQL to Clipboard"
 											style="width: 50px; height: 50px; cursor: pointer;"
-											onclick="copyToClipboard( 'acfSql-groupsql-#sqlHash#' )"
+											onclick="coldboxDebugger.copyToClipboard( 'acfSql-groupsql-#sqlHash#' )"
 										>
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 										</svg>
@@ -213,7 +213,7 @@
 																	stroke="currentColor"
 																	title="Copy Params to Clipboard"
 																	style="width: 50px; height: 50px; cursor: pointer;"
-																	onclick="copyToClipboard( 'acfSql-groupsql-params-#rowId#' )"
+																	onclick="coldboxDebugger.copyToClipboard( 'acfSql-groupsql-params-#rowId#' )"
 																>
 																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 																</svg>
@@ -311,7 +311,7 @@
 											stroke="currentColor"
 											title="Copy SQL to Clipboard"
 											style="width: 50px; height: 50px; cursor: pointer;"
-											onclick="copyToClipboard( 'acfSql-timelinesql-#rowId#' )"
+											onclick="coldboxDebugger.copyToClipboard( 'acfSql-timelinesql-#rowId#' )"
 										>
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 										</svg>
@@ -333,7 +333,7 @@
 													stroke="currentColor"
 													title="Copy SQL to Clipboard"
 													style="width: 50px; height: 50px; cursor: pointer;"
-													onclick="copyToClipboard( 'acfSql-timelinesql-params-#rowId#' )"
+													onclick="coldboxDebugger.copyToClipboard( 'acfSql-timelinesql-params-#rowId#' )"
 												>
 													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 												</svg>

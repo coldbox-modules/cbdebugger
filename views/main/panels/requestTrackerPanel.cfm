@@ -2,91 +2,12 @@
 <cfoutput>
 <div
 	id="cbd-request-tracker"
-	x-data = "{
-		panelOpen : #args.debuggerConfig.requestTracker.expanded ? 'true' : 'false'#,
-		refreshFrequency : #args.refreshFrequency#,
-		usingReinitPassword : #controller.getSetting( 'ReinitPassword' ).length() ? 'true' : 'false'#,
-		isVisualizer : #args.isVisualizer ? 'true' : 'false'#,
-
-		reinitFramework(){
-			$refs.reinitLoader.classList.add( 'cbd-spinner' )
-			let reinitPass = this.usingReinitPassword ? prompt( 'Reinit Password?' ) : '1'
-			fetch( `${this.appUrl}?fwreinit=${reinitPass}`, {
-				headers : {
-					'x-Requested-With' : 'XMLHttpRequest'
-				}
-			} )
-			.then( response => {
-				if( response.ok ){
-					alert( 'Framework Reinitted!' )
-					this.refreshProfilers()
-				} else {
-					alert( 'HTTP Call Error' + response.status )
-				}
-				$refs.reinitLoader.classList.remove( 'cbd-spinner' )
-			})
-		},
-		loadProfilerReport( id ){
-			fetch( `${this.appUrl}cbDebugger/renderProfilerReport`, {
-				method: 'POST',
-				headers : {
-					'x-Requested-With' : 'XMLHttpRequest'
-				},
-				body: JSON.stringify( {
-					id : id,
-					isVisualizer : this.isVisualizer
-				} )
-			} )
-			.then( response => response.text() )
-				.then( html => {
-					$refs[ 'cbd-profilers' ].innerHTML = html
-					window.cbdScrollTo( 'cbd-request-tracker' )
-				} )
-		},
-		refreshProfilers(){
-			$refs.refreshLoader.classList.add( 'cbd-spinner' )
-			fetch( `${this.appUrl}cbDebugger/renderProfilers`, {
-				headers : {
-					'x-Requested-With' : 'XMLHttpRequest'
-				}
-			} )
-				.then( response => response.text() )
-				.then( html => {
-					$refs[ 'cbd-profilers' ].innerHTML = html
-					$refs.refreshLoader.classList.remove( 'cbd-spinner' )
-				} )
-		},
-		clearProfilers(){
-			$refs.clearLoader.classList.add( 'cbd-spinner' )
-			fetch( `${this.appUrl}cbDebugger/clearProfilers`, {
-				headers : {
-					'x-Requested-With' : 'XMLHttpRequest'
-				}
-			} )
-				.then( response => response.json() )
-				.then( data => {
-					if ( data.error ){
-						alert( data.messages.toString() )
-					} else {
-						this.refreshProfilers()
-					}
-					$refs.clearLoader.classList.remove( 'cbd-spinner' )
-				} )
-		},
-		stopDebuggerMonitor(){
-			if ( 'cbdRefreshMonitor' in window ){
-				clearInterval( window.cbdRefreshMonitor );
-				console.log( 'Stopped ColdBox Debugger Profiler Refresh' );
-			}
-		},
-		startDebuggerMonitor( frequency ){
-			if ( frequency == 0 ){
-				return this.stopDebuggerMonitor()
-			}
-			window.cbdRefreshMonitor = setInterval( this.refreshProfilers, frequency * 1000 );
-			console.log( 'Started ColdBox Debugger Profiler Refresh using ' + frequency + ' seconds' );
-		}
-	}"
+	x-data = "requestTrackerPanel(
+		#args.debuggerConfig.requestTracker.expanded ? 'true' : 'false'#,
+		#args.refreshFrequency#,
+		#controller.getSetting( 'ReinitPassword' ).length() ? 'true' : 'false'#,
+		#args.isVisualizer ? 'true' : 'false'#
+	)"
 >
 	<!--- Title --->
 	<div

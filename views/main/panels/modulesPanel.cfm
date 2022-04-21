@@ -19,42 +19,7 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 <cfoutput>
 <div
 	id="cbd-modules"
-	x-data="{
-		panelOpen : #args.debuggerConfig.modules.expanded ? 'true' : 'false'#,
-		isLoading : false,
-		targetAction : '',
-		reloadModule( module ){
-			this.targetAction = 'reload-' + module
-			this.isLoading = true
-			fetch( `${this.appUrl}cbDebugger/reloadModule/module/${module}` )
-				.then( response => response.json() )
-				.then( data => {
-					if ( data.error ){
-						alert( data.messages.toString() );
-					} else {
-						alert( module + ' reloaded!' );
-					}
-					this.targetAction = ''
-					this.isLoading = false
-				} )
-		},
-		unloadModule( module ){
-			this.targetAction = 'unload-' + module
-			this.isLoading = true
-			fetch( `${this.appUrl}cbDebugger/unloadModule/module/${module}` )
-				.then( response => response.json() )
-				.then( data => {
-					if ( data.error ){
-						alert( data.messages.toString() );
-					} else {
-						alert( module + ' unloaded!' );
-					}
-					this.targetAction = ''
-					this.isLoading = false
-					$refs[ 'module-row-' + module ].remove()
-				} )
-		}
-	}"
+	x-data="modulesPanel( #args.debuggerConfig.modules.expanded ? 'true' : 'false'# )"
 >
 	<!--- Panel Header --->
 	<div

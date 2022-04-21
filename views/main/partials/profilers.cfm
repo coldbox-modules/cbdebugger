@@ -2,6 +2,8 @@
 <div
 	id="cbd-profilers"
 	x-data="{}"
+	x-cloak
+	x-show="!currentProfileId"
 >
 	<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables mt10">
 		<tr class="cbdHeader">
