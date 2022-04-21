@@ -34,17 +34,17 @@ component {
 		variables.settings = {
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
-			enabled        : true,
+			enabled          : true,
 			// This setting controls if you will activate the debugger for visualizations ONLY
 			// The debugger will still track requests even in non debug mode.
-			debugMode      : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
+			debugMode        : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
-			debugPassword  : "cb:null",
+			debugPassword    : "cb:null",
 			// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
 			// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
 			requestPanelDock : true,
 			// Request Tracker Options
-			requestTracker : {
+			requestTracker   : {
 				// Store the request profilers in heap memory or in cachebox, default is cachebox
 				storage                      : "cachebox",
 				// Which cache region to store the profilers in
@@ -159,17 +159,6 @@ component {
 	 * Load the module
 	 */
 	function onLoad(){
-		// default the password to something so we are secure by default
-		if ( variables.settings.debugPassword eq "cb:null" ) {
-			variables.settings.debugPassword = hash( getCurrentTemplatePath() );
-		} else if ( len( variables.settings.debugPassword ) ) {
-			// hash the password into memory
-			variables.settings.debugPassword = hash( variables.settings.debugPassword );
-		}
-
-		// Configure the debugging mode from the loaded app settings
-		wirebox.getInstance( "debuggerService@cbDebugger" );
-
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		if ( variables.settings.enabled ) {
 			/******************** REQUEST COLLECTOR ************************************/
@@ -267,7 +256,9 @@ component {
 			/******************** ACFSQL COLLECTOR ************************************/
 
 			// Do not load on lucee or ACF 2016
-			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016" ) {
+			if (
+				variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016"
+			) {
 				controller
 					.getInterceptorService()
 					.registerInterceptor(

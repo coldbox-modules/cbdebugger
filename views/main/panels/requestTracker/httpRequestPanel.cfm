@@ -87,13 +87,13 @@
 				</tr>
 			</cfif>
 			<!--- Form Params --->
-			<cfif len( args.profiler.formData )>
+			<cfif structCount( args.profiler.formData )>
 				<tr>
 					<th width="125" align="right">Form Params:</th>
 					<td>
 						<div class="cbd-cellScroller">
 							<code>
-								<pre>#jsonFormatter.formatJSON( args.profiler.formData )#</pre>
+								<pre>#jsonFormatter.formatJSON( args.profiler.formData.toString() )#</pre>
 							</code>
 						</div>
 					</td>

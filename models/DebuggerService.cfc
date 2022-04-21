@@ -17,6 +17,7 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
+	property name="asyncManager" inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
 	property name="timerService"       inject="provider:Timer@cbdebugger";
 	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
@@ -97,14 +98,18 @@ component
 			"appHash"             : variables.controller.getAppHash()
 		};
 
+		// default the password to something so we are secure by default
+		if ( variables.debugPassword eq "cb:null" ) {
+			variables.debugPassword = hash( variables.environment.appHash & now() );
+		} else if ( len( variables.debugPassword ) ) {
+			// hash the password into memory
+			variables.debugPassword = hash( variables.debugPassword );
+		}
+
 		// Initialize secret key
 		rotateSecretKey();
 
 		return this;
-	}
-
-	function onDIComplete(){
-		variables.debugMode = variables.debuggerConfig.debugMode;
 	}
 
 	/**
@@ -186,7 +191,7 @@ component
 			"exception"     : {},
 			"executionTime" : 0,
 			"endFreeMemory" : 0,
-			"formData"      : serializeJSON( form ?: {} ),
+			"formData"      : ( form ?: {} ),
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
@@ -290,11 +295,6 @@ component
 	){
 		var targetStorage = getProfilerStorage();
 
-		// size check, if passed, pop one
-		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
-			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
-		}
-
 		// Build out the exception data to trace if any?
 		var exceptionData = {};
 		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
@@ -362,11 +362,27 @@ component
 
 		// Are we using cache storage
 		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
-			// store indefintely using the debugger and app hash
-			getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+			// Store async in case it delays
+			variables.asyncManager.newFuture( function(){
+				// store indefintely using the debugger and app hash
+				getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+			} );
 		}
 
+		// async rotation - size check, if passed, pop one
+		variables.asyncManager.newFuture( function(){ storageSizeCheck(); } );
+
 		return this;
+	}
+
+	/**
+	 * Do a storage size check and pop if necessary
+	 */
+	function storageSizeCheck(){
+		var targetStorage = getProfilerStorage()
+		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
+			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
+		}
 	}
 
 	/**

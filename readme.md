@@ -22,44 +22,6 @@ Debugger Request Visualizer
 Request Tracker Collapsed
 </p>
 
-## License
-
-Apache License, Version 2.0.
-
-## Important Links
-
-- Source: https://github.com/coldbox-modules/cbdebugger
-- ForgeBox: https://www.forgebox.io/view/cbdebugger
-- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
-- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
-- [Changelog](changelog.md)
-
-## System Requirements
-
-- Lucee 5+
-- ColdFusion 2018+
-- ColdBox 6+
-
-## Optional Debugger Requirements
-
-### cborm Collector
-
-- Hibernate extension (on Lucee)
-- `orm` package on ACF 2021
-
-### Adobe SQL Collector
-
-- `cbdebugger` package on ACF 2021
-  - Check `Database Activity` on the debugger page or cfconfig setting (`debuggingShowDatabase : true`)
-
-# Instructions
-
-Just drop into your **modules** folder or use CommandBox to install
-
-`box install cbdebugger`
-
-This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
-
 ## Capabilities
 
 The ColdBox debugger is a light-weigth performance monitor and profiler for your ColdBox applications.  It tracks your requests, whether Ajax, traditional or REST, it's environment, execution and much more.  Here is a listing of some of the capabilities you get with the ColdBox Debugger:
@@ -79,6 +41,44 @@ The ColdBox debugger is a light-weigth performance monitor and profiler for your
 - Highly configurable
 - Highly extensible
 - Track Adobe ColdFusion Queries (ColdFusion 2018+)
+
+## License
+
+Apache License, Version 2.0.
+
+## Important Links
+
+- Source: https://github.com/coldbox-modules/cbdebugger
+- ForgeBox: https://www.forgebox.io/view/cbdebugger
+- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
+- [Changelog](changelog.md)
+
+## System Requirements
+
+- Lucee 5+
+- ColdFusion 2018+
+- ColdBox 6+
+
+## Optional Requirements
+
+### cborm Collector
+
+- Hibernate extension (on Lucee)
+- `orm` package on ACF 2021
+
+### Adobe SQL Collector
+
+- `cbdebugger` package on ACF 2021
+  - Check `Database Activity` on the debugger page or cfconfig setting (`debuggingShowDatabase : true`)
+
+# Instructions
+
+Just drop into your **modules** folder or use CommandBox to install
+
+`box install cbdebugger`
+
+This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
 
 ## Settings
 
@@ -105,9 +105,9 @@ moduleSettings = {
 		requestTracker : {
 			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 			trackDebuggerEvents          : false,
-			// Store the request profilers in heap memory or in cachebox, default is cachebox
+			// Store the request profilers in heap memory or in cachebox, default is cachebox. Options are: local, cachebox
 			storage                      : "cachebox",
-			// Which cache region to store the profilers in
+			// Which cache region to store the profilers in if storage == cachebox
 			cacheName                    : "template",
 			// Expand by default the tracker panel or not
 			expanded                     : true,
@@ -195,6 +195,7 @@ The module will also register the following model objects for you:
 - `timer@cbdebugger`
 
 The `DebuggerService` can be used a-la-carte for your debugging purposes.
+
 The `Timer` object will allow you to time code execution and send the results to the debugger panel.
 
 ## Helper Mixins
@@ -509,12 +510,23 @@ You can execute several commands from this visualizer:
 
 You can then select a specific request and open the request report with all the tracked information.
 
-Please note that the request tracker in the debugger has a configurable capacity for requests.  By default we track the last 25 requests into the application.  You can either increase it or reduce it to your hearts content.  Just note that the more you track, the more memory it consumes.
+Please note that the request tracker in the debugger has a configurable capacity for requests.  By default we track the last 25 requests into the application.  You can either increase it or reduce it to your hearts content.  Just note that the more you track, the more memory it consumes unless you offload it to an external cache.
 
 ```js
 // How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
 maxProfilers                 : 25,
 ```
+
+## Storing Profilers Off-Heap
+
+You can tell the debugger to store the profilers and instrumentation data off-heap by using the `storage` setting and connecting it to a distributed cache like Redis, Couchbase, Mongo, Elastic, etc.  All you need to do is change the `storage` to `cachebox` and update the `cacheName` to point to the distributed cache name you have configured in your `config/Cachebox.cfc`.
+
+```js
+storage  : "cachebox",
+cacheName : "couchbase"
+```
+
+With that configuration, all the profiler data and instrumentation will be sent to the distributed cache.
 
 ********************************************************************************
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp
