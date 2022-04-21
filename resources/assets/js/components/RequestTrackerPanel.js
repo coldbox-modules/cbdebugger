@@ -67,6 +67,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 				} );
 		},
 		stopDebuggerMonitor(){
+			// stop only if loaded
 			if ( this.refreshMonitor != null ){
 				clearInterval( this.refreshMonitor );
 				this.refreshFrequency = 0;
@@ -74,11 +75,14 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 			}
 		},
 		startDebuggerMonitor( frequency ){
-			if ( frequency == 0 ){
-				return this.stopDebuggerMonitor();
+			// Ensure monitor is stopped just in case we are switching frequencies
+			this.stopDebuggerMonitor();
+			this.refreshFrequency = frequency;
+			if ( this.refreshFrequency == 0 ){
+				return;
 			}
-			this.refreshMonitor = setInterval( () => this.refreshProfilers(), frequency * 1000 );
-			console.info( "Started ColdBox Debugger Profiler Refresh using " + frequency + " seconds" );
+			this.refreshMonitor = setInterval( () => this.refreshProfilers(), this.refreshFrequency * 1000 );
+			console.info( "Started ColdBox Debugger Profiler Refresh using " + this.refreshFrequency + " seconds" );
 		},
 		init(){
 			window.addEventListener( "popstate", e => {
