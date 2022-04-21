@@ -25,7 +25,9 @@ window.coldboxDebugger = ( () => {
 	/**
 	 * Listen to dom load and attach
 	 */
-	window.onload = ()=> console.log( "ColdBox Debugger Loaded!" );
+	window.addEventListener( "load", ( event ) => {
+		console.log( "ColdBox Debugger Loaded!" );
+	} );
 
 	return {
 		/**

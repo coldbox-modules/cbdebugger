@@ -5,9 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
 ----
 
-## [3.3.0] => 2022
+## [3.3.1] => 2022-APR-21
+
+### Fixed
+
+* [CBDEBUGGER-17](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-17) If you change the monitor frequency, it does not clear the old monitor and you get n monitors
+* [CBDEBUGGER-16](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-16) Left double hash on no state for request tracker profiler
+* [CBDEBUGGER-15](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-15) Auto-Refresh is not working in latest version
+* [CBDEBUGGER-10](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-10) Executing Event That Uses QB From Interceptor Generates CBDebugger Exception
+* [CBDEBUGGER-6](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-6) Stop auto-refresh when visiting a actual request report
+
+----
+
+## [3.3.0] => 2022-APR-21
 
 ### Added
 
