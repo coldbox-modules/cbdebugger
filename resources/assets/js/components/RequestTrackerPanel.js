@@ -67,7 +67,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 				} );
 		},
 		stopDebuggerMonitor(){
-			if ( "refreshMonitor" in this ){
+			if ( this.refreshMonitor != null ){
 				clearInterval( this.refreshMonitor );
 				this.refreshFrequency = 0;
 				console.info( "Stopped ColdBox Debugger Profiler Refresh" );
