@@ -184,9 +184,9 @@ component
 	 */
 	struct function createRequestTracker( required event ){
 		// Init the request tracers
-		request.tracers    = [];
+		param request.tracers    = [];
 		// Init the request debugger tracking
-		request.cbDebugger = {
+		param request.cbDebugger = {
 			"coldbox"       : {},
 			"exception"     : {},
 			"executionTime" : 0,

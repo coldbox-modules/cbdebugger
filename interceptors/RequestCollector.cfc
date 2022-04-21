@@ -19,14 +19,27 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
+	 * Init the request tracking
+	 */
+	private function initRequestTracker( event ){
+		// The timer hashes are stored here for the request and then destroyed
+		param request$timerHashes = {};
+		// init tracker variables for the request
+		variables.debuggerService.createRequestTracker( event );
+	}
+
+	/**
+	 * Listen to app loads, in case we need to profile app inits and such
+	 */
+	function cbLoadInterceptorHelpers( event, interceptData, rc, prc ){
+		initRequestTracker( event );
+	}
+
+	/**
 	 * Listen to request captures
 	 */
 	function onRequestCapture( event, interceptData, rc, prc ){
-		// The timer hashes are stored here for the request and then destroyed
-		request.$timerHashes = {};
-
-		// init tracker variables for the request
-		variables.debuggerService.createRequestTracker( event );
+		initRequestTracker( event );
 
 		// Determine if we are turning the debugger on/off
 		if ( structKeyExists( rc, "debugMode" ) AND isBoolean( rc.debugMode ) ) {
