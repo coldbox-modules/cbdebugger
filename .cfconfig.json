@@ -4,7 +4,7 @@
     "debuggingReportExecutionTimes":false,
     "disableInternalCFJavaComponents":false,
     "inspectTemplate":"always",
-    "requestTimeout":"0,0,0,90",
+    "requestTimeout":"0,0,5,0",
     "robustExceptionEnabled":true,
 	"datasources": {
         "coolblog": {

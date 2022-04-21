@@ -1,35 +1,4 @@
 const elixir 	= require( "coldbox-elixir" );
-const webpack 	= require( "webpack" );
-
-elixir.config.mergeConfig( {
-	plugins : [
-		// globally scoped items which need to be available in all templates
-		new webpack.ProvidePlugin( {
-			"$"             : "jquery",
-			"jQuery"        : "jquery",
-			"window.jQuery" : "jquery",
-			"window.$"      : "jquery",
-			"Vue"           : [
-				"vue/dist/vue.esm.js",
-				"default"
-			],
-			"window.Vue" : [
-				"vue/dist/vue.esm.js",
-				"default"
-			]
-		} )
-	],
-	module : {
-		// The exposing of jquery as a global object by webpack
-		rules : [
-			{
-				test   	: require.resolve( "jquery" ),
-				loader  : "expose-loader",
-				options : { exposes: [ "$cb" ] }
-			}
-		]
-	}
-} );
 
 /*
  |--------------------------------------------------------------------------
@@ -43,19 +12,10 @@ elixir.config.mergeConfig( {
  */
 
 module.exports = elixir( mix => {
-
 	// Mix App styles
 	mix
 		.js( "cbdebugger.js" )
 		.sass( "cbdebugger.scss" )
-		.js(
-			[ "node_modules/jquery/dist/jquery.min.js" ],
-			{
-				name           : "vendor.min",
-				entryDirectory : ""
-			}
-		)
 		.copy( "resources/assets/images", "includes/images" )
 	;
-
 } );

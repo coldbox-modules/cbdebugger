@@ -88,6 +88,15 @@ component {
 
 	// request start
 	public boolean function onRequestStart( String targetPage ){
+		if ( !structKeyExists( application, "cbBootstrap" ) ){
+			onApplicationStart();
+		}
+		if ( url.keyExists( "fwreinit" ) ) {
+			if ( server.keyExists( "lucee" ) ) {
+				pagePoolClear();
+			}
+			ormReload();
+		}
 		// Process ColdBox Request
 		application.cbBootstrap.onRequestStart( arguments.targetPage );
 
@@ -95,7 +104,9 @@ component {
 	}
 
 	public void function onSessionStart(){
-		application.cbBootStrap.onSessionStart();
+		if( !isNull( application.cbBootstrap ) ){
+			application.cbBootStrap.onSessionStart();
+		}
 	}
 
 	public void function onSessionEnd( struct sessionScope, struct appScope ){

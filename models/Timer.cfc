@@ -4,7 +4,7 @@
  * ---
  * This component tracks execution times in our internal request facilities.
  */
-component accessors="true" singleton {
+component accessors="true" singleton threadsafe{
 
 	/**
 	 * Constructor

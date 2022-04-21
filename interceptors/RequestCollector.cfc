@@ -69,13 +69,7 @@ component extends="coldbox.system.Interceptor" {
 	/**
 	 * Listen to post processing execution
 	 */
-	public function postProcess(
-		event,
-		interceptData,
-		rc,
-		prc,
-		buffer
-	){
+	public function postProcess( event, interceptData, rc, prc, buffer ){
 		// Determine if we are in a debugger call so we can ignore it or not?
 		if (
 			arguments.event.getCurrentModule() == "cbdebugger" && !variables.debuggerConfig.requestTracker.trackDebuggerEvents
@@ -88,33 +82,25 @@ component extends="coldbox.system.Interceptor" {
 			isNull( request.$timerHashes.processHash ) ? "" : request.$timerHashes.processHash
 		);
 		// Record the profiler with the last tickcount
-		variables.debuggerService.recordProfiler(
-			event        : arguments.event,
-			executionTime: getTickCount()
-		);
-
+		variables.debuggerService.recordProfiler( event: arguments.event, executionTime: getTickCount() );
 		// Determine if we can render the debugger at the bottom of the request
 		if (
-			// Check content type on request
-			findNoCase(
-				"html",
-				getPageContextResponse().getContentType()
-			) AND
-			// Is the debug mode turned on
+			// Is the debugger turned on
 			variables.debuggerService.getDebugMode() AND
+			// Can we show the end of request dock
+			variables.debuggerConfig.requestPanelDock AND
 			// Has it not been disabled by the user programmatically
 			arguments.event.getPrivateValue( "cbox_debugger_show", true ) AND
+			// Don't render in ajax calls
+			!arguments.event.isAjax() AND
+			// Only show on HTML content types
+			findNoCase( "html", getPageContextResponse().getContentType() ) AND
 			// We don't have any render data OR the render data is HTML
 			(
 				structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().contentType == "text/html"
 			) AND
-			// Don't render in ajax calls
-			!arguments.event.isAjax() AND
-			// Don't render in testing mode
-			!findNoCase(
-				"MockController",
-				getMetadata( controller ).name
-			)
+			// Don't render in testing modes
+			!findNoCase( "MockController", getMetadata( controller ).name )
 		) {
 			// render out the debugger to the buffer output
 			arguments.buffer.append( runEvent( "cbdebugger:main.renderDebugger" ) );
@@ -238,10 +224,7 @@ component extends="coldbox.system.Interceptor" {
 		if (
 			variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation
 			and structKeyExists( request, "cbdebugger" )
-			and structKeyExists(
-				request.$timerHashes,
-				arguments.interceptData.mapping.getName()
-			)
+			and structKeyExists( request.$timerHashes, arguments.interceptData.mapping.getName() )
 		) {
 			variables.timerService.stop( request.$timerHashes[ arguments.interceptData.mapping.getName() ] );
 		}
@@ -302,10 +285,7 @@ component extends="coldbox.system.Interceptor" {
 
 		// relocate to correct panel if passed
 		if ( event.getValue( "debugPanel", "" ) eq "" ) {
-			relocate(
-				URL      = "#listLast( cgi.script_name, "/" )#",
-				addtoken = false
-			);
+			relocate( URL = "#listLast( cgi.script_name, "/" )#", addtoken = false );
 		} else {
 			relocate(
 				URL      = "#listLast( cgi.script_name, "/" )#?debugpanel=#event.getValue( "debugPanel", "" )#",

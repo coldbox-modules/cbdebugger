@@ -4,19 +4,23 @@
 <cfinclude template="includes/head.cfm">
 
 <div
+	x-data = "{
+		appUrl : '#encodeForJavaScript( event.buildLink( '' ) )#'
+	}"
 	class="cbd-debugger"
 	id="cbd-debugger"
 	data-appurl="#event.buildLink( '' )#"
 >
-	<!--- Event --->
 	#announce( "beforeDebuggerPanel", {
-		debuggerConfig : args.debuggerConfig
+		debuggerConfig : args.debuggerConfig,
+		debuggerService : args.debuggerService
 	} )#
-	<!--- Rendering --->
+
 	#renderView()#
-	<!--- Event --->
+
 	#announce( "afterDebuggerPanel", {
-		debuggerConfig : args.debuggerConfig
+		debuggerConfig : args.debuggerConfig,
+		debuggerService : args.debuggerService
 	} )#
 </div>
 

@@ -48,6 +48,7 @@
 		logBox = {
 			// Define Appenders
 			appenders : {
+				myConsole : { class : "ConsoleAppender" },
 				files : {
 					class      : "coldbox.system.logging.appenders.RollingFileAppender",
 					properties : {
@@ -138,6 +139,12 @@
 					enabled   : true,
 					expanded  : false,
 					// Log the binding parameters
+					logParams : true
+				},
+				// cfquery sql reporting
+				acfSql : {
+					enabled : true,
+					expanded : false,
 					logParams : true
 				}
 			}

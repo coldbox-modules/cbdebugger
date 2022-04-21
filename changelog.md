@@ -7,6 +7,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [3.3.0] => 2022
+
+### Added
+
+* Asynchronous saving of storage at end of requests
+* Asynchronous size checks of storage
+* Free memory diff in the visualizers
+* Ability for each profiler to track how much memory they used during the course of the transaction by analyzing free memory
+* New setting `requestPanelDock` to show/hide the request panel in the dock
+* Migration to use new module template approaches that supports github releases, compilation and more
+* Exception bean delegations in debugger service to avoid multi-instantiations `performance`
+* Refactoring to increase `performance` and reusability
+* Migration to AlpineJS from jquery
+* New `sqlformatter` module from @michaelborn
+* Updated to faster wasy to get a local ip and local hostname
+
+### Fixed
+
+* Actually show a 404 if debug mode is off
+* JS Bumps
+
+### Removed
+
+* Reload all modules. Makes no sense as you can just reinit.
+
+----
+
 ## [3.2.0] => 2021-JUL-21
 
 ### Changed
@@ -25,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Do not render when the request's content type is NOT html
-  
+
 ----
 
 ## [3.1.0] => 2021-MAy-19
@@ -175,7 +202,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * https://ortussolutions.atlassian.net/browse/CCM-14 Issue with unloading modules
 * https://ortussolutions.atlassian.net/browse/CCM-25 Lucee support
-* https://ortussolutions.atlassian.net/browse/CCM-24 Added names of rendered 
+* https://ortussolutions.atlassian.net/browse/CCM-24 Added names of rendered
 * Unloading of helpers on unload
 views and layouts
 * Updated production ignore lists

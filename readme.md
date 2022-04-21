@@ -1,8 +1,8 @@
-[![Build Status](https://travis-ci.com/coldbox-modules/cbox-debugger.svg?branch=master)](https://travis-ci.com/coldbox-modules/cbox-debugger)
+[![cbdebugger CI](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml)
 
 # Welcome To The ColdBox Debugger Module
 
-The ColdBox Debugger module is a light-weigth performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
+The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
@@ -22,32 +22,6 @@ Debugger Request Visualizer
 Request Tracker Collapsed
 </p>
 
-## License
-
-Apache License, Version 2.0.
-
-## Important Links
-
-- Source: https://github.com/coldbox-modules/cbox-debugger
-- ForgeBox: https://www.forgebox.io/view/cbdebugger
-- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
-- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
-- [Changelog](changelog.md)
-
-## System Requirements
-
-- Lucee 5+
-- ColdFusion 2016+
-- ColdBox 6+
-
-# Instructions
-
-Just drop into your **modules** folder or use CommandBox to install
-
-`box install cbdebugger`
-
-This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
-
 ## Capabilities
 
 The ColdBox debugger is a light-weigth performance monitor and profiler for your ColdBox applications.  It tracks your requests, whether Ajax, traditional or REST, it's environment, execution and much more.  Here is a listing of some of the capabilities you get with the ColdBox Debugger:
@@ -66,10 +40,49 @@ The ColdBox debugger is a light-weigth performance monitor and profiler for your
 - Track ColdBox modules and lifecycles
 - Highly configurable
 - Highly extensible
+- Track Adobe ColdFusion Queries (ColdFusion 2018+)
+
+## License
+
+Apache License, Version 2.0.
+
+## Important Links
+
+- Source: https://github.com/coldbox-modules/cbdebugger
+- ForgeBox: https://www.forgebox.io/view/cbdebugger
+- Community: https://community.ortussolutions.com/c/box-modules/cbdebugger/38
+- Issues: https://ortussolutions.atlassian.net/browse/CBDEBUGGER
+- [Changelog](changelog.md)
+
+## System Requirements
+
+- Lucee 5+
+- ColdFusion 2018+
+- ColdBox 6+
+
+## Optional Requirements
+
+### cborm Collector
+
+- Hibernate extension (on Lucee)
+- `orm` package on ACF 2021
+
+### Adobe SQL Collector
+
+- `cbdebugger` package on ACF 2021
+  - Check `Database Activity` on the debugger page or cfconfig setting (`debuggingShowDatabase : true`)
+
+# Instructions
+
+Just drop into your **modules** folder or use CommandBox to install
+
+`box install cbdebugger`
+
+This will activate the debugger in your application and render out at the end of a request or by visiting the debugger request tracker visualizer at `/cbdebugger`.
 
 ## Settings
 
-The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you active, the slower your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
+The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
 
 Open your `config/coldbox.cfc` configuration object and add into the `moduleSettings` the `cbDebugger` key with the following options:
 
@@ -85,13 +98,16 @@ moduleSettings = {
 		debugMode : true,
 		// The URL password to use to activate it on demand
 		debugPassword  : "cb:null",
+		// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
+		// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
+		requestPanelDock : true,
 		// Request Tracker Options
 		requestTracker : {
 			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 			trackDebuggerEvents          : false,
-			// Store the request profilers in heap memory or in cachebox, default is cachebox
+			// Store the request profilers in heap memory or in cachebox, default is cachebox. Options are: local, cachebox
 			storage                      : "cachebox",
-			// Which cache region to store the profilers in
+			// Which cache region to store the profilers in if storage == cachebox
 			cacheName                    : "template",
 			// Expand by default the tracker panel or not
 			expanded                     : true,
@@ -155,6 +171,13 @@ moduleSettings = {
 			// Log the binding parameters (requires CBORM 3.2.0+)
 			logParams : true
 		},
+  		// Adobe ColdFusion SQL Collector
+ 		acfSql : {
+			enabled   : true,
+			expanded  : false,
+			// Log the binding parameters
+			logParams : true
+		},
 		// Async Manager Reporting
 		async : {
 			enabled : true,
@@ -170,8 +193,9 @@ The module will also register the following model objects for you:
 
 - `debuggerService@cbdebugger`
 - `timer@cbdebugger`
-  
+
 The `DebuggerService` can be used a-la-carte for your debugging purposes.
+
 The `Timer` object will allow you to time code execution and send the results to the debugger panel.
 
 ## Helper Mixins
@@ -244,7 +268,7 @@ This module will also register a few methods in all your handlers/interceptors/l
 
 ## Debugger Events
 
-The debugger also announces several events that you can listen to and extend the debuging and profiling capabilities:
+The debugger also announces several events that you can listen to and extend the debugging and profiling capabilities:
 
 ```js
 // Before the debugger panel is rendered
@@ -294,7 +318,7 @@ Profiling objects is great because you can just annotate and forget. Nothing to 
 
 ## WireBox Object Creation Profiling
 
-There will be cases where you need to test the performance of the creation of certain objects in WireBox.  YOu can do so by activating the `profileWireBoxObjectCreation` setting in the `requestTracker`.  Once enabled, you will see the profiling of all objects created by WireBox in the debug timers.
+There will be cases where you need to test the performance of the creation of certain objects in WireBox.  You can do so by activating the `profileWireBoxObjectCreation` setting in the `requestTracker`.  Once enabled, you will see the profiling of all objects created by WireBox in the debug timers.
 
 ## Profiling Interceptions
 
@@ -415,7 +439,21 @@ qb       : {
 },
 ```
 
-Also remember that you can activate the bidining parameters to the sql calls.
+Also remember that you can activate the binding parameters to the sql calls.
+
+## Adobe ColdFusion SQL Tracking
+
+We have also created an `ACF Sql` panel which will track all SQL calls made during your request.  We offer the same grouped or timeline visualizer for all these sql calls and even the capability to track from where the calls where made from and open them in your favorite editor to the line number.  All you have to do is activate it:
+
+```js
+// Adobe ColdFusion SQL Collector
+acfSql : {
+	enabled : true,
+	expanded : false,
+	logParams : true
+},
+```
+**Note:** This feature works with `ColdFusion 2018+` and requires the `Database Activity` box to be checked in the ACF `Debugging & Logging` page. If using ColdFusion 2021, you will need the `CF debugger` module installed as well. You can use the ACF CLI package manager, or the CommandBox command of `cfpm install debugger`. If it is not installed, install it and then restart the server before using this module.
 
 ## Modules Panel
 
@@ -472,12 +510,23 @@ You can execute several commands from this visualizer:
 
 You can then select a specific request and open the request report with all the tracked information.
 
-Please note that the request tracker in the debugger has a configurable capacity for requests.  By default we track the last 25 requests into the application.  You can either increase it or reduce it to your hearts content.  Just note that the more you track, the more memory it consumes.
+Please note that the request tracker in the debugger has a configurable capacity for requests.  By default we track the last 25 requests into the application.  You can either increase it or reduce it to your hearts content.  Just note that the more you track, the more memory it consumes unless you offload it to an external cache.
 
 ```js
 // How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
 maxProfilers                 : 25,
 ```
+
+## Storing Profilers Off-Heap
+
+You can tell the debugger to store the profilers and instrumentation data off-heap by using the `storage` setting and connecting it to a distributed cache like Redis, Couchbase, Mongo, Elastic, etc.  All you need to do is change the `storage` to `cachebox` and update the `cacheName` to point to the distributed cache name you have configured in your `config/Cachebox.cfc`.
+
+```js
+storage  : "cachebox",
+cacheName : "couchbase"
+```
+
+With that configuration, all the profiler data and instrumentation will be sent to the distributed cache.
 
 ********************************************************************************
 Copyright Since 2005 ColdBox Framework by Luis Majano and Ortus Solutions, Corp

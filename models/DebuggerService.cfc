@@ -8,6 +8,7 @@ component
 	accessors="true"
 	extends  ="coldbox.system.web.services.BaseService"
 	singleton
+	threadsafe
 {
 
 	/**
@@ -16,8 +17,11 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
-	property name="timerService"       inject="Timer@cbdebugger";
+	property name="asyncManager" inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
+	property name="timerService"       inject="provider:Timer@cbdebugger";
+	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
+	property name="sqlFormatter"       inject="provider:Formatter@sqlformatter";
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -53,15 +57,12 @@ component
 	/**
 	 * Constructor
 	 *
-	 * @controller The ColdBox controller
+	 * @controller        The ColdBox controller
 	 * @controller.inject coldbox
-	 * @settings Module Settings
-	 * @settings.inject coldbox:modulesettings:cbdebugger
+	 * @settings          Module Settings
+	 * @settings.inject   coldbox:modulesettings:cbdebugger
 	 */
-	function init(
-		required controller,
-		required settings
-	){
+	function init( required controller, required settings ){
 		// setup controller
 		variables.controller     = arguments.controller;
 		// config
@@ -97,6 +98,14 @@ component
 			"appHash"             : variables.controller.getAppHash()
 		};
 
+		// default the password to something so we are secure by default
+		if ( variables.debugPassword eq "cb:null" ) {
+			variables.debugPassword = hash( variables.environment.appHash & now() );
+		} else if ( len( variables.debugPassword ) ) {
+			// hash the password into memory
+			variables.debugPassword = hash( variables.debugPassword );
+		}
+
 		// Initialize secret key
 		rotateSecretKey();
 
@@ -120,12 +129,9 @@ component
 			current debugPassword and a random salt.  The salt also protects against someone being able to
 			reverse engineer the orignal password from an intercepted cookie value.
 		*/
-		var salt            = createUUID();
+		var salt            = variables.uuid.randomUUID();
 		variables.secretKey =
-		hash(
-			variables.controller.getAppHash() & variables.debugPassword & salt,
-			"SHA-256"
-		);
+		hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" );
 		return this;
 	}
 
@@ -137,7 +143,6 @@ component
 		if ( not ( len( variables.secretKey ) ) ) {
 			return false;
 		}
-
 		// If Cookie exists, it's value is used.
 		if ( isDebugCookieValid() ) {
 			// Must be equal to the current secret key
@@ -164,21 +169,16 @@ component
 	 */
 	DebuggerService function setDebugMode( required boolean mode ){
 		if ( arguments.mode ) {
-			cfcookie(
-				name  = getCookieName(),
-				value = variables.secretKey
-			);
+			cfcookie( name = getCookieName(), value = variables.secretKey );
 		} else {
-			cfcookie(
-				name  = getCookieName(),
-				value = "_disabled_"
-			);
+			cfcookie( name = getCookieName(), value = "_disabled_" );
 		}
 		return this;
 	}
 
 	/**
-	 * Create a new request tracking structure
+	 * Create a new request tracking structure. Called by the Request collector when it's ready
+	 * to start tracking
 	 *
 	 * @event The ColdBox context we will start the tracker on
 	 */
@@ -187,26 +187,30 @@ component
 		request.tracers    = [];
 		// Init the request debugger tracking
 		request.cbDebugger = {
-			"id"            : variables.uuid.randomUUID(),
-			"timestamp"     : now(),
-			"ip"            : getRealIP(),
-			"threadInfo"    : getCurrentThread().toString(),
-			"startCount"    : getTickCount(),
-			"executionTime" : 0,
-			"fullUrl"       : arguments.event.getFullUrl(),
-			"timers"        : [],
-			"tracers"       : [],
-			"requestData"   : getHTTPRequestData( variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody ),
-			"response"      : { "statusCode" : 0, "contentType" : "" },
 			"coldbox"       : {},
 			"exception"     : {},
-			"userAgent"     : cgi.HTTP_USER_AGENT,
-			"queryString"   : cgi.QUERY_STRING,
+			"executionTime" : 0,
+			"endFreeMemory" : 0,
+			"formData"      : ( form ?: {} ),
+			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
-			"formData"      : serializeJSON( form ?: {} ),
+			"id"            : variables.uuid.randomUUID(),
 			"inetHost"      : discoverInetHost(),
-			"localIp"       : ( isNull( cgi.local_addr ) ? "0.0.0.0" : cgi.local_addr )
+			"ip"            : getRealIP(),
+			"localIp"       : getServerIp(),
+			"queryString"   : cgi.QUERY_STRING,
+			"requestData"   : getHTTPRequestData(
+				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
+			),
+			"response"        : { "statusCode" : 0, "contentType" : "" },
+			"startCount"      : getTickCount(),
+			"startFreeMemory" : variables.jvmRuntime.freeMemory(),
+			"threadInfo"      : getCurrentThread().toString(),
+			"timers"          : [],
+			"timestamp"       : now(),
+			"tracers"         : [],
+			"userAgent"       : cgi.HTTP_USER_AGENT
 		};
 
 		// Event before recording
@@ -280,9 +284,9 @@ component
 	/**
 	 * Record a profiler and it's timers internally
 	 *
-	 * @event The request context that requested the record
+	 * @event         The request context that requested the record
 	 * @executionTime The time it took for th request to finish
-	 * @exception If there is an exception in the request, track it
+	 * @exception     If there is an exception in the request, track it
 	 */
 	DebuggerService function recordProfiler(
 		required event,
@@ -291,33 +295,25 @@ component
 	){
 		var targetStorage = getProfilerStorage();
 
-		// size check, if passed, pop one
-		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
-			arrayDeleteAt(
-				targetStorage,
-				arrayLen( targetStorage )
-			);
-		}
-
 		// Build out the exception data to trace if any?
 		var exceptionData = {};
 		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
 			exceptionData = {
-				"stackTrace"      : arguments.exception.stacktrace ?: "",
-				"type"            : arguments.exception.type ?: "",
 				"detail"          : arguments.exception.detail ?: "",
-				"tagContext"      : arguments.exception.tagContext ?: [],
-				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
-				"sqlState"        : arguments.exception.sqlState ?: "",
-				"sql"             : arguments.exception.sql ?: "",
-				"queryError"      : arguments.exception.queryError ?: "",
-				"where"           : arguments.exception.where ?: "",
 				"errNumber"       : arguments.exception.errNumber ?: "",
-				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"errorCode"       : arguments.exception.errorCode ?: "",
+				"extendedInfo"    : arguments.exception.extendedInfo ?: "",
 				"lockName"        : arguments.exception.lockName ?: "",
 				"lockOperation"   : arguments.exception.lockOperation ?: "",
-				"errorCode"       : arguments.exception.errorCode ?: "",
-				"extendedInfo"    : arguments.exception.extendedInfo ?: ""
+				"missingFileName" : arguments.exception.missingFileName ?: "",
+				"nativeErrorCode" : arguments.exception.nativeErrorCode ?: "",
+				"queryError"      : arguments.exception.queryError ?: "",
+				"sql"             : arguments.exception.sql ?: "",
+				"sqlState"        : arguments.exception.sqlState ?: "",
+				"stackTrace"      : arguments.exception.stacktrace ?: "",
+				"tagContext"      : arguments.exception.tagContext ?: [],
+				"type"            : arguments.exception.type ?: "",
+				"where"           : arguments.exception.where ?: ""
 			};
 		}
 
@@ -330,15 +326,10 @@ component
 		param request.cbDebugger.startCount = 0;
 		request.cbDebugger.append(
 			{
-				"timers"        : variables.timerService.getSortedTimers(),
-				"tracers"       : getTracers(),
+				"endFreeMemory" : variables.jvmRuntime.freeMemory(),
 				"exception"     : exceptionData,
 				"executionTime" : arguments.executionTime - request.cbDebugger.startCount,
-				"response"      : {
-					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
-					"contentType" : getPageContextResponse().getContentType()
-				},
-				"coldbox" : {
+				"coldbox"       : {
 					"RoutedUrl"        : arguments.event.getCurrentRoutedUrl(),
 					"Route"            : arguments.event.getCurrentRoute(),
 					"RouteMetadata"    : serializeJSON( arguments.event.getCurrentRouteMeta() ),
@@ -349,7 +340,13 @@ component
 					"ViewModule"       : arguments.event.getCurrentViewModule(),
 					"Layout"           : arguments.event.getCurrentLayout(),
 					"LayoutModule"     : arguments.event.getCurrentLayoutModule()
-				}
+				},
+				"response" : {
+					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
+					"contentType" : getPageContextResponse().getContentType()
+				},
+				"timers"  : variables.timerService.getSortedTimers(),
+				"tracers" : getTracers()
 			},
 			true
 		);
@@ -365,11 +362,27 @@ component
 
 		// Are we using cache storage
 		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
-			// store indefintely using the debugger and app hash
-			getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+			// Store async in case it delays
+			variables.asyncManager.newFuture( function(){
+				// store indefintely using the debugger and app hash
+				getCacheRegion().set( getStorageKey(), targetStorage, 0, 0 );
+			} );
 		}
 
+		// async rotation - size check, if passed, pop one
+		variables.asyncManager.newFuture( function(){ storageSizeCheck(); } );
+
 		return this;
+	}
+
+	/**
+	 * Do a storage size check and pop if necessary
+	 */
+	function storageSizeCheck(){
+		var targetStorage = getProfilerStorage();
+		if ( arrayLen( targetStorage ) gte variables.debuggerConfig.requestTracker.maxProfilers ) {
+			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
+		}
 	}
 
 	/**
@@ -394,9 +407,9 @@ component
 	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
 	 * the same patterns
 	 *
-	 * @message The message to trace
-	 * @severity The severity of the message
-	 * @category The tracking category the message came from
+	 * @message   The message to trace
+	 * @severity  The severity of the message
+	 * @category  The tracking category the message came from
 	 * @timestamp The timestamp of the message
 	 * @extraInfo Extra info to store in the tracer
 	 */
@@ -443,10 +456,33 @@ component
 	 */
 	function discoverInetHost(){
 		try {
-			return createObject( "java", "java.net.InetAddress" ).getLocalHost().getHostName();
+			return getInetAddress().getLocalHost().getHostName();
 		} catch ( any e ) {
 			return cgi.SERVER_NAME;
 		}
+	}
+
+	/**
+	 * Get the server IP Address
+	 */
+	string function getServerIp(){
+		try {
+			return getInetAddress().getLocalHost().getHostAddress();
+		} catch ( any e ) {
+			return "0.0.0.0";
+		}
+	}
+
+	/**
+	 * Get the Java InetAddress object
+	 *
+	 * @return java.net.InetAddress
+	 */
+	private function getInetAddress(){
+		if ( isNull( variables.inetAddress ) ) {
+			variables.inetAddress = createObject( "java", "java.net.InetAddress" );
+		}
+		return variables.inetAddress;
 	}
 
 	/**
@@ -494,10 +530,45 @@ component
 	}
 
 	/**
+	 * Process Stack trace for errors
+	 *
+	 * @str The stacktrace to process
+	 *
+	 * @return The nicer trace
+	 */
+	function processStackTrace( required str ){
+		return getExceptionBean().processStackTrace( argumentCollection = arguments );
+	}
+
+	/**
+	 * Compose a screen for a file to open in an editor
+	 *
+	 * @event    The request context
+	 * @instance An instance of a tag context array
+	 *
+	 * @return The string for the IDE
+	 */
+	function openInEditorURL( required event, required struct instance ){
+		return getExceptionBean().openInEditorURL( argumentCollection = arguments );
+	}
+
+	/**
+	 * Get the exception bean helper lazy loaded
+	 *
+	 * @return coldbox.system.web.context.ExceptionBean
+	 */
+	function getExceptionBean(){
+		if ( isNull( variables.exceptionBean ) ) {
+			variables.exceptionBean = new coldbox.system.web.context.ExceptionBean();
+		}
+		return variables.exceptionBean;
+	}
+
+	/**
 	 * This function tries to discover from where a target method was called from
 	 * by investigating the call stack
 	 *
-	 * @targetMethod The target method we are trying to pin point
+	 * @targetMethod  The target method we are trying to pin point
 	 * @templateMatch A string fragment to further narrow down the location, we match this against the template path
 	 *
 	 * @return Struct of { function, lineNumber, line, template }

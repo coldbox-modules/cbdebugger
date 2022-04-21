@@ -34,17 +34,17 @@ component {
 		variables.settings = {
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
-			enabled   : true,
+			enabled          : true,
 			// This setting controls if you will activate the debugger for visualizations ONLY
 			// The debugger will still track requests even in non debug mode.
-			debugMode : controller.getSetting(
-				name         = "environment",
-				defaultValue = "production"
-			) == "development",
+			debugMode        : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
-			debugPassword  : "cb:null",
+			debugPassword    : "cb:null",
+			// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
+			// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
+			requestPanelDock : true,
 			// Request Tracker Options
-			requestTracker : {
+			requestTracker   : {
 				// Store the request profilers in heap memory or in cachebox, default is cachebox
 				storage                      : "cachebox",
 				// Which cache region to store the profilers in
@@ -113,8 +113,10 @@ component {
 				// Log the binding parameters
 				logParams : true
 			},
+			// Adobe ColdFusion SQL Collector
+			acfSql : { enabled : false, expanded : false, logParams : true },
 			// Async Manager Reporting
-			async : { enabled : true, expanded : false }
+			async  : { enabled : true, expanded : false }
 		};
 
 		// Visualizer Route
@@ -157,17 +159,6 @@ component {
 	 * Load the module
 	 */
 	function onLoad(){
-		// default the password to something so we are secure by default
-		if ( variables.settings.debugPassword eq "cb:null" ) {
-			variables.settings.debugPassword = hash( getCurrentTemplatePath() );
-		} else if ( len( variables.settings.debugPassword ) ) {
-			// hash the password into memory
-			variables.settings.debugPassword = hash( variables.settings.debugPassword );
-		}
-
-		// Configure the debugging mode from the loaded app settings
-		wirebox.getInstance( "debuggerService@cbDebugger" ).setDebugMode( variables.settings.debugMode );
-
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		if ( variables.settings.enabled ) {
 			/******************** REQUEST COLLECTOR ************************************/
@@ -186,10 +177,7 @@ component {
 				binder
 					.mapAspect( "ObjectProfiler" )
 					.to( "#moduleMapping#.aspects.ObjectProfiler" )
-					.initArg(
-						name  = "traceResults",
-						value = variables.settings.requestTracker.traceObjectResults
-					);
+					.initArg( name = "traceResults", value = variables.settings.requestTracker.traceObjectResults );
 
 				// Bind Object Aspects to monitor all a-la-carte profilers via method and component annotations
 				binder.bindAspect(
@@ -264,6 +252,22 @@ component {
 						interceptorName  = "CBOrmCollector@cbdebugger"
 					);
 			}
+
+			/******************** ACFSQL COLLECTOR ************************************/
+
+			// Do not load on lucee or ACF 2016
+			if (
+				variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016"
+			) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
+						interceptorName  = "ACFSqlCollector@cbdebugger"
+					);
+			} else {
+				variables.settings.acfSql.enabled = false;
+			}
 		}
 		// end master switch
 	}
@@ -275,15 +279,10 @@ component {
 		// Only if we are enabled
 		if ( variables.settings.enabled ) {
 			controller.getInterceptorService().unregister( "RequestCollector@cbdebugger" );
-			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
-				controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
-			}
-			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-				controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
-			}
-			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-				controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
-			}
+			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
+			controller.getInterceptorService().unregister( "ACFSqlCollector@cbdebugger" );
 		}
 	}
 
@@ -293,10 +292,7 @@ component {
 	function afterConfigurationLoad(){
 		if ( variables.settings.enabled && variables.settings.tracers.enabled ) {
 			var logBox = controller.getLogBox();
-			logBox.registerAppender(
-				"tracer",
-				"cbdebugger.appenders.TracerAppender"
-			);
+			logBox.registerAppender( "tracer", "cbdebugger.appenders.TracerAppender" );
 			var appenders = logBox.getAppendersMap( "tracer" );
 			// Register the appender with the root loggger, and turn the logger on.
 			var root      = logBox.getRootLogger();
@@ -310,15 +306,12 @@ component {
 	 * Loads the AOP mixer if not loaded in the application
 	 */
 	private function loadAOPMixer(){
-		var mixer = new coldbox.system.aop.Mixer();
-		// configure it
-		mixer.configure( wirebox, {} );
 		// register it
 		controller
 			.getInterceptorService()
 			.registerInterceptor(
-				interceptorObject = mixer,
-				interceptorName   = "AOPMixer"
+				interceptorObject: new coldbox.system.aop.Mixer().configure( wirebox, {} ),
+				interceptorName  : "AOPMixer"
 			);
 	}
 
@@ -326,17 +319,13 @@ component {
 	 * Verify if wirebox aop mixer is loaded
 	 */
 	private boolean function isAOPMixerLoaded(){
-		var listeners = wirebox.getBinder().getListeners();
-		var results   = false;
-
-		for ( var thisListener in listeners ) {
-			if ( thisListener.class eq "coldbox.system.aop.Mixer" ) {
-				results = true;
-				break;
-			}
-		}
-
-		return results;
+		return wirebox
+			.getBinder()
+			.getListeners()
+			.filter( function( thisListener ){
+				return thisListener.class eq "coldbox.system.aop.Mixer";
+			} )
+			.len() > 0 ? true : false;
 	}
 
 }

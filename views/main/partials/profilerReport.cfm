@@ -1,34 +1,50 @@
+<!--- View Inputs --->
+<cfparam name="args.debuggerService">
+<cfparam name="args.environment">
+<cfparam name="args.profiler">
+<cfparam name="args.debuggerConfig">
+<cfparam name="args.isVisualizer">
 <cfoutput>
-<div class="cbd-rounded mt10 mb10 cbd-reportContainer">
+<div
+	id="cbd-profiler-report"
+	class="cbd-rounded mt10 mb10 cbd-reportContainer"
+	x-data="{
+		profilerId : '#args.profiler.id#'
+	}"
+>
 
 	<!--- Header Panel --->
 	<div class="pl10 pr10 pt5 cbd-reportHeader">
 
-		<!--- Reload Report Button --->
+		<!--- Toolbar --->
 		<div class="cbd-floatRight">
-			<!--- Back Only on Ajax --->
+			<!--- VISUALIZER TOOLBAR --->
 			<cfif args.isVisualizer>
+
+				<button
+					type="button"
+					title="Refresh"
+					@click="loadProfilerReport( profilerId )"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+					</svg>
+				</button>
+
 				<button
 					type="button"
 					title="Back to profilers"
-					id="cbd-buttonBackToProfilers"
-					onClick="cbdRefreshProfilers()"
+					@click="refreshProfilers()"
 				>
 					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
 					</svg>
 				</button>
 			</cfif>
-			<button
-				type="button"
-				title="Reload Report"
-				id="cbd-buttonGetProfilerReport-#args.profiler.id#"
-				onClick="cbdGetProfilerReport( '#args.profiler.id#', #args.isVisualizer ? 'true' : 'false'# )"
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-				</svg>
-			</button>
 		</div>
 
 		<h4>
@@ -141,6 +157,26 @@
 					</svg>
 					#args.profiler.response.contentType.listFirst( ";" )#
 				</div>
+
+				<div class="ml10" title="Free Memory Diff">
+					<cfset diff = numberFormat( ( args.profiler.endFreeMemory - args.profiler.startFreeMemory ) / 1048576 )>
+					<cfif diff gt 0>
+						<span class="cbd-text-green">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+							</svg>
+							#diff#MB
+						</span>
+					<cfelse>
+						<span class="cbd-text-red">
+							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+								<path fill-rule="evenodd" d="M12 13a1 1 0 100 2h5a1 1 0 001-1V9a1 1 0 10-2 0v2.586l-4.293-4.293a1 1 0 00-1.414 0L8 9.586 3.707 5.293a1 1 0 00-1.414 1.414l5 5a1 1 0 001.414 0L11 9.414 14.586 13H12z" clip-rule="evenodd" />
+							</svg>
+							#diff#MB
+						</span>
+					</cfif>
+				</div>
+
 			</div>
 		</h4>
 	</div>
@@ -154,7 +190,8 @@
 				<!--- Event --->
 				#announce( "beforeProfilerReportPanels", {
 					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig
+					debuggerConfig : args.debuggerConfig,
+					debuggerService : args.debuggerService
 				} )#
 
 				<!--- **************************************************************--->
@@ -162,11 +199,12 @@
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
 					#renderView(
-						view : "main/panels/exceptionPanel",
+						view : "main/panels/requestTracker/exceptionPanel",
 						module : "cbdebugger",
 						args : {
 							debuggerConfig : args.debuggerConfig,
-							profiler : args.profiler
+							profiler : args.profiler,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -177,12 +215,13 @@
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/debugTimersPanel",
+					view : "main/panels/requestTracker/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
 						timers : args.profiler.timers,
 						debuggerConfig : args.debuggerConfig,
-						executionTime : args.profiler.executionTime
+						executionTime : args.profiler.executionTime,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -191,11 +230,12 @@
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/coldboxPanel",
+					view : "main/panels/requestTracker/coldboxPanel",
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig
+						debuggerConfig : args.debuggerConfig,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -204,11 +244,12 @@
 				<!--- HTTP Request Data --->
 				<!--- **************************************************************--->
 				#renderView(
-					view : "main/panels/httpRequestPanel",
+					view : "main/panels/requestTracker/httpRequestPanel",
 					module : "cbdebugger",
 					args : {
 						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig
+						debuggerConfig : args.debuggerConfig,
+						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
 				)#
@@ -218,11 +259,13 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.tracers.enabled>
 					#renderView(
-						view : "main/panels/tracersPanel",
+						view : "main/panels/requestTracker/tracersPanel",
 						module : "cbdebugger",
 						args : {
+							profiler : args.profiler,
 							tracers : args.profiler.tracers,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -233,40 +276,32 @@
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
 				<cfif !args.isVisualizer and args.debuggerConfig.collections.enabled>
-					<div class="cbd-titles"  onClick="cbdToggle( 'cbd-requestCollections' )" >
-						&nbsp;
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-						</svg>
-						ColdBox Request Structures
-					</div>
-					<div
-						class="cbd-contentView<cfif args.debuggerConfig.collections.expanded> cbd-show<cfelse> cbd-hide</cfif>"
-						id="cbd-requestCollections"
-					>
-						<!--- Public Collection --->
-						#renderView(
-							view : "main/panels/collectionPanel",
-							module : "cbdebugger",
-							args : {
-								collection : rc,
-								collectionType : "Public",
-								debuggerConfig : args.debuggerConfig
-							},
-							prePostExempt : true
-						)#
-						<!--- Private Collection --->
-						#renderView(
-							view : "main/panels/collectionPanel",
-							module : "cbdebugger",
-							args : {
-								collection : prc,
-								collectionType : "Private",
-								debuggerConfig : args.debuggerConfig
-							},
-							prePostExempt : true
-						)#
-					</div>
+					#renderView(
+						view : "main/panels/requestTracker/coldboxCollectionsPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
+				<!--- ACFSQL --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.acfSql.enabled>
+					#renderView(
+						view : "main/panels/requestTracker/acfSqlPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
+						},
+						prePostExempt : true
+					)#
 				</cfif>
 
 				<!--- **************************************************************--->
@@ -274,11 +309,12 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>
 					#renderView(
-						view : "main/panels/cbormPanel",
+						view : "main/panels/requestTracker/cbormPanel",
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -289,11 +325,12 @@
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.qb.enabled>
 					#renderView(
-						view : "main/panels/qbPanel",
+						view : "main/panels/requestTracker/qbPanel",
 						module : "cbdebugger",
 						args : {
 							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
 					)#
@@ -302,13 +339,14 @@
 				<!--- Event --->
 				#announce( "afterProfilerReportPanels", {
 					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig
+					debuggerConfig : args.debuggerConfig,
+					debuggerService : args.debuggerService
 				} )#
 
 			</div>
 		<cfelse>
 			<div class="cbd-text-red">
-				Profiler with ID: #rc.id# not found!
+				Profiler with ID: #encodeForHTML( args.profiler.id )# not found!
 			</div>
 		</cfif>
 	</div>
@@ -318,7 +356,7 @@
 		<button
 			type="button"
 			title="Got to top of report"
-			onClick="cbdScrollToProfilerReport()"
+			onClick="coldboxDebugger.scrollTo( 'cbd-request-tracker' )"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />

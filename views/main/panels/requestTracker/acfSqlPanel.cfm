@@ -1,15 +1,37 @@
-<cfset sqlFormatter = getInstance( "SqlFormatter@cbdebugger" )>
-<cfset jsonFormatter = getInstance( '@JSONPrettyPrint' )>
-<cfset exceptionBean = new coldbox.system.web.context.ExceptionBean()>
-<cfset appPath = getSetting( "ApplicationPath" )>
+<cfparam name="args.profiler">
+<cfparam name="args.debuggerConfig">
+<cfparam name="args.debuggerService">
+<cfscript>
+	sqlFormatter = args.debuggerService.getSqlFormatter();
+	jsonFormatter = args.debuggerService.getjsonFormatter();
+	appPath = getSetting( "ApplicationPath" );
+</cfscript>
+
 <cfoutput>
+<!--- Panel Component --->
+<div
+	id="cbd-acfsql-panel"
+	x-data="{
+		panelOpen : #args.debuggerConfig.acfSql.expanded ? 'true' : 'false'#,
+		queryView : 'grouped',
+		isGroupView(){
+			return this.queryView == 'grouped'
+		},
+		isTimelineView(){
+			return this.queryView == 'timeline'
+		}
+	}"
+>
 	<!--- Panel Title --->
-	<div class="cbd-titles"  onClick="cbdToggle( 'cbdCBOrmPanel' )" >
+	<div
+		class="cbd-titles"
+		@click="panelOpen=!panelOpen"
+	>
 		&nbsp;
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
 		</svg>
-		cborm
+		ACF Sql
 
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
@@ -19,18 +41,21 @@
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
 		</svg>
-		#args.profiler.cborm.totalQueries#
-		<!--- Execution Time --->
+		#args.profiler.cfQueries.totalQueries#
+
 		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
 		</svg>
-		#numberFormat( args.profiler.cborm.totalExecutionTime )# ms
+		#numberFormat( args.profiler.cfQueries.totalExecutionTime )# ms
 	</div>
 
 	<!--- Panel Content --->
 	<div
-		class="cbd-contentView<cfif args.debuggerConfig.cborm.expanded> cbd-show<cfelse> cbd-hide</cfif>"
-		id="cbdCBOrmPanel"
+		class="cbd-contentView p20"
+		id="cbd-acsqlData"
+		x-show="panelOpen"
+		x-cloak
+		x-transition
 	>
 
 		<!--- Info Bar --->
@@ -38,14 +63,14 @@
 			<div>
 				<strong>Total Queries:</strong>
 				<div class="cbd-badge-light">
-					#args.profiler.cborm.totalQueries#
+					#args.profiler.cfQueries.totalQueries#
 				</div>
 			</div>
 
 			<div>
 				<strong>Total Execution Time:</strong>
 				<div class="cbd-badge-light">
-					#args.profiler.cborm.totalExecutionTime# ms
+					#args.profiler.cfQueries.totalExecutionTime# ms
 				</div>
 			</div>
 		</div>
@@ -53,9 +78,8 @@
 		<!--- ToolBar --->
 		<div class="p10">
 			<button
-				class="cbd-selected"
-				id="cbdButtonGroupedOrmQueries"
-				onClick="cbdShowGroupedOrmQueries()"
+				:class="{ 'cbd-selected' : isGroupView() }"
+				@click="queryView='grouped'"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -63,9 +87,8 @@
 				Grouped
 			</button>
 			<button
-				class=""
-				id="cbdButtonTimelineOrmQueries"
-				onClick="cbdShowTimelineOrmQueries()"
+				:class="{ 'cbd-selected' : isTimelineView() }"
+				@click="queryView='timeline'"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -74,17 +97,23 @@
 			</button>
 		</div>
 
-		<!--- If no queries show message --->
-		<cfif args.profiler.cborm.totalQueries EQ 0>
+		<!--- Query Views --->
+		<cfif args.profiler.cfQueries.totalQueries EQ 0>
 			<div class="cbd-text-muted">
 				<em>No queries executed</em>
 			</div>
-		<!--- Show Queries --->
 		<cfelse>
-
 			<!--- Grouped Queries --->
-			<div id="cbdGroupedOrmQueries">
-				<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
+			<div
+				x-show="isGroupView"
+				x-transition
+			>
+				<table
+					border="0"
+					align="center"
+					cellpadding="0"
+					cellspacing="1"
+					class="cbd-tables">
 					<thead>
 						<tr>
 							<th width="5%">Count</th>
@@ -92,16 +121,15 @@
 						</tr>
 					</thead>
 					<tbody>
-						<cfloop array="#args.profiler.cborm.grouped.keyArray()#" index="sqlHash">
-							<!--- Show count + actual sql --->
+						<cfloop array="#args.profiler.cfQueries.grouped.keyArray()#" index="sqlHash">
 							<tr>
 								<td align="center">
 									<div class="cbd-badge-light">
-										#args.profiler.cborm.grouped[ sqlHash ].count#
+										#args.profiler.cfQueries.grouped[ sqlHash ].count#
 									</div>
 								</td>
 								<td>
-									<code id="cborm-groupsql-#sqlHash#">
+									<code id="acfSql-groupsql-#sqlHash#">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											class="h-6 w-6 cbd-floatRight cbd-text-pre mt5"
@@ -110,58 +138,55 @@
 											stroke="currentColor"
 											title="Copy SQL to Clipboard"
 											style="width: 50px; height: 50px; cursor: pointer;"
-											onclick="copyToClipboard( 'cborm-groupsql-#sqlHash#' )"
+											onclick="coldboxDebugger.copyToClipboard( 'acfSql-groupsql-#sqlHash#' )"
 										>
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 										</svg>
-										#sqlFormatter.formatSql(
-											args.profiler.cborm.grouped[ sqlHash ].sql
-										)#
+										<pre>#sqlFormatter.format(
+											args.profiler.cfQueries.grouped[ sqlHash ].sql
+										)#</pre>
 									</code>
 								</td>
 							</tr>
-							<!--- Show sql records --->
 							<tr>
 								<td></td>
 								<td>
 									<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
 										<thead>
 											<tr>
-												<th width="15%" align="center">Timestamp</th>
-												<th width="10%" align="center">Execution Time</th>
-												<th width="10%" align="center">Type</th>
-												<th>Caller + Params</th>
+												<th width="15%">Timestamp</th>
+												<th width="15%">Execution Time</th>
+												<th width="15%">Datasource</th>
+												<th>Source/Params</th>
 											</tr>
 										</thead>
 										<tbody>
-											<cfloop array="#args.profiler.cborm.grouped[ sqlHash ].records#" index="q">
-												<cfset q.id = createUUID()>
+											<cfloop array="#args.profiler.cfQueries.grouped[ sqlHash ].records#" index="q">
+												<cfset rowId = createUUID()>
 												<tr>
 													<td align="center">
 														#TimeFormat( q.timestamp, "hh:MM:SS.l tt" )#
 													</td>
 													<td align="center">
-														#numberFormat( q.executionTime )# ms
+														#numberFormat( q.endTime - q.startTime )# ms
 													</td>
 													<td align="center">
-														#q.type#
+														#q.datasource#
 													</td>
 													<td>
-
-														<!--- Show Template Caller if not empty --->
-														<cfif q.caller.template.len()>
+														<cfif q.template.len()>
 															<div class="mb10 mt10 cbd-params">
 																<!--- Title --->
 																<strong>Called From: </strong>
 																<!--- Open in Editor--->
-																<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+																<cfif args.debuggerService.openInEditorURL( event, q.stackTrace[ 1 ] ) NEQ "">
 																	<div class="cbd-floatRight">
 																		<a
 																			class="cbd-button"
 																			target="_self"
 																			rel   ="noreferrer noopener"
 																			title="Open in Editor"
-																			href="#exceptionBean.openInEditorURL( event, q.caller )#"
+																			href="#args.debuggerService.openInEditorURL( event, q.stackTrace[ 1 ] )#"
 																		>
 																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 																				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -172,15 +197,14 @@
 																<!--- Line --->
 																<div>
 																	<strong>
-																		#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+																		#replaceNoCase( q.template, appPath, "" )#:#q.line#
 																	</strong>
 																</div>
 															</div>
 														</cfif>
 
-														<!--- Params --->
-														<cfif NOT q.params.isEmpty()>
-															<code id="cborm-groupsql-params-#q.id#">
+														<cfif NOT q.attributes.isEmpty()>
+															<code id="acfSql-groupsql-params-#rowId#">
 																<svg
 																	xmlns="http://www.w3.org/2000/svg"
 																	class="h-6 w-6 cbd-floatRight cbd-text-pre mt5"
@@ -189,11 +213,11 @@
 																	stroke="currentColor"
 																	title="Copy Params to Clipboard"
 																	style="width: 50px; height: 50px; cursor: pointer;"
-																	onclick="copyToClipboard( 'cborm-groupsql-params-#q.id#' )"
+																	onclick="coldboxDebugger.copyToClipboard( 'acfSql-groupsql-params-#rowId#' )"
 																>
 																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 																</svg>
-																<pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre>
+																<pre>#jsonFormatter.formatJSON( json : q.attributes, spaceAfterColon : true )#</pre>
 															</code>
 														</cfif>
 													</td>
@@ -207,51 +231,60 @@
 					</tbody>
 				</table>
 			</div>
-			<!--- End Grouped Queries --->
 
 			<!--- Timeline Queries --->
-			<div id="cbdTimelineOrmQueries" class="cbd-hide">
-				<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
+			<div
+				x-show="isTimelineView"
+				x-transition
+			>
+				<table
+					border="0"
+					align="center"
+					cellpadding="0"
+					cellspacing="1"
+					class="cbd-tables">
 					<thead>
 						<tr>
 							<th width="125" align="center">Timestamp</th>
-							<th width="100" align="center">Type</th>
 							<th width="100" align="center">Execution Time</th>
+							<th width="100" align="center">Datasource</th>
 							<th>Query</th>
 						</tr>
 					</thead>
-
 					<tbody>
-						<cfloop array="#args.profiler.cborm.all#" index="q">
-							<cfset q.id = createUUID()>
+						<cfloop query="#args.profiler.cfQueries.all#">
+							<cfset q = args.profiler.cfQueries.all>
+							<cfif q.type neq "SqlQuery">
+								<cfcontinue>
+							</cfif>
+							<cfset rowId = createUUID()>
 							<tr>
 								<td align="center">
 									#TimeFormat( q.timestamp,"hh:MM:SS.l tt" )#
 								</td>
 
 								<td align="center">
-									#q.type#
+									#numberFormat( ( q.endTime - q.startTime ) )# ms
 								</td>
 
 								<td align="center">
-									#q.executionTime# ms
+									#q.datasource#
 								</td>
 
 								<td>
-									<cfif q.caller.template.len()>
+									<cfif q.template.len()>
 										<div class="mb10 mt10 cbd-params">
 											<!--- Title --->
 											<strong>Called From: </strong>
-
 											<!--- Open in Editor--->
-											<cfif exceptionBean.openInEditorURL( event, q.caller ) NEQ "">
+											<cfif args.debuggerService.openInEditorURL( event, q.stackTrace[ 1 ][ 1 ] ) NEQ "">
 												<div class="cbd-floatRight">
 													<a
 														class="cbd-button"
 														target="_self"
 														rel   ="noreferrer noopener"
 														title="Open in Editor"
-														href="#exceptionBean.openInEditorURL( event, q.caller )#"
+														href="#args.debuggerService.openInEditorURL( event, q.stackTrace[ 1 ][ 1 ] )#"
 													>
 														<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 															<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
@@ -259,18 +292,17 @@
 													</a>
 												</div>
 											</cfif>
-
 											<!--- Line --->
 											<div>
 												<strong>
-													#replaceNoCase( q.caller.template, appPath, "" )#:#q.caller.line#
+													#replaceNoCase( q.template, appPath, "" )#:#q.line#
 												</strong>
 											</div>
 										</div>
 									</cfif>
 
-									<!--- Formatted SQL --->
-									<code id="cborm-timelinesql-#q.id#">
+									<!--- Sql Code --->
+									<code id="acfSql-timelinesql-#rowId#">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											class="h-6 w-6 cbd-floatRight cbd-text-pre mt5"
@@ -279,20 +311,20 @@
 											stroke="currentColor"
 											title="Copy SQL to Clipboard"
 											style="width: 50px; height: 50px; cursor: pointer;"
-											onclick="copyToClipboard( 'cborm-timelinesql-#q.id#' )"
+											onclick="coldboxDebugger.copyToClipboard( 'acfSql-timelinesql-#rowId#' )"
 										>
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 										</svg>
-										#sqlFormatter.formatSql( q.sql )#
+										<pre>#sqlFormatter.format( q.body )#</pre>
 									</code>
 
-									<!--- Binding Params --->
-									<cfif NOT q.params.isEmpty()>
+									<!--- Params --->
+									<cfif NOT q.attributes.isEmpty()>
 										<div class="mt10 mb5 cbd-params">
 											<div class="mb10">
 												<strong>Params: </strong>
 											</div>
-											<code id="cborm-timelinesql-params-#q.id#">
+											<code id="acfSql-timelinesql-params-#rowId#">
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
 													class="h-6 w-6 cbd-floatRight cbd-text-pre mt5"
@@ -301,11 +333,11 @@
 													stroke="currentColor"
 													title="Copy SQL to Clipboard"
 													style="width: 50px; height: 50px; cursor: pointer;"
-													onclick="copyToClipboard( 'cborm-timelinesql-params-#q.id#' )"
+													onclick="coldboxDebugger.copyToClipboard( 'acfSql-timelinesql-params-#rowId#' )"
 												>
 													<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 												</svg>
-												<pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre>
+												<pre>#jsonFormatter.formatJSON( json : q.attributes, spaceAfterColon : true )#</pre>
 											</code>
 										</div>
 									</cfif>
@@ -315,54 +347,9 @@
 					</tbody>
 				</table>
 			</div>
-
 		</cfif>
-		<!--- End Show Queries --->
-
-		<!--- Divider --->
-		<hr class="mt20 mb20 cbd-clear cbd-dotted">
-
-		<!--- *************************************************************************** --->
-		<!--- HIBERNATE SESSION END STATS --->
-		<!--- *************************************************************************** --->
-
-		<!--- Hibernate Session Stats --->
-		<div class="mt10">
-			<h2>Hibernate Session Stats:</h2>
-			<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-				<tr>
-					<th width="200" align="right">
-						Total Queries Executed:
-					</th>
-					<td>
-						#args.profiler.cborm.totalQueries#
-					</td>
-				</tr>
-				<tr>
-					<th width="200" align="right">
-						Total Execution Time:
-					</th>
-					<td>
-						#args.profiler.cborm.totalExecutionTime#
-					</td>
-				</tr>
-				<tr>
-					<th width="200" align="right">
-						Collection Count:
-					</th>
-					<td>
-						#args.profiler.cborm.sessionStats.collectionCount#
-					</td>
-				</tr>
-				<tr>
-					<th width="200" align="right">
-						Entity Count:
-					</th>
-					<td>
-						#args.profiler.cborm.sessionStats.entityCount#
-					</td>
-				</tr>
-			</table>
-		</div>
 	</div>
+
+</div>
+<!--- End acfsql component --->
 </cfoutput>
