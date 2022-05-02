@@ -191,7 +191,7 @@ component
 			"exception"     : {},
 			"executionTime" : 0,
 			"endFreeMemory" : 0,
-			"formData"      : ( form ?: {} ),
+			"formData"      : serializeJson( form ?: {} ),
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
