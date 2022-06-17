@@ -2,7 +2,7 @@
 
 # Welcome To The ColdBox Debugger Module
 
-The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funer and greater! Yes, funer is a word!
+The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funner and greater! Yes, funner is a word!
 
 <p align="center">
 	<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/test-harness/includes/images/debugger-visualizer.png">
@@ -35,7 +35,7 @@ The ColdBox debugger is a light-weigth performance monitor and profiler for your
 - Tap into LogBox via our Tracer messages and discover logging on a per request basis
 - Profile execution and results of **ANY** model object
 - Profile execution of **ANY** ColdBox interception point
-- Custom Timer helpers for adding timing methods and annotations anywhere in -our code
+- Custom Timer helpers for adding timing methods and annotations anywhere in your code
 - Profile your production or development apps with ease
 - Track ColdBox modules and lifecycles
 - Highly configurable
@@ -82,7 +82,7 @@ This will activate the debugger in your application and render out at the end of
 
 ## Settings
 
-The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning adventures. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
+The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
 
 Open your `config/coldbox.cfc` configuration object and add into the `moduleSettings` the `cbDebugger` key with the following options:
 
@@ -98,8 +98,8 @@ moduleSettings = {
 		debugMode : true,
 		// The URL password to use to activate it on demand
 		debugPassword  : "cb:null",
-		// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
-		// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
+		// This flag enables/disables the end of request debugger panel docked to the bottom of the page.
+		// If you disable it, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
 		requestPanelDock : true,
 		// Request Tracker Options
 		requestTracker : {
