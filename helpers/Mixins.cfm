@@ -39,7 +39,7 @@
 	 * @labelHash The timer label hash to stop
 	 */
 	function stopCBTimer( required labelHash ){
-		return variables.wirebox.getInstance( "Timer@cbdebugger" ).stop( arguments.label );
+		return variables.wirebox.getInstance( "Timer@cbdebugger" ).stop( arguments.labelHash );
 	}
 
 	/**
