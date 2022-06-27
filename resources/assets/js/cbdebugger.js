@@ -1,31 +1,35 @@
-import Alpine from "alpinejs";
-// Load Plugins
-// Using common js due to NOT being on webpack5, the esm was giving us issues
-// Once we update to elixir 4, try it again
-import morph from "@alpinejs/morph/dist/module.cjs";
+import cbAlpine from "alpinejs";
+
 // Load Custom Components
 import ModulesPanel from "./components/ModulesPanel";
 import RequestTrackerPanel from "./components/RequestTrackerPanel";
 
-// For easy referencing
-window.Alpine = Alpine;
-
-// Register Plugins
-Alpine.plugin( morph );
-
-// Register Components
-Alpine.data( "modulesPanel", ModulesPanel );
-Alpine.data( "requestTrackerPanel", RequestTrackerPanel );
-
-// Startup your engines!!!!!!!!
-Alpine.start();
-
 // Init the coldbox debugger module
 window.coldboxDebugger = ( () => {
+
 	/**
-	 * Listen to dom load and attach
+	 * Listen to alpine startup to load cbDebugger components
+	 */
+	document.addEventListener('alpine:init', () => {
+		// Register Components so our prefixed alpine version can read it.
+		window.Alpine.data( "cbdModulesPanel", ModulesPanel );
+		window.Alpine.data( "cbdRequestTrackerPanel", RequestTrackerPanel );
+		//console.log( "Registering cbDebugger Alpine Components!" );
+	});
+
+	/**
+	 * Listen to DOM to see if we load our Alpine or use a version of Alpine
 	 */
 	window.addEventListener( "load", ( event ) => {
+		// Verify if alpine is already loaded in the window
+		if( !window.hasOwnProperty( "Alpine" ) ){
+			window.Alpine = cbAlpine;
+			// Startup your engines!!!!!!!!
+			window.Alpine.start();
+			//console.log( "Alpine not loaded, loading it!" );
+		} else {
+			console.log( "Alpine already loaded, cbDebugger will use it!" );
+		}
 		console.log( "ColdBox Debugger Loaded!" );
 	} );
 

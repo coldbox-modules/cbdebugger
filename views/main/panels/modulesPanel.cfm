@@ -19,7 +19,7 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 <cfoutput>
 <div
 	id="cbd-modules"
-	x-data="modulesPanel( #args.debuggerConfig.modules.expanded ? 'true' : 'false'# )"
+	x-data="cbdModulesPanel( #args.debuggerConfig.modules.expanded ? 'true' : 'false'# )"
 >
 	<!--- Panel Header --->
 	<div
