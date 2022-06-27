@@ -92,6 +92,10 @@ component {
 		log.info( "in the index event firing" );
 	}
 
+	function embedded( event, rc, prc ){
+		event.setView( "main/embedded" ).setLayout( "Embedded" );
+	}
+
 	any function noDebugger( event, rc, prc ){
 		hideDebugger();
 		event.renderData( data = "<h1>Hello</h1>" );

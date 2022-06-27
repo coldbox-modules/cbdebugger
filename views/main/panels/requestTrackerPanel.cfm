@@ -2,7 +2,7 @@
 <cfoutput>
 <div
 	id="cbd-request-tracker"
-	x-data = "requestTrackerPanel(
+	x-data = "cbdRequestTrackerPanel(
 		#args.debuggerConfig.requestTracker.expanded ? 'true' : 'false'#,
 		#args.refreshFrequency#,
 		#controller.getSetting( 'ReinitPassword' ).length() ? 'true' : 'false'#,

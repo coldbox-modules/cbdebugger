@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [3.4.0] => 2022-JUN-27
+
+### Added
+
+* Upgraded entire front end build process to ColdBox Elixir v4
+* Upgraded to Node 16 for all front end processes
+
+### Fixed
+
+* If the cbdebugger was embedded within an app already using Alpine, it will fail. Now it will leach on to the running Alpine app.
+
+----
+
 ## [3.3.2] => 2022-MAY-02
 
 ### Fixed
