@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [3.4.1] => 2022-JUL-12
+
+### Fixed
+
+* If the debugger is disabled or not in debug mode, the panels and visualizers are still being rendered and exploding. This should be a 404.
+
+----
+
 ## [3.4.0] => 2022-JUN-27
 
 ### Added
