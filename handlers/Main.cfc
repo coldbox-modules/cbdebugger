@@ -21,16 +21,22 @@ component extends="coldbox.system.RestHandler" {
 		}
 
 		// If not enabled, just 404 it
-		if ( !variables.debuggerService.getDebugMode() ) {
-			event.renderData(
-				statusCode = 404,
-				statusText = "Not Found",
-				type       = "text",
-				data       = "Page Not Found"
-			);
+		if ( !variables.debuggerService.getDebugMode() || !variables.debuggerConfig.enabled ) {
+			event.overrideEvent( "cbdebugger:main.disabled" );
 		}
 	}
 
+	/**
+	 * Debugger disabled event
+	 */
+	function disabled( event, rc, prc ){
+		event.renderData(
+			statusCode = 404,
+			statusText = "Not Found",
+			type       = "text",
+			data       = "Page Not Found"
+		);
+	}
 
 	/**
 	 * Visualize the request tracker
