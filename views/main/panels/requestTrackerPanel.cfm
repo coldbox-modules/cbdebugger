@@ -159,12 +159,6 @@
 			</button>
 		</div>
 
-		<!--- Info --->
-		<p>
-			Below you can see the latest ColdBox requests made into the application.
-			Click on the desired profiler to view its execution report.
-		</p>
-
 		<!--- Machine Info --->
 		<div class="cbd-titleCell">
 			Framework Info:
@@ -198,7 +192,7 @@
 		</div>
 
 		<!--- RENDER PROFILERS OR PROFILER REPORT, DEPENDING ON VISUALIZER FLAG --->
-
+		<h2>Request History</h2>
 		<a name="cbd-profilers"></a>
 		<div
 			id="cbd-profilers"

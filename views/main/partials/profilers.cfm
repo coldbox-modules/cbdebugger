@@ -72,7 +72,7 @@
 						#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 					</div>
 
-					<div class="mt5">
+					<div class="mt5" title="Local IP">
 						#thisProfiler.localIp#
 					</div>
 				</td>
@@ -102,7 +102,7 @@
 				<!--- FULL URL + EVENT --->
 				<td>
 					<div>
-						#thisProfiler.requestData.method#:#thisProfiler.fullUrl#
+						#thisProfiler.requestData.method#>#thisProfiler.fullUrl#
 					</div>
 					<div class="mt10 cbd-text-blue">
 						<strong>
