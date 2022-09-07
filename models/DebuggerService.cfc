@@ -17,7 +17,7 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
-	property name="asyncManager" inject="coldbox:asyncManager";
+	property name="asyncManager"       inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
 	property name="timerService"       inject="provider:Timer@cbdebugger";
 	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
@@ -183,15 +183,13 @@ component
 	 * @event The ColdBox context we will start the tracker on
 	 */
 	struct function createRequestTracker( required event ){
-		// Init the request tracers
-		param request.tracers    = [];
 		// Init the request debugger tracking
 		param request.cbDebugger = {
 			"coldbox"       : {},
 			"exception"     : {},
 			"executionTime" : 0,
 			"endFreeMemory" : 0,
-			"formData"      : serializeJson( form ?: {} ),
+			"formData"      : serializeJSON( form ?: {} ),
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
@@ -345,8 +343,7 @@ component
 					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
 					"contentType" : getPageContextResponse().getContentType()
 				},
-				"timers"  : variables.timerService.getSortedTimers(),
-				"tracers" : getTracers()
+				"timers" : variables.timerService.getSortedTimers()
 			},
 			true
 		);
@@ -370,7 +367,9 @@ component
 		}
 
 		// async rotation - size check, if passed, pop one
-		variables.asyncManager.newFuture( function(){ storageSizeCheck(); } );
+		variables.asyncManager.newFuture( function(){
+			storageSizeCheck();
+		} );
 
 		return this;
 	}
@@ -426,12 +425,10 @@ component
 		}
 
 		// Ensure we have the tracers array for the request
-		if ( isNull( request.tracers ) ) {
-			request.tracers = [];
-		}
+		param request.cbDebugger.tracers = [];
 
 		// Push it
-		arrayPrepend( request.tracers, arguments );
+		request.cbDebugger.tracers.append( arguments );
 
 		return this;
 	}
@@ -440,7 +437,7 @@ component
 	 * Reset all tracers back to zero
 	 */
 	DebuggerService function resetTracers(){
-		request.tracers = [];
+		request.cbDebugger.tracers = [];
 		return this;
 	}
 
@@ -448,7 +445,8 @@ component
 	 * Get all the request tracers array
 	 */
 	array function getTracers(){
-		return request.tracers ?: [];
+		param request.cbDebugger.tracers = [];
+		return request.cbDebugger.tracers;
 	}
 
 	/**
