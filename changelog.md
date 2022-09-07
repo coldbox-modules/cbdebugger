@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 * Tracers are now streamlined and stored alongside the request profilers
+* Small UI fixes on request profiler HTTP methods
 
 ----
 
