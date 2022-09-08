@@ -65,14 +65,13 @@ component extends="coldbox.system.Interceptor" {
 	/**
 	 * Listen to when the request is received by ColdBox
 	 */
-	public function preProcess( event, interceptData, rc, prc ){
-		request.$timerHashes.processHash = variables.timerService.start( "[preProcess to postProcess]" );
+	function preProcess( event, interceptData, rc, prc ){
 	}
 
 	/**
 	 * Listen to when the request is finalized by ColdBox
 	 */
-	public function postProcess( event, interceptData, rc, prc, buffer ){
+	function postProcess( event, interceptData, rc, prc, buffer ){
 		// Determine if we are in a debugger call so we can ignore it or not?
 		if (
 			arguments.event.getCurrentModule() == "cbdebugger" && !variables.debuggerConfig.requestTracker.trackDebuggerEvents
@@ -80,12 +79,9 @@ component extends="coldbox.system.Interceptor" {
 			return;
 		}
 
-		// End the request timer for the request
-		variables.timerService.stop(
-			isNull( request.$timerHashes.processHash ) ? "" : request.$timerHashes.processHash
-		);
 		// Record the profiler with the last tickcount
 		variables.debuggerService.recordProfiler( event: arguments.event, executionTime: getTickCount() );
+
 		// Determine if we can render the debugger at the bottom of the request
 		if (
 			// Is the debugger turned on
@@ -111,13 +107,12 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Listen to exceptions
+	 * Listen to exceptions and log them
 	 */
-	public function onException( event, interceptData, rc, prc ){
+	function onException( event, interceptData, rc, prc ){
 		// End the request timer for the request
-		variables.timerService.stop(
-			isNull( request.$timerHashes.processHash ) ? "" : request.$timerHashes.processHash
-		);
+		variables.timerService.stop( "[preprocess]" );
+
 		// Record the request and exception
 		variables.debuggerService.recordProfiler(
 			event        : arguments.event,
@@ -127,111 +122,125 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Listen to start of events
+	 * Listen to start of any ColdBox events
 	 */
-	public function preEvent( event, interceptData, rc, prc ){
-		request.$timerHashes.eventhash = variables.timerService.start(
-			"[runEvent] #arguments.interceptData.processedEvent#( #arguments.interceptData.eventArguments.toString()# )"
+	function preEvent( event, interceptData, rc, prc ){
+		variables.timerService.start(
+			label   : "[runEvent] #arguments.interceptData.processedEvent#",
+			metadata: {
+				event          : arguments.interceptData.processedEvent,
+				eventArguments : arguments.interceptData.eventArguments.toString()
+			},
+			type: "event"
 		);
 	}
 
 	/**
-	 * Listen to end of events
+	 * Listen to end of ColdBox events
 	 */
-	public function postEvent( event, interceptData, rc, prc ){
-		variables.timerService.stop( request.$timerHashes.eventhash );
-	}
-
-	/**
-	 * Listen to beginning of layout rendering
-	 */
-	public function preLayout( event, interceptData, rc, prc ){
-		request.$timerHashes.layoutHash = variables.timerService.start(
-			"[preLayout to postLayout rendering] for #arguments.event.getCurrentEvent()#"
-		);
-	}
-
-	/**
-	 * Listen to when the layout is now rendered
-	 */
-	public function postLayout( event, interceptData, rc, prc ){
-		variables.timerService.stop( request.$timerHashes.layoutHash );
+	function postEvent( event, interceptData, rc, prc ){
+		variables.timerService.stop( "[runEvent] #arguments.interceptData.processedEvent#" );
 	}
 
 	/**
 	 * Listen to before rendering process executes
 	 */
-	public function preRender( event, interceptData, rc, prc ){
-		request.$timerHashes.renderHash = variables.timerService.start(
-			"[preRender to postRender] for #arguments.event.getCurrentEvent()#"
-		);
+	function preRender( event, interceptData, rc, prc ){
+		variables.timerService.start( label: "[preRender to postRender]", type: "renderer" );
 	}
 
 	/**
 	 * Listen to when rendering is complete
 	 */
-	public function postRender( event, interceptData, rc, prc ){
-		variables.timerService.stop( request.$timerHashes.renderHash );
+	function postRender( event, interceptData, rc, prc ){
+		variables.timerService.stop( "[preRender to postRender]" );
 	}
 
 	/**
 	 * Listen to when views are about to be rendered
 	 */
-	public function preViewRender( event, interceptData, rc, prc ){
-		// writeDump( var = interceptData, top = 5 );
-		// abort;
-		request.$timerHashes.renderViewHash = variables.timerService.start(
-			"[renderView] #arguments.interceptData.view#" &
-			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
+	function preViewRender( event, interceptData, rc, prc ){
+		variables.timerService.start(
+			label: "[renderView] #arguments.interceptData.view#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
+			metadata: {
+				"view"                   : arguments.interceptData.view,
+				"module"                 : arguments.interceptData.module,
+				"cache"                  : arguments.interceptData.cache,
+				"cacheTimeout"           : arguments.interceptData.cacheTimeout,
+				"cacheLastAccessTimeout" : arguments.interceptData.cacheLastAccessTimeout,
+				"cacheSuffix"            : arguments.interceptData.cacheSuffix,
+				"cacheProvider"          : arguments.interceptData.cacheProvider,
+				"viewPath"               : ""
+			},
+			type: "view-render"
 		);
 	}
 
 	/**
 	 * Listen to when views are done rendering
 	 */
-	public function postViewRender( event, interceptData, rc, prc ){
-		variables.timerService.stop( request.$timerHashes.renderViewHash );
+	function postViewRender( event, interceptData, rc, prc ){
+		variables.timerService.stop(
+			label: "[renderView] #arguments.interceptData.view#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
+			metadata: { viewPath : arguments.interceptData.viewPath ?: "" }
+		);
 	}
 
 	/**
 	 * Listen to when layouts are rendered
 	 */
-	public function preLayoutRender( event, interceptData, rc, prc ){
-		request.$timerHashes.layoutHash = variables.timerService.start(
-			"[renderLayout] #arguments.interceptData.layout#" &
-			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
+	function preLayoutRender( event, interceptData, rc, prc ){
+		variables.timerService.start(
+			label: "[renderLayout] #arguments.interceptData.layout#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
+			metadata: {
+				"layout"     : arguments.interceptData.layout,
+				"module"     : arguments.interceptData.module,
+				"view"       : arguments.interceptData.view,
+				"viewModule" : arguments.interceptData.viewModule,
+				"viewPath"   : ""
+			},
+			type: "layout-render"
 		);
 	}
 
 	/**
 	 * Listen to when layouts are done rendering
 	 */
-	public function postLayoutRender( event, interceptData, rc, prc ){
-		variables.timerService.stop( request.$timerHashes.layoutHash );
+	function postLayoutRender( event, interceptData, rc, prc ){
+		variables.timerService.stop(
+			label: "[renderLayout] #arguments.interceptData.layout#" &
+			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
+			metadata: { viewPath : arguments.interceptData.viewPath ?: "" }
+		);
 	}
 
 	/**
 	 * Listen before wirebox objects are created
 	 */
-	public function beforeInstanceCreation( event, interceptData, rc, prc ){
+	function beforeInstanceCreation( event, interceptData, rc, prc ){
 		if ( variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation ) {
-			request.$timerHashes[ arguments.interceptData.mapping.getName() ] = variables.timerService.start(
-				"[Wirebox Creation] #arguments.interceptData.mapping.getName()#"
-			);
+			variables.timerService.start(
+				label   : "[Wirebox Creation] #arguments.interceptData.mapping.getName()#",
+				metadata: {
+					path : arguments.interceptData.mapping.getPath(),
+					name : arguments.interceptData.mapping.getname(),
+					type : arguments.interceptData.mapping.getType()
+				},
+				type: "wirebox-creation"
+			)
 		}
 	}
 
 	/**
 	 * Listen to after objects are created and DI is done
 	 */
-	public function afterInstanceCreation( event, interceptData, rc, prc ){
+	function afterInstanceCreation( event, interceptData, rc, prc ){
 		// so many checks, due to chicken and the egg problems
-		if (
-			variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation
-			and structKeyExists( request, "cbdebugger" )
-			and structKeyExists( request.$timerHashes, arguments.interceptData.mapping.getName() )
-		) {
-			variables.timerService.stop( request.$timerHashes[ arguments.interceptData.mapping.getName() ] );
+		if ( variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation ) {
+			variables.timerService.stop( "[Wirebox Creation] #arguments.interceptData.mapping.getName()#" );
 		}
 	}
 

@@ -343,7 +343,7 @@ component
 					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
 					"contentType" : getPageContextResponse().getContentType()
 				},
-				"timers" : variables.timerService.getSortedTimers()
+				"timers" : variables.timerService.getTimers()
 			},
 			true
 		);

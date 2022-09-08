@@ -11,50 +11,58 @@ component accessors="true" singleton threadsafe {
 	 * Constructor
 	 */
 	Timer function init(){
+		variables.TIMERS_KEY = "cbDebuggerTimerStack";
 		return this;
 	}
 
 	/**
 	 * Start a timer with a tracking label
 	 *
-	 * @label    The tracking label to register
+	 * @label    The unique tracking label to register
 	 * @metadata A struct of metadata to store on the timer
+	 * @type     The type of execution timed: request, view-render, layout-render, event, renderer
+	 * @parent   An optional parent label
 	 *
-	 * @return A unique tracking hash you must use to stop the timer
+	 * @return A unique tracking id of the execution timer registered
 	 */
-	string function start( required label, struct metadata = {} ){
-		// Create Timer Hash
-		var labelHash        = hash( getTickCount() & arguments.label );
-		// Store the timer record
-		request[ labelHash ] = {
-			"id"            : labelHash,
-			"startedAt"     : now(),
-			"startCount"    : getTickCount(),
-			"method"        : arguments.label,
-			"stoppedAt"     : now(),
-			"executionTime" : 0,
-			"metadata"      : arguments.metadata
-		};
-		return labelHash;
+	string function start(
+		required label,
+		struct metadata = {},
+		type            = "timer",
+		parent          = ""
+	){
+		var timerId = createUUID();
+		getTimers().insert(
+			arguments.label,
+			{
+				"id"            : timerId,
+				"startedAt"     : now(),
+				"startCount"    : getTickCount(),
+				"method"        : arguments.label,
+				"stoppedAt"     : now(),
+				"executionTime" : 0,
+				"metadata"      : arguments.metadata,
+				"parent"        : arguments.parent,
+				"type"          : arguments.type
+			},
+			true
+		);
+		return timerId;
 	}
 
 	/**
-	 * Stop a code timer with a tracking hash. If the tracking hash is not tracked we ignore it
+	 * Stop the timer for the incoming label
 	 *
-	 * @labelHash The timer label hash to stop
+	 * @label    The label to stop
+	 * @metadata The metadata to store as well after the stopping of the timer
 	 */
-	Timer function stop( required labelHash ){
-		// Verify tracking hash
-		if ( structKeyExists( request, arguments.labelHash ) ) {
-			// Get Timer Info
-			var timerInfo           = request[ arguments.labelHash ];
-			// Stop the timer
-			timerInfo.stoppedAt     = now();
-			timerInfo.executionTime = getTickCount() - timerInfo.startCount;
-			// Append the timer information
-			getTimers().prepend( timerInfo );
-			// Cleanup
-			structDelete( request, arguments.labelHash );
+	Timer function stop( required label, struct metadata = {} ){
+		var timers = getTimers();
+
+		if ( timers.keyExists( arguments.label ) ) {
+			timers[ arguments.label ].stoppedAt = now();
+			timers[ arguments.label ].executionTime = getTickCount() - timers[ arguments.label ].startCount;
+			timers[ arguments.label ].metadata.append( arguments.metadata );
 		}
 
 		return this;
@@ -63,43 +71,44 @@ component accessors="true" singleton threadsafe {
 	/**
 	 * Time the execution of the passed closure that we will execution for you
 	 *
-	 * @label   The label to use as a timer label
-	 * @closure The target to execute and time
+	 * @label    The label to use as a timer label
+	 * @closure  The target to execute and time
+	 * @metadata A struct of metadata to store in the execution timer
 	 */
-	function timeIt( required label, required closure ){
-		var labelhash = this.start( arguments.label );
-		var results   = arguments.closure();
-		this.stop( labelhash );
+	function timeIt(
+		required label,
+		required closure,
+		struct metadata = {}
+	){
+		start( arguments.label, arguments.metadata );
+		var results = arguments.closure();
+		stop( arguments.label );
 		if ( !isNull( results ) ) {
 			return results;
 		}
 	}
 
 	/**
-	 * Do we have any timers in request
+	 * Do we have any timers at all
 	 */
 	boolean function timersExist(){
-		return request.keyExists( "debugTimers" );
+		return request.keyExists( TIMERS_KEY );
+	}
+
+	/**
+	 * Reset the timers and return yourself
+	 */
+	Timer function resetTimers(){
+		getTimers().clear();
+		return this;
 	}
 
 	/**
 	 * Return the timers from the request. If they don't exist, we initialize them
 	 */
-	array function getTimers(){
-		if ( !request.keyExists( "debugTimers" ) ) {
-			request.debugTimers = [];
-		}
-		return request.debugTimers;
-	}
-
-	/**
-	 * Get a sorted timers collection. We sort them by execution start
-	 */
-	array function getSortedTimers(){
-		return getTimers().sort( function( e1, e2 ){
-			return dateCompare( e1.startedAt, e2.startedAt );
-		} );
-		return request.debugTimers;
+	struct function getTimers(){
+		param name="request.#TIMERS_KEY#" default="#structNew( "ordered" )#";
+		return request[ TIMERS_KEY ];
 	}
 
 }

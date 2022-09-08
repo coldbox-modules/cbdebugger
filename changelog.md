@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.5.0] => 2022-SEP
 
+### Added
+
+* Timer service rewritten to support nesting and metadata
+* Ability to open views and layouts from the execution timers
+
 ### Fixed
 
 * Timer service reconstructing the timer hashes and profilers twice.

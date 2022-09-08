@@ -97,7 +97,7 @@
 					includedInterceptions        : [ "ORMPostLoad", "ORMPostNew" ],
 					// Control the execution timers
 					executionTimers              : {
-						expanded           : false,
+						expanded           : true,
 						// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
 						slowTimerThreshold : 250
 					},

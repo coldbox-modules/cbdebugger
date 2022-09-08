@@ -33,13 +33,13 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		}
 
 		// create with method name
-		var labelhash = variables.timerService.start( txName );
+		variables.timerService.start( txName );
 
 		// proceed invocation
 		var results = arguments.invocation.proceed();
 
 		// Stop the timer
-		variables.timerService.stop( labelhash );
+		variables.timerService.stop( txName );
 
 		// return results
 		if ( !isNull( results ) ) {
