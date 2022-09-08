@@ -19,16 +19,6 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Init the request tracking
-	 */
-	private function initRequestTracker( event ){
-		// The timer hashes are stored here for the request and then destroyed
-		param request$timerHashes = {};
-		// init tracker variables for the request
-		variables.debuggerService.createRequestTracker( event );
-	}
-
-	/**
 	 * Listen to app loads, in case we need to profile app inits and such
 	 */
 	function cbLoadInterceptorHelpers( event, interceptData, rc, prc ){
@@ -36,7 +26,7 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Listen to request captures
+	 * Listen to when the request is first captured by ColdBox
 	 */
 	function onRequestCapture( event, interceptData, rc, prc ){
 		initRequestTracker( event );
@@ -73,14 +63,14 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Listen to pre process execution
+	 * Listen to when the request is received by ColdBox
 	 */
 	public function preProcess( event, interceptData, rc, prc ){
 		request.$timerHashes.processHash = variables.timerService.start( "[preProcess to postProcess]" );
 	}
 
 	/**
-	 * Listen to post processing execution
+	 * Listen to when the request is finalized by ColdBox
 	 */
 	public function postProcess( event, interceptData, rc, prc, buffer ){
 		// Determine if we are in a debugger call so we can ignore it or not?
@@ -188,6 +178,8 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to when views are about to be rendered
 	 */
 	public function preViewRender( event, interceptData, rc, prc ){
+		// writeDump( var = interceptData, top = 5 );
+		// abort;
 		request.$timerHashes.renderViewHash = variables.timerService.start(
 			"[renderView] #arguments.interceptData.view#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" )
@@ -244,6 +236,20 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/************************************** PRIVATE METHODS *********************************************/
+
+	/**
+	 * Init the request tracking constructs
+	 */
+	private function initRequestTracker( event ){
+		if ( isNull( request.cbRequestCollectorStarted ) ) {
+			// The timer hashes are stored here for the request and then destroyed
+			param request.$timerHashes = {};
+			// init tracker variables for the request
+			variables.debuggerService.createRequestTracker( event );
+			// Mark as inited
+			request.cbRequestCollectorStarted = true;
+		}
+	}
 
 	/**
 	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!

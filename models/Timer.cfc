@@ -3,8 +3,9 @@
  * www.ortussolutions.com
  * ---
  * This component tracks execution times in our internal request facilities.
+ * Each timer is created with a label to uniquely track it.
  */
-component accessors="true" singleton threadsafe{
+component accessors="true" singleton threadsafe {
 
 	/**
 	 * Constructor
@@ -16,11 +17,12 @@ component accessors="true" singleton threadsafe{
 	/**
 	 * Start a timer with a tracking label
 	 *
-	 * @label The tracking label to register
+	 * @label    The tracking label to register
+	 * @metadata A struct of metadata to store on the timer
 	 *
 	 * @return A unique tracking hash you must use to stop the timer
 	 */
-	string function start( required label ){
+	string function start( required label, struct metadata = {} ){
 		// Create Timer Hash
 		var labelHash        = hash( getTickCount() & arguments.label );
 		// Store the timer record
@@ -30,7 +32,8 @@ component accessors="true" singleton threadsafe{
 			"startCount"    : getTickCount(),
 			"method"        : arguments.label,
 			"stoppedAt"     : now(),
-			"executionTime" : 0
+			"executionTime" : 0,
+			"metadata"      : arguments.metadata
 		};
 		return labelHash;
 	}
@@ -60,7 +63,7 @@ component accessors="true" singleton threadsafe{
 	/**
 	 * Time the execution of the passed closure that we will execution for you
 	 *
-	 * @label The label to use as a timer label
+	 * @label   The label to use as a timer label
 	 * @closure The target to execute and time
 	 */
 	function timeIt( required label, required closure ){
@@ -93,10 +96,10 @@ component accessors="true" singleton threadsafe{
 	 * Get a sorted timers collection. We sort them by execution start
 	 */
 	array function getSortedTimers(){
-		getTimers().sort( function( e1, e2 ){
+		return getTimers().sort( function( e1, e2 ){
 			return dateCompare( e1.startedAt, e2.startedAt );
 		} );
-		return getTimers();
+		return request.debugTimers;
 	}
 
 }
