@@ -217,33 +217,6 @@ component extends="coldbox.system.Interceptor" {
 		);
 	}
 
-	/**
-	 * Listen before wirebox objects are created
-	 */
-	function beforeInstanceCreation( event, interceptData, rc, prc ){
-		if ( variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation ) {
-			variables.timerService.start(
-				label   : "[Wirebox Creation] #arguments.interceptData.mapping.getName()#",
-				metadata: {
-					path : arguments.interceptData.mapping.getPath(),
-					name : arguments.interceptData.mapping.getname(),
-					type : arguments.interceptData.mapping.getType()
-				},
-				type: "wirebox-creation"
-			)
-		}
-	}
-
-	/**
-	 * Listen to after objects are created and DI is done
-	 */
-	function afterInstanceCreation( event, interceptData, rc, prc ){
-		// so many checks, due to chicken and the egg problems
-		if ( variables.debuggerConfig.requestTracker.profileWireBoxObjectCreation ) {
-			variables.timerService.stop( "[Wirebox Creation] #arguments.interceptData.mapping.getName()#" );
-		}
-	}
-
 	/************************************** PRIVATE METHODS *********************************************/
 
 	/**

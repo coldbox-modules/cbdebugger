@@ -170,7 +170,7 @@ component {
 					interceptorName  = "RequestCollector@cbdebugger"
 				);
 
-			/******************** PROFILE OBJECTS ************************************/
+			/******************** OBJECT PROFILING ************************************/
 
 			if ( variables.settings.requestTracker.profileObjects ) {
 				// Object Profiler Aspect
@@ -190,6 +190,17 @@ component {
 					methods = binder.match().any(),
 					aspects = "ObjectProfiler"
 				);
+			}
+
+			/******************** WIREBOX COLLECTOR ************************************/
+
+			if ( variables.settings.requestTracker.profileWireBoxObjectCreation ) {
+				controller
+					.getInterceptorService()
+					.registerInterceptor(
+						interceptorClass = "#moduleMapping#.interceptors.WireBoxCollector",
+						interceptorName  = "WireBoxCollector@cbdebugger"
+					);
 			}
 
 			/******************** PROFILE INTERCEPTIONS ************************************/
