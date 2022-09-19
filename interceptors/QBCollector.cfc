@@ -35,12 +35,7 @@ component extends="coldbox.system.Interceptor" {
 
 		// Collect baby!
 		arguments.interceptData.timestamp = now();
-		if (
-			!structKeyExists(
-				requestTracker.qbQueries.grouped,
-				sqlHash
-			)
-		) {
+		if ( !structKeyExists( requestTracker.qbQueries.grouped, sqlHash ) ) {
 			requestTracker.qbQueries.grouped[ sqlHash ] = {
 				"sql"     : arguments.interceptData.sql,
 				"count"   : 0,
@@ -55,7 +50,7 @@ component extends="coldbox.system.Interceptor" {
 			"params"        : variables.debuggerConfig.qb.logParams ? arguments.interceptData.bindings : [],
 			"options"       : arguments.interceptData.options,
 			"executionTime" : arguments.interceptData.executionTime,
-			"caller"        : variables.debuggerService.discoverCallingStack( "get", "QueryBuilder" )
+			"caller"        : variables.debuggerService.discoverCallingStack( "get", "(QueryBuilder|QuickBuilder)" )
 		};
 
 		// Log by Group
