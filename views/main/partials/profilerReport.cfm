@@ -9,7 +9,17 @@
 	id="cbd-profiler-report"
 	class="cbd-rounded mt10 mb10 cbd-reportContainer"
 	x-data="{
-		profilerId : '#args.profiler.id#'
+		profilerId : '#args.profiler.id#',
+		statusCode : '#args.profiler.response.statusCode#',
+		statusColor (){
+			if( this.statusCode >= 200 && this.statusCode < 300 )
+				return 'cbd-text-green'
+
+			if( this.statusCode >= 300 && this.statusCode < 400 )
+				return 'cbd-text-blue'
+
+			return 'cbd-text-red'
+		}
 	}"
 >
 
@@ -21,6 +31,7 @@
 			<!--- VISUALIZER TOOLBAR --->
 			<cfif args.isVisualizer>
 
+				<!--- Refresh Button --->
 				<button
 					type="button"
 					title="Refresh"
@@ -35,6 +46,7 @@
 					</svg>
 				</button>
 
+				<!--- Back to Profilers --->
 				<button
 					type="button"
 					title="Back to profilers"
@@ -53,28 +65,14 @@
 				class="cbd-size13"
 			>
 				<span title="Status Code">
-					<cfif args.profiler.response.statusCode gte 200 && args.profiler.response.statusCode lt 300 >
-						<span class="cbd-text-green">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 300 && args.profiler.response.statusCode lt 400 >
-						<span class="cbd-text-blue">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 400>
-						<span class="cbd-text-red">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					</cfif>
+
+					<span :class="statusColor">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						#args.profiler.response.statusCode#
+					</span>
+
 				</span>
 
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,13 +87,9 @@
 				class="cbd-floatRight cbd-size14 mt10 mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
 				title="Total ColdBox Request Execution Time"
 			>
-				<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
-					<span class="cbd-text-red">
-						#numberFormat( args.profiler.executionTime )# ms
-					</span>
-				<cfelse>
+				<span class="<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-text-red</cfif>">
 					#numberFormat( args.profiler.executionTime )# ms
-				</cfif>
+				</span>
 			</div>
 
 			<!--- Current Event --->
