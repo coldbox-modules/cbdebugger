@@ -245,8 +245,6 @@ component extends="coldbox.system.Interceptor" {
 	 */
 	private function initRequestTracker( event ){
 		if ( isNull( request.cbRequestCollectorStarted ) ) {
-			// The timer hashes are stored here for the request and then destroyed
-			param request.$timerHashes = {};
 			// init tracker variables for the request
 			variables.debuggerService.createRequestTracker( event );
 			// Mark as inited
