@@ -576,7 +576,7 @@ component
 				// Do we have template matches or simple function equality?
 				if ( !isNull( templateMatch ) ) {
 					if (
-						arguments.item.function == targetMethod && refindNoCase(
+						arguments.item.function == targetMethod && reFindNoCase(
 							templateMatch,
 							arguments.item.template
 						)
