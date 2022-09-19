@@ -17,10 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Ability to open CFCs that are profiled by the WireBox Collector in any Code Editor.
 * Ability to open the Handler events that are profiled by the Request Collector in any Code Editor.
 * New life-cycle events: onDebuggerUnload, onDebuggerLoad
+* Ability for the custom `timeIt()` functions to accept metdata to store in the execution timer
 
 ### Fixed
 
 * Timer service reconstructing the timer hashes and profilers twice.
+* `timeIt()` helper was not passing the closure correctly
 
 ### Changed
 
