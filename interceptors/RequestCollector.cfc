@@ -201,10 +201,13 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to when views are done rendering
 	 */
 	function postViewRender( event, interceptData, rc, prc ){
+		var viewPath = arguments.interceptData.keyExists( "viewPath" ) ? expandPath(
+			arguments.interceptData.viewPath
+		) & ".cfm" : "";
 		variables.timerService.stop(
 			label: "[renderView] #arguments.interceptData.view#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
-			metadata: { path : expandPath( arguments.interceptData.viewPath ) & ".cfm" }
+			metadata: { path : viewPath }
 		);
 	}
 
@@ -231,10 +234,14 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to when layouts are done rendering
 	 */
 	function postLayoutRender( event, interceptData, rc, prc ){
+		var viewPath = arguments.interceptData.keyExists( "viewPath" ) ? expandPath(
+			arguments.interceptData.viewPath
+		) & ".cfm" : "";
+
 		variables.timerService.stop(
 			label: "[renderLayout] #arguments.interceptData.layout#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
-			metadata: { path : expandPath( arguments.interceptData.viewPath ) & ".cfm" }
+			metadata: { path : viewPath }
 		);
 	}
 
