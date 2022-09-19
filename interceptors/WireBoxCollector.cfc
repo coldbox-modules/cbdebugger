@@ -27,7 +27,8 @@ component extends="coldbox.system.Interceptor" {
 			metadata: {
 				path : "",
 				name : arguments.interceptData.mapping.getName(),
-				type : arguments.interceptData.mapping.getType()
+				type : arguments.interceptData.mapping.getType(),
+				line : 1
 			},
 			type: "wirebox-creation"
 		);

@@ -53,7 +53,7 @@
 
 			<!--- Show Timers if any are found --->
 			<cfif structCount( args.timers )>
-				<cfloop collection="#args.timers#" index="timerKey">
+				<cfloop collection="#args.timers#" item="timerKey">
 					<cfset thisTimer = args.timers[ timerKey ]>
 
 					<cfif findnocase( "[render", thisTimer.method )>
@@ -98,28 +98,11 @@
 						<!--- Open --->
 						<td align="center" >
 							<!--- View Render --->
-							<cfif listContains( "view-render,layout-render", thisTimer.type ) and len( thisTimer.metadata?.viewPath )>
+							<cfif len( thisTimer.metadata?.path )>
 								<a
 									href="#args.debuggerService.openInEditorURL( event, {
-										template : expandPath( thisTimer.metadata.viewPath ) & ".cfm",
-										line : 1
-									} )#"
-									title="Open in Editor"
-									class="cbd-button"
-									target="_self"
-									rel="noreferrer noopener"
-								>
-									<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-									</svg>
-								</a>
-
-							<!--- Open Wirebox Creation Objects --->
-							<cfelseif thisTimer.type eq "wirebox-creation" && isSimpleValue( thisTimer.metadata.path ) && len( thisTimer.metadata.path ) >
-								<a
-									href="#args.debuggerService.openInEditorURL( event, {
-										template : expandPath( thisTimer.metadata.path ),
-										line : 1
+										template : thisTimer.metadata.path,
+										line : thisTimer.metadata.line
 									} )#"
 									title="Open in Editor"
 									class="cbd-button"

@@ -139,7 +139,26 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen to end of ColdBox events
 	 */
 	function postEvent( event, interceptData, rc, prc ){
-		variables.timerService.stop( "[runEvent] #arguments.interceptData.processedEvent#" );
+		// new coldbox tracking of events
+		if ( arguments.interceptData.keyExists( "ehBean" ) ) {
+			var handlerMD = interceptData.ehBean.getHandlerMetadata();
+			var position  = handlerMD.functions
+				.filter( function( thisItem ){
+					return thisItem.name == interceptData.ehBean.getMethod();
+				} )
+				.reduce( function( result, thisItem ){
+					return thisItem.keyExists( "position" ) ? thisItem.position.start : result;
+				}, 1 );
+			variables.timerService.stop(
+				label   : "[runEvent] #arguments.interceptData.processedEvent#",
+				metadata: { path : handlerMD.path, line : position }
+			);
+		} else {
+			variables.timerService.stop(
+				label   : "[runEvent] #arguments.interceptData.processedEvent#",
+				metadata: { path : "", line : 1 }
+			);
+		}
 	}
 
 	/**
@@ -171,7 +190,8 @@ component extends="coldbox.system.Interceptor" {
 				"cacheLastAccessTimeout" : arguments.interceptData.cacheLastAccessTimeout,
 				"cacheSuffix"            : arguments.interceptData.cacheSuffix,
 				"cacheProvider"          : arguments.interceptData.cacheProvider,
-				"viewPath"               : ""
+				"path"                   : "",
+				"line"                   : 1
 			},
 			type: "view-render"
 		);
@@ -184,7 +204,7 @@ component extends="coldbox.system.Interceptor" {
 		variables.timerService.stop(
 			label: "[renderView] #arguments.interceptData.view#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
-			metadata: { viewPath : arguments.interceptData.viewPath ?: "" }
+			metadata: { path : expandPath( arguments.interceptData.viewPath ) & ".cfm" }
 		);
 	}
 
@@ -200,7 +220,8 @@ component extends="coldbox.system.Interceptor" {
 				"module"     : arguments.interceptData.module,
 				"view"       : arguments.interceptData.view,
 				"viewModule" : arguments.interceptData.viewModule,
-				"viewPath"   : ""
+				"path"       : "",
+				"line"       : 1
 			},
 			type: "layout-render"
 		);
@@ -213,7 +234,7 @@ component extends="coldbox.system.Interceptor" {
 		variables.timerService.stop(
 			label: "[renderLayout] #arguments.interceptData.layout#" &
 			( len( arguments.interceptData.module ) ? "@#arguments.interceptData.module#" : "" ),
-			metadata: { viewPath : arguments.interceptData.viewPath ?: "" }
+			metadata: { path : expandPath( arguments.interceptData.viewPath ) & ".cfm" }
 		);
 	}
 

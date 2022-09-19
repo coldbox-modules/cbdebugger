@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Ability to open views and layouts from the execution timers in any Code Editor
 * New WireBoxCollector which is only used if enabled.  This greatly accelerates the performance of the request collector since before they where in the same collector.
 * Ability to open CFCs that are profiled by the WireBox Collector in any Code Editor.
+* Ability to open the Handler events that are profiled by the Request Collector in any Code Editor.
 
 ### Fixed
 
