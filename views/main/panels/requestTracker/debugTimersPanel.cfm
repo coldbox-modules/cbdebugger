@@ -25,14 +25,6 @@
 			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
 		</svg>
 		#structCount( args.timers )#
-
-		<!--- Timers Sum --->
-		<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-		</svg>
-		#numberFormat( structReduce( args.timers, function( results, key, value ){
-			return results + value.executionTime;
-		}, 0 ) )# ms
 	</div>
 
 	<div

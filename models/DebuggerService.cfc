@@ -291,8 +291,6 @@ component
 		required executionTime,
 		exception = {}
 	){
-		var targetStorage = getProfilerStorage();
-
 		// Build out the exception data to trace if any?
 		var exceptionData = {};
 		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
@@ -320,8 +318,13 @@ component
 			createRequestTracker( arguments.event );
 		}
 
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerProfilerRecording",
+			{ requestTracker : request.cbDebugger }
+		);
+
 		// Close out the profiler
-		param request.cbDebugger.startCount = 0;
 		request.cbDebugger.append(
 			{
 				"endFreeMemory" : variables.jvmRuntime.freeMemory(),
@@ -348,13 +351,8 @@ component
 			true
 		);
 
-		// Event before recording
-		variables.interceptorService.announce(
-			"onDebuggerProfilerRecording",
-			{ requestTracker : request.cbDebugger }
-		);
-
 		// New Profiler record to store into the singleton stack
+		var targetStorage = getProfilerStorage();
 		arrayPrepend( targetStorage, request.cbDebugger );
 
 		// Are we using cache storage

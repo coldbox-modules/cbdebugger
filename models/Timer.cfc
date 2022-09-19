@@ -39,11 +39,12 @@ component accessors="true" singleton threadsafe {
 				"startedAt"     : now(),
 				"startCount"    : getTickCount(),
 				"method"        : arguments.label,
-				"stoppedAt"     : now(),
+				"stoppedAt"     : "",
 				"executionTime" : 0,
 				"metadata"      : arguments.metadata,
 				"parent"        : arguments.parent,
-				"type"          : arguments.type
+				"type"          : arguments.type,
+				"times"         : 1
 			},
 			true
 		);
@@ -57,14 +58,12 @@ component accessors="true" singleton threadsafe {
 	 * @metadata The metadata to store as well after the stopping of the timer
 	 */
 	Timer function stop( required label, struct metadata = {} ){
-		var timers = getTimers();
-
-		if ( timers.keyExists( arguments.label ) ) {
-			timers[ arguments.label ].stoppedAt = now();
-			timers[ arguments.label ].executionTime = getTickCount() - timers[ arguments.label ].startCount;
-			timers[ arguments.label ].metadata.append( arguments.metadata );
+		if ( timerExists( arguments.label ) ) {
+			var timer           = getTimer( arguments.label );
+			timer.stoppedAt     = now();
+			timer.executionTime = getTickCount() - timer.startCount;
+			timer.metadata.append( arguments.metadata );
 		}
-
 		return this;
 	}
 
@@ -86,6 +85,24 @@ component accessors="true" singleton threadsafe {
 		if ( !isNull( results ) ) {
 			return results;
 		}
+	}
+
+	/**
+	 * Get a specific timer from the timers stack
+	 *
+	 * @label The label to get
+	 *
+	 * @throws KeyNotFoundException - If the requested label doesn't exist
+	 */
+	struct function getTimer( required label ){
+		return getTimers().find( arguments.label );
+	}
+
+	/**
+	 * Verifies if the timer for the label exists or not
+	 */
+	boolean function timerExists( required label ){
+		return getTimers().keyExists( arguments.label );
 	}
 
 	/**

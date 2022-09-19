@@ -19,9 +19,9 @@ component extends="coldbox.system.Interceptor" {
 	}
 
 	/**
-	 * Listen to app loads, in case we need to profile app inits and such
+	 * Listen to when the debugger loads for the first time, usually app starts or reinits
 	 */
-	function cbLoadInterceptorHelpers( event, interceptData, rc, prc ){
+	function onDebuggerLoad( event, interceptData, rc, prc ){
 		initRequestTracker( event );
 	}
 

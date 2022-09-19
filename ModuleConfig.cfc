@@ -140,6 +140,10 @@ component {
 				"beforeProfilerReportPanels",
 				// After any individual profiler report panels are rendered
 				"afterProfilerReportPanels",
+				// Fires after the module has fully loaded and been configured with all runtime settings
+				"onDebuggerLoad",
+				// Fires after the module is unloaded
+				"onDebuggerUnload",
 				// When the request tracker has been created and placed in request scope
 				"onDebuggerRequestTrackerCreation",
 				// Before the request tracker is saved in the profiler, last chance to influence the recording
@@ -161,14 +165,14 @@ component {
 	function onLoad(){
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		if ( variables.settings.enabled ) {
+			var interceptorService = controller.getInterceptorService();
+
 			/******************** REQUEST COLLECTOR ************************************/
 
-			controller
-				.getInterceptorService()
-				.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.RequestCollector",
-					interceptorName  = "RequestCollector@cbdebugger"
-				);
+			interceptorService.registerInterceptor(
+				interceptorClass = "#moduleMapping#.interceptors.RequestCollector",
+				interceptorName  = "RequestCollector@cbdebugger"
+			);
 
 			/******************** OBJECT PROFILING ************************************/
 
@@ -195,12 +199,10 @@ component {
 			/******************** WIREBOX COLLECTOR ************************************/
 
 			if ( variables.settings.requestTracker.profileWireBoxObjectCreation ) {
-				controller
-					.getInterceptorService()
-					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.WireBoxCollector",
-						interceptorName  = "WireBoxCollector@cbdebugger"
-					);
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.WireBoxCollector",
+					interceptorName  = "WireBoxCollector@cbdebugger"
+				);
 			}
 
 			/******************** PROFILE INTERCEPTIONS ************************************/
@@ -234,34 +236,28 @@ component {
 			/******************** QB COLLECTOR ************************************/
 
 			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
-				controller
-					.getInterceptorService()
-					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.QBCollector",
-						interceptorName  = "QBCollector@cbdebugger"
-					);
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.QBCollector",
+					interceptorName  = "QBCollector@cbdebugger"
+				);
 			}
 
 			/******************** QUICK COLLECTOR ************************************/
 
 			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-				controller
-					.getInterceptorService()
-					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
-						interceptorName  = "QuickCollector@cbdebugger"
-					);
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
+					interceptorName  = "QuickCollector@cbdebugger"
+				);
 			}
 
 			/******************** CBORM COLLECTOR ************************************/
 
 			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-				controller
-					.getInterceptorService()
-					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
-						interceptorName  = "CBOrmCollector@cbdebugger"
-					);
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
+					interceptorName  = "CBOrmCollector@cbdebugger"
+				);
 			}
 
 			/******************** ACFSQL COLLECTOR ************************************/
@@ -270,15 +266,16 @@ component {
 			if (
 				variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016"
 			) {
-				controller
-					.getInterceptorService()
-					.registerInterceptor(
-						interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
-						interceptorName  = "ACFSqlCollector@cbdebugger"
-					);
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
+					interceptorName  = "ACFSqlCollector@cbdebugger"
+				);
 			} else {
 				variables.settings.acfSql.enabled = false;
 			}
+
+			// Announce debugger loaded
+			interceptorService.announce( "onDebuggerLoad" );
 		}
 		// end master switch
 	}
@@ -289,11 +286,15 @@ component {
 	function onUnload(){
 		// Only if we are enabled
 		if ( variables.settings.enabled ) {
-			controller.getInterceptorService().unregister( "RequestCollector@cbdebugger" );
-			controller.getInterceptorService().unregister( "QBCollector@cbdebugger" );
-			controller.getInterceptorService().unregister( "QuickCollector@cbdebugger" );
-			controller.getInterceptorService().unregister( "CBOrmCollector@cbdebugger" );
-			controller.getInterceptorService().unregister( "ACFSqlCollector@cbdebugger" );
+			var interceptorService = controller.getInterceptorService();
+
+			interceptorService.announce( "onDebuggerUnload" );
+			interceptorService.unregister( "RequestCollector@cbdebugger" );
+			interceptorService.unregister( "WireBoxCollector@cbdebugger" );
+			interceptorService.unregister( "QBCollector@cbdebugger" );
+			interceptorService.unregister( "QuickCollector@cbdebugger" );
+			interceptorService.unregister( "CBOrmCollector@cbdebugger" );
+			interceptorService.unregister( "ACFSqlCollector@cbdebugger" );
 		}
 	}
 
