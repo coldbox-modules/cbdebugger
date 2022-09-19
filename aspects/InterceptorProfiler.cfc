@@ -60,7 +60,7 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 
 		// Is this an entity interception? If so, log it to assist
 		if ( data.keyExists( "entity" ) ) {
-			txName &= "( #getEntityName( data )# )";
+			txName &= "( #getEntityName( data )# ) @ #getTickCount()#";
 		}
 
 		// create FR tx with method name
