@@ -502,12 +502,16 @@ component
 	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
 	 */
 	function getPageContextResponse(){
-		var response = getPageContext().getResponse();
-		try {
-			response.getStatus();
-			return response;
-		} catch ( any e ) {
-			return response.getResponse();
+		if ( server.keyExists( "lucee" ) ) {
+			return getPageContext().getResponse();
+		}
+		if ( server.coldfusion.productVersion.listFirst() eq 2016 ) {
+			return getPageContext()
+				.getResponse()
+				.getResponse()
+				.getResponse();
+		} else {
+			return getPageContext().getResponse().getResponse();
 		}
 	}
 
