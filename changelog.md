@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Ability to open the Handler events that are profiled by the Request Collector in any Code Editor.
 * New life-cycle events: onDebuggerUnload, onDebuggerLoad
 * Ability for the custom `timeIt()` functions to accept metdata to store in the execution timer
+* New `Slowest` Queries panel for cborm, acf, and qb/quick
 
 ### Fixed
 
