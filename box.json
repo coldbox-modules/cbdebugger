@@ -57,7 +57,7 @@
         "format:check":"cfformat check appenders,aspects,handlers,interceptors,models,test-harness/tests/**.cfc,ModuleConfig.cfc",
         "cfpm":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\"' | run",
         "cfpm:install":"echo '\".engine/adobe2021/WEB-INF/cfusion/bin/cfpm.sh\" install ${1}' | run",
-        "install:2021":"run-script cfpm:install zip,debugger,orm,mysql,postgresql,sqlserver,feed",
+        "install:2021":"run-script cfpm:install zip,debugger,orm,mysql,postgresql,sqlserver,feed,chart",
         "install:dependencies":"install && cd test-harness && install",
         "start:lucee":"server start serverConfigFile=server-lucee@5.json",
         "start:2016":"server start serverConfigFile=server-adobe@2016.json",

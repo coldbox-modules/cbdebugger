@@ -19,11 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * New life-cycle events: onDebuggerUnload, onDebuggerLoad
 * Ability for the custom `timeIt()` functions to accept metdata to store in the execution timer
 * New `Slowest` Queries panel for cborm, acf, and qb/quick
+* New visualizer total db time as well as request time including percentage of the request time
 
 ### Fixed
 
 * Timer service reconstructing the timer hashes and profilers twice.
 * `timeIt()` helper was not passing the closure correctly
+* If doing a fwreinit on the visualizer, the current profiler was still being show even thought it was empty.  Add an empty check to avoid the big bang!
+* Empty response codes for Adobe, due to their incredibly weird Response object nesting.
 
 ### Changed
 

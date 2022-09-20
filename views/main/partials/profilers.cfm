@@ -11,28 +11,59 @@
 				Timestamp<br>
 				Ip
 			</th>
+
 			<th align="left" width="150">
 				Server Info
 			</th>
+
 			<th align="left" width="75">
 				Response
 			</th>
+
 			<th align="left">
 				Request
 			</th>
+
 			<th width="100" title="Free memory difference between start and end of the request">
-				Free Memory
+				Memory Diff
 			</th>
-			<th width="50">
+
+			<cfif args.debuggerConfig.cborm.enabled>
+				<th width="65">
+					cborm
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<cfif args.debuggerConfig.acfSql.enabled>
+				<th width="65">
+					ACF SQL
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<cfif args.debuggerConfig.qb.enabled>
+				<th width="65">
+					QB
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<th width="65">
 				Time<br>
 				(ms)
 			</th>
+
 			<th width="50">
 				Actions
 			</th>
 		</tr>
 
 		<cfloop array="#args.profilers#" index="thisProfiler">
+
 			<tr
 				@dblclick="loadProfilerReport( '#thisProfiler.id#' )"
 				<cfif thisProfiler.response.statusCode gte 400>class="cbd-bg-light-red"</cfif>
@@ -91,6 +122,7 @@
 						<cfelseif thisProfiler.response.statusCode gte 400>
 							<span class="cbd-text-red">
 								#thisProfiler.response.statusCode#
+								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 							</span>
 						</cfif>
 					</div>
@@ -132,15 +164,52 @@
 					</cfif>
 				</td>
 
+				<!--- CBORM Time --->
+				<cfif args.debuggerConfig.cborm.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.cborm.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.cborm.totalExecutionTime )# ms
+							<br>
+							<span title="Percentage of total request time">
+								#numberFormat( (thisProfiler.cborm.totalExecutionTime / thisProfiler.executionTime) * 100, "0.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
+				<!--- CFSQL Time --->
+				<cfif args.debuggerConfig.acfSql.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.cfQueries.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.cfQueries.totalExecutionTime )# <br>
+							<span title="Percentage of total request time">
+								#numberFormat( thisProfiler.cfQueries.totalExecutionTime / thisProfiler.executionTime, "00.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
+				<!--- QB Time --->
+				<cfif args.debuggerConfig.qb.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.qbQueries.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.qbQueries.totalExecutionTime )# <br>
+							<span title="Percentage of total request time">
+								#numberFormat( thisProfiler.qbQueries.totalExecutionTime / thisProfiler.executionTime, "00.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
 				<!--- Execution Time --->
 				<td align="right">
-					<cfif thisProfiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
-						<span class="cbd-text-red">
-							#numberFormat( thisProfiler.executionTime )#
-						</span>
-					<cfelse>
+					<cfset timerClass = thisProfiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+					<span class="#timerClass#">
 						#numberFormat( thisProfiler.executionTime )#
-					</cfif>
+					</span>
 				</td>
 
 				<!--- ACTIONS --->
