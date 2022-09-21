@@ -50,7 +50,7 @@ component extends="coldbox.system.RestHandler" {
 	 */
 	function renderDebugger( event, rc, prc ){
 		// are we in visualizer mode?
-		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
+		var isVisualizer       = event.getCurrentEvent() eq "cbdebugger:main.index";
 		setting showdebugoutput=false;
 		// Return the debugger layout+view
 		// We pass in all the variables needed, to avoid prc/rc conflicts
@@ -171,7 +171,14 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * Unload a modules
+	 * Export a profiler report as json
+	 */
+	function exportProfilerReport( event, rc, prc ){
+		return variables.debuggerService.getProfilerById( rc.id );
+	}
+
+	/**
+	 * Unload a module
 	 */
 	function unloadModule( event, rc, prc ){
 		event.paramValue( "module", "" );

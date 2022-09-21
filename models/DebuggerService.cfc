@@ -129,10 +129,17 @@ component
 			current debugPassword and a random salt.  The salt also protects against someone being able to
 			reverse engineer the orignal password from an intercepted cookie value.
 		*/
-		var salt            = variables.uuid.randomUUID();
+		var salt            = randomUUID();
 		variables.secretKey =
 		hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" );
 		return this;
+	}
+
+	/**
+	 * Generate a new java random id
+	 */
+	string function randomUUID(){
+		return variables.uuid.randomUUID().toString();
 	}
 
 	/**
@@ -193,7 +200,7 @@ component
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
-			"id"            : variables.uuid.randomUUID(),
+			"id"            : variables.uuid.randomUUID().toString(),
 			"inetHost"      : discoverInetHost(),
 			"ip"            : getRealIP(),
 			"localIp"       : getServerIp(),

@@ -142,13 +142,20 @@ component extends="coldbox.system.Interceptor" {
 		// new coldbox tracking of events
 		if ( arguments.interceptData.keyExists( "ehBean" ) ) {
 			var handlerMD = interceptData.ehBean.getHandlerMetadata();
-			var position  = handlerMD.functions
+
+			// params in case it's an invalid event
+			param handlerMD.functions = [];
+			param handlerMD.path      = "";
+
+			var position = handlerMD.functions
 				.filter( function( thisItem ){
 					return thisItem.name == interceptData.ehBean.getMethod();
 				} )
 				.reduce( function( result, thisItem ){
 					return thisItem.keyExists( "position" ) ? thisItem.position.start : result;
 				}, 1 );
+
+			// stop timer
 			variables.timerService.stop(
 				label   : "[runEvent] #arguments.interceptData.processedEvent#",
 				metadata: { path : handlerMD.path, line : position }

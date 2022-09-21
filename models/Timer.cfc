@@ -7,6 +7,9 @@
  */
 component accessors="true" singleton threadsafe {
 
+	// DI
+	property name="debuggerService" inject="debuggerService@cbdebugger";
+
 	/**
 	 * Constructor
 	 */
@@ -31,7 +34,7 @@ component accessors="true" singleton threadsafe {
 		type            = "timer",
 		parent          = ""
 	){
-		var timerId = createUUID();
+		var timerId = variables.debuggerService.randomUUID();
 		getTimers().insert(
 			arguments.label,
 			{

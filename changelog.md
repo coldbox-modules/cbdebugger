@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * `timeIt()` helper was not passing the closure correctly
 * If doing a fwreinit on the visualizer, the current profiler was still being show even thought it was empty.  Add an empty check to avoid the big bang!
 * Empty response codes for Adobe, due to their incredibly weird Response object nesting.
+* Migration to java random id's for speed
 
 ### Changed
 

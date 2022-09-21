@@ -214,6 +214,8 @@
 
 				<!--- ACTIONS --->
 				<td align="center">
+
+					<!--- Open Request Profiler --->
 					<button
 						title="Show Request"
 						class="pt5 pb5 cbd-rounded"
@@ -227,6 +229,14 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
 						</svg>
 					</button>
+
+					<!--- Export Profiler as JSON --->
+					<a
+						href="#event.buildLink( 'cbdebugger:exportProfilerReport', { id : thisProfiler.id } )#"
+						target="_blank"
+					>
+						<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg>
+					</a>
 				</td>
 			</tr>
 		</cfloop>
