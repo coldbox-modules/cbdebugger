@@ -156,13 +156,19 @@ component extends="coldbox.system.RestHandler" {
 	 * Get a profiler report via ajax
 	 */
 	function renderProfilerReport( event, rc, prc ){
+		var profilerReport = variables.debuggerService.getProfilerById( rc.id );
+
+		if ( profilerReport.isEmpty() ) {
+			return "<h3 class='cbd-text-red cbd-bg-light-red'>Profiler Id: #encodeForHTML( rc.id )# doesn't exist</h3>";
+		}
+
 		return renderView(
 			view  : "main/partials/profilerReport",
 			module: "cbdebugger",
 			args  : {
 				debuggerService : variables.debuggerService,
 				environment     : variables.debuggerService.getEnvironment(),
-				profiler        : variables.debuggerService.getProfilerById( rc.id ),
+				profiler        : profilerReport,
 				debuggerConfig  : variables.debuggerConfig,
 				isVisualizer    : rc.isVisualizer
 			},

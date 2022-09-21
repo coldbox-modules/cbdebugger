@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Ability for the custom `timeIt()` functions to accept metdata to store in the execution timer
 * New `Slowest` Queries panel for cborm, acf, and qb/quick
 * New visualizer total db time as well as request time including percentage of the request time
+* Ability to export a profiler in json
 
 ### Fixed
 
