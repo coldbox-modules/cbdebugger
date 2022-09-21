@@ -7,7 +7,7 @@ component {
 
 	// Module Properties
 	this.title              = "ColdBox Debugger";
-	this.author             = "Curt Gratz - Ortus Solutions";
+	this.author             = "Ortus Solutions";
 	this.version            = "@build.version@+@build.number@";
 	this.webURL             = "https://www.ortussolutions.com";
 	this.description        = "The ColdBox Debugger Module";
@@ -262,10 +262,7 @@ component {
 
 			/******************** ACFSQL COLLECTOR ************************************/
 
-			// Do not load on lucee or ACF 2016
-			if (
-				variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) && server.coldfusion.productVersion.listFirst() gt "2016"
-			) {
+			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
 					interceptorName  = "ACFSqlCollector@cbdebugger"

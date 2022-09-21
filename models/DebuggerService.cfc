@@ -499,20 +499,12 @@ component
 	}
 
 	/**
-	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
+	 * Helper method to deal with ACF's overload of the page context response, come on Adobe, get your act together!
 	 */
 	function getPageContextResponse(){
-		if ( server.keyExists( "lucee" ) ) {
-			return getPageContext().getResponse();
-		}
-		if ( server.coldfusion.productVersion.listFirst() eq 2016 ) {
-			return getPageContext()
-				.getResponse()
-				.getResponse()
-				.getResponse();
-		} else {
-			return getPageContext().getResponse().getResponse();
-		}
+		return server.keyExists( "lucee" ) ? getPageContext().getResponse() : getPageContext()
+			.getResponse()
+			.getResponse();
 	}
 
 	/**

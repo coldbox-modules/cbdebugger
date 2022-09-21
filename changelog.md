@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [3.5.0] => 2022-SEP
+## [4.0.0] => 2022-SEP
 
 ### Added
 
@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Tracers are now streamlined and stored alongside the request profilers
 * Small UI fixes on request profiler HTTP methods
 * WireBox collecting is now done by the WireBox collector not the Request Collector.
+* Adobe 2016 Dropped
 
 ----
 

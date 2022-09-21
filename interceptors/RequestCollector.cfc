@@ -93,7 +93,7 @@ component extends="coldbox.system.Interceptor" {
 			// Don't render in ajax calls
 			!arguments.event.isAjax() AND
 			// Only show on HTML content types
-			findNoCase( "html", getPageContextResponse().getContentType() ) AND
+			findNoCase( "html", variables.debuggerService.getPageContextResponse().getContentType() ) AND
 			// We don't have any render data OR the render data is HTML
 			(
 				structIsEmpty( arguments.event.getRenderData() ) || arguments.event.getRenderData().contentType == "text/html"
@@ -256,19 +256,6 @@ component extends="coldbox.system.Interceptor" {
 			variables.debuggerService.createRequestTracker( event );
 			// Mark as inited
 			request.cbRequestCollectorStarted = true;
-		}
-	}
-
-	/**
-	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
-	 **/
-	private function getPageContextResponse(){
-		var response = getPageContext().getResponse();
-		try {
-			response.getStatus();
-			return response;
-		} catch ( any e ) {
-			return response.getResponse();
 		}
 	}
 
