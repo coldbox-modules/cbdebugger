@@ -68,10 +68,12 @@
 
 		<!--- Toolbar --->
 		<div class="cbd-floatRight">
+
 			<!--- ************************************************ --->
 			<!--- Visualizer Toolbar --->
 			<!--- ************************************************ --->
 			<cfif args.isVisualizer>
+
 				<!--- Auto Refresh Frequency --->
 				<select
 					@change="startDebuggerMonitor( $el.value )"
@@ -89,7 +91,7 @@
 				<button
 					type="button"
 					title="Refresh the profilers"
-					@click="refreshProfilers"
+					@click="refreshProfilers()"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -116,6 +118,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 					</svg>
 				</button>
+
 			<!--- ************************************************ --->
 			<!--- NON Visualizer Toolbar --->
 			<!--- ************************************************ --->
@@ -161,40 +164,45 @@
 			</button>
 		</div>
 
-		<!--- Machine Info --->
-		<div class="cbd-titleCell">
-			Framework Info:
-		</div>
-		<div class="cbd-contentCell">
-			#controller.getColdboxSettings().codename#
-			#controller.getColdboxSettings().version#
-			#controller.getColdboxSettings().suffix#
+		<!--- General Information --->
+		<div>
+			<!--- Machine Info --->
+			<div class="cbd-titleCell">
+				Framework Info:
+			</div>
+			<div class="cbd-contentCell">
+				#controller.getColdboxSettings().codename#
+				#controller.getColdboxSettings().version#
+				#controller.getColdboxSettings().suffix#
+			</div>
+
+			<!--- App Name + Environment --->
+			<div class="cbd-titleCell">
+				Application Name:
+			</div>
+			<div class="cbd-contentCell">
+				#controller.getSetting( "AppName" )#
+				<span class="cbd-text-purple">
+					(environment=#controller.getSetting( "Environment" )#)
+				</span>
+			</div>
+
+			<!--- App Name + Environment --->
+			<div class="cbd-titleCell">
+				CFML Engine:
+			</div>
+			<div class="cbd-contentCell">
+				#args.environment.cfmlEngine#
+				#args.environment.cfmlVersion#
+				/
+				Java #args.environment.javaVersion#
+			</div>
 		</div>
 
-		<!--- App Name + Environment --->
-		<div class="cbd-titleCell">
-			Application Name:
-		</div>
-		<div class="cbd-contentCell">
-			#controller.getSetting( "AppName" )#
-			<span class="cbd-text-purple">
-				(environment=#controller.getSetting( "Environment" )#)
-			</span>
-		</div>
-
-		<!--- App Name + Environment --->
-		<div class="cbd-titleCell">
-			CFML Engine:
-		</div>
-		<div class="cbd-contentCell">
-			#args.environment.cfmlEngine#
-			#args.environment.cfmlVersion#
-			/
-			Java #args.environment.javaVersion#
-		</div>
-
+		<!---**********************************************************************--->
 		<!--- RENDER PROFILERS OR PROFILER REPORT, DEPENDING ON VISUALIZER FLAG --->
-		<h2>Request History</h2>
+		<!---**********************************************************************--->
+
 		<a name="cbd-profilers"></a>
 		<div
 			id="cbd-profilers"
@@ -202,6 +210,7 @@
 		>
 			<!--- If visualizer, show all the profilers--->
 			<cfif args.isVisualizer>
+				<h2>Request History</h2>
 				#renderView(
 					view : "main/partials/profilers",
 					module : "cbdebugger",

@@ -45,9 +45,12 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 			this.currentProfileId = "";
 		},
 
-		refreshProfilers(){
+		refreshProfilers( sortBy = '', sortOrder = '' ){
 			this.$refs.refreshLoader.classList.add( "cbd-spinner" );
-			fetch( `${this.appUrl}cbDebugger/renderProfilers`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
+			fetch(
+				`${this.appUrl}cbDebugger/renderProfilers?sortBy=${sortBy}&sortOrder=${sortOrder}`,
+				{ headers: { "x-Requested-With": "XMLHttpRequest" } }
+			)
 				.then( response => response.text() )
 				.then( html => {
 					this.clearState();

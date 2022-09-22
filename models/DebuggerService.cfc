@@ -270,6 +270,72 @@ component
 	}
 
 	/**
+	 * Get the current profilers using a sorting algorithm
+	 *
+	 * @sortBy The sort by key: timestamp, executionTime, etc
+	 * @sortOrder Asc/Desc
+	 */
+	array function getProfilers( string sortBy, string sortOrder = "desc" ){
+		var aProfilers = getProfilerStorage();
+
+		// Sorting?
+		switch ( arguments.sortBy ) {
+			case "event": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = compareNoCase( arguments.e1.coldbox.event, arguments.e2.coldbox.event );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "inethost": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = compareNoCase( arguments.e1.inethost, arguments.e2.inethost );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "memoryDiff": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var diff1 = arguments.e1.endFreeMemory - arguments.e1.startFreeMemory;
+					var diff2 = arguments.e2.endFreeMemory - arguments.e2.startFreeMemory;
+					var results = diff1 < diff2 ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "statusCode": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = arguments.e1.response.statusCode < arguments.e2.response.statusCode ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "executionTime": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			// timestamp
+			default: {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+		}
+
+		return aProfilers;
+	}
+
+	/**
 	 * Get the profiler storage array depending on the storage options
 	 */
 	array function getProfilerStorage(){

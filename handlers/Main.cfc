@@ -42,6 +42,7 @@ component extends="coldbox.system.RestHandler" {
 	 * Visualize the request tracker
 	 */
 	any function index( event, rc, prc ){
+		paramSorting( rc );
 		return renderDebugger( argumentCollection = arguments );
 	}
 
@@ -113,43 +114,28 @@ component extends="coldbox.system.RestHandler" {
 	 * Get the profilers via ajax
 	 */
 	function renderProfilers( event, rc, prc ){
-		// Sorting: timestamp, executionTime
-		event.paramValue( "sortBy", "timestamp" ).paramValue( "sortOrder", "desc" );
-
-		// Get the profilers
-		var aProfilers = variables.debuggerService.getProfilerStorage();
-
-		// Sorting?
-		switch ( rc.sortBy ) {
-			case "executionTime": {
-				arraySort( aProfilers, function( e1, e2 ){
-					if ( rc.sortOrder == "asc" ) {
-						return ( arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1 );
-					}
-					return ( arguments.e1.executionTime > arguments.e2.executionTime ? -1 : 1 );
-				} );
-				break;
-			}
-			default: {
-				arraySort( aProfilers, function( e1, e2 ){
-					if ( rc.sortOrder == "asc" ) {
-						return dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
-					}
-					return dateCompare( arguments.e2.timestamp, arguments.e1.timestamp );
-				} );
-				break;
-			}
-		}
-		return renderView(
+		return paramSorting( rc ).renderView(
 			view  : "main/partials/profilers",
 			module: "cbdebugger",
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
-				profilers      : aProfilers,
+				profilers      : variables.debuggerService.getProfilers( rc.sortBy, rc.sortOrder ),
 				debuggerConfig : variables.debuggerConfig
 			},
 			prePostExempt: true
 		);
+	}
+
+	private function paramSorting( rc ){
+		param rc.sortBy = "timestamp";
+		param rc.sortOrder = "desc";
+		if( !len( rc.sortBy ) ){
+			rc.sortby = "timestamp";
+		}
+		if( !len( rc.sortOrder ) ){
+			rc.sortOrder = "desc";
+		}
+		return this;
 	}
 
 	/**

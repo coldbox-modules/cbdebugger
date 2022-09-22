@@ -1,30 +1,111 @@
 <cfoutput>
 <div
 	id="cbd-profilers"
-	x-data="{}"
+	x-data="{
+		sortBy : '#encodeForJavaScript( rc.sortBy ?: 'timestamp' )#',
+		sortOrder : '#encodeForJavaScript( rc.sortOrder ?: 'desc' )#',
+		sort( by ){
+			this.sortBy = by
+			this.sortOrder = ( this.sortOrder === 'asc' ? 'desc' : 'asc' )
+			refreshProfilers( this.sortBy, this.sortOrder )
+		}
+	}"
 	x-cloak
 	x-show="!currentProfileId"
 >
 	<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables mt10">
 		<tr class="cbdHeader">
-			<th align="left" width="125">
+			<th
+				align="left"
+				width="125"
+				@click="sort( 'timestamp' )"
+				class="cbd-sortable"
+				title="Sort by timestamp"
+			>
+
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'timestamp'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
+
 				Timestamp<br>
 				Ip
 			</th>
 
-			<th align="left" width="150">
+			<th align="left" width="150" @click="sort( 'inethost' )">
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'inethost'"
+					class="cbd-sortable"
+					title="Sort by host"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
+
 				Server Info
 			</th>
 
-			<th align="left" width="75">
+			<th align="left"
+				width="75"
+				@click="sort( 'statusCode' )"
+				class="cbd-sortable"
+				title="Sort by status code"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'statusCode'"
+					class="cbd-sortable"
+					title="Sort by status code"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Response
 			</th>
 
-			<th align="left">
+			<th align="left"
+				@click="sort( 'event' )"
+				class="cbd-sortable"
+				title="Sort by ColdBox Event"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'event'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Request
 			</th>
 
-			<th width="100" title="Free memory difference between start and end of the request">
+			<th width="100"
+				@click="sort( 'memoryDiff' )"
+				class="cbd-sortable"
+				title="Sort by Free memory difference between start and end of the request"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'memorydiff'"
+					class="cbd-sortable"
+					title="Sort by memory diff"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Memory Diff
 			</th>
 
@@ -52,7 +133,20 @@
 				</th>
 			</cfif>
 
-			<th width="65">
+			<th width="65"
+				@click="sort( 'executionTime' )"
+				class="cbd-sortable"
+				title="Sort by execution time"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'executionTime'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Time<br>
 				(ms)
 			</th>
