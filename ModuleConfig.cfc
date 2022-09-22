@@ -46,7 +46,7 @@ component {
 			// Request Tracker Options
 			requestTracker   : {
 				// Store the request profilers in heap memory or in cachebox, default is cachebox
-				storage                      : "cachebox",
+				storage                      : "memory",
 				// Which cache region to store the profilers in
 				cacheName                    : "template",
 				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
