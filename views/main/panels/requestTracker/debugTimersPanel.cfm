@@ -90,7 +90,9 @@
 						<!--- Open --->
 						<td align="center" >
 							<!--- View Render --->
-							<cfif len( thisTimer.metadata?.path )>
+							<cfparam name="thisTimer.metadata" default="#structNew()#">
+							<cfparam name="thisTimer.metadata.path" default="">
+							<cfif isSimpleValue( thisTimer.metadata.path ) && len( thisTimer.metadata.path )>
 								<a
 									href="#args.debuggerService.openInEditorURL( event, {
 										template : thisTimer.metadata.path,
