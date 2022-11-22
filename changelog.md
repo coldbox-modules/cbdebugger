@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
-## [4.0.0] => 2022-SEP
+## [4.0.1] => 2022-NOV-22
+
+### Fixed
+
+* Adobe dumb array by value
+
+----
+
+## [4.0.0] => 2022-NOV-22
 
 ### Added
 
