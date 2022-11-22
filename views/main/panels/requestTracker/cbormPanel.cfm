@@ -252,7 +252,7 @@
 				x-show="isTimelineView"
 				x-transition
 			>
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/cbormSqlTable",
 					module : "cbdebugger",
 					args : {
@@ -272,7 +272,7 @@
 				x-show="isSlowestView"
 				x-transition
 			>
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/cbormSqlTable",
 					module : "cbdebugger",
 					args : {

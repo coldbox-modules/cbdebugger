@@ -81,7 +81,7 @@
 							x-show="childModule == '#moduleId#'"
 							x-duration
 						>
-							#renderView(
+							#view(
 								view  : "main/partials/modules",
 								module : "cbdebugger",
 								args : {

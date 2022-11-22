@@ -199,7 +199,7 @@
 				<!--- Exception Data --->
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/exceptionPanel",
 						module : "cbdebugger",
 						args : {
@@ -215,7 +215,7 @@
 				<!--- **************************************************************--->
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
@@ -230,7 +230,7 @@
 				<!--- **************************************************************--->
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/coldboxPanel",
 					module : "cbdebugger",
 					args : {
@@ -244,7 +244,7 @@
 				<!--- **************************************************************--->
 				<!--- HTTP Request Data --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/httpRequestPanel",
 					module : "cbdebugger",
 					args : {
@@ -259,7 +259,7 @@
 				<!--- Tracers --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.tracers.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/tracersPanel",
 						module : "cbdebugger",
 						args : {
@@ -277,7 +277,7 @@
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
 				<cfif !args.isVisualizer and args.debuggerConfig.collections.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/coldboxCollectionsPanel",
 						module : "cbdebugger",
 						args : {
@@ -293,7 +293,7 @@
 				<!--- ACFSQL --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.acfSql.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/acfSqlPanel",
 						module : "cbdebugger",
 						args : {
@@ -309,7 +309,7 @@
 				<!--- CBORM --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/cbormPanel",
 						module : "cbdebugger",
 						args : {
@@ -325,7 +325,7 @@
 				<!--- QB/QUICK --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.qb.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/qbPanel",
 						module : "cbdebugger",
 						args : {

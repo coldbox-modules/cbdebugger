@@ -211,7 +211,7 @@
 			<!--- If visualizer, show all the profilers--->
 			<cfif args.isVisualizer>
 				<h2>Request History</h2>
-				#renderView(
+				#view(
 					view : "main/partials/profilers",
 					module : "cbdebugger",
 					args : {
@@ -224,7 +224,7 @@
 				)#
 			<!--- Else it's a single report request --->
 			<cfelse>
-				#renderView(
+				#view(
 					view : "main/partials/profilerReport",
 					module : "cbdebugger",
 					args : {

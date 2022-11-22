@@ -55,7 +55,7 @@ component extends="coldbox.system.RestHandler" {
 		setting showdebugoutput=false;
 		// Return the debugger layout+view
 		// We pass in all the variables needed, to avoid prc/rc conflicts
-		return renderLayout(
+		return layout(
 			layout    : isVisualizer ? "Monitor" : "Main",
 			module    : "cbdebugger",
 			view      : "main/debugger",
@@ -95,7 +95,7 @@ component extends="coldbox.system.RestHandler" {
 	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){
-		return renderView(
+		return view(
 			view  : "main/panels/cacheBoxPanel",
 			module: "cbdebugger",
 			args  : { debuggerConfig : variables.debuggerConfig }
@@ -114,7 +114,7 @@ component extends="coldbox.system.RestHandler" {
 	 * Get the profilers via ajax
 	 */
 	function renderProfilers( event, rc, prc ){
-		return paramSorting( rc ).renderView(
+		return paramSorting( rc ).view(
 			view  : "main/partials/profilers",
 			module: "cbdebugger",
 			args  : {
@@ -148,7 +148,7 @@ component extends="coldbox.system.RestHandler" {
 			return "<h3 class='cbd-text-red cbd-bg-light-red'>Profiler Id: #encodeForHTML( rc.id )# doesn't exist</h3>";
 		}
 
-		return renderView(
+		return view(
 			view  : "main/partials/profilerReport",
 			module: "cbdebugger",
 			args  : {

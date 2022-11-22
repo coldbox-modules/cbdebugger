@@ -62,7 +62,7 @@ rootModules = args.moduleSettings.filter( function( module, config ){
 			</div>
 		</div>
 
-		#renderView(
+		#view(
 			view  : "main/partials/modules",
 			module : "cbdebugger",
 			args : {

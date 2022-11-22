@@ -16,7 +16,7 @@
 		debuggerService : args.debuggerService
 	} )#
 
-	#renderView()#
+	#view()#
 
 	#announce( "afterDebuggerPanel", {
 		debuggerConfig : args.debuggerConfig,

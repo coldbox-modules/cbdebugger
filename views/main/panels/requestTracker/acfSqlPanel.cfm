@@ -250,7 +250,7 @@
 				x-show="isTimelineView"
 				x-transition
 			>
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/acfSqlTable",
 					module : "cbdebugger",
 					args : {
@@ -269,7 +269,7 @@
 				x-show="isSlowestView"
 				x-transition
 			>
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/acfSqlTable",
 					module : "cbdebugger",
 					args : {

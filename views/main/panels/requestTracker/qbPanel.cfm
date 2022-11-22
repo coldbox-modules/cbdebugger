@@ -250,7 +250,7 @@
 					x-show="isTimelineView"
 					x-transition
 				>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/qbSqlTable",
 						module : "cbdebugger",
 						args : {
@@ -270,7 +270,7 @@
 					x-show="isSlowestView"
 					x-transition
 				>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/qbSqlTable",
 						module : "cbdebugger",
 						args : {
