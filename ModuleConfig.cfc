@@ -45,7 +45,7 @@ component {
 			requestPanelDock : true,
 			// Request Tracker Options
 			requestTracker   : {
-				// Store the request profilers in heap memory or in cachebox, default is cachebox
+				// Store the request profilers in heap memory or in cachebox, default is memory
 				storage                      : "memory",
 				// Which cache region to store the profilers in
 				cacheName                    : "template",

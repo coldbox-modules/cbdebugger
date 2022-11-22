@@ -5,7 +5,7 @@
     "private":true,
     "description":"",
     "dependencies":{
-        "coldbox":"^6.0.0",
+        "coldbox":"be",
         "JSONPrettyPrint":"^1.4.1",
         "quick":"^4.2.4",
         "cborm":"^3.0.0+184",
