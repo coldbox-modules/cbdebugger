@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * ColdBox 7 support
+* New `TimerDelegate` that can be used to add timer functions to any model
 * Timer service rewritten to support nesting and included metadata
 * Ability to open views and layouts from the execution timers in any Code Editor
 * New `WireBoxCollector` which is only used if enabled.  This greatly accelerates the performance of the request collector since before they where in the same collector.

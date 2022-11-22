@@ -105,8 +105,8 @@ moduleSettings = {
 		requestTracker : {
 			// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 			trackDebuggerEvents          : false,
-			// Store the request profilers in heap memory or in cachebox, default is cachebox. Options are: local, cachebox
-			storage                      : "cachebox",
+			// Store the request profilers in heap memory or in cachebox, default is memory. Options are: memory, cachebox
+			storage                      : "memory",
 			// Which cache region to store the profilers in if storage == cachebox
 			cacheName                    : "template",
 			// Expand by default the tracker panel or not
@@ -264,6 +264,23 @@ This module will also register a few methods in all your handlers/interceptors/l
 		timestamp = now(),
 		extraInfo = ""
 	)
+```
+
+## Timer Delegate
+
+We have included a ColdBox 7 Timer delegate: `TimerDelegate@cbDebguger` that can add timing capabilities to any CFC
+
+```js
+component delegates="TimerDelegate@cbDebguger"{
+
+...
+	startCBTimer();
+	stopCBTimer();
+	timeIt();
+...
+
+}
+
 ```
 
 ## Debugger Events
