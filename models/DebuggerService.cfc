@@ -425,8 +425,7 @@ component
 		);
 
 		// New Profiler record to store into the singleton stack
-		var targetStorage = getProfilerStorage();
-		arrayPrepend( targetStorage, request.cbDebugger );
+		var targetStorage = getProfilerStorage().prePend( request.cbDebugger );
 
 		// Are we using cache storage
 		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
