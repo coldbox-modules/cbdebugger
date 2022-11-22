@@ -2,6 +2,10 @@
 
 # Welcome To The ColdBox Debugger Module
 
+<p align="center">
+<img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/resources/assets/images/CBDebugger300.png">
+</p>
+
 The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funner and greater! Yes, funner is a word!
 
 <p align="center">
