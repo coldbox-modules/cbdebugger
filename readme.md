@@ -1,10 +1,18 @@
-[![cbdebugger CI](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml/badge.svg)](https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml)
-
-# Welcome To The ColdBox Debugger Module
-
 <p align="center">
 <img src="https://raw.githubusercontent.com/coldbox-modules/cbdebugger/development/resources/assets/images/CBDebugger300.png">
 </p>
+
+<p align="center">
+	<img src="https://forgebox.io/api/v1/entry/cbdebugger/badges/version" alt="Latest Stable Version" />
+	<a href="https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml">
+		<img src="https://github.com/coldbox-modules/cbdebugger/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+	</a>
+	<a href="https://www.apache.org/licenses/LICENSE-2.0.html">
+		<img src="https://img.shields.io/badge/license-Apache--2-green" alt="License">
+	</a>
+</p>
+
+# Welcome To The ColdBox Debugger Module
 
 The ColdBox Debugger module is a light-weight performance monitor and profiling tool for ColdBox applications.  It can generate a nice debugging panel on every rendered page or a dedicated visualizer to make your ColdBox application development nicer, funner and greater! Yes, funner is a word!
 
