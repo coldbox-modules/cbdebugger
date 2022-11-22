@@ -1,38 +1,163 @@
 <cfoutput>
 <div
 	id="cbd-profilers"
-	x-data="{}"
+	x-data="{
+		sortBy : '#encodeForJavaScript( rc.sortBy ?: 'timestamp' )#',
+		sortOrder : '#encodeForJavaScript( rc.sortOrder ?: 'desc' )#',
+		sort( by ){
+			this.sortBy = by
+			this.sortOrder = ( this.sortOrder === 'asc' ? 'desc' : 'asc' )
+			refreshProfilers( this.sortBy, this.sortOrder )
+		}
+	}"
 	x-cloak
 	x-show="!currentProfileId"
 >
 	<table border="0" cellpadding="0" cellspacing="1" class="cbd-tables mt10">
 		<tr class="cbdHeader">
-			<th align="left" width="125">
+			<th
+				align="left"
+				width="125"
+				@click="sort( 'timestamp' )"
+				class="cbd-sortable"
+				title="Sort by timestamp"
+			>
+
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'timestamp'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
+
 				Timestamp<br>
 				Ip
 			</th>
-			<th align="left" width="150">
+
+			<th align="left" width="150" @click="sort( 'inethost' )">
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'inethost'"
+					class="cbd-sortable"
+					title="Sort by host"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
+
 				Server Info
 			</th>
-			<th align="left" width="75">
+
+			<th align="left"
+				width="75"
+				@click="sort( 'statusCode' )"
+				class="cbd-sortable"
+				title="Sort by status code"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'statusCode'"
+					class="cbd-sortable"
+					title="Sort by status code"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Response
 			</th>
-			<th align="left">
+
+			<th align="left"
+				@click="sort( 'event' )"
+				class="cbd-sortable"
+				title="Sort by ColdBox Event"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'event'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Request
 			</th>
-			<th width="100" title="Free memory difference between start and end of the request">
-				Free Memory
+
+			<th width="100"
+				@click="sort( 'memoryDiff' )"
+				class="cbd-sortable"
+				title="Sort by Free memory difference between start and end of the request"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'memorydiff'"
+					class="cbd-sortable"
+					title="Sort by memory diff"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
+				Memory Diff
 			</th>
-			<th width="50">
+
+			<cfif args.debuggerConfig.cborm.enabled>
+				<th width="65">
+					cborm
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<cfif args.debuggerConfig.acfSql.enabled>
+				<th width="65">
+					ACF SQL
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<cfif args.debuggerConfig.qb.enabled>
+				<th width="65">
+					QB
+					<br>
+					time + %
+				</th>
+			</cfif>
+
+			<th width="65"
+				@click="sort( 'executionTime' )"
+				class="cbd-sortable"
+				title="Sort by execution time"
+			>
+				<span
+					class="cbd-floatRight"
+					x-show="sortBy == 'executionTime'"
+				>
+					<!--- Desc --->
+					<svg x-show="sortOrder == 'desc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h9m5-4v12m0 0l-4-4m4 4l4-4"></path></svg>
+					<!--- Asc --->
+					<svg x-show="sortOrder == 'asc'" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
+				</span>
 				Time<br>
 				(ms)
 			</th>
-			<th width="50">
+
+			<th width="75">
 				Actions
 			</th>
 		</tr>
 
 		<cfloop array="#args.profilers#" index="thisProfiler">
+
 			<tr
 				@dblclick="loadProfilerReport( '#thisProfiler.id#' )"
 				<cfif thisProfiler.response.statusCode gte 400>class="cbd-bg-light-red"</cfif>
@@ -72,7 +197,7 @@
 						#thisProfiler.threadInfo.replaceNoCase( "Thread", "" )#
 					</div>
 
-					<div class="mt5">
+					<div class="mt5" title="Local IP">
 						#thisProfiler.localIp#
 					</div>
 				</td>
@@ -91,6 +216,7 @@
 						<cfelseif thisProfiler.response.statusCode gte 400>
 							<span class="cbd-text-red">
 								#thisProfiler.response.statusCode#
+								<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 							</span>
 						</cfif>
 					</div>
@@ -102,7 +228,7 @@
 				<!--- FULL URL + EVENT --->
 				<td>
 					<div>
-						#thisProfiler.requestData.method#:#thisProfiler.fullUrl#
+						#thisProfiler.requestData.method#>#thisProfiler.fullUrl#
 					</div>
 					<div class="mt10 cbd-text-blue">
 						<strong>
@@ -132,19 +258,58 @@
 					</cfif>
 				</td>
 
+				<!--- CBORM Time --->
+				<cfif args.debuggerConfig.cborm.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.cborm.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.cborm.totalExecutionTime )# ms
+							<br>
+							<span title="Percentage of total request time">
+								#numberFormat( (thisProfiler.cborm.totalExecutionTime / thisProfiler.executionTime) * 100, "0.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
+				<!--- CFSQL Time --->
+				<cfif args.debuggerConfig.acfSql.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.cfQueries.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.cfQueries.totalExecutionTime )# <br>
+							<span title="Percentage of total request time">
+								#numberFormat( thisProfiler.cfQueries.totalExecutionTime / thisProfiler.executionTime, "00.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
+				<!--- QB Time --->
+				<cfif args.debuggerConfig.qb.enabled>
+					<td align="right">
+						<cfset timerClass = thisProfiler.qbQueries.totalExecutionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+						<span class="#timerClass#">
+							#numberFormat( thisProfiler.qbQueries.totalExecutionTime )# <br>
+							<span title="Percentage of total request time">
+								#numberFormat( thisProfiler.qbQueries.totalExecutionTime / thisProfiler.executionTime, "00.00" )#%
+							</span>
+						</span>
+					</td>
+				</cfif>
+
 				<!--- Execution Time --->
 				<td align="right">
-					<cfif thisProfiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
-						<span class="cbd-text-red">
-							#numberFormat( thisProfiler.executionTime )#
-						</span>
-					<cfelse>
+					<cfset timerClass = thisProfiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold ? "cbd-text-red" : "">
+					<span class="#timerClass#">
 						#numberFormat( thisProfiler.executionTime )#
-					</cfif>
+					</span>
 				</td>
 
 				<!--- ACTIONS --->
 				<td align="center">
+
+					<!--- Open Request Profiler --->
 					<button
 						title="Show Request"
 						class="pt5 pb5 cbd-rounded"
@@ -158,6 +323,14 @@
 							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" />
 						</svg>
 					</button>
+
+					<!--- Export Profiler as JSON --->
+					<a
+						href="#event.buildLink( 'cbdebugger:exportProfilerReport', { id : thisProfiler.id } )#"
+						target="_blank"
+						class="pt5 pb5 cbd-button cbd-rounded"
+						title="Export Profiler to JSON"
+					><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg></a>
 				</td>
 			</tr>
 		</cfloop>

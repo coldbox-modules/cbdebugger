@@ -17,7 +17,7 @@ component
 	 * --------------------------------------------------------------------------
 	 */
 
-	property name="asyncManager" inject="coldbox:asyncManager";
+	property name="asyncManager"       inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
 	property name="timerService"       inject="provider:Timer@cbdebugger";
 	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
@@ -129,10 +129,17 @@ component
 			current debugPassword and a random salt.  The salt also protects against someone being able to
 			reverse engineer the orignal password from an intercepted cookie value.
 		*/
-		var salt            = variables.uuid.randomUUID();
+		var salt            = randomUUID();
 		variables.secretKey =
 		hash( variables.controller.getAppHash() & variables.debugPassword & salt, "SHA-256" );
 		return this;
+	}
+
+	/**
+	 * Generate a new java random id
+	 */
+	string function randomUUID(){
+		return variables.uuid.randomUUID().toString();
 	}
 
 	/**
@@ -183,19 +190,17 @@ component
 	 * @event The ColdBox context we will start the tracker on
 	 */
 	struct function createRequestTracker( required event ){
-		// Init the request tracers
-		param request.tracers    = [];
 		// Init the request debugger tracking
 		param request.cbDebugger = {
 			"coldbox"       : {},
 			"exception"     : {},
 			"executionTime" : 0,
 			"endFreeMemory" : 0,
-			"formData"      : serializeJson( form ?: {} ),
+			"formData"      : serializeJSON( form ?: {} ),
 			"fullUrl"       : arguments.event.getFullUrl(),
 			"httpHost"      : cgi.HTTP_HOST,
 			"httpReferer"   : cgi.HTTP_REFERER,
-			"id"            : variables.uuid.randomUUID(),
+			"id"            : variables.uuid.randomUUID().toString(),
 			"inetHost"      : discoverInetHost(),
 			"ip"            : getRealIP(),
 			"localIp"       : getServerIp(),
@@ -265,6 +270,72 @@ component
 	}
 
 	/**
+	 * Get the current profilers using a sorting algorithm
+	 *
+	 * @sortBy The sort by key: timestamp, executionTime, etc
+	 * @sortOrder Asc/Desc
+	 */
+	array function getProfilers( string sortBy, string sortOrder = "desc" ){
+		var aProfilers = getProfilerStorage();
+
+		// Sorting?
+		switch ( arguments.sortBy ) {
+			case "event": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = compareNoCase( arguments.e1.coldbox.event, arguments.e2.coldbox.event );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "inethost": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = compareNoCase( arguments.e1.inethost, arguments.e2.inethost );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "memoryDiff": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var diff1 = arguments.e1.endFreeMemory - arguments.e1.startFreeMemory;
+					var diff2 = arguments.e2.endFreeMemory - arguments.e2.startFreeMemory;
+					var results = diff1 < diff2 ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "statusCode": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = arguments.e1.response.statusCode < arguments.e2.response.statusCode ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			case "executionTime": {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1;
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+
+			// timestamp
+			default: {
+				arraySort( aProfilers, function( e1, e2 ){
+					var results = dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
+					return ( sortOrder == "asc" ? results : results * -1 );
+				} );
+				break;
+			}
+		}
+
+		return aProfilers;
+	}
+
+	/**
 	 * Get the profiler storage array depending on the storage options
 	 */
 	array function getProfilerStorage(){
@@ -293,8 +364,6 @@ component
 		required executionTime,
 		exception = {}
 	){
-		var targetStorage = getProfilerStorage();
-
 		// Build out the exception data to trace if any?
 		var exceptionData = {};
 		if ( isObject( arguments.exception ) || !structIsEmpty( arguments.exception ) ) {
@@ -322,8 +391,13 @@ component
 			createRequestTracker( arguments.event );
 		}
 
+		// Event before recording
+		variables.interceptorService.announce(
+			"onDebuggerProfilerRecording",
+			{ requestTracker : request.cbDebugger }
+		);
+
 		// Close out the profiler
-		param request.cbDebugger.startCount = 0;
 		request.cbDebugger.append(
 			{
 				"endFreeMemory" : variables.jvmRuntime.freeMemory(),
@@ -345,19 +419,13 @@ component
 					"statusCode"  : ( structIsEmpty( exceptionData ) ? getPageContextResponse().getStatus() : 500 ),
 					"contentType" : getPageContextResponse().getContentType()
 				},
-				"timers"  : variables.timerService.getSortedTimers(),
-				"tracers" : getTracers()
+				"timers" : variables.timerService.getTimers()
 			},
 			true
 		);
 
-		// Event before recording
-		variables.interceptorService.announce(
-			"onDebuggerProfilerRecording",
-			{ requestTracker : request.cbDebugger }
-		);
-
 		// New Profiler record to store into the singleton stack
+		var targetStorage = getProfilerStorage();
 		arrayPrepend( targetStorage, request.cbDebugger );
 
 		// Are we using cache storage
@@ -370,7 +438,9 @@ component
 		}
 
 		// async rotation - size check, if passed, pop one
-		variables.asyncManager.newFuture( function(){ storageSizeCheck(); } );
+		variables.asyncManager.newFuture( function(){
+			storageSizeCheck();
+		} );
 
 		return this;
 	}
@@ -426,12 +496,10 @@ component
 		}
 
 		// Ensure we have the tracers array for the request
-		if ( isNull( request.tracers ) ) {
-			request.tracers = [];
-		}
+		param request.cbDebugger.tracers = [];
 
 		// Push it
-		arrayPrepend( request.tracers, arguments );
+		request.cbDebugger.tracers.append( arguments );
 
 		return this;
 	}
@@ -440,7 +508,7 @@ component
 	 * Reset all tracers back to zero
 	 */
 	DebuggerService function resetTracers(){
-		request.tracers = [];
+		request.cbDebugger.tracers = [];
 		return this;
 	}
 
@@ -448,7 +516,8 @@ component
 	 * Get all the request tracers array
 	 */
 	array function getTracers(){
-		return request.tracers ?: [];
+		param request.cbDebugger.tracers = [];
+		return request.cbDebugger.tracers;
 	}
 
 	/**
@@ -503,16 +572,12 @@ component
 	}
 
 	/**
-	 * Helper method to deal with ACF2016's overload of the page context response, come on Adobe, get your act together!
+	 * Helper method to deal with ACF's overload of the page context response, come on Adobe, get your act together!
 	 */
 	function getPageContextResponse(){
-		var response = getPageContext().getResponse();
-		try {
-			response.getStatus();
-			return response;
-		} catch ( any e ) {
-			return response.getResponse();
-		}
+		return server.keyExists( "lucee" ) ? getPageContext().getResponse() : getPageContext()
+			.getResponse()
+			.getResponse();
 	}
 
 	/**
@@ -580,7 +645,7 @@ component
 				// Do we have template matches or simple function equality?
 				if ( !isNull( templateMatch ) ) {
 					if (
-						arguments.item.function == targetMethod && findNoCase(
+						arguments.item.function == targetMethod && reFindNoCase(
 							templateMatch,
 							arguments.item.template
 						)

@@ -23,35 +23,37 @@
 				ColdBox Request Tracker
 
 				<!--- If not expanded and not in visualizer mode --->
-				<span
-					x-show="!panelOpen && !isVisualizer"
-					x-cloak
-					x-transition
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
+				<cfif !args.currentProfiler.isEmpty()>
+					<span
+						x-show="!panelOpen && !isVisualizer"
+						x-cloak
+						x-transition
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
 
-					#args.currentProfiler.requestData.method#
+						#args.currentProfiler.requestData.method#
 
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
 
-					#args.currentProfiler.coldbox.event#
+						#args.currentProfiler.coldbox.event#
 
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
 
-					#args.currentProfiler.response.statusCode#
+						#args.currentProfiler.response.statusCode#
 
-					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-					</svg>
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+						</svg>
 
-					#numberFormat( args.currentProfiler.executionTime )# ms
-				</span>
+						#numberFormat( args.currentProfiler.executionTime )# ms
+					</span>
+				</cfif>
 			</div>
 		</div>
 	</div>
@@ -66,10 +68,12 @@
 
 		<!--- Toolbar --->
 		<div class="cbd-floatRight">
+
 			<!--- ************************************************ --->
 			<!--- Visualizer Toolbar --->
 			<!--- ************************************************ --->
 			<cfif args.isVisualizer>
+
 				<!--- Auto Refresh Frequency --->
 				<select
 					@change="startDebuggerMonitor( $el.value )"
@@ -87,7 +91,7 @@
 				<button
 					type="button"
 					title="Refresh the profilers"
-					@click="refreshProfilers"
+					@click="refreshProfilers()"
 				>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -114,6 +118,7 @@
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
 					</svg>
 				</button>
+
 			<!--- ************************************************ --->
 			<!--- NON Visualizer Toolbar --->
 			<!--- ************************************************ --->
@@ -159,45 +164,44 @@
 			</button>
 		</div>
 
-		<!--- Info --->
-		<p>
-			Below you can see the latest ColdBox requests made into the application.
-			Click on the desired profiler to view its execution report.
-		</p>
+		<!--- General Information --->
+		<div>
+			<!--- Machine Info --->
+			<div class="cbd-titleCell">
+				Framework Info:
+			</div>
+			<div class="cbd-contentCell">
+				#controller.getColdboxSettings().codename#
+				#controller.getColdboxSettings().version#
+				#controller.getColdboxSettings().suffix#
+			</div>
 
-		<!--- Machine Info --->
-		<div class="cbd-titleCell">
-			Framework Info:
-		</div>
-		<div class="cbd-contentCell">
-			#controller.getColdboxSettings().codename#
-			#controller.getColdboxSettings().version#
-			#controller.getColdboxSettings().suffix#
-		</div>
+			<!--- App Name + Environment --->
+			<div class="cbd-titleCell">
+				Application Name:
+			</div>
+			<div class="cbd-contentCell">
+				#controller.getSetting( "AppName" )#
+				<span class="cbd-text-purple">
+					(environment=#controller.getSetting( "Environment" )#)
+				</span>
+			</div>
 
-		<!--- App Name + Environment --->
-		<div class="cbd-titleCell">
-			Application Name:
-		</div>
-		<div class="cbd-contentCell">
-			#controller.getSetting( "AppName" )#
-			<span class="cbd-text-purple">
-				(environment=#controller.getSetting( "Environment" )#)
-			</span>
-		</div>
-
-		<!--- App Name + Environment --->
-		<div class="cbd-titleCell">
-			CFML Engine:
-		</div>
-		<div class="cbd-contentCell">
-			#args.environment.cfmlEngine#
-			#args.environment.cfmlVersion#
-			/
-			Java #args.environment.javaVersion#
+			<!--- App Name + Environment --->
+			<div class="cbd-titleCell">
+				CFML Engine:
+			</div>
+			<div class="cbd-contentCell">
+				#args.environment.cfmlEngine#
+				#args.environment.cfmlVersion#
+				/
+				Java #args.environment.javaVersion#
+			</div>
 		</div>
 
+		<!---**********************************************************************--->
 		<!--- RENDER PROFILERS OR PROFILER REPORT, DEPENDING ON VISUALIZER FLAG --->
+		<!---**********************************************************************--->
 
 		<a name="cbd-profilers"></a>
 		<div
@@ -206,7 +210,8 @@
 		>
 			<!--- If visualizer, show all the profilers--->
 			<cfif args.isVisualizer>
-				#renderView(
+				<h2>Request History</h2>
+				#view(
 					view : "main/partials/profilers",
 					module : "cbdebugger",
 					args : {
@@ -219,7 +224,7 @@
 				)#
 			<!--- Else it's a single report request --->
 			<cfelse>
-				#renderView(
+				#view(
 					view : "main/partials/profilerReport",
 					module : "cbdebugger",
 					args : {

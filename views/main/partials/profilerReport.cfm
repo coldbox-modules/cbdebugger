@@ -9,7 +9,17 @@
 	id="cbd-profiler-report"
 	class="cbd-rounded mt10 mb10 cbd-reportContainer"
 	x-data="{
-		profilerId : '#args.profiler.id#'
+		profilerId : '#args.profiler.id#',
+		statusCode : '#args.profiler.response.statusCode#',
+		statusColor (){
+			if( this.statusCode >= 200 && this.statusCode < 300 )
+				return 'cbd-text-green'
+
+			if( this.statusCode >= 300 && this.statusCode < 400 )
+				return 'cbd-text-blue'
+
+			return 'cbd-text-red'
+		}
 	}"
 >
 
@@ -21,6 +31,7 @@
 			<!--- VISUALIZER TOOLBAR --->
 			<cfif args.isVisualizer>
 
+				<!--- Refresh Button --->
 				<button
 					type="button"
 					title="Refresh"
@@ -35,6 +46,14 @@
 					</svg>
 				</button>
 
+				<a
+					href="#event.buildLink( 'cbdebugger:exportProfilerReport', { id : args.profiler.id } )#"
+					target="_blank"
+					class="pt5 pb5 cbd-button cbd-rounded"
+					title="Export Profiler to JSON"
+				><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path></svg></a>
+
+				<!--- Back to Profilers --->
 				<button
 					type="button"
 					title="Back to profilers"
@@ -53,35 +72,21 @@
 				class="cbd-size13"
 			>
 				<span title="Status Code">
-					<cfif args.profiler.response.statusCode gte 200 && args.profiler.response.statusCode lt 300 >
-						<span class="cbd-text-green">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 300 && args.profiler.response.statusCode lt 400 >
-						<span class="cbd-text-blue">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					<cfelseif args.profiler.response.statusCode gte 400>
-						<span class="cbd-text-red">
-							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-								<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-							</svg>
-							#args.profiler.response.statusCode#
-						</span>
-					</cfif>
+
+					<span :class="statusColor">
+						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+						</svg>
+						#args.profiler.response.statusCode#
+					</span>
+
 				</span>
 
 				<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
 				  </svg>
 
-				#args.profiler.requestData.method# : #args.profiler.fullUrl#
+				#args.profiler.requestData.method# > #args.profiler.fullUrl#
 			</div>
 
 			<!--- Execution Time --->
@@ -89,13 +94,9 @@
 				class="cbd-floatRight cbd-size14 mt10 mr5 <cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-badge-light<cfelse>cbd-badge-dark</cfif>"
 				title="Total ColdBox Request Execution Time"
 			>
-				<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>
-					<span class="cbd-text-red">
-						#numberFormat( args.profiler.executionTime )# ms
-					</span>
-				<cfelse>
+				<span class="<cfif args.profiler.executionTime gt args.debuggerConfig.requestTracker.slowExecutionThreshold>cbd-text-red</cfif>">
 					#numberFormat( args.profiler.executionTime )# ms
-				</cfif>
+				</span>
 			</div>
 
 			<!--- Current Event --->
@@ -198,7 +199,7 @@
 				<!--- Exception Data --->
 				<!--- **************************************************************--->
 				<cfif !args.profiler.exception.isEmpty()>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/exceptionPanel",
 						module : "cbdebugger",
 						args : {
@@ -214,7 +215,7 @@
 				<!--- **************************************************************--->
 				<!--- Profiling Timers --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
@@ -229,7 +230,7 @@
 				<!--- **************************************************************--->
 				<!--- ColdBox Data --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/coldboxPanel",
 					module : "cbdebugger",
 					args : {
@@ -243,7 +244,7 @@
 				<!--- **************************************************************--->
 				<!--- HTTP Request Data --->
 				<!--- **************************************************************--->
-				#renderView(
+				#view(
 					view : "main/panels/requestTracker/httpRequestPanel",
 					module : "cbdebugger",
 					args : {
@@ -258,7 +259,7 @@
 				<!--- Tracers --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.tracers.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/tracersPanel",
 						module : "cbdebugger",
 						args : {
@@ -276,7 +277,7 @@
 				<!--- **************************************************************--->
 				<!--- Only show if it's the same request, we don't store rc/prc to avoid memory leaks --->
 				<cfif !args.isVisualizer and args.debuggerConfig.collections.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/coldboxCollectionsPanel",
 						module : "cbdebugger",
 						args : {
@@ -292,7 +293,7 @@
 				<!--- ACFSQL --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.acfSql.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/acfSqlPanel",
 						module : "cbdebugger",
 						args : {
@@ -308,7 +309,7 @@
 				<!--- CBORM --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/cbormPanel",
 						module : "cbdebugger",
 						args : {
@@ -324,7 +325,7 @@
 				<!--- QB/QUICK --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.qb.enabled>
-					#renderView(
+					#view(
 						view : "main/panels/requestTracker/qbPanel",
 						module : "cbdebugger",
 						args : {

@@ -42,6 +42,7 @@ component extends="coldbox.system.RestHandler" {
 	 * Visualize the request tracker
 	 */
 	any function index( event, rc, prc ){
+		paramSorting( rc );
 		return renderDebugger( argumentCollection = arguments );
 	}
 
@@ -50,11 +51,11 @@ component extends="coldbox.system.RestHandler" {
 	 */
 	function renderDebugger( event, rc, prc ){
 		// are we in visualizer mode?
-		var isVisualizer = event.getCurrentEvent() eq "cbdebugger:main.index";
+		var isVisualizer       = event.getCurrentEvent() eq "cbdebugger:main.index";
 		setting showdebugoutput=false;
 		// Return the debugger layout+view
 		// We pass in all the variables needed, to avoid prc/rc conflicts
-		return renderLayout(
+		return layout(
 			layout    : isVisualizer ? "Monitor" : "Main",
 			module    : "cbdebugger",
 			view      : "main/debugger",
@@ -94,7 +95,7 @@ component extends="coldbox.system.RestHandler" {
 	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){
-		return renderView(
+		return view(
 			view  : "main/panels/cacheBoxPanel",
 			module: "cbdebugger",
 			args  : { debuggerConfig : variables.debuggerConfig }
@@ -113,56 +114,47 @@ component extends="coldbox.system.RestHandler" {
 	 * Get the profilers via ajax
 	 */
 	function renderProfilers( event, rc, prc ){
-		// Sorting: timestamp, executionTime
-		event.paramValue( "sortBy", "timestamp" ).paramValue( "sortOrder", "desc" );
-
-		// Get the profilers
-		var aProfilers = variables.debuggerService.getProfilerStorage();
-
-		// Sorting?
-		switch ( rc.sortBy ) {
-			case "executionTime": {
-				arraySort( aProfilers, function( e1, e2 ){
-					if ( rc.sortOrder == "asc" ) {
-						return ( arguments.e1.executionTime < arguments.e2.executionTime ? -1 : 1 );
-					}
-					return ( arguments.e1.executionTime > arguments.e2.executionTime ? -1 : 1 );
-				} );
-				break;
-			}
-			default: {
-				arraySort( aProfilers, function( e1, e2 ){
-					if ( rc.sortOrder == "asc" ) {
-						return dateCompare( arguments.e1.timestamp, arguments.e2.timestamp );
-					}
-					return dateCompare( arguments.e2.timestamp, arguments.e1.timestamp );
-				} );
-				break;
-			}
-		}
-		return renderView(
+		return paramSorting( rc ).view(
 			view  : "main/partials/profilers",
 			module: "cbdebugger",
 			args  : {
 				environment    : variables.debuggerService.getEnvironment(),
-				profilers      : aProfilers,
+				profilers      : variables.debuggerService.getProfilers( rc.sortBy, rc.sortOrder ),
 				debuggerConfig : variables.debuggerConfig
 			},
 			prePostExempt: true
 		);
 	}
 
+	private function paramSorting( rc ){
+		param rc.sortBy = "timestamp";
+		param rc.sortOrder = "desc";
+		if( !len( rc.sortBy ) ){
+			rc.sortby = "timestamp";
+		}
+		if( !len( rc.sortOrder ) ){
+			rc.sortOrder = "desc";
+		}
+		return this;
+	}
+
 	/**
 	 * Get a profiler report via ajax
 	 */
 	function renderProfilerReport( event, rc, prc ){
-		return renderView(
+		var profilerReport = variables.debuggerService.getProfilerById( rc.id );
+
+		if ( profilerReport.isEmpty() ) {
+			return "<h3 class='cbd-text-red cbd-bg-light-red'>Profiler Id: #encodeForHTML( rc.id )# doesn't exist</h3>";
+		}
+
+		return view(
 			view  : "main/partials/profilerReport",
 			module: "cbdebugger",
 			args  : {
 				debuggerService : variables.debuggerService,
 				environment     : variables.debuggerService.getEnvironment(),
-				profiler        : variables.debuggerService.getProfilerById( rc.id ),
+				profiler        : profilerReport,
 				debuggerConfig  : variables.debuggerConfig,
 				isVisualizer    : rc.isVisualizer
 			},
@@ -171,7 +163,14 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * Unload a modules
+	 * Export a profiler report as json
+	 */
+	function exportProfilerReport( event, rc, prc ){
+		return variables.debuggerService.getProfilerById( rc.id );
+	}
+
+	/**
+	 * Unload a module
 	 */
 	function unloadModule( event, rc, prc ){
 		event.paramValue( "module", "" );

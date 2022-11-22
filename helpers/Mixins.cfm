@@ -47,9 +47,10 @@
 	 *
 	 * @label The label to use as a timer label
 	 * @closure The target to execute and time
+	 * @metadata A struct of metadata to store in the execution timer
 	 */
-	function cbTimeIt( required label, required closure ){
-		return variables.wirebox.getInstance( "Timer@cbdebugger" ).timeIt( arguments.label );
+	function cbTimeIt( required label, required closure, struct metadata = {} ){
+		return variables.wirebox.getInstance( "Timer@cbdebugger" ).timeIt( argumentCollection=arguments );
 	}
 
 	/**

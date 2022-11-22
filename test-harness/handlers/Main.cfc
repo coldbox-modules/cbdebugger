@@ -69,10 +69,7 @@ component {
 		prc.currentUser = variables.userService
 			.newCriteria()
 			.isTrue( "isActive" )
-			.isEq(
-				"user_id",
-				"88B73A03-FEFA-935D-AD8036E1B7954B76"
-			)
+			.isEq( "user_id", "88B73A03-FEFA-935D-AD8036E1B7954B76" )
 			.get();
 
 		prc.data = variables.userService.executeQuery(
@@ -88,7 +85,7 @@ component {
 			}
 		);
 
-		prc.logs = getInstance( "Log" ).all();
+		prc.logs = getInstance( "Log" ).paginate( 1, 100 );
 		log.info( "in the index event firing" );
 	}
 
@@ -111,10 +108,7 @@ component {
 	// Run on first init
 	any function onAppInit( event, rc, prc ){
 		var logBox = controller.getLogBox();
-		logBox.registerAppender(
-			"tracer",
-			"cbdebugger.appenders.TracerAppender"
-		);
+		logBox.registerAppender( "tracer", "cbdebugger.appenders.TracerAppender" );
 		var appenders = logBox.getAppendersMap( "tracer" );
 		// Register the appender with the root loggger, and turn the logger on.
 		var root      = logBox.getRootLogger();

@@ -1,13 +1,18 @@
 name: Pull Requests
 
 on:
+  push:
+    branches-ignore:
+      - "main"
+      - "master"
+      - "development"
   pull_request:
     branches:
       - development
 
 jobs:
   tests:
-    uses: coldbox-modules/cbdebugger/.github/workflows/tests.yml@development
+    uses: ./.github/workflows/tests.yml
 
   # Format PR
   format:

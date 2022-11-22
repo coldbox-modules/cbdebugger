@@ -74,6 +74,8 @@ component {
 		skipcfcWithError      : false
 	};
 
+	//applicationStop();abort;
+
 	// application start
 	public boolean function onApplicationStart(){
 		application.cbBootstrap = new coldbox.system.Bootstrap(

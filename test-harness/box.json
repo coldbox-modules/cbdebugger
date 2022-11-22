@@ -5,11 +5,9 @@
     "private":true,
     "description":"",
     "dependencies":{
-        "coldbox":"^6.0.0",
-        "JSONPrettyPrint":"^1.4.1",
+        "coldbox":"be",
         "quick":"^4.2.4",
-        "cborm":"^3.0.0+184",
-        "sqlformatter":"^1.0.1"
+        "cborm":"^4.0.0"
     },
     "devDependencies":{
         "testbox":"*"
@@ -17,9 +15,7 @@
     "installPaths":{
         "coldbox":"coldbox/",
         "testbox":"testbox/",
-        "JSONPrettyPrint":"modules/JSONPrettyPrint/",
         "quick":"modules/quick/",
-        "cborm":"modules/cborm/",
-        "sqlformatter":"modules/sqlformatter/"
+        "cborm":"modules/cborm/"
     }
 }

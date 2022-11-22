@@ -29,7 +29,7 @@
 
 			<!--- Rendering --->
 			<div class="mt5">
-				#renderView()#
+				#view()#
 			</div>
 
 			<!--- Event --->

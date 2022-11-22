@@ -21,6 +21,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 					this.$refs.reinitLoader.classList.remove( "cbd-spinner" );
 				} );
 		},
+
 		loadProfilerReport( id ){
 			this.stopDebuggerMonitor();
 			fetch( `${this.appUrl}cbDebugger/renderProfilerReport`, {
@@ -38,13 +39,18 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 					coldboxDebugger.scrollTo( "cbd-request-tracker" );
 				} );
 		},
+
 		clearState(){
 			history.pushState( {}, null, "#" );
 			this.currentProfileId = "";
 		},
-		refreshProfilers(){
+
+		refreshProfilers( sortBy = '', sortOrder = '' ){
 			this.$refs.refreshLoader.classList.add( "cbd-spinner" );
-			fetch( `${this.appUrl}cbDebugger/renderProfilers`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
+			fetch(
+				`${this.appUrl}cbDebugger/renderProfilers?sortBy=${sortBy}&sortOrder=${sortOrder}`,
+				{ headers: { "x-Requested-With": "XMLHttpRequest" } }
+			)
 				.then( response => response.text() )
 				.then( html => {
 					this.clearState();
@@ -52,6 +58,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 					this.$refs.refreshLoader.classList.remove( "cbd-spinner" );
 				} );
 		},
+
 		clearProfilers(){
 			this.$refs.clearLoader.classList.add( "cbd-spinner" );
 			fetch( `${this.appUrl}cbDebugger/clearProfilers`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
@@ -66,6 +73,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 					this.$refs.clearLoader.classList.remove( "cbd-spinner" );
 				} );
 		},
+
 		stopDebuggerMonitor(){
 			// stop only if loaded
 			if ( this.refreshMonitor != null ){
@@ -74,6 +82,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 				console.info( "Stopped ColdBox Debugger Profiler Refresh" );
 			}
 		},
+
 		startDebuggerMonitor( frequency ){
 			// Ensure monitor is stopped just in case we are switching frequencies
 			this.stopDebuggerMonitor();
@@ -84,6 +93,7 @@ export default ( isExpanded, refreshFrequency, hasReinitPassword, isVisualizer )
 			this.refreshMonitor = setInterval( () => this.refreshProfilers(), this.refreshFrequency * 1000 );
 			console.info( "Started ColdBox Debugger Profiler Refresh using " + this.refreshFrequency + " seconds" );
 		},
+
 		init(){
 			window.addEventListener( "popstate", e => {
 				if ( e.state && e.state.profileId ){

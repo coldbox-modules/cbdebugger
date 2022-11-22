@@ -9,6 +9,10 @@
     margin: auto;
     clear: both;
 
+	.cbd-sortable {
+		cursor: pointer;
+	}
+
 	code {
 		padding: 0px;
 		width: 100%;
@@ -39,6 +43,7 @@
 		padding: 5px 5px;
 		border: 1px solid #eaeaea;
 		color: black;
+		background-color: rgb(221, 216, 216);
 
 		&:hover{
 			border: 1px solid #333333;
@@ -208,7 +213,7 @@
 	.cbd-titleCell{
 		font-weight:bold;
 		float:left;
-		clear: left;
+		clear: both;
 		width: 135px;
 		height: 20px;
 	}

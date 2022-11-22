@@ -88,7 +88,7 @@
 					// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
 					profileWireBoxObjectCreation : false,
 					// Profile model objects annotated with the `profile` annotation
-					profileObjects               : false,
+					profileObjects               : true,
 					// If enabled, will trace the results of any methods that are being profiled
 					traceObjectResults           : false,
 					// Profile Custom or Core interception points
@@ -97,7 +97,7 @@
 					includedInterceptions        : [ "ORMPostLoad", "ORMPostNew" ],
 					// Control the execution timers
 					executionTimers              : {
-						expanded           : false,
+						expanded           : true,
 						// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
 						slowTimerThreshold : 250
 					},

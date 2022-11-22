@@ -30,7 +30,7 @@
 		x-show="panelOpen"
 	>
 		<!--- Public Collection --->
-		#renderView(
+		#view(
 			view : "main/partials/collections",
 			module : "cbdebugger",
 			args : {
@@ -42,7 +42,7 @@
 			prePostExempt : true
 		)#
 		<!--- Private Collection --->
-		#renderView(
+		#view(
 			view : "main/partials/collections",
 			module : "cbdebugger",
 			args : {

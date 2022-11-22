@@ -24,7 +24,8 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	 */
 	any function invokeMethod( required invocation ) output=false{
 		// default tx name
-		var txName = "[Object Profiler] #arguments.invocation.getTargetName()#.#arguments.invocation.getMethod()#()";
+		var txName        = "[Object Profiler] #arguments.invocation.getTargetName()#.#arguments.invocation.getMethod()#()";
+		var targetMapping = arguments.invocation.getTargetMapping();
 
 		// check metadata for tx name if they desire to influence the label
 		var methodMD = arguments.invocation.getMethodMetadata();
@@ -33,13 +34,22 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		}
 
 		// create with method name
-		var labelhash = variables.timerService.start( txName );
+		variables.timerService.start(
+			label   : txName,
+			metadata: {
+				path : targetMapping.getObjectMetadata()?.path ?: targetMapping.getPath(),
+				name : targetMapping.getName(),
+				type : targetMapping.getType(),
+				line : methodMD.keyExists( "position" ) ? methodMD.position.start : 1
+			},
+			type: "object-profiler"
+		);
 
 		// proceed invocation
 		var results = arguments.invocation.proceed();
 
 		// Stop the timer
-		variables.timerService.stop( labelhash );
+		variables.timerService.stop( txName );
 
 		// return results
 		if ( !isNull( results ) ) {

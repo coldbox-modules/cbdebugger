@@ -13,10 +13,7 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	/**
 	 * Constructor
 	 */
-	function init(
-		required excludedInterceptions,
-		required includedInterceptions
-	){
+	function init( required excludedInterceptions, required includedInterceptions ){
 		variables.excludedInterceptions = arguments.excludedInterceptions;
 		variables.includedInterceptions = arguments.includedInterceptions;
 		return this;
@@ -26,9 +23,8 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	 * The AOP method invocation
 	 */
 	any function invokeMethod( required invocation ){
-
 		// Quick exit check: If no included interceptions, just bail
-		if( !arrayLen( variables.includedInterceptions ) ){
+		if ( !arrayLen( variables.includedInterceptions ) ) {
 			return arguments.invocation.proceed();
 		}
 
@@ -44,10 +40,7 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 
 		// Do we need to profile it or not?
 		if (
-			arrayContainsNoCase(
-				variables.excludedInterceptions,
-				state
-			) && !arrayContainsNoCase(
+			arrayContainsNoCase( variables.excludedInterceptions, state ) && !arrayContainsNoCase(
 				variables.includedInterceptions,
 				state
 			)
@@ -66,16 +59,16 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 		}
 
 		// Is this an entity interception? If so, log it to assist
-		if( data.keyExists( "entity" ) ){
-			txName &= "( #getEntityName( data )# )";
+		if ( data.keyExists( "entity" ) ) {
+			txName &= "( #getEntityName( data )# ) @ #getTickCount()#";
 		}
 
 		// create FR tx with method name
-		var labelHash = variables.timerService.start( txName );
+		variables.timerService.start( label: txName, type: "interceptor" );
 		// proceed invocation
-		var results   = arguments.invocation.proceed();
+		var results = arguments.invocation.proceed();
 		// close tx
-		variables.timerService.stop( labelhash );
+		variables.timerService.stop( txName );
 		// return results
 		if ( !isNull( results ) ) {
 			return results;
@@ -87,12 +80,12 @@ component implements="coldbox.system.aop.MethodInterceptor" accessors="true" {
 	 */
 	private string function getEntityName( required data ){
 		// If passed, just relay it back
-		if( arguments.data.keyExists( "entityName" ) ){
+		if ( arguments.data.keyExists( "entityName" ) ) {
 			return arguments.data.entityName;
 		}
 
 		// Check if we have a quick entity
-		if( structKeyExists( arguments.data.entity, "mappingName" ) ){
+		if ( structKeyExists( arguments.data.entity, "mappingName" ) ) {
 			return arguments.data.entity.mappingName();
 		}
 
