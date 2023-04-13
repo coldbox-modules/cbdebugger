@@ -132,7 +132,8 @@
 					enabled   : true,
 					expanded  : false,
 					// Log the binding parameters
-					logParams : true
+					logParams : true,
+					defaultGrammar : "MySQLGrammar@qb"
 				},
 				// cborm Reporting
 				cborm : {
