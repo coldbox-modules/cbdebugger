@@ -127,12 +127,12 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	private function paramSorting( rc ){
-		param rc.sortBy = "timestamp";
+		param rc.sortBy    = "timestamp";
 		param rc.sortOrder = "desc";
-		if( !len( rc.sortBy ) ){
+		if ( !len( rc.sortBy ) ) {
 			rc.sortby = "timestamp";
 		}
-		if( !len( rc.sortOrder ) ){
+		if ( !len( rc.sortOrder ) ) {
 			rc.sortOrder = "desc";
 		}
 		return this;

@@ -33,10 +33,7 @@ component extends="coldbox.system.testing.BaseTestCase" appMapping="/root" {
 
 			it( "should run integration and time it", function(){
 				timer.timeIt( "integrationtest", function(){
-					var event = execute(
-						event         = "main.index",
-						renderResults = true
-					);
+					var event = execute( event = "main.index", renderResults = true );
 					expect( timer.getTimers() ).notToBeEmpty( "Timers should not be empty" );
 					expect( debuggerService.getTracers() ).notToBeEmpty( "Tracers should not be empty" );
 					expect( request.cbDebugger ).notToBeEmpty( "request debugger should not be empty" );

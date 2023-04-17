@@ -272,7 +272,7 @@ component
 	/**
 	 * Get the current profilers using a sorting algorithm
 	 *
-	 * @sortBy The sort by key: timestamp, executionTime, etc
+	 * @sortBy    The sort by key: timestamp, executionTime, etc
 	 * @sortOrder Asc/Desc
 	 */
 	array function getProfilers( string sortBy, string sortOrder = "desc" ){
@@ -298,8 +298,8 @@ component
 
 			case "memoryDiff": {
 				arraySort( aProfilers, function( e1, e2 ){
-					var diff1 = arguments.e1.endFreeMemory - arguments.e1.startFreeMemory;
-					var diff2 = arguments.e2.endFreeMemory - arguments.e2.startFreeMemory;
+					var diff1   = arguments.e1.endFreeMemory - arguments.e1.startFreeMemory;
+					var diff2   = arguments.e2.endFreeMemory - arguments.e2.startFreeMemory;
 					var results = diff1 < diff2 ? -1 : 1;
 					return ( sortOrder == "asc" ? results : results * -1 );
 				} );

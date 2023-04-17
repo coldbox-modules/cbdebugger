@@ -35,12 +35,7 @@ component extends="coldbox.system.Interceptor" {
 		var sqlHash                        = hash( arguments.interceptData.query );
 
 		// Do grouping check by hash
-		if (
-			!structKeyExists(
-				requestTracker.cborm.grouped,
-				sqlHash
-			)
-		) {
+		if ( !structKeyExists( requestTracker.cborm.grouped, sqlHash ) ) {
 			requestTracker.cborm.grouped[ sqlHash ] = {
 				"sql"     : arguments.interceptData.query,
 				"count"   : 0,
@@ -154,24 +149,12 @@ component extends="coldbox.system.Interceptor" {
 		param requestTracker.cborm.grouped = {};
 		param requestTracker.cborm.all     = [];
 		// Hash the incoming sql, this is our key lookup
-		var sql                            = arguments.interceptData.criteriaBuilder.getSQL(
-			returnExecutableSql: false,
-			formatSql          : false
-		);
-		var sqlHash = hash( sql );
+		var sql                            = arguments.interceptData.criteriaBuilder.getSQL( returnExecutableSql: false, formatSql: false );
+		var sqlHash                        = hash( sql );
 
 		// Do grouping check by hash
-		if (
-			!structKeyExists(
-				requestTracker.cborm.grouped,
-				sqlHash
-			)
-		) {
-			requestTracker.cborm.grouped[ sqlHash ] = {
-				"sql"     : sql,
-				"count"   : 0,
-				"records" : []
-			};
+		if ( !structKeyExists( requestTracker.cborm.grouped, sqlHash ) ) {
+			requestTracker.cborm.grouped[ sqlHash ] = { "sql" : sql, "count" : 0, "records" : [] };
 		}
 
 		// Prepare log struct
