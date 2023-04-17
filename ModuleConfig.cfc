@@ -164,7 +164,8 @@ component {
 	 */
 	function onLoad(){
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
-		if ( variables.settings.enabled ) {
+		// And you must not be in testing mode
+		if ( !structKeyExists( controller, "mockController" ) && variables.settings.enabled ) {
 			var interceptorService = controller.getInterceptorService();
 
 			/******************** REQUEST COLLECTOR ************************************/
@@ -282,7 +283,7 @@ component {
 	 */
 	function onUnload(){
 		// Only if we are enabled
-		if ( variables.settings.enabled ) {
+		if ( !structKeyExists( controller, "mockController" ) && variables.settings.enabled ) {
 			var interceptorService = controller.getInterceptorService();
 
 			interceptorService.announce( "onDebuggerUnload" );

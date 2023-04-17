@@ -178,7 +178,7 @@ moduleSettings = {
 		},
 		// cborm Reporting
 		cborm : {
-			enabled   : true,
+			enabled   : false,
 			expanded  : false,
 			// Log the binding parameters (requires CBORM 3.2.0+)
 			logParams : true
