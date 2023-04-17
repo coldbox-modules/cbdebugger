@@ -7,13 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ----
 
+## [Unreleased]
+
+### Added
+
+- New github actions
+- Donot enable debugger in testing mode
+
 ## [4.0.1] => 2022-NOV-22
 
 ### Fixed
 
 * Adobe dumb array by value
-
-----
 
 ## [4.0.0] => 2022-NOV-22
 
@@ -48,15 +53,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * WireBox collecting is now done by the WireBox collector not the Request Collector.
 * Adobe 2016 Dropped
 
-----
-
 ## [3.4.1] => 2022-JUL-12
 
 ### Fixed
 
 * If the debugger is disabled or not in debug mode, the panels and visualizers are still being rendered and exploding. This should be a 404.
-
-----
 
 ## [3.4.0] => 2022-JUN-27
 
@@ -69,15 +70,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * If the cbdebugger was embedded within an app already using Alpine, it will fail. Now it will leach on to the running Alpine app.
 
-----
-
 ## [3.3.2] => 2022-MAY-02
 
 ### Fixed
 
 * [CBDEBUGGER-19](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-19) - JSON Form serialization not working on formatting.
-
-----
 
 ## [3.3.1] => 2022-APR-21
 
@@ -88,8 +85,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * [CBDEBUGGER-15](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-15) Auto-Refresh is not working in latest version
 * [CBDEBUGGER-10](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-10) Executing Event That Uses QB From Interceptor Generates CBDebugger Exception
 * [CBDEBUGGER-6](https://ortussolutions.atlassian.net/browse/CBDEBUGGER-6) Stop auto-refresh when visiting a actual request report
-
-----
 
 ## [3.3.0] => 2022-APR-21
 
@@ -116,8 +111,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Reload all modules. Makes no sense as you can just reinit.
 
-----
-
 ## [3.2.0] => 2021-JUL-21
 
 ### Changed
@@ -129,15 +122,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Adobe 2021 support and automated testing
 * Migration to github actions
 
-----
-
 ## [3.1.1] => 2021-JUN-05
 
 ### Fixed
 
 * Do not render when the request's content type is NOT html
-
-----
 
 ## [3.1.0] => 2021-MAy-19
 
@@ -151,8 +140,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Use Java property for version to work with jdk8+
 * [CBDEBUGGER-2] - Made `cborm` and `qb` disabled by default
-
-----
 
 ## [3.0.0] => 2021-APR-07
 
@@ -189,8 +176,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Removed the loaded modules as it just produced noise
 * Removed the rc/prc snapshot comparisons, causes too much noise and not helpful anymore
 
-----
-
 ## [2.2.0] => 2020-MAY-18
 
 ### Added
@@ -201,8 +186,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 * Visual display of the debugger version
-
-----
 
 ## [2.1.0] => 2020-MAY-14
 
@@ -215,8 +198,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * ColdBox 4 lingering code
 
-----
-
 ## [2.0.0] => 2020-MAY-04
 
 ### Added
@@ -228,13 +209,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Dropped ACF 11 support
 
-----
-
 ## [1.7.1]  => 2019-MAR-06
 
 * Updated location protocol
-
-----
 
 ## [1.7.0] => 2019-MAR-06
 
@@ -242,13 +219,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * New Module Layout
 * Dropping lucee 4.5 support
 
-----
-
 ## [1.6.0 ]
 
 * ColdBox 5 Support
-
-----
 
 ## [1.5.0]
 
@@ -256,21 +229,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Updated travis builds
 * Unified workbench approach
 
-----
-
 ## [1.4.0]
 
 * ColdBox Tracer Appender added by Default by Eric Peterson
-
-----
 
 ## [1.3.0]
 
 * Travis integration
 * DocBox update
 * Build process update
-
-----
 
 ## [1.2.0]
 
@@ -279,8 +246,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Updated build scripts
 * How to turn off debugger for tests, it does this automatically now.
 * filename cases don't match #5 on certain includes
-
-----
 
 ## [1.1.0]
 
@@ -291,13 +256,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 views and layouts
 * Updated production ignore lists
 
-----
-
 ## [1.0.1]
 
 * Bug fixes on caching panels and chicken/egg issues for ColdBox loading
-
-----
 
 ## [1.0.0]
 
