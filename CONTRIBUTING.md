@@ -1,4 +1,4 @@
-# CBSecurity Contributing Guide
+# cbdebugger Contributing Guide
 
 Hola amigo! I'm really excited that you are interested in contributing to our project. Before submitting your contribution, please make sure to take a moment and read through the following guidelines:
 
@@ -27,7 +27,7 @@ This project is open source, and as such, the maintainers give their free time t
 
 Each of the main standalone frameworks in ColdBox has its separate locations for submitting bug reports.  Please make sure also that if you submit a pull request, you link it to the appropriate issue.
 
-https://github.com/coldbox-modules/cbsecurity
+https://github.com/coldbox-modules/cbdebugger
 
 If you file a bug report, your issue should contain a title, a clear description of the issue, a way to replicate the issue, and any support files that we might need to replicate your issue. The goal of a bug report is to make it easy for yourself - and others - to replicate the bug and develop a fix for it.  All issues that do not contain a way to replicate will not be addressed.
 
@@ -81,8 +81,8 @@ You can support ColdBox and all of our Open Source initiatives at Ortus Solution
 
 Thank you to all the people who have already contributed to ColdBox! We: heart: : heart: : heart: love you!
 
-<a   href = "https://github.com/coldbox-modules/cbsecurity/graphs/contributors">
-<img src  = "https://contrib.rocks/image?repo=coldbox-modules/cbsecurity"/>
+<a   href = "https://github.com/coldbox-modules/cbdebugger/graphs/contributors">
+<img src  = "https://contrib.rocks/image?repo=coldbox-modules/cbdebugger"/>
 </a>
 
 Made with [contributors-img](https://contrib.rocks)
