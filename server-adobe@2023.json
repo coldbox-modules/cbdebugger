@@ -24,6 +24,6 @@
 		"file" : ".cfconfig.json"
 	},
     "scripts" : {
-        "onServerInstall":"cfpm install zip,debugger"
+        "onServerInstall":"cfpm install zip,orm,mysql,postgresql,sqlserver,feed,chart,debugger"
     }
 }
