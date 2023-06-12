@@ -97,6 +97,16 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
+	 * Download a heapdump snapshot
+	 */
+	function heapDump( event, rc, prc ){
+		event.sendFile(
+			file : getInstance( "JVMUtil@cbdebugger" ).generateHeapDump( getTempDirectory() ),
+			deleteFile : true
+		);
+	}
+
+	/**
 	 * This action renders out the caching panel only
 	 */
 	function renderCacheMonitor( event, rc, prc ){

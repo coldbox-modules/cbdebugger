@@ -24,8 +24,10 @@ component singleton {
 	 * The generated heap dump will be named with the following pattern: <pre>cbdebugger-heapdump-mmm-dd-yyyy_HHnnss_l.hprof</pre>
 	 *
 	 * @directoryPath The directory path to store the heap dump, must be absolute
+	 *
+	 * @return The absolute path to the generated heap dump
 	 */
-	void function generateHeapDump( required directoryPath ){
+	string function generateHeapDump( required directoryPath ){
 		// Create it if it doesn't exist
 		if ( !directoryExists( arguments.directoryPath ) ) {
 			directoryCreate( arguments.directoryPath );
@@ -41,9 +43,11 @@ component singleton {
 			.newPlatformMXBeanProxy(
 				mBeanServer,
 				"com.sun.management:type=HotSpotDiagnostic",
-				HotSpotDiagnosticMXBeanClass.getClass()
+				HotSpotDiagnosticMXBeanClass
 			)
 			.dumpHeap( dumpFilePath, javacast( "boolean", true ) );
+
+		return dumpFilePath;
 	}
 
 }

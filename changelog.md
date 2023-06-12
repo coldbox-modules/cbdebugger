@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New `LuceeSqlCollector` you can use to profile all SQL calls in Lucee
 - New `luceeSql` configuration to control the Lucee SQL calls collector
 - Changed the `instance` argument to `any` in the `debuggerService.openInEditorURL` to allow for a flat representational string of the URL to open in the editor.
+- Ability to download a heap dump snapshot from the visualizer
 
 ### Fixed
 

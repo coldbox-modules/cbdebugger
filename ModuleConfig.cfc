@@ -125,6 +125,7 @@ component {
 		router
 			.route( "/" )
 			.to( "Main.index" )
+			// Conventions
 			.route( "/:action" )
 			.toHandler( "Main" );
 		;
