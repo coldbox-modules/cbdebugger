@@ -190,6 +190,13 @@ moduleSettings = {
 			// Log the binding parameters
 			logParams : true
 		},
+		// Lucee SQL Collector
+ 		luceeSql : {
+			enabled   : true,
+			expanded  : false,
+			// Log the binding parameters
+			logParams : true
+		},
 		// Async Manager Reporting
 		async : {
 			enabled : true,
@@ -482,7 +489,30 @@ acfSql : {
 	logParams : true
 },
 ```
+
 **Note:** This feature works with `ColdFusion 2018+` and requires the `Database Activity` box to be checked in the ACF `Debugging & Logging` page. If using ColdFusion 2021, you will need the `CF debugger` module installed as well. You can use the ACF CLI package manager, or the CommandBox command of `cfpm install debugger`. If it is not installed, install it and then restart the server before using this module.
+
+## Lucee SQL Tracking
+
+We have also created a `Lucee Sql` panel which will track all SQL calls made during your request.  We offer the same grouped or timeline visualizer for all these sql calls and even the capability to track from where the calls where made from and open them in your favorite editor to the line number.  All you have to do is activate it:
+
+```js
+luceeSql : {
+	enabled : true,
+	expanded : false,
+	logParams : true
+},
+```
+
+> **IMPORTANT** Please note that to use this feature the engine must have two debugging settings enabled
+
+```json
+"debuggingDBEnabled":"true",
+"debuggingEnabled":"true",
+```
+
+You can easily add those to your `.cfconfig.json` or enable it under the `Debugging` panel in the Lucee Admin.
+
 
 ## Modules Panel
 

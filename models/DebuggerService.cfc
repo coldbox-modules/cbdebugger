@@ -594,6 +594,19 @@ component
 	}
 
 	/**
+	 * Converts epoch milliseconds to a date time object
+	 *
+	 * @epoch The epoch to convert, must be in milliseconds
+	 */
+	function fromEpoch( required epoch ){
+		return dateAdd(
+			"s",
+			arguments.epoch / 1000,
+			dateConvert( "utc2local", "January 1 1970 00:00 " )
+		);
+	}
+
+	/**
 	 * Process Stack trace for errors
 	 *
 	 * @str The stacktrace to process
@@ -608,11 +621,18 @@ component
 	 * Compose a screen for a file to open in an editor
 	 *
 	 * @event    The request context
-	 * @instance An instance of a tag context array
+	 * @instance An instance of a tag context array { template, line }
 	 *
 	 * @return The string for the IDE
 	 */
-	function openInEditorURL( required event, required struct instance ){
+	function openInEditorURL( required event, required instance ){
+		if ( isSimpleValue( arguments.instance ) ) {
+			arguments.instance = {
+				template : arguments.instance.getToken( 1, ":" ),
+				line     : arguments.instance.getToken( 2, ":" )
+			};
+		}
+
 		return getExceptionBean().openInEditorURL( argumentCollection = arguments );
 	}
 

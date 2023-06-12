@@ -306,6 +306,22 @@
 				</cfif>
 
 				<!--- **************************************************************--->
+				<!--- Lucee SQL --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.luceeSql.enabled>
+					#view(
+						view : "main/panels/requestTracker/luceeSqlPanel",
+						module : "cbdebugger",
+						args : {
+							profiler : args.profiler,
+							debuggerConfig : args.debuggerConfig,
+							debuggerService : args.debuggerService
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
 				<!--- CBORM --->
 				<!--- **************************************************************--->
 				<cfif args.debuggerConfig.cborm.enabled>

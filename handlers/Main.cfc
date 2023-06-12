@@ -91,9 +91,8 @@ component extends="coldbox.system.RestHandler" {
 				}
 			);
 		} catch ( any e ) {
-			var eMessage = "Error rendering the ColdBox Debugger: <strong>#e.message & e.detail#</strong>";
-			log.error( eMessage, e )
-			return eMessage;
+			writeDump( var = e, top = 5 );
+			abort;
 		}
 	}
 

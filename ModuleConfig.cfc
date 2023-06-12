@@ -114,9 +114,11 @@ component {
 				logParams : true
 			},
 			// Adobe ColdFusion SQL Collector
-			acfSql : { enabled : false, expanded : false, logParams : true },
+			acfSql   : { enabled : false, expanded : false, logParams : true },
+			// Lucee SQL Collector
+			luceeSQL : { enabled : false, expanded : false, logParams : true },
 			// Async Manager Reporting
-			async  : { enabled : true, expanded : false }
+			async    : { enabled : true, expanded : false }
 		};
 
 		// Visualizer Route
@@ -270,6 +272,17 @@ component {
 				);
 			} else {
 				variables.settings.acfSql.enabled = false;
+			}
+
+			/******************** Lucee SQL COLLECTOR ************************************/
+
+			if ( variables.settings.luceeSQL.enabled && server.keyExists( "lucee" ) ) {
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.LuceeSqlCollector",
+					interceptorName  = "LuceeSqlCollector@cbdebugger"
+				);
+			} else {
+				variables.settings.luceeSQL.enabled = false;
 			}
 
 			// Announce debugger loaded

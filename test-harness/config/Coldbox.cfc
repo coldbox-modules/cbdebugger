@@ -147,7 +147,8 @@
 					enabled : true,
 					expanded : false,
 					logParams : true
-				}
+				},
+				luceeSQL : { enabled : true, expanded : false, logParams : true }
 			}
 		};
 
