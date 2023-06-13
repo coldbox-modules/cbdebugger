@@ -111,6 +111,17 @@
 			</button>
 		</div>
 
+		<!--- Are we Enabled --->
+		<cfif !getPageContext().getConfig().debug() || !getPageContext().getConfig().hasDebugOptions( 1 )>
+			<div>
+				<strong>It seems you don't have Lucee debugging enabled, please enable it!</strong>
+<pre>
+"debuggingDBEnabled":"true",
+"debuggingEnabled":"true",
+</pre>
+			</div>
+		</cfif>
+
 		<!--- Query Views --->
 		<cfif args.profiler.cfQueries.totalQueries EQ 0>
 			<div class="cbd-text-muted">
