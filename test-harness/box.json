@@ -5,7 +5,7 @@
     "private":true,
     "description":"",
     "dependencies":{
-        "coldbox":"be",
+        "coldbox":"^7.0.0",
         "quick":"^4.2.4",
         "cborm":"^4.0.0"
     },
