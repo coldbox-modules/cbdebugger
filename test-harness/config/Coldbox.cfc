@@ -86,7 +86,7 @@
 					// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
 					maxProfilers                 : 25,
 					// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
-					profileWireBoxObjectCreation : false,
+					profileWireBoxObjectCreation : true,
 					// Profile model objects annotated with the `profile` annotation
 					profileObjects               : true,
 					// If enabled, will trace the results of any methods that are being profiled
