@@ -98,6 +98,14 @@ component {
 		event.renderData( data = "<h1>Hello</h1>" );
 	}
 
+	any function data( event, rc, prc ){
+		return [
+			{ id = 1, name = "Bob" },
+			{ id = 2, name = "Sam" },
+			{ id = 3, name = "Joe" }
+		];
+	}
+
 	/**
 	 * error
 	 */
