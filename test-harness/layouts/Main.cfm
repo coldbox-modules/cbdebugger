@@ -131,54 +131,7 @@
 		</header>
 
 		<main>
-			<div class="row">
-				<div class="mb-5">
-					<a href="/cbdebugger" class="btn btn-primary btn-lg px-4">
-						<i class="bi bi-activity"></i>
-						Open Request Tracker
-					</a>
-				</div>
-			</div>
-
-			<div class="row g-5">
-				<div class="col-md-6">
-					<h2 class="text-body-emphasis">Debugging Events</h2>
-					<p>
-						Use the links below to generate debugging data
-					</p>
-					<ul class="list-unstyled ps-0">
-						<li>
-							<a class="icon-link mb-1"
-								href="https://github.com/twbs/examples/tree/main/icons-font"
-								rel="noopener" target="_blank">
-								<i class="bi bi-arrow-right-circle-fill"></i>
-								Alpine Embedded Test
-							</a>
-						</li>
-						<li>
-							<a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/parcel"
-								rel="noopener" target="_blank">
-								<i class="bi bi-arrow-right-circle-fill"></i>
-								No Debugger
-							</a>
-						</li>
-						<li>
-							<a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/vite"
-								rel="noopener" target="_blank">
-								<i class="bi bi-arrow-right-circle-fill"></i>
-								Produce an Error
-							</a>
-						</li>
-						<li>
-							<a class="icon-link mb-1" href="https://github.com/twbs/examples/tree/main/webpack"
-								rel="noopener" target="_blank">
-								<i class="bi bi-arrow-right-circle-fill"></i>
-								API Data
-							</a>
-						</li>
-					</ul>
-				</div>
-			</div>
+			#view()#
 		</main>
 
 		<footer class="pt-5 my-5 text-body-secondary border-top">

@@ -6,6 +6,7 @@ component {
 	property name="qb"          inject="queryBuilder@qb";
 	property name="roleService" inject="entityService:Role";
 	property name="userService" inject="entityService:User";
+	property name="hyper" inject="HyperBuilder@hyper";
 
 
 	/**
@@ -104,6 +105,48 @@ component {
 			{ id = 2, name = "Sam" },
 			{ id = 3, name = "Joe" }
 		];
+	}
+
+	function hyperData1( event, rc, prc ){
+		prc.data = hyper
+			.setMethod( "GET" )
+			.setUrl( event.buildLink( "/api/index" ) )
+			.withHeaders( {
+				"Authorization" = "Bearer #createUUID()#",
+				"Accept"        = "application/json",
+				"Test"			= "test",
+				"When" 		= now()
+		 	} )
+			.setBody( {
+				title : "Hello World",
+			} )
+			.send();
+		event.setView( "main/hyperData" );
+	}
+
+	function hyperData2( event, rc, prc ){
+		prc.data = hyper
+			.setMethod( "GET" )
+			.setUrl( event.buildLink( "/api/person" ) )
+			.withHeaders( {
+				"Authorization" = "Bearer #createUUID()#",
+				"Accept"        = "application/json",
+				"Test"			= "test",
+				"When" 		= now()
+		 	} )
+			.setBody( {
+				title : "Hello World",
+			} )
+			.send();
+		event.setView( "main/hyperData" );
+	}
+
+	function hyperInvalidUrl( event, rc, prc ){
+		prc.data = hyper
+			.setMethod( "GET" )
+			.setUrl( "http://lolcalhost:3234223333/api/index" )
+			.send();
+		event.setView( "main/hyperData" );
 	}
 
 	/**

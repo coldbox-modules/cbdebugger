@@ -9,7 +9,8 @@
         "quick":"^4.2.4",
         "cborm":"^4.0.0",
         "cbmailservices":"^2.7.1+112",
-        "hyper":"^7.1.0"
+        "hyper":"^7.1.0",
+        "mockdatacfc":"^3.6.0+13"
     },
     "devDependencies":{
         "testbox":"*"
@@ -20,6 +21,7 @@
         "quick":"modules/quick/",
         "cborm":"modules/cborm/",
         "cbmailservices":"modules/cbmailservices/",
-        "hyper":"modules/hyper/"
+        "hyper":"modules/hyper/",
+        "mockdatacfc":"modules/mockdatacfc/"
     }
 }
