@@ -94,7 +94,7 @@
 					// Profile Custom or Core interception points
 					profileInterceptions         : true,
 					// By default all interception events are excluded, you must include what you want to profile
-					includedInterceptions        : [ "ORMPostLoad", "ORMPostNew" ],
+					includedInterceptions        : [ "ORMPostNew" ],
 					// Control the execution timers
 					executionTimers              : {
 						expanded           : true,

@@ -7,7 +7,9 @@
     "dependencies":{
         "coldbox":"^7.0.0",
         "quick":"^4.2.4",
-        "cborm":"^4.0.0"
+        "cborm":"^4.0.0",
+        "cbmailservices":"^2.7.1+112",
+        "hyper":"^7.1.0"
     },
     "devDependencies":{
         "testbox":"*"
@@ -16,6 +18,8 @@
         "coldbox":"coldbox/",
         "testbox":"testbox/",
         "quick":"modules/quick/",
-        "cborm":"modules/cborm/"
+        "cborm":"modules/cborm/",
+        "cbmailservices":"modules/cbmailservices/",
+        "hyper":"modules/hyper/"
     }
 }

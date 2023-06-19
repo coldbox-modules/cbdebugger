@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the `instance` argument to `any` in the `debuggerService.openInEditorURL` to allow for a flat representational string of the URL to open in the editor.
 - Ability to download a heap dump snapshot from the visualizer
 
+### Improved
+
+- Updated test harness UI to make it easier to create debugging events
+
 ### Fixed
 
 - Dumb whitespace added by CFML engines when doing inline `<pre>#method()#</pre>` calls.
