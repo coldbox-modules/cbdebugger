@@ -20,7 +20,7 @@ component
 	property name="asyncManager"       inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
 	property name="timerService"       inject="provider:Timer@cbdebugger";
-	property name="formatter"       inject="provider:Formatter@cbdebugger";
+	property name="formatter"          inject="provider:Formatter@cbdebugger";
 
 	/**
 	 * --------------------------------------------------------------------------
