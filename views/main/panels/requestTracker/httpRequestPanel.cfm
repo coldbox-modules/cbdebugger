@@ -2,8 +2,7 @@
 <cfparam name="args.debuggerConfig">
 <cfparam name="args.debuggerService">
 <cfscript>
-	sqlFormatter = args.debuggerService.getSqlFormatter();
-	jsonFormatter = args.debuggerService.getjsonFormatter();
+	formatter = args.debuggerService.getFormatter();
 </cfscript>
 <cfoutput>
 <div
@@ -86,7 +85,7 @@
 						<div class="cbd-cellScroller">
 							<cfif isSimpleValue( args.profiler.requestData.content )>
 								<cfif !isBoolean( args.profiler.requestData.content ) && isJSON( args.profiler.requestData.content )>
-									<code><pre>#jsonFormatter.formatJSON( args.profiler.requestData.content )#</pre></code>
+									<code><pre>#formatter.prettyJson( args.profiler.requestData.content )#</pre></code>
 								<cfelseif len( args.profiler.requestData.content )>
 									#args.profiler.requestData.content#
 								<cfelse>
@@ -105,7 +104,7 @@
 				<td>
 					<div class="cbd-cellScroller">
 						<code>
-							<pre>#jsonFormatter.formatJSON( args.profiler.formData )#</pre>
+							<pre>#formatter.prettyJson( args.profiler.formData )#</pre>
 						</code>
 					</div>
 				</td>
@@ -145,7 +144,7 @@
 											</td>
 											<td class="cbd-cellBreak">
 												<cfif !isBoolean( getToken( thisCookie, 2, "=" ) ) && isJSON( getToken( thisCookie, 2, "=" ) )>
-													#jsonFormatter.formatJSON( getToken( thisCookie, 2, "=" ) )#
+													#formatter.prettyJson( getToken( thisCookie, 2, "=" ) )#
 												<cfelse>
 													#getToken( thisCookie, 2, "=" )#
 												</cfif>

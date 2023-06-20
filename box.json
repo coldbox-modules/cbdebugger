@@ -25,8 +25,6 @@
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
     "dependencies":{
-        "JSONPrettyPrint":"^1.4.1",
-        "sqlformatter":"^1.0.1"
     },
     "devDependencies":{
         "commandbox-cfformat":"*",
@@ -67,7 +65,5 @@
         "logs:2021":"server log name=cbdebugger-adobe@2021 --follow"
     },
     "installPaths":{
-        "JSONPrettyPrint":"modules/JSONPrettyPrint/",
-        "sqlformatter":"modules/sqlformatter/"
     }
 }

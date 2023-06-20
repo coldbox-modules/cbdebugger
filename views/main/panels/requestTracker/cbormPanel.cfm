@@ -2,8 +2,7 @@
 <cfparam name="args.debuggerConfig">
 <cfparam name="args.debuggerService">
 <cfscript>
-	sqlFormatter = args.debuggerService.getSqlFormatter();
-	jsonFormatter = args.debuggerService.getjsonFormatter();
+	formatter = args.debuggerService.getFormatter();
 	appPath = getSetting( "ApplicationPath" );
 </cfscript>
 <cfoutput>
@@ -152,7 +151,7 @@
 										>
 											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 										</svg>
-										<cfset withoutDumbWhitespace = sqlFormatter.format( args.profiler.cborm.grouped[ sqlHash ].sql )>
+										<cfset withoutDumbWhitespace = formatter.prettySql( args.profiler.cborm.grouped[ sqlHash ].sql )>
 										<pre>#withoutDumbWhitespace#</pre>
 									</code>
 								</td>
@@ -230,7 +229,7 @@
 																>
 																	<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
 																</svg>
-																<pre>#jsonFormatter.formatJSON( json : q.params, spaceAfterColon : true )#</pre>
+																<pre>#formatter.prettyJson( json : q.params, spaceAfterColon : true )#</pre>
 															</code>
 														</cfif>
 													</td>
@@ -257,8 +256,7 @@
 					args : {
 						sqlData			: args.profiler.cborm.all,
 						debuggerService : args.debuggerService,
-						sqlFormatter 	: sqlFormatter,
-						jsonFormatter 	: jsonFormatter,
+						formatter 		: formatter,
 						appPath			: appPath
 					},
 					prePostExempt : true
@@ -279,8 +277,7 @@
 							return a.executionTime < b.executionTime ? 1 : -1;
 						} ),
 						debuggerService : args.debuggerService,
-						sqlFormatter 	: sqlFormatter,
-						jsonFormatter 	: jsonFormatter,
+						formatter 		: formatter,
 						appPath			: appPath
 					},
 					prePostExempt : true
