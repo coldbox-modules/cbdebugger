@@ -1,5 +1,5 @@
 /**
- * CBOrm Collector Interecptor
+ * CBORM Collector Interecptor
  */
 component extends="coldbox.system.Interceptor" {
 
