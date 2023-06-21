@@ -1,4 +1,16 @@
 [x-cloak] { display: none !important; }
+.cbd-dock{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	overflow-y: auto;
+	max-height: 100%;
+
+	.cbd-contentView{
+		border-radius: 0px !important;
+	}
+}
 .cbd-debugger{
     font-family: Verdana,Arial,sans-serif;
     font-size: 11px;
@@ -160,8 +172,6 @@
 		background: #327A9F;
 		padding:5px 5px;
 		cursor: pointer;
-		margin-bottom: 2px;
-		border-radius: 5px;
 
 		&:hover{
 			background: #D7EBF9;

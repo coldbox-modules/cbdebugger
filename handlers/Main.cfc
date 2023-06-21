@@ -51,7 +51,7 @@ component extends="coldbox.system.RestHandler" {
 		// We pass in all the variables needed, to avoid prc/rc conflicts
 		try {
 			return layout(
-				layout    : "Main",
+				layout    : "Dock",
 				module    : "cbdebugger",
 				view      : "main/panels/requestTrackerPanel",
 				viewModule: "cbdebugger",
@@ -95,7 +95,7 @@ component extends="coldbox.system.RestHandler" {
 		// We pass in all the variables needed, to avoid prc/rc conflicts
 		try {
 			return layout(
-				layout    : isVisualizer ? "Monitor" : "Main",
+				layout    : isVisualizer ? "Visualizer" : "Dock",
 				module    : "cbdebugger",
 				view      : "main/debugger",
 				viewModule: "cbdebugger",

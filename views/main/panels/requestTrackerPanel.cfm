@@ -21,12 +21,14 @@
 			</div>
 
 			<div class="ml5">
-				ColdBox Request Tracker
+				<cfif args.isVisualizer>
+					ColdBox Request Tracker
+				</cfif>
 
 				<!--- If not expanded and not in visualizer mode --->
 				<cfif !args.currentProfiler.isEmpty()>
 					<span
-						x-show="!panelOpen && !isVisualizer"
+						x-show="!isVisualizer"
 						x-cloak
 						x-transition
 					>
