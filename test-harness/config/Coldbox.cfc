@@ -148,7 +148,9 @@
 					expanded : false,
 					logParams : true
 				},
-				luceeSQL : { enabled : true, expanded : false, logParams : true }
+				luceeSQL : { enabled : true, expanded : false, logParams : true },
+				// Hyper Collector
+				hyper	: { enabled : true, expanded : false, logRequestBody : true, logResponseData : true }
 			}
 		};
 

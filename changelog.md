@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New `HyperCollector` so you can now track hyper requests if enabled
 - `Timer` can now add timers a-la-carte via the `add()` method
 - New fast and furious and tiny SQL/JSON Formatter
 - New `LuceeSqlCollector` you can use to profile all SQL calls in Lucee

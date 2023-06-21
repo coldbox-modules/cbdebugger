@@ -1,7 +1,7 @@
 <cfoutput>
 <div class="row">
 	<div class="mb-5">
-		<a href="/cbdebugger" class="btn btn-primary btn-lg px-4">
+		<a href="/cbdebugger" class="btn btn-primary btn-lg px-4" target="_blank">
 			<i class="bi bi-activity"></i>
 			Open Request Tracker
 		</a>

@@ -120,13 +120,19 @@
 			</li>
 		</ul>
 	</div>
+	<!--- End Dark Mode Toggler --->
 
+	<!--- Main Div --->
 	<div class="col-lg-8 mx-auto p-4 py-md-5">
 
-		<header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+		<header class="align-items-center pb-3 mb-5 border-bottom">
 			<a href="/" class="d-flex align-items-center text-body-emphasis text-decoration-none">
-				<img src="includes/images/CBDebugger-logo.png" width="50px" class="me-2">
+				<img src="/includes/images/CBDebugger-logo.png" width="50px" class="me-2">
 				<span class="fs-4">ColdBox Debugger Test Harness</span>
+			</a>
+
+			<a href="/cbdebugger" class="float-end btn btn-primary btn-sm" target="_blank" title="Open Request Tracker">
+				<i class="bi bi-activity"></i>
 			</a>
 		</header>
 

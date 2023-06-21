@@ -117,8 +117,15 @@ component {
 			acfSql   : { enabled : false, expanded : false, logParams : true },
 			// Lucee SQL Collector
 			luceeSQL : { enabled : false, expanded : false, logParams : true },
-			// Async Manager Reporting
-			async    : { enabled : true, expanded : false }
+			// Async Manager Collector
+			async    : { enabled : true, expanded : false },
+			// Hyper Collector
+			hyper    : {
+				enabled         : false,
+				expanded        : false,
+				logResponseData : false,
+				logRequestBody  : false
+			}
 		};
 
 		// Visualizer Route
@@ -284,6 +291,17 @@ component {
 				);
 			} else {
 				variables.settings.luceeSQL.enabled = false;
+			}
+
+			/******************** Hyper COLLECTOR ************************************/
+
+			if ( variables.settings.hyper.enabled ) {
+				param variables.settings.hyper.logResponseData = false;
+				param variables.settings.hyper.logRequestBody  = false;
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.HyperCollector",
+					interceptorName  = "HyperCollector@cbdebugger"
+				);
 			}
 
 			// Announce debugger loaded
