@@ -57,25 +57,25 @@ component extends="coldbox.system.RestHandler" {
 				viewModule: "cbdebugger",
 				args      : {
 					// Get the current profiler for the current request. Basically the first in the stack
-					currentProfiler  : variables.debuggerService.getCurrentProfiler(),
+					currentProfiler : variables.debuggerService.getCurrentProfiler(),
 					// Module Config
-					debuggerConfig   : variables.debuggerConfig,
+					debuggerConfig  : variables.debuggerConfig,
 					// Service pointer
-					debuggerService  : variables.debuggerService,
+					debuggerService : variables.debuggerService,
 					// When debugging starts
-					debugStartTime   : getTickCount(),
+					debugStartTime  : getTickCount(),
 					// Env struct
-					environment      : variables.debuggerService.getEnvironment(),
+					environment     : variables.debuggerService.getEnvironment(),
 					// Manifest Root
-					manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes",
+					manifestRoot    : event.getModuleRoot( "cbDebugger" ) & "/includes",
 					// Module Root
-					moduleRoot       : event.getModuleRoot( "cbDebugger" ),
+					moduleRoot      : event.getModuleRoot( "cbDebugger" ),
 					// All Module Settings
-					moduleSettings   : getSetting( "modules" ),
+					moduleSettings  : getSetting( "modules" ),
 					// Profilers storage to display
-					profilers        : variables.debuggerService.getProfilerStorage(),
+					profilers       : variables.debuggerService.getProfilerStorage(),
 					// Url build base
-					urlBase          : event.buildLink( "" )
+					urlBase         : event.buildLink( "" )
 				}
 			);
 		} catch ( any e ) {
