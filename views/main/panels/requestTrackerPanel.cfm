@@ -1,9 +1,10 @@
-<!--- Included by the debugger.cfm --->
+<cfparam name="args.refreshFrequency" default="0">
+<cfparam name="args.isVisualizer" default="false">
 <cfoutput>
 <div
 	id="cbd-request-tracker"
 	x-data = "cbdRequestTrackerPanel(
-		#args.debuggerConfig.requestTracker.expanded ? 'true' : 'false'#,
+		#args.isVisualizer ? 'true' : 'false'#,
 		#args.refreshFrequency#,
 		#controller.getSetting( 'ReinitPassword' ).length() ? 'true' : 'false'#,
 		#args.isVisualizer ? 'true' : 'false'#

@@ -51,8 +51,6 @@ component {
 				cacheName                    : "template",
 				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 				trackDebuggerEvents          : false,
-				// Expand by default the tracker panel or not
-				expanded                     : false,
 				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 				slowExecutionThreshold       : 1000,
 				// How many tracking profilers to keep in stack

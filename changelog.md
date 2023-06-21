@@ -19,6 +19,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed the `instance` argument to `any` in the `debuggerService.openInEditorURL` to allow for a flat representational string of the URL to open in the editor.
 - Ability to download a heap dump snapshot from the visualizer
 
+### Changed
+
+- The request panel dock is now a real dock and the only one presented, the rest are only show in the visualizer
+- The `requestTracker.expanded` option is now removed, it's always expanded for visualizer and contracted for the dock
+
 ### Improved
 
 - Updated test harness UI to make it easier to create debugging events

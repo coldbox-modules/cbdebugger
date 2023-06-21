@@ -46,6 +46,44 @@ component extends="coldbox.system.RestHandler" {
 		return renderDebugger( argumentCollection = arguments );
 	}
 
+	function renderRequestPanelDock( event, rc, prc ){
+		// Return the debugger layout+view
+		// We pass in all the variables needed, to avoid prc/rc conflicts
+		try {
+			return layout(
+				layout    : "Main",
+				module    : "cbdebugger",
+				view      : "main/panels/requestTrackerPanel",
+				viewModule: "cbdebugger",
+				args      : {
+					// Get the current profiler for the current request. Basically the first in the stack
+					currentProfiler  : variables.debuggerService.getCurrentProfiler(),
+					// Module Config
+					debuggerConfig   : variables.debuggerConfig,
+					// Service pointer
+					debuggerService  : variables.debuggerService,
+					// When debugging starts
+					debugStartTime   : getTickCount(),
+					// Env struct
+					environment      : variables.debuggerService.getEnvironment(),
+					// Manifest Root
+					manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes",
+					// Module Root
+					moduleRoot       : event.getModuleRoot( "cbDebugger" ),
+					// All Module Settings
+					moduleSettings   : getSetting( "modules" ),
+					// Profilers storage to display
+					profilers        : variables.debuggerService.getProfilerStorage(),
+					// Url build base
+					urlBase          : event.buildLink( "" )
+				}
+			);
+		} catch ( any e ) {
+			writeDump( var = e, top = 5 );
+			abort;
+		}
+	}
+
 	/**
 	 * This action renders out the debugger back to the caller as HTML widget
 	 */
