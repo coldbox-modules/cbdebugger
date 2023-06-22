@@ -118,7 +118,7 @@ component {
 				"When" 		= now()
 		 	} )
 			.setBody( {
-				title : "Hello World",
+				title : "Hello World"
 			} )
 			.send();
 		event.setView( "main/hyperData" );
@@ -135,7 +135,7 @@ component {
 				"When" 		= now()
 		 	} )
 			.setBody( {
-				title : "Hello World",
+				title : "Hello World"
 			} )
 			.send();
 		event.setView( "main/hyperData" );
