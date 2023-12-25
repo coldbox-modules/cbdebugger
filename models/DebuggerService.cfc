@@ -190,7 +190,7 @@ component
 	 */
 	struct function createRequestTracker( required event ){
 		// Init the request debugger tracking
-		param request.cbDebugger = {};
+		param request.cbDebugger               = {};
 		param request.cbDebugger.coldbox       = {};
 		param request.cbDebugger.exception     = {};
 		param request.cbDebugger.executionTime = 0;
@@ -205,7 +205,7 @@ component
 		param request.cbDebugger.localIp       = getServerIp();
 		param request.cbDebugger.queryString   = cgi.QUERY_STRING;
 		param request.cbDebugger.requestData   = getHTTPRequestData(
-				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
+			variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
 		);
 		param request.cbDebugger.response        = { "statusCode" : 0, "contentType" : "" };
 		param request.cbDebugger.startCount      = getTickCount();
