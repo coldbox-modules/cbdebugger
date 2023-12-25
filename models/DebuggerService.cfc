@@ -190,32 +190,31 @@ component
 	 */
 	struct function createRequestTracker( required event ){
 		// Init the request debugger tracking
-		param request.cbDebugger = {
-			"coldbox"       : {},
-			"exception"     : {},
-			"executionTime" : 0,
-			"endFreeMemory" : 0,
-			"formData"      : serializeJSON( form ?: {} ),
-			"fullUrl"       : arguments.event.getFullUrl(),
-			"httpHost"      : cgi.HTTP_HOST,
-			"httpReferer"   : cgi.HTTP_REFERER,
-			"id"            : variables.uuid.randomUUID().toString(),
-			"inetHost"      : discoverInetHost(),
-			"ip"            : getRealIP(),
-			"localIp"       : getServerIp(),
-			"queryString"   : cgi.QUERY_STRING,
-			"requestData"   : getHTTPRequestData(
+		param request.cbDebugger = {};
+		param request.cbDebugger.coldbox       = {};
+		param request.cbDebugger.exception     = {};
+		param request.cbDebugger.executionTime = 0;
+		param request.cbDebugger.endFreeMemory = 0;
+		param request.cbDebugger.formData      = serializeJSON( form ?: {} );
+		param request.cbDebugger.fullUrl       = arguments.event.getFullUrl();
+		param request.cbDebugger.httpHost      = cgi.HTTP_HOST;
+		param request.cbDebugger.httpReferer   = cgi.HTTP_REFERER;
+		param request.cbDebugger.id            = variables.uuid.randomUUID().toString();
+		param request.cbDebugger.inetHost      = discoverInetHost();
+		param request.cbDebugger.ip            = getRealIP();
+		param request.cbDebugger.localIp       = getServerIp();
+		param request.cbDebugger.queryString   = cgi.QUERY_STRING;
+		param request.cbDebugger.requestData   = getHTTPRequestData(
 				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
-			),
-			"response"        : { "statusCode" : 0, "contentType" : "" },
-			"startCount"      : getTickCount(),
-			"startFreeMemory" : variables.jvmRuntime.freeMemory(),
-			"threadInfo"      : getCurrentThread().toString(),
-			"timers"          : [],
-			"timestamp"       : now(),
-			"tracers"         : [],
-			"userAgent"       : cgi.HTTP_USER_AGENT
-		};
+		);
+		param request.cbDebugger.response        = { "statusCode" : 0, "contentType" : "" };
+		param request.cbDebugger.startCount      = getTickCount();
+		param request.cbDebugger.startFreeMemory = variables.jvmRuntime.freeMemory();
+		param request.cbDebugger.threadInfo      = getCurrentThread().toString();
+		param request.cbDebugger.timers          = [];
+		param request.cbDebugger.timestamp       = now();
+		param request.cbDebugger.tracers         = [];
+		param request.cbDebugger.userAgent       = cgi.HTTP_USER_AGENT;
 
 		// Event before recording
 		variables.interceptorService.announce(
