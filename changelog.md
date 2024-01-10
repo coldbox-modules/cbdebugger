@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New `HyperCollector` so you can now track hyper requests if enabled
 - `Timer` can now add timers a-la-carte via the `add()` method
+- `TimerDelegate` now has a `addCBTimer()` method
 - New fast and furious and tiny SQL/JSON Formatter
 - New `LuceeSqlCollector` you can use to profile all SQL calls in Lucee
 - New `luceeSql` configuration to control the Lucee SQL calls collector
@@ -52,7 +53,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - ColdBox 7 support
-- New `TimerDelegate` that can be used to add timer functions to any model
+- New `TimerDelegate` that can be used to add timer functions to any model:
+  - `startCBTimer()`
+  - `stopCBTimer()`
+  - `cbTimeIt()`
+  - `addCBTimer()`
 - Timer service rewritten to support nesting and included metadata
 - Ability to open views and layouts from the execution timers in any Code Editor
 - New `WireBoxCollector` which is only used if enabled.  This greatly accelerates the performance of the request collector since before they where in the same collector.
