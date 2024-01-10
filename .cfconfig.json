@@ -1,6 +1,8 @@
 {
 	"adminPassword" : "coldbox",
-    "debuggingEnabled":true,
+    "debuggingDBEnabled":"true",
+	"debuggingEnabled":"true",
+	"debuggingShowDatabase" : true,
     "debuggingReportExecutionTimes":false,
     "disableInternalCFJavaComponents":false,
     "inspectTemplate":"always",

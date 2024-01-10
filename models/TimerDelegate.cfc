@@ -44,4 +44,27 @@ component accessors="true" singleton threadsafe {
 		return variables.timer.timeIt( argumentCollection = arguments );
 	}
 
+	/**
+	 * Add a timer to the stack manually. You will need the label, executionTime and stoppedAt timestamps
+	 *
+	 * @label         The label to use as a timer label
+	 * @executionTime The execution time in ms to register
+	 * @startedAt     The date time the timer was started
+	 * @stoppedAt     The date time the timer was stopped
+	 * @metadata      A struct of metadata to store in the execution timer
+	 * @parent        An optional parent label
+	 * @type          The type of execution timed: request, view-render, layout-render, event, renderer
+	 */
+	function addCBTimer(
+		required label,
+		required executionTime,
+		startedAt       = now(),
+		stoppedat       = now(),
+		struct metadata = {},
+		parent          = "",
+		type            = "timer"
+	){
+		return variables.timer.add( argumentCollection = arguments );
+	}
+
 }

@@ -80,13 +80,13 @@
 					cacheName : "template",
 					trackDebuggerEvents : false,
 					// Expand by default the tracker panel or not
-					expanded                     : true,
+					expanded                     : false,
 					// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 					slowExecutionThreshold       : 1000,
 					// How many tracking profilers to keep in stack: Default is to monitor the last 20 requests
 					maxProfilers                 : 25,
 					// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
-					profileWireBoxObjectCreation : false,
+					profileWireBoxObjectCreation : true,
 					// Profile model objects annotated with the `profile` annotation
 					profileObjects               : true,
 					// If enabled, will trace the results of any methods that are being profiled
@@ -94,7 +94,7 @@
 					// Profile Custom or Core interception points
 					profileInterceptions         : true,
 					// By default all interception events are excluded, you must include what you want to profile
-					includedInterceptions        : [ "ORMPostLoad", "ORMPostNew" ],
+					includedInterceptions        : [ "ORMPostNew" ],
 					// Control the execution timers
 					executionTimers              : {
 						expanded           : true,
@@ -147,7 +147,10 @@
 					enabled : true,
 					expanded : false,
 					logParams : true
-				}
+				},
+				luceeSQL : { enabled : true, expanded : false, logParams : true },
+				// Hyper Collector
+				hyper	: { enabled : true, expanded : false, logRequestBody : true, logResponseData : true }
 			}
 		};
 

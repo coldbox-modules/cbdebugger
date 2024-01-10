@@ -19,6 +19,44 @@ component accessors="true" singleton threadsafe {
 	}
 
 	/**
+	 * Add a timer to the stack manually. You will need the label, executionTime and stoppedAt timestamps
+	 *
+	 * @label         The label to use as a timer label
+	 * @executionTime The execution time in ms to register
+	 * @startedAt     The date time the timer was started
+	 * @stoppedAt     The date time the timer was stopped
+	 * @metadata      A struct of metadata to store in the execution timer
+	 * @parent        An optional parent label
+	 * @type          The type of execution timed: request, view-render, layout-render, event, renderer
+	 */
+	function add(
+		required label,
+		required executionTime,
+		startedAt       = now(),
+		stoppedat       = now(),
+		struct metadata = {},
+		parent          = "",
+		type            = "timer"
+	){
+		getTimers().insert(
+			arguments.label,
+			{
+				"id"            : variables.debuggerService.randomUUID(),
+				"startedAt"     : arguments.startedAt,
+				"startCount"    : getTickCount(),
+				"method"        : arguments.label,
+				"stoppedAt"     : arguments.stoppedAt,
+				"executionTime" : arguments.executionTime,
+				"metadata"      : arguments.metadata,
+				"parent"        : arguments.parent,
+				"type"          : arguments.type,
+				"times"         : 1
+			},
+			true
+		);
+	}
+
+	/**
 	 * Start a timer with a tracking label
 	 *
 	 * @label    The unique tracking label to register

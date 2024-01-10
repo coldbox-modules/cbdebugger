@@ -190,8 +190,8 @@
 
 				<!--- Event --->
 				#announce( "beforeProfilerReportPanels", {
-					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig,
+					profiler 		: args.profiler,
+					debuggerConfig 	: args.debuggerConfig,
 					debuggerService : args.debuggerService
 				} )#
 
@@ -203,8 +203,8 @@
 						view : "main/panels/requestTracker/exceptionPanel",
 						module : "cbdebugger",
 						args : {
-							debuggerConfig : args.debuggerConfig,
-							profiler : args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
+							profiler 		: args.profiler,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -219,9 +219,9 @@
 					view : "main/panels/requestTracker/debugTimersPanel",
 					module : "cbdebugger",
 					args : {
-						timers : args.profiler.timers,
-						debuggerConfig : args.debuggerConfig,
-						executionTime : args.profiler.executionTime,
+						timers 			: args.profiler.timers,
+						debuggerConfig 	: args.debuggerConfig,
+						executionTime 	: args.profiler.executionTime,
 						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
@@ -234,8 +234,8 @@
 					view : "main/panels/requestTracker/coldboxPanel",
 					module : "cbdebugger",
 					args : {
-						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig,
+						profiler 		: args.profiler,
+						debuggerConfig 	: args.debuggerConfig,
 						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
@@ -248,8 +248,8 @@
 					view : "main/panels/requestTracker/httpRequestPanel",
 					module : "cbdebugger",
 					args : {
-						profiler : args.profiler,
-						debuggerConfig : args.debuggerConfig,
+						profiler 		: args.profiler,
+						debuggerConfig 	: args.debuggerConfig,
 						debuggerService : args.debuggerService
 					},
 					prePostExempt : true
@@ -263,9 +263,9 @@
 						view : "main/panels/requestTracker/tracersPanel",
 						module : "cbdebugger",
 						args : {
-							profiler : args.profiler,
-							tracers : args.profiler.tracers,
-							debuggerConfig : args.debuggerConfig,
+							profiler 		: args.profiler,
+							tracers 		: args.profiler.tracers,
+							debuggerConfig 	: args.debuggerConfig,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -281,8 +281,8 @@
 						view : "main/panels/requestTracker/coldboxCollectionsPanel",
 						module : "cbdebugger",
 						args : {
-							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -297,8 +297,24 @@
 						view : "main/panels/requestTracker/acfSqlPanel",
 						module : "cbdebugger",
 						args : {
-							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
+							debuggerService : args.debuggerService
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
+				<!--- Lucee SQL --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.luceeSql.enabled>
+					#view(
+						view : "main/panels/requestTracker/luceeSqlPanel",
+						module : "cbdebugger",
+						args : {
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -313,8 +329,8 @@
 						view : "main/panels/requestTracker/cbormPanel",
 						module : "cbdebugger",
 						args : {
-							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -329,8 +345,24 @@
 						view : "main/panels/requestTracker/qbPanel",
 						module : "cbdebugger",
 						args : {
-							profiler : args.profiler,
-							debuggerConfig : args.debuggerConfig,
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
+							debuggerService : args.debuggerService
+						},
+						prePostExempt : true
+					)#
+				</cfif>
+
+				<!--- **************************************************************--->
+				<!--- Hyper --->
+				<!--- **************************************************************--->
+				<cfif args.debuggerConfig.hyper.enabled>
+					#view(
+						view : "main/panels/requestTracker/hyperPanel",
+						module : "cbdebugger",
+						args : {
+							profiler 		: args.profiler,
+							debuggerConfig 	: args.debuggerConfig,
 							debuggerService : args.debuggerService
 						},
 						prePostExempt : true
@@ -339,8 +371,8 @@
 
 				<!--- Event --->
 				#announce( "afterProfilerReportPanels", {
-					profiler : args.profiler,
-					debuggerConfig : args.debuggerConfig,
+					profiler 		: args.profiler,
+					debuggerConfig 	: args.debuggerConfig,
 					debuggerService : args.debuggerService
 				} )#
 

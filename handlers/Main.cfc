@@ -1,5 +1,5 @@
 /**
- * Main ColdBox Debugger Visualizer
+ * Main ColdBox Debugger Visualizer Handler
  */
 component extends="coldbox.system.RestHandler" {
 
@@ -46,6 +46,44 @@ component extends="coldbox.system.RestHandler" {
 		return renderDebugger( argumentCollection = arguments );
 	}
 
+	function renderRequestPanelDock( event, rc, prc ){
+		// Return the debugger layout+view
+		// We pass in all the variables needed, to avoid prc/rc conflicts
+		try {
+			return layout(
+				layout    : "Dock",
+				module    : "cbdebugger",
+				view      : "main/panels/requestTrackerPanel",
+				viewModule: "cbdebugger",
+				args      : {
+					// Get the current profiler for the current request. Basically the first in the stack
+					currentProfiler : variables.debuggerService.getCurrentProfiler(),
+					// Module Config
+					debuggerConfig  : variables.debuggerConfig,
+					// Service pointer
+					debuggerService : variables.debuggerService,
+					// When debugging starts
+					debugStartTime  : getTickCount(),
+					// Env struct
+					environment     : variables.debuggerService.getEnvironment(),
+					// Manifest Root
+					manifestRoot    : event.getModuleRoot( "cbDebugger" ) & "/includes",
+					// Module Root
+					moduleRoot      : event.getModuleRoot( "cbDebugger" ),
+					// All Module Settings
+					moduleSettings  : getSetting( "modules" ),
+					// Profilers storage to display
+					profilers       : variables.debuggerService.getProfilerStorage(),
+					// Url build base
+					urlBase         : event.buildLink( "" )
+				}
+			);
+		} catch ( any e ) {
+			writeDump( var = e, top = 5 );
+			abort;
+		}
+	}
+
 	/**
 	 * This action renders out the debugger back to the caller as HTML widget
 	 */
@@ -55,40 +93,52 @@ component extends="coldbox.system.RestHandler" {
 		setting showdebugoutput=false;
 		// Return the debugger layout+view
 		// We pass in all the variables needed, to avoid prc/rc conflicts
-		return layout(
-			layout    : isVisualizer ? "Monitor" : "Main",
-			module    : "cbdebugger",
-			view      : "main/debugger",
-			viewModule: "cbdebugger",
-			args      : {
-				// Get the current profiler for the current request. Basically the first in the stack
-				currentProfiler  : variables.debuggerService.getCurrentProfiler(),
-				// Module Config
-				debuggerConfig   : variables.debuggerConfig,
-				// Service pointer
-				debuggerService  : variables.debuggerService,
-				// When debugging starts
-				debugStartTime   : getTickCount(),
-				// Env struct
-				environment      : variables.debuggerService.getEnvironment(),
-				// Visualizer mode or panel at bottom mode
-				isVisualizer     : isVisualizer,
-				// Manifest Root
-				manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes",
-				// Module Root
-				moduleRoot       : event.getModuleRoot( "cbDebugger" ),
-				// All Module Settings
-				moduleSettings   : getSetting( "modules" ),
-				// Rendering page title
-				pageTitle        : "ColdBox Debugger",
-				// Profilers storage to display
-				profilers        : variables.debuggerService.getProfilerStorage(),
-				// Incoming frequency if in visualizer mode
-				refreshFrequency : rc.frequency,
-				// Url build base
-				urlBase          : event.buildLink( "" )
-			}
-		);
+		try {
+			return layout(
+				layout    : isVisualizer ? "Visualizer" : "Dock",
+				module    : "cbdebugger",
+				view      : "main/debugger",
+				viewModule: "cbdebugger",
+				args      : {
+					// Get the current profiler for the current request. Basically the first in the stack
+					currentProfiler  : variables.debuggerService.getCurrentProfiler(),
+					// Module Config
+					debuggerConfig   : variables.debuggerConfig,
+					// Service pointer
+					debuggerService  : variables.debuggerService,
+					// When debugging starts
+					debugStartTime   : getTickCount(),
+					// Env struct
+					environment      : variables.debuggerService.getEnvironment(),
+					// Visualizer mode or panel at bottom mode
+					isVisualizer     : isVisualizer,
+					// Manifest Root
+					manifestRoot     : event.getModuleRoot( "cbDebugger" ) & "/includes",
+					// Module Root
+					moduleRoot       : event.getModuleRoot( "cbDebugger" ),
+					// All Module Settings
+					moduleSettings   : getSetting( "modules" ),
+					// Rendering page title
+					pageTitle        : "ColdBox Debugger",
+					// Profilers storage to display
+					profilers        : variables.debuggerService.getProfilerStorage(),
+					// Incoming frequency if in visualizer mode
+					refreshFrequency : rc.frequency,
+					// Url build base
+					urlBase          : event.buildLink( "" )
+				}
+			);
+		} catch ( any e ) {
+			writeDump( var = e, top = 5 );
+			abort;
+		}
+	}
+
+	/**
+	 * Download a heapdump snapshot
+	 */
+	function heapDump( event, rc, prc ){
+		event.sendFile( file: getInstance( "JVMUtil@cbdebugger" ).generateHeapDump(), deleteFile: true );
 	}
 
 	/**
@@ -124,18 +174,6 @@ component extends="coldbox.system.RestHandler" {
 			},
 			prePostExempt: true
 		);
-	}
-
-	private function paramSorting( rc ){
-		param rc.sortBy    = "timestamp";
-		param rc.sortOrder = "desc";
-		if ( !len( rc.sortBy ) ) {
-			rc.sortby = "timestamp";
-		}
-		if ( !len( rc.sortOrder ) ) {
-			rc.sortOrder = "desc";
-		}
-		return this;
 	}
 
 	/**
@@ -179,7 +217,7 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
-	 * Reload a modules
+	 * Reload a module
 	 */
 	function reloadModule( event, rc, prc ){
 		event.paramValue( "module", "" );
@@ -192,6 +230,23 @@ component extends="coldbox.system.RestHandler" {
 	 */
 	function environment( event, rc, prc ){
 		event.getResponse().setData( variables.debuggerService.getEnvironment() );
+	}
+
+	// ################################################# PRIVATE ######################################################//
+
+	/**
+	 * Internal param sorting defaults
+	 */
+	private function paramSorting( rc ){
+		param rc.sortBy    = "timestamp";
+		param rc.sortOrder = "desc";
+		if ( !len( rc.sortBy ) ) {
+			rc.sortby = "timestamp";
+		}
+		if ( !len( rc.sortOrder ) ) {
+			rc.sortOrder = "desc";
+		}
+		return this;
 	}
 
 }

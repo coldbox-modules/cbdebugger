@@ -20,8 +20,7 @@ component
 	property name="asyncManager"       inject="coldbox:asyncManager";
 	property name="interceptorService" inject="coldbox:interceptorService";
 	property name="timerService"       inject="provider:Timer@cbdebugger";
-	property name="jsonFormatter"      inject="provider:JSONPrettyPrint@JSONPrettyPrint";
-	property name="sqlFormatter"       inject="provider:Formatter@sqlformatter";
+	property name="formatter"          inject="provider:Formatter@cbdebugger";
 
 	/**
 	 * --------------------------------------------------------------------------
@@ -191,32 +190,31 @@ component
 	 */
 	struct function createRequestTracker( required event ){
 		// Init the request debugger tracking
-		param request.cbDebugger = {
-			"coldbox"       : {},
-			"exception"     : {},
-			"executionTime" : 0,
-			"endFreeMemory" : 0,
-			"formData"      : serializeJSON( form ?: {} ),
-			"fullUrl"       : arguments.event.getFullUrl(),
-			"httpHost"      : cgi.HTTP_HOST,
-			"httpReferer"   : cgi.HTTP_REFERER,
-			"id"            : variables.uuid.randomUUID().toString(),
-			"inetHost"      : discoverInetHost(),
-			"ip"            : getRealIP(),
-			"localIp"       : getServerIp(),
-			"queryString"   : cgi.QUERY_STRING,
-			"requestData"   : getHTTPRequestData(
-				variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
-			),
-			"response"        : { "statusCode" : 0, "contentType" : "" },
-			"startCount"      : getTickCount(),
-			"startFreeMemory" : variables.jvmRuntime.freeMemory(),
-			"threadInfo"      : getCurrentThread().toString(),
-			"timers"          : [],
-			"timestamp"       : now(),
-			"tracers"         : [],
-			"userAgent"       : cgi.HTTP_USER_AGENT
-		};
+		param request.cbDebugger               = {};
+		param request.cbDebugger.coldbox       = {};
+		param request.cbDebugger.exception     = {};
+		param request.cbDebugger.executionTime = 0;
+		param request.cbDebugger.endFreeMemory = 0;
+		param request.cbDebugger.formData      = serializeJSON( form ?: {} );
+		param request.cbDebugger.fullUrl       = arguments.event.getFullUrl();
+		param request.cbDebugger.httpHost      = cgi.HTTP_HOST;
+		param request.cbDebugger.httpReferer   = cgi.HTTP_REFERER;
+		param request.cbDebugger.id            = variables.uuid.randomUUID().toString();
+		param request.cbDebugger.inetHost      = discoverInetHost();
+		param request.cbDebugger.ip            = getRealIP();
+		param request.cbDebugger.localIp       = getServerIp();
+		param request.cbDebugger.queryString   = cgi.QUERY_STRING;
+		param request.cbDebugger.requestData   = getHTTPRequestData(
+			variables.debuggerConfig.requestTracker.httpRequest.profileHTTPBody
+		);
+		param request.cbDebugger.response        = { "statusCode" : 0, "contentType" : "" };
+		param request.cbDebugger.startCount      = getTickCount();
+		param request.cbDebugger.startFreeMemory = variables.jvmRuntime.freeMemory();
+		param request.cbDebugger.threadInfo      = getCurrentThread().toString();
+		param request.cbDebugger.timers          = [];
+		param request.cbDebugger.timestamp       = now();
+		param request.cbDebugger.tracers         = [];
+		param request.cbDebugger.userAgent       = cgi.HTTP_USER_AGENT;
 
 		// Event before recording
 		variables.interceptorService.announce(
@@ -594,6 +592,19 @@ component
 	}
 
 	/**
+	 * Converts epoch milliseconds to a date time object
+	 *
+	 * @epoch The epoch to convert, must be in milliseconds
+	 */
+	function fromEpoch( required epoch ){
+		return dateAdd(
+			"s",
+			arguments.epoch / 1000,
+			dateConvert( "utc2local", "January 1 1970 00:00 " )
+		);
+	}
+
+	/**
 	 * Process Stack trace for errors
 	 *
 	 * @str The stacktrace to process
@@ -608,11 +619,18 @@ component
 	 * Compose a screen for a file to open in an editor
 	 *
 	 * @event    The request context
-	 * @instance An instance of a tag context array
+	 * @instance An instance of a tag context array { template, line }
 	 *
 	 * @return The string for the IDE
 	 */
-	function openInEditorURL( required event, required struct instance ){
+	function openInEditorURL( required event, required instance ){
+		if ( isSimpleValue( arguments.instance ) ) {
+			arguments.instance = {
+				template : arguments.instance.getToken( 1, ":" ),
+				line     : arguments.instance.getToken( 2, ":" )
+			};
+		}
+
 		return getExceptionBean().openInEditorURL( argumentCollection = arguments );
 	}
 

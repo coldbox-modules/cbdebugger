@@ -6,5 +6,7 @@
 	"no-multiple-blanks": {
 		"maximum": 2
 	},
-	"no-inline-html" : false
+	"no-inline-html" : false,
+	"no-hard-tabs": false,
+	"no-bare-urls": false
 }

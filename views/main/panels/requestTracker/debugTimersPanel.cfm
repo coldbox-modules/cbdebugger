@@ -56,6 +56,10 @@
 						<cfset color = "cbd-text-blue">
 					<cfelseif findnocase( "[pre", thisTimer.method ) or findnocase( "post", thisTimer.method )>
 						<cfset color = "cbd-text-purple">
+					<cfelseif findnocase( "[Hyper", thisTimer.method ) && thisTimer.metadata.statusCode lt 400>
+						<cfset color = "cbd-text-blue">
+					<cfelseif findnocase( "[Hyper", thisTimer.method ) && thisTimer.metadata.statusCode gte 400>
+						<cfset color = "cbd-text-red">
 					<cfelse>
 						<cfset color = "cbd-text-green">
 					</cfif>
@@ -87,9 +91,8 @@
 							<span class="#color#">#thisTimer.method#</span>
 						</td>
 
-						<!--- Open --->
+						<!--- Open in IDE --->
 						<td align="center" >
-							<!--- View Render --->
 							<cfparam name="thisTimer.metadata" default="#structNew()#">
 							<cfparam name="thisTimer.metadata.path" default="">
 							<cfif isSimpleValue( thisTimer.metadata.path ) && len( thisTimer.metadata.path )>

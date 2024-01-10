@@ -1,4 +1,3 @@
-<!--- Included by the debugger.cfm --->
 <cfscript>
 totalTimes = args.moduleSettings.reduce( function( total, key, thisModuleConfig ){
 	if( !isNull( arguments.thisModuleConfig.registrationTime ) ){

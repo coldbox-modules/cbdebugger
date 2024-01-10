@@ -51,8 +51,6 @@ component {
 				cacheName                    : "template",
 				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
 				trackDebuggerEvents          : false,
-				// Expand by default the tracker panel or not
-				expanded                     : false,
 				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
 				slowExecutionThreshold       : 1000,
 				// How many tracking profilers to keep in stack
@@ -114,15 +112,25 @@ component {
 				logParams : true
 			},
 			// Adobe ColdFusion SQL Collector
-			acfSql : { enabled : false, expanded : false, logParams : true },
-			// Async Manager Reporting
-			async  : { enabled : true, expanded : false }
+			acfSql   : { enabled : false, expanded : false, logParams : true },
+			// Lucee SQL Collector
+			luceeSQL : { enabled : false, expanded : false, logParams : true },
+			// Async Manager Collector
+			async    : { enabled : true, expanded : false },
+			// Hyper Collector
+			hyper    : {
+				enabled         : false,
+				expanded        : false,
+				logResponseData : false,
+				logRequestBody  : false
+			}
 		};
 
 		// Visualizer Route
 		router
 			.route( "/" )
 			.to( "Main.index" )
+			// Conventions
 			.route( "/:action" )
 			.toHandler( "Main" );
 		;
@@ -270,6 +278,28 @@ component {
 				);
 			} else {
 				variables.settings.acfSql.enabled = false;
+			}
+
+			/******************** Lucee SQL COLLECTOR ************************************/
+
+			if ( variables.settings.luceeSQL.enabled && server.keyExists( "lucee" ) ) {
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.LuceeSqlCollector",
+					interceptorName  = "LuceeSqlCollector@cbdebugger"
+				);
+			} else {
+				variables.settings.luceeSQL.enabled = false;
+			}
+
+			/******************** Hyper COLLECTOR ************************************/
+
+			if ( variables.settings.hyper.enabled ) {
+				param variables.settings.hyper.logResponseData = false;
+				param variables.settings.hyper.logRequestBody  = false;
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.HyperCollector",
+					interceptorName  = "HyperCollector@cbdebugger"
+				);
 			}
 
 			// Announce debugger loaded

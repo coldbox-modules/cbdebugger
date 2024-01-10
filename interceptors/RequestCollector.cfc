@@ -82,12 +82,12 @@ component extends="coldbox.system.Interceptor" {
 		// Record the profiler with the last tickcount
 		variables.debuggerService.recordProfiler( event: arguments.event, executionTime: getTickCount() );
 
-		// Determine if we can render the debugger at the bottom of the request
+		// Determine if we can render the request panel at the bottom of the request
 		if (
-			// Is the debugger turned on
-			variables.debuggerService.getDebugMode() AND
 			// Can we show the end of request dock
 			variables.debuggerConfig.requestPanelDock AND
+			// Is the debugger turned on
+			variables.debuggerService.getDebugMode() AND
 			// Has it not been disabled by the user programmatically
 			arguments.event.getPrivateValue( "cbox_debugger_show", true ) AND
 			// Don't render in ajax calls
@@ -102,7 +102,7 @@ component extends="coldbox.system.Interceptor" {
 			!findNoCase( "MockController", getMetadata( controller ).name )
 		) {
 			// render out the debugger to the buffer output
-			arguments.buffer.append( runEvent( "cbdebugger:main.renderDebugger" ) );
+			arguments.buffer.append( runEvent( "cbdebugger:main.renderRequestPanelDock" ) );
 		}
 	}
 

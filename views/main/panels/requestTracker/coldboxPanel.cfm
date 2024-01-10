@@ -2,8 +2,7 @@
 <cfparam name="args.debuggerConfig">
 <cfparam name="args.debuggerService">
 <cfscript>
-	sqlFormatter = args.debuggerService.getSqlFormatter();
-	jsonFormatter = args.debuggerService.getjsonFormatter();
+	formatter = args.debuggerService.getFormatter();
 	coldboxKeys = args.profiler.coldbox.keyArray();
 	coldboxKeys.sort( "textnocase" );
 </cfscript>
@@ -43,7 +42,7 @@
 						<div class="cbd-cellScroller">
 							<cfif isSimpleValue( args.profiler.coldbox[ thisItem ] )>
 								<cfif !isBoolean( args.profiler.coldbox[ thisItem ] ) && isJSON( args.profiler.coldbox[ thisItem ] )>
-									#jsonFormatter.formatJSON( args.profiler.coldbox[ thisItem ] )#
+									#formatter.prettyJson( args.profiler.coldbox[ thisItem ] )#
 								<cfelse>
 									<cfif len( args.profiler.coldbox[ thisItem ] )>
 										#args.profiler.coldbox[ thisItem ]#

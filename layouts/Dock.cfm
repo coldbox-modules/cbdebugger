@@ -7,7 +7,7 @@
 	x-data = "{
 		appUrl : '#encodeForJavaScript( event.buildLink( '' ) )#'
 	}"
-	class="cbd-debugger"
+	class="cbd-debugger cbd-dock"
 	id="cbd-debugger"
 	data-appurl="#event.buildLink( '' )#"
 >
