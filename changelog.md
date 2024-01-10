@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2024-01-10
+
 ### Added
 
 - New `HyperCollector` so you can now track hyper requests if enabled
@@ -33,7 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dumb whitespace added by CFML engines when doing inline `<pre>#method()#</pre>` calls.
 - Better error handling when Debugger assets are not compiled instead of a cryptic error message:
-`The parameter [str] to function [closure_m] is required but was not passed in.`
+    `The parameter [str] to function [closure_m] is required but was not passed in.`
 
 ## [4.1.0] - 2023-04-17
 
@@ -285,7 +287,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - <https://ortussolutions.atlassian.net/browse/CCM-25> Lucee support
 - <https://ortussolutions.atlassian.net/browse/CCM-24> Added names of rendered
 - Unloading of helpers on unload
-    views and layouts
+      views and layouts
 - Updated production ignore lists
 
 ## [1.0.1]
@@ -296,6 +298,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Create first module version
 
-[Unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.2.0...HEAD
+
+[4.2.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.1.0...v4.2.0
 
 [4.1.0]: https://github.com/coldbox-modules/cbdebugger/compare/b070b77d9edee7725c052eab41bf3513a3a9f6d8...v4.1.0
