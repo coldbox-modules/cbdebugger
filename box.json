@@ -7,7 +7,7 @@
     "type":"modules",
     "homepage":"https://github.com/coldbox-modules/cbdebugger",
     "bugs":"https://ortussolutions.atlassian.net/browse/CBDEBUGGER",
-    "documentation":"https://github.com/coldbox-modules/cbdebugger",
+    "documentation":"https://cbdebugger.ortusbooks.com/",
     "repository":{
         "type":"git",
         "url":"https://github.com/coldbox-modules/cbdebugger"
