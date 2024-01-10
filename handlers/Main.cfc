@@ -139,7 +139,7 @@ component extends="coldbox.system.RestHandler" {
 	 */
 	function heapDump( event, rc, prc ){
 		event.sendFile(
-			file      : getInstance( "JVMUtil@cbdebugger" ).generateHeapDump( getTempDirectory() ),
+			file      : getInstance( "JVMUtil@cbdebugger" ).generateHeapDump(),
 			deleteFile: true
 		);
 	}

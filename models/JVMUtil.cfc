@@ -23,13 +23,13 @@ component singleton {
 	 * Generate a heap dump and store it at the given directory path
 	 * The generated heap dump will be named with the following pattern: <pre>cbdebugger-heapdump-mmm-dd-yyyy_HHnnss_l.hprof</pre>
 	 *
-	 * @directoryPath The directory path to store the heap dump, must be absolute
+	 * @directoryPath The directory path to store the heap dump, must be absolute. Defaults to the temporary directory
 	 *
 	 * @return The absolute path to the generated heap dump
 	 */
-	string function generateHeapDump( required directoryPath ){
+	string function generateHeapDump( directoryPath ){
 		// Create it if it doesn't exist
-		if ( !directoryExists( arguments.directoryPath ) ) {
+		if ( !directoryExists( arguments.directoryPath = getTempDirectory() ) ) {
 			directoryCreate( arguments.directoryPath );
 		}
 
