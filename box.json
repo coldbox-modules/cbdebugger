@@ -2,7 +2,7 @@
     "name":"ColdBox Debugger",
     "author":"Ortus Solutions <info@ortussolutions.com",
     "location":"https://downloads.ortussolutions.com/ortussolutions/coldbox-modules/cbdebugger/@build.version@/cbdebugger-@build.version@.zip",
-    "version":"4.2.0",
+    "version":"4.3.0",
     "slug":"cbdebugger",
     "type":"modules",
     "homepage":"https://github.com/coldbox-modules/cbdebugger",
@@ -24,8 +24,7 @@
         "Brad Wood <bdw429s@gmail.com>",
         "Luis Majano <lmajano@ortussolutions.com>"
     ],
-    "dependencies":{
-    },
+    "dependencies":{},
     "devDependencies":{
         "commandbox-cfformat":"*",
         "commandbox-docbox":"*",
@@ -64,6 +63,5 @@
         "logs:2018":"server log name=cbdebugger-adobe@2018 --follow",
         "logs:2021":"server log name=cbdebugger-adobe@2021 --follow"
     },
-    "installPaths":{
-    }
+    "installPaths":{}
 }
