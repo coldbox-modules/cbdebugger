@@ -201,6 +201,27 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
+	 * Get a profiler report via ajax
+	 */
+	function getDebuggerRequests( event, rc, prc ){
+		return 'getDebuggerRequests'
+	}
+
+	/**
+	 * Get a profiler report via ajax
+	 */
+	function getDebuggerEvents( event, rc, prc ){
+		return variables.debuggerService.getEvents(  );
+	}
+
+	/**
+	 * Get a profiler report via ajax
+	 */
+	function getEnabledProfilers( event, rc, prc ){
+		return variables.debuggerConfig.menu;
+	}
+
+	/**
 	 * Export a profiler report as json
 	 */
 	function exportProfilerReport( event, rc, prc ){
