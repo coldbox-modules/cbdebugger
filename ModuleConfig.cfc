@@ -171,6 +171,12 @@ component {
 	 * Load the module
 	 */
 	function onLoad(){
+		variables.settings.menu = [
+			{"name": 'Timers', "enabled": true, 'key':'timers'},
+			{"name": 'Exceptions',  "enabled": true, 'key':'exceptions'},
+			{"name": 'HTTP', "enabled": true, 'key':'http'},
+			{"name": 'Tracer', "enabled": true, 'key':'tracers'},
+		];
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		// And you must not be in testing mode
 		if ( !structKeyExists( controller, "mockController" ) && variables.settings.enabled ) {
@@ -206,6 +212,7 @@ component {
 			}
 
 			/******************** WIREBOX COLLECTOR ************************************/
+
 
 			if ( variables.settings.requestTracker.profileWireBoxObjectCreation ) {
 				interceptorService.registerInterceptor(
@@ -243,39 +250,51 @@ component {
 			}
 
 			/******************** QB COLLECTOR ************************************/
-
+			var qbMenu = {"name": 'QB',  "enabled": false, 'key':'cfquery' };
 			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.QBCollector",
 					interceptorName  = "QBCollector@cbdebugger"
 				);
+				qbMenu.enabled = true;
 			}
+			variables.settings.menu.append(qbMenu);
+
 
 			/******************** QUICK COLLECTOR ************************************/
 
+			var quickMenu = {"name": 'Quick',  "enabled": false, 'key':'quick'};
 			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
 					interceptorName  = "QuickCollector@cbdebugger"
 				);
+
+				quickMenu.enabled = true;
 			}
+			variables.settings.menu.append(quickMenu);
 
 			/******************** CBORM COLLECTOR ************************************/
 
+
+			var cbormMenu = {"name": 'CBORM', "enabled": false, 'key':'cborm'};
 			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
 					interceptorName  = "CBOrmCollector@cbdebugger"
 				);
+				cbormMenu.enabled = true;
 			}
-
+			variables.settings.menu.append(cbormMenu);
 			/******************** ACFSQL COLLECTOR ************************************/
 
+			var SqlMenu = {"name": 'DB',  "enabled": false, 'key':'cfquery'};
 			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
 					interceptorName  = "ACFSqlCollector@cbdebugger"
 				);
+				SqlMenu.enabled = true;
 			} else {
 				variables.settings.acfSql.enabled = false;
 			}
@@ -283,6 +302,7 @@ component {
 			/******************** Lucee SQL COLLECTOR ************************************/
 
 			if ( variables.settings.luceeSQL.enabled && server.keyExists( "lucee" ) ) {
+				SqlMenu.enabled = true;
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.LuceeSqlCollector",
 					interceptorName  = "LuceeSqlCollector@cbdebugger"
@@ -290,9 +310,11 @@ component {
 			} else {
 				variables.settings.luceeSQL.enabled = false;
 			}
+			variables.settings.menu.append(SqlMenu);
 
 			/******************** Hyper COLLECTOR ************************************/
 
+			var hyperMenu = {"name": 'Hyper',  "enabled": false, 'key':'hyper'};
 			if ( variables.settings.hyper.enabled ) {
 				param variables.settings.hyper.logResponseData = false;
 				param variables.settings.hyper.logRequestBody  = false;
@@ -300,12 +322,17 @@ component {
 					interceptorClass = "#moduleMapping#.interceptors.HyperCollector",
 					interceptorName  = "HyperCollector@cbdebugger"
 				);
+				luceeSQLMenu.enabled = true;
 			}
+			variables.settings.menu.append(hyperMenu);
 
 			// Announce debugger loaded
 			interceptorService.announce( "onDebuggerLoad" );
 		}
-		// end master switch
+
+		variables.settings.menu.append({"name": 'Cache', "enabled": false, 'key':'cache'});
+		variables.settings.menu.append({"name": 'Modules', "enabled": false, 'key':'modules'});
+		variables.settings.menu.append({"name": 'Async', "enabled": false, 'key':'async'});
 	}
 
 	/**
