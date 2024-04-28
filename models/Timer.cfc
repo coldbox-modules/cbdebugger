@@ -73,22 +73,31 @@ component accessors="true" singleton threadsafe {
 		parent          = ""
 	){
 		var timerId = variables.debuggerService.randomUUID();
-		getTimers().insert(
-			arguments.label,
-			{
-				"id"            : timerId,
-				"startedAt"     : now(),
-				"startCount"    : getTickCount(),
-				"method"        : arguments.label,
-				"stoppedAt"     : "",
-				"executionTime" : 0,
-				"metadata"      : arguments.metadata,
-				"parent"        : arguments.parent,
-				"type"          : arguments.type,
-				"times"         : 1
-			},
-			true
+		var timerInfo = 
+		{
+			"id"            : timerId,
+			"startedAt"     : now(),
+			"startCount"    : getTickCount(),
+			"method"        : arguments.label,
+			"stoppedAt"     : "",
+			"executionTime" : 0,
+			"metadata"      : arguments.metadata,
+			"parent"        : arguments.parent,
+			"type"          : arguments.type,
+			"times"         : 1
+		}
+		getTimers().insert( arguments.label, timerInfo, true);
+
+		variables.debuggerService.pushEvent(
+			"transactionId": timerInfo.id,
+			"eventType": 'timer',
+			"timestamp": timerInfo.startedAt,
+			"details": timerInfo.method,
+			"executionTimeMillis": timerInfo.executionTime,
+			"extraInfo": timerInfo,
+			"caller": timerInfo.metadata
 		);
+
 		return timerId;
 	}
 
@@ -104,6 +113,16 @@ component accessors="true" singleton threadsafe {
 			timer.stoppedAt     = now();
 			timer.executionTime = getTickCount() - timer.startCount;
 			timer.metadata.append( arguments.metadata );
+
+			variables.debuggerService.pushEvent(
+				"transactionId": timer.id,
+				"eventType": 'timer',
+				"timestamp": timer.startedAt,
+				"details": timer.method,
+				"executionTimeMillis": timer.executionTime,
+				"extraInfo": timer,
+				"caller": timer.metadata
+			);
 		}
 		return this;
 	}
