@@ -29,6 +29,7 @@ component extends="coldbox.system.Interceptor" {
 	 */
 	function onDebuggerProfilerRecording( event, data, rc, prc ){
 		var requestTracker                           = arguments.data.requestTracker;
+		//dump( requestTracker.hyper.all); abort;
 		requestTracker.hyper[ "totalRequests" ]      = requestTracker.hyper.all.len();
 		requestTracker.hyper[ "totalExecutionTime" ] = requestTracker.hyper.all.reduce( ( total, k, v ) => {
 			return arguments.total + arguments.v.executionTime
@@ -70,14 +71,17 @@ component extends="coldbox.system.Interceptor" {
 		var requestTracker = variables.debuggerService.getRequestTracker();
 		var thisRequest    = arguments.data.response.getRequest();
 
-		// Store the request as finished
-		requestTracker.hyper.all[ thisRequest.getRequestId() ].append( {
+		var logData = {
 			"status"        : "finished",
 			"executionTime" : data.response.getExecutionTime(),
 			"response"      : data.response
 				.getMemento()
 				.filter( ( key, value ) => key == "data" && debuggerConfig.hyper.logResponseData || key != "data" )
-		} );
+		}
+
+		// Store the request as finished
+		requestTracker.hyper.all[ thisRequest.getRequestId() ].append(logData );
+
 
 		// Grouping
 		var requestHash = hash(
@@ -110,6 +114,18 @@ component extends="coldbox.system.Interceptor" {
 			},
 			type: "hyper"
 		);
+
+		var hyperInfo  = requestTracker.hyper.all[ thisRequest.getRequestId() ];
+		variables.debuggerService.pushEvent(
+			"transactionId": requestTracker.id,
+			"eventType": 'hyper',
+			"timestamp": hyperInfo.timestamp,
+			"details": hyperInfo.url,
+			"executionTimeMillis": hyperInfo.executionTime,
+			"extraInfo": hyperInfo,
+			"caller": hyperInfo.caller
+		);
+
 	}
 
 	/************************************** PRIVATE METHODS *********************************************/

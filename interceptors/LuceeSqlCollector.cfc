@@ -60,6 +60,15 @@ component extends="coldbox.system.Interceptor" {
 
 			requestTracker.cfqueries.grouped[ sqlHash ].count++;
 			requestTracker.cfqueries.grouped[ sqlHash ].records.append( row );
+			variables.debuggerService.pushEvent(
+				"transactionId": requestTracker.id,
+				"eventType": 'cfquery',
+				"timestamp": row.startTime,
+				"details": row.sql,
+				"executionTimeMillis": row.executionTime,
+				"extraInfo": row,
+				"caller": row.src
+			);
 		} );
 
 		// Store total number of queries executed
