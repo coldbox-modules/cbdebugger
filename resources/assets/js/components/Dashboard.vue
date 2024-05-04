@@ -40,7 +40,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import Tab from './Tab.vue'
 
 const isOpen = ref(true)
 const title = ref('Dock Title')
