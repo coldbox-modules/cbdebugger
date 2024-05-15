@@ -1,4 +1,10 @@
-<cfparam name="args.refreshFrequency" default="0">
+<div id="cbdebugger">
+	<div id="cbdebug-dock">
+		<object-panel></object-panel>
+	</div>
+</div>
+
+<!--- <cfparam name="args.refreshFrequency" default="0">
 <cfparam name="args.isVisualizer" default="false">
 <cfoutput>
 <div
@@ -214,7 +220,25 @@
 		<!---**********************************************************************--->
 
 		<a name="cbd-profilers"></a>
-		<div
+		<table class="cbd-tables">
+			<tr>
+				<th width="50">Event Type</th>
+				<th width="100">Start</th>
+				<th width="50" >Duration(ms)</th>
+				<th>Details</th>
+				<th>Extra</th>
+			</tr>
+			<cfloop array=#args.DEBUGGERSERVICE.getEvents()# index="event">
+				<tr>
+					<td>#event.eventType#</td>
+					<td>#timeformat(event.timestamp,"hh:mm tt")#</td>
+					<td>#event.executionTimeMillis#</td>
+					<td>#event.details#</td>
+					<td><cfdump var=#event.extraInfo# expand=false ></td>
+				</tr>
+			</cfloop>
+		</table>
+		 <div
 			id="cbd-profilers"
 			x-ref="cbd-profilers"
 		>
@@ -253,3 +277,4 @@
 </div>
 <!--- **************************************************************--->
 </cfoutput>
+ --->
