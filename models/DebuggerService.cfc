@@ -507,7 +507,7 @@ component
 			"httpHost": request.cbdebugger.httpHost,
 			"httpReferer": request.cbdebugger.httpReferer,
 			"id": request.cbdebugger.id,
-			"inetHost": request.cbdebugger.id,
+			"inetHost": request.cbdebugger.inetHost,
 			"ip": request.cbdebugger.ip,
 			"localIp": request.cbdebugger.localIp,
 			"queryString": request.cbdebugger.queryString,
@@ -535,6 +535,19 @@ component
 				"caller": exceptionData.stackTrace
 			);
 		}
+		if(request.cbdebugger.keyExists("timers")){
+			request.cbdebugger.timers.each((timerName, timer) => {
+				pushEvent(
+					"transactionId": request.cbdebugger.id,
+					"eventType": 'timer',
+					"timestamp": timer.startedAt,
+					"details": timerName,
+					"executionTimeMillis": timer.executionTime,
+					"extraInfo": timer
+				);
+			});
+		}
+
 		pushEvent(
 			"transactionId": requestInfo.id,
 			"eventType": 'request',
@@ -638,6 +651,15 @@ component
 
 		// Push it
 		request.cbDebugger.tracers.append( arguments );
+
+		pushEvent(
+			"transactionId" = request.cbDebugger.id,
+			"eventType" = 'tracer',
+			"timestamp" = now(),
+			"details" = arguments.message,
+			"executionTimeMillis" = 0,
+			"extraInfo" = arguments
+		)
 
 		return this;
 	}
