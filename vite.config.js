@@ -4,6 +4,9 @@ import vue from "@vitejs/plugin-vue";
 
 export default () => {
 	return defineConfig({
+		alias: {
+			'@': 'resources/assets/js'
+		},
 		plugins: [
 			vue(),
 			coldbox({
