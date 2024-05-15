@@ -161,6 +161,14 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
+	 * Clear the profilers via ajax
+	 */
+	function clearEvents( event, rc, prc ){
+		variables.debuggerService.resetEvents();
+		event.getResponse().addMessage( "Events reset!" );
+	}
+
+	/**
 	 * Get the profilers via ajax
 	 */
 	function renderProfilers( event, rc, prc ){
@@ -204,21 +212,256 @@ component extends="coldbox.system.RestHandler" {
 	 * Get a profiler report via ajax
 	 */
 	function getDebuggerRequests( event, rc, prc ){
-		return 'getDebuggerRequests'
+		var requestIndex = variables.debuggerService.getEvents(  )
+		.filter((row)=> {return row.eventType == 'request'})
+		.map((row)=>{
+			var temp = duplicate(row);
+			temp['time'] = timeFormat(temp.timestamp,'HH:mm:ss tt');
+			temp['statusCode'] = temp.extraInfo.response.statusCode;
+			temp.delete('extraInfo');
+			temp['stats'] = variables.debuggerService.getEvents(  )
+			.filter((row)=> {return row.transactionId == temp.transactionId})
+			.reduce((acc,row)=>{
+				if(!acc.keyExists(row.eventType)) acc[row.eventType] = {
+					"count": 0,
+					"first": row.timestamp,
+					"last": row.timestamp,
+					"duration": 0
+				};
+				acc[row.eventType].count++;
+				acc[row.eventType].last = timeformat(max(acc[row.eventType].last,row.timestamp),'hh:mm:ss tt');
+				acc[row.eventType].first = timeformat(min(acc[row.eventType].first,row.timestamp),'hh:mm:ss tt');
+				acc[row.eventType].duration += row.executionTimeMillis;
+				return acc;
+			},{})
+			return temp;
+		});
+		arguments.event.getResponse().setData( requestIndex );
 	}
 
 	/**
 	 * Get a profiler report via ajax
 	 */
 	function getDebuggerEvents( event, rc, prc ){
-		return variables.debuggerService.getEvents(  );
+		var transactionEvents = variables.debuggerService.getEvents(  )
+		//|| ['tracer'].find(row.eventType)
+		.filter((row)=> {return row.transactionId == rc.id  })
+		.map((row)=>{
+			row['linkToFile'] = '';
+			if(row.keyExists('extraInfo') && row.extraInfo.keyExists('caller')){
+				row['linkToFile'] = variables.debuggerService.openInEditorURL(event,row.extraInfo.caller);
+			}
+			return row;
+		})
+		arguments.event.getResponse().setData( transactionEvents );
+	}
+
+	/**
+	 * Get a scheduled task report via ajax
+	 */
+	function getJVMReport( event, rc, prc ){
+
+			var runtime    = createObject( "java", "java.lang.Runtime" ).getRuntime();
+			var ManagementFactory            = createObject( "java", "java.lang.management.ManagementFactory" );
+			var osBean = ManagementFactory.getOperatingSystemMXBean();
+			var memoryBean = ManagementFactory.getMemoryMXBean();
+			var heapMemory = memoryBean.getHeapMemoryUsage();
+			var nonHeapMemory = memoryBean.getNonHeapMemoryUsage();
+
+			// JVM Data
+			var JVMRuntime     = runtime.getRuntime();
+			var JVMFreeMemory  = JVMRuntime.freeMemory() / 1024;
+			var JVMTotalMemory = JVMRuntime.totalMemory() / 1024;
+			var JVMMaxMemory   = JVMRuntime.maxMemory() / 1024;
+
+			event.getResponse().setData( {
+				"JVM": {
+					"freeMemory": JVMFreeMemory,
+					"totalMemory": JVMTotalMemory,
+					"maxMemory": JVMMaxMemory,
+					"usedMemory": (JVMTotalMemory - JVMFreeMemory),
+					"processors": runtime.availableProcessors(),
+					"heapMemory" = {
+						"init" = heapMemory.getInit(),
+						"used" = heapMemory.getUsed(),
+						"committed" = heapMemory.getCommitted(),
+						"max" = heapMemory.getMax()
+					},
+					"nonHeapMemory" = {
+						"init" = nonHeapMemory.getInit(),
+						"used" = nonHeapMemory.getUsed(),
+						"committed" = nonHeapMemory.getCommitted(),
+						"max" = nonHeapMemory.getMax()
+					}
+				}
+			} );
+
+			/* stats = {
+				"getName" = osBean.getName(),
+				"getVersion" = osBean.getVersion(),
+				"getArch" = osBean.getArch(),
+				"availableProcessors" = osBean.getAvailableProcessors(),
+				"systemLoadAverage"   = osBean.getSystemLoadAverage(),
+				"heapMemory" = {
+					"init" = heapMemory.getInit(),
+					"used" = heapMemory.getUsed(),
+					"committed" = heapMemory.getCommitted(),
+					"max" = heapMemory.getMax()
+				},
+				"nonHeapMemory" = {
+					"init" = nonHeapMemory.getInit(),
+					"used" = nonHeapMemory.getUsed(),
+					"committed" = nonHeapMemory.getCommitted(),
+					"max" = nonHeapMemory.getMax()
+				}
+			}; */
+
+	}
+	function getCacheReport( event, rc, prc ){
+		//dump(cacheBox.getCache('default').getStats().getCacheProvider()); abort;
+		var cacheInfo = {
+				"names" : cacheBox.getCacheNames(),
+				"registration": cacheBox.getScopeRegistration(),
+				"id": cacheBox.getFactoryID(),
+				"stats": {}
+		};
+		cacheInfo.names.each( function( name ) {
+			var cacheProvider = cacheBox.getCache( name );
+			// Cache Data
+
+			var cacheStats	   = cacheProvider.getStats();
+			var cacheMetadata    = cacheProvider.getStoreMetadataReport();
+			var cacheMDKeyLookup = cacheProvider.getStoreMetadataKeyMap();
+			var cacheKeys        = cacheProvider.getKeys();
+
+
+			cacheInfo.stats[name] = {
+				"config": cacheProvider.getConfiguration(),
+				"size": cacheProvider.getSize(),
+				"hits": cacheStats.getHits(),
+				"misses": cacheStats.getMisses(),
+				"evictions": cacheStats.getEvictionCount(),
+				"lastReap": cacheStats.getLastReapDateTime(),
+				"gcCount": cacheStats.getGarbageCollections(),
+				"performanceRatio": cacheStats.getCachePerformanceRatio(),
+				"cacheMetadata": cacheMetadata,
+				"cacheMDKeyLookup": cacheMDKeyLookup,
+				"cacheKeys": cacheKeys
+			};
+		} );
+		event.getResponse().setData( cacheInfo );
+
+	}
+
+	function buildDependencyTree ( modules, moduleLibrary ){
+		var base = [];
+		modules.each(( moduleName ) => {
+			var moduleInstance = moduleLibrary[moduleName];
+			var moduleInfo = {
+				"name": moduleName,
+				"outdated": false,
+				"version": moduleInstance.version,
+				"activate": moduleInstance.activate,
+				"activated": moduleInstance.activated,
+				"activationTime": moduleInstance.activationTime,
+				"loadTime": moduleInstance.loadTime,
+				"cfMapping": moduleInstance.cfMapping,
+				"interceptors": moduleInstance.interceptors,
+				"path": moduleInstance.path,
+				"settings": variables.debuggerService.makeCollectionSafe(moduleInstance.settings),
+				"parent": moduleInstance.parent,
+				"disabled": moduleInstance.disabled,
+				"entryPoint": moduleInstance.entryPoint,
+				"author": moduleInstance.author,
+				"aliases": moduleInstance.aliases,
+				"autoMapModels": moduleInstance.autoMapModels,
+				"autoProcessModels": moduleInstance.autoProcessModels,
+				"dependencies": buildDependencyTree( moduleInstance.DEPENDENCIES, moduleLibrary)
+			};
+			var endpoint = 'https://www.forgebox.io/api/v1/entry/#moduleInfo.name#/latest';
+			try {
+				cfhttp (url = endpoint	method = "get",	result = "result", timeout="30" cachedWithin="#createTimespan(1,0,0,0)#");
+				if(result.status_code == 200){
+					var forgeboxInfo = deserializeJSON(result.fileContent).data;
+					moduleInfo['forgebox'] = {
+						"version": forgeboxinfo.version,
+						"installs": forgeboxinfo.installs,
+						"updatedDate": forgeboxinfo.updatedDate,
+						"publisher": forgeboxinfo.publisher,
+						"downloadURL": forgeboxinfo.downloadURL
+					};
+					if(forgeboxInfo.version != moduleInfo.version){
+						moduleInfo['outdated'] = true;
+					}
+				}
+			} catch (any e) {
+				moduleInfo['forgebox'] = {
+					"error": e.message
+				};
+			}
+			base.append( moduleInfo );
+		} );
+		return base;
+	}
+
+	function getModuleReport( event, rc, prc ){
+		var modules = getSetting( "modules" );
+		var rootModules = modules.reduce( function( acc, moduleName, module ) {
+			if(module.parent == "") acc.append(moduleName);
+			return acc;
+		},[] );
+		var moduleTree = buildDependencyTree( rootModules, modules );
+		event.getResponse().setData( moduleTree );
+
+	}
+	function getScheduledTaskReport( event, rc, prc ){
+		var tasks = [];
+		var rootTasks = wirebox.getInstance( "appScheduler@coldbox" ).getTasks();
+		rootTasks.each( function( key, value ) {
+			value[ "module" ] = "";
+			tasks.append( value );
+		} );
+
+		// get all loaded modules
+		var loadedModules = controller.getModuleService().getLoadedModules();
+
+		// loop through each loaded module, if the cbscheduler mapping exists, get it.
+		loadedModules.each( function( item, index ) {
+
+			if ( wirebox.getBinder().mappingExists( "cbScheduler@#item#" ) ) {
+				var scheduler = wirebox.getInstance( "cbScheduler@#item#" ).getTasks();
+				scheduler.each( function( key, taskConfig ) {
+					var stats = taskConfig.task.getStats();
+					tasks.append({
+						"name": stats.name,
+						"lastRun": stats.lastRun,
+						"nextRun": stats.nextRun,
+						"totalRuns": stats.totalRuns,
+						"totalFailures": stats.totalFailures,
+						"totalSuccess": stats.totalSuccess,
+						"lastResult": stats.lastResult.toString(),
+						"lastExecutionTime": stats.lastExecutionTime,
+						"registeredAt": taskConfig.registeredAt,
+						"scheduledAt": taskConfig.scheduledAt,
+						"disabled": taskConfig.disabled,
+						"error": taskConfig.error,
+						"errorMessage": taskConfig.errorMessage,
+						"inetHost": taskConfig.inetHost,
+						"localIp": taskConfig.localIp,
+						"module": taskConfig.module ?: 'core'
+					});
+				} );
+			};
+
+		} );
+		event.getResponse().setData( tasks );
 	}
 
 	/**
 	 * Get a profiler report via ajax
 	 */
-	function getEnabledProfilers( event, rc, prc ){
-		return variables.debuggerConfig.menu;
+	function getDebuggerConfig( event, rc, prc ){
+		arguments.event.getResponse().setData( variables.debuggerConfig );
 	}
 
 	/**
