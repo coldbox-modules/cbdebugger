@@ -1,7 +1,7 @@
 <template>
-
-<section class="bg-gray-50 dark:bg-gray-900">
-      <div class=" bg-white shadow-md dark:bg-gray-800">
+	<div class="grid grid-cols-1 gap-2 lg:grid-cols-3 lg:gap-4">
+	  <div class="h-32 rounded-lg bg-gray-200 lg:col-span-2 dark:bg-gray-700">
+		<div class=" bg-white shadow-md dark:bg-gray-800">
            <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
               <div class="flex items-center flex-1 space-x-4">
                   <h5>
@@ -35,25 +35,22 @@
               <table class="table-auto w-full text-sm text-left text-gray-500 dark:text-gray-400">
                   <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                       <tr>
-                          <th scope="col" class="px-4 py-3">TS</th>
+						  <th scope="col" class="px-4 py-3">Start</th>
                           <th scope="col" class="px-4 py-3">Time</th>
-                          <th scope="col" class="px-4 py-3">Records</th>
-                          <th scope="col" class="px-4 py-3">Query</th>
+                          <th scope="col" class="px-4 py-3">Method</th>
+                          <th scope="col" class="px-4 py-3">URL</th>
                       </tr>
                   </thead>
                   <tbody>
 					<template v-for="event in eventStore.filteredEvents" :key="event.EVENTID">
-                      <tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                      <tr @click="eventStore.setSelected(event)" class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
 						  <td class="w-4 px-4 py-3" nowrap>
 							<div>{{formatTime(event.timestamp)}}</div>
-							<div>{{event.extraInfo.datasource}}</div>
 						</td>
 						<td class="w-4 px-4 py-3"> {{eventStore.getLargestTime(event.extraInfo.executionTime)}}</td>
-						<td class="w-4 px-4 py-3">{{ event.extraInfo.recordCount }}</td>
+						<td class="w-4 px-4 py-3"> {{event.extraInfo.request.method}}</td>
+						<td class="w-4 px-4 py-3">{{ event.details }}</td>
 
-                          <td scope="row" class="flex items-center px-4 py-2 font-medium text-gray-900 dark:text-white">
-							{{event.extraInfo.sql}}
-                          </td>
                       </tr>
 						</template>
 
@@ -62,10 +59,52 @@
 
       </div>
   </div>
-</section>
+	  </div>
+	  <div class="h-32 rounded-lg bg-gray-800 dark:bg-gray-700" v-if="eventStore.getSelectedEvent">
+			  <div class="pt-4 bg-white dark:bg-gray-800">
+				  <label for="table-search" class="sr-only">Search</label>
+				  <div class="relative mt-1 px-1">
+					  <div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+						  <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+							  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+						  </svg>
+					  </div>
+					  <input type="text" id="table-search" class="block py-1 ps-10 w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items">
+				  </div>
+			  </div>
+			  <table class="w-100 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+				  <tbody>
 
-</template>
-<script setup>
+					  <template v-for="(panelItems, panelName) in detailPanels()" :key="panelName">
+						  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+							  <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+								  {{panelName}}
+							  </th>
+						  </tr>
+						  <template v-for="(itemValue,itemKey) in panelItems" :key="itemKey">
+							  <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+								  <td scope="row">
+									  <div class="text-gray-900 whitespace-nowrap dark:text-white">{{itemKey}}</div>
+									  <div class="mt-1">
+										  <template v-if="typeof itemValue === 'array' || typeof itemValue === 'object'">
+											  <VueJsonView theme="chalk" :src="itemValue" collapsed sortKeys />
+										  </template>
+
+										  <template v-else>
+											  {{itemValue}}
+										  </template>
+									  </div>
+								  </td>
+							  </tr>
+						  </template>
+					  </template>
+
+				  </tbody>
+			  </table>
+
+	  </div>
+	</div>
+  </template><script setup>
 import { ref, defineProps, onMounted } from 'vue'
 import VueJsonView from '@matpool/vue-json-view'
 import { HighCode } from 'vue-highlight-code';
@@ -84,6 +123,16 @@ const formatTime = (timestamp) => {
 }
 const formatDuration = (timeduration) => {
 	return moment.duration(timeduration/1000,'milliseconds').humanize('milliseconds');
+}
+
+const detailPanels = function () {
+	if(eventStore.getSelectedEvent){
+		return {
+			"Request": eventStore.getSelectedEvent.extraInfo.request,
+			"Response": eventStore.getSelectedEvent.extraInfo.response
+		};
+	}
+	return {};
 }
 
 

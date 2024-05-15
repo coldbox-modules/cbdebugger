@@ -3,7 +3,15 @@
 	 <div style="z-index: 100000; " class="dark dock flex flex-col w-full bottom-0 fixed border border-gray-600 bg-gray-800 text-white" :class="{ 'is-open': isOpen, 'h-1/2-screen max-h-1/2-screen': isOpen }">
 	  <div class="title-bar flex justify-between items-center p-1 bg-gray-900">
 		<img src="/includes/images/CBDebugger-logo.svg" class="h-6 w-6" alt="CB Debugger" />
-		<span class="title text-sm">{{ title }}</span>
+
+		<template v-if="requestStore.getSelectedRequest">
+			<span class="title text-sm">{{ requestStore.getSelectedRequest.details }}</span>
+		</template>
+		<template v-if="!requestStore.getSelectedRequest">
+			<span class="title text-sm">{{ title }}</span>
+		</template>
+
+
 		<div class="controls flex space-x-2">
 		  <button @click="toggleDock" class="p-1 rounded">
 			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-4 w-4 text-blue-500 hover:text-blue-700">
@@ -34,7 +42,8 @@
 		</div>
 	  </div>
 
-	  <div v-show="isOpen" class="flex max-h-[400px]">
+	  <div v-show="isOpen">
+	  <div  class="flex max-h-[400px]">
 		<div class="flex flex-col w-60 min-w-60 overflow-y-scroll">
 			<div class="relative m-1">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -48,7 +57,7 @@
 			<div role="list" >
 			<template v-for="item in requestStore.requests" :key="item.EVENTID">
 					<a class="flex py-3 px-2 border-b hover:bg-gray-100 dark:hover:bg-gray-600 dark:border-gray-600"
-					@click="loadTransactionId(item.transactionId)"
+					@click="loadRequest(item)"
 					:class="{ 'bg-gray-200 dark:bg-gray-600': item.transactionId == eventStore.transactionID}">
 						<div class="pl-3 w-full">
                           <div class="text-gray-500 font-normal mb-1.5 dark:text-gray-400 text-sm">{{cleanURL(item.details)}}</div>
@@ -66,18 +75,29 @@
 			</div>
 		</div>
 		<div class="tabs grow">
-			<nav class="bg-gray-50 dark:bg-gray-700">
-				<div class="max-w-screen-xl  mx-auto">
-					<div class="flex items-center">
-						<ul v-if="configStore.config" class="flex flex-row font-medium text-sm divide-x  divide-gray-800">
-							<li v-for="tab in configStore.config.MENU" :key="tab.key">
-								<button @click="showTabDetail(tab.key)" :class="{ 'bg-gray-200 dark:bg-gray-600': tab.key == selectedTab}"
-								class="py-1 px-2 text-gray-900 dark:text-white hover:dark:bg-gray-600" aria-current="page">{{tab.name}}</button>
-							</li>
-						</ul>
+			<template v-if="requestStore.getSelectedRequest">
+				<nav class="bg-gray-50 dark:bg-gray-700">
+					<div class="max-w-screen-xl  mx-auto">
+						<div class="flex items-center">
+							<ul v-if="configStore.config" class="flex flex-row font-medium text-sm divide-x  divide-gray-800">
+								<template v-for="tab in configStore.config.MENU" :key="tab.key">
+									<template v-if="requestStore.getSelectedRequest.stats.hasOwnProperty(tab.key)">
+									<li>
+										<button @click="showTabDetail(tab.key)" :class="{ 'bg-gray-200 dark:bg-gray-600': tab.key == selectedTab}"
+										class="py-1 px-2 text-gray-900 dark:text-white hover:dark:bg-gray-600" 
+										aria-current="page">
+										{{tab.name}} 
+										<span class="text-xs">({{requestStore.getSelectedRequest.stats[tab.key].count}})</span>
+										<div class="text-xs">{{eventStore.getLargestTime(requestStore.getSelectedRequest.stats[tab.key].duration)}}</div>
+									</button>
+									</li>
+									</template>
+								</template>
+							</ul>
+						</div>
 					</div>
-				</div>
-			</nav>
+				</nav>
+			</template>
 			<div class="tab-content overflow-y-scroll" style="height: 50vh;font-size: 12px;">
 				<div v-if="!eventStore.transactionID"  class="m-auto">
 					<div class="p-4 text-lg">Please select a request from the side panel</div>
@@ -89,7 +109,10 @@
 					<template v-if="selectedTab == 'cfquery'"><QueryPanel /></template>
 					<template v-if="selectedTab == 'hyper'"><HyperPanel /></template>
 					<template v-if="selectedTab == 'cborm'"><CbormPanel /></template>
+					<template v-if="selectedTab == 'qb'"><QBPanel /></template>
 					<template v-if="selectedTab == 'exception'"><ExceptionPanel /></template>
+					<template v-if="selectedTab == 'timer'"><TimerPanel /></template>
+					<!-- <template v-else><VueJsonView theme="chalk" :src="eventStore.filteredEvents" collapsed sortKeys /></template> -->
 
 					<!-- <div v-for="event in eventStore.filteredEvents" :key="event.EVENTID">
 						<template v-if="selectedTab == 'request' || selectedTab == 'exception'">
@@ -104,6 +127,7 @@
 		</div>
 	  </div>
 	</div>
+	</div>
   </template>
 
 <script setup>
@@ -115,11 +139,13 @@ import { useEventStore } from "@/stores/EventStore.js";
 
 import ConsolePanel from './panels/ConsolePanel.vue'
 import QueryPanel from './panels/QueryPanel.vue'
+import QBPanel from './panels/QBPanel.vue'
 import HyperPanel from './panels/HyperPanel.vue'
 import ModulePanel from './panels/ModulePanel.vue'
 import CachePanel from './panels/CachePanel.vue'
 import CbormPanel from './panels/CbormPanel.vue'
 import ExceptionPanel from './panels/ExceptionPanel.vue'
+import TimerPanel from './panels/TimerPanel.vue'
 
 const props = defineProps({
 	baselink: String
@@ -138,7 +164,6 @@ onMounted(async () => {
 const isOpen = ref(true)
 const title = ref('CB Debugger Dock')
 const isDropdownOpen = ref(false)
-const selectedTransactionId = ref(null)
 const selectedTab = ref('timer')
 const tabEvents = ref([])
 
@@ -156,8 +181,9 @@ const statusBadgeClass = (statusCode) => {
   return `status_${statusCodeRange}`;
 }
 
-const loadTransactionId = (transactionId) => {
-	eventStore.setTranactionID(transactionId);
+const loadRequest = (request) => {
+	requestStore.setSelected(request);
+	eventStore.setTranactionID(request.transactionId);
 }
 
 const showTabDetail = (tab) => {
@@ -177,7 +203,9 @@ const toggleDropdown = () => {
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+.dock {
+	font-family: sans-serif;
+}
 .status_badge {
 	@apply inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full
 }
