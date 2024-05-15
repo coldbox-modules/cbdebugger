@@ -66,8 +66,9 @@ component singleton accessors="true" {
 
 			for ( var css in ( chunk.css ?: [] ) ) {
 				var partialManifest = manifest.filter( ( key, value ) => value.file == css );
-
-				var firstEntryKey = partialManifest.keyArray().first();
+				var entries 	  = partialManifest.keyArray();
+				if( !arrayLen( entries ) ) continue;
+				var firstEntryKey = entries.first();
 
 				preloads.append( {
 					"src"      : firstEntryKey,
