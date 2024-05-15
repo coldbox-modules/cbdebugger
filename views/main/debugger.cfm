@@ -1,4 +1,4 @@
-<!---
+<!--- <!---
 This main debugger view collects all the different panels to present to the user
 We use cfinclude to be fast and sneaky
 --->
@@ -16,7 +16,9 @@ We use cfinclude to be fast and sneaky
 <cfparam name="args.refreshFrequency">
 <cfparam name="args.urlBase">
 <cfoutput>
-<div>
+
+
+ <div>
 	<!--- **************************************************************--->
 	<!--- REQUEST TRACKER REPORTS --->
 	<!--- **************************************************************--->
@@ -60,3 +62,5 @@ We use cfinclude to be fast and sneaky
 	</div>
 </div>
 </cfoutput>
+ --->
+ hello
