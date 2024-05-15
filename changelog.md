@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- JVMUtil wrong location for the temp directory for producing heap dumps
+
 ## [4.2.0] - 2024-01-10
 
 ### Added
