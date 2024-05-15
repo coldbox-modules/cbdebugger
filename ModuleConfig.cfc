@@ -34,95 +34,95 @@ component {
 		variables.settings = {
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
-			enabled          : true,
+			"enabled"          : true,
 			// This setting controls if you will activate the debugger for visualizations ONLY
 			// The debugger will still track requests even in non debug mode.
-			debugMode        : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
+			"debugMode"        : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
-			debugPassword    : "cb:null",
+			"debugPassword"    : "cb:null",
 			// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
 			// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
-			requestPanelDock : true,
+			"requestPanelDock" : true,
 			// Request Tracker Options
-			requestTracker   : {
+			"requestTracker"   : {
 				// Store the request profilers in heap memory or in cachebox, default is memory
-				storage                      : "memory",
+				"storage"                      : "memory",
 				// Which cache region to store the profilers in
-				cacheName                    : "template",
-				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself :) How Meta!
-				trackDebuggerEvents          : false,
+				"cacheName"                    : "template",
+				// Track all cbdebugger events, by default this is off, turn on, when actually profiling yourself" :) How Meta!
+				"trackDebuggerEvents"          : false,
 				// Slow request threshold in milliseconds, if execution time is above it, we mark those transactions as red
-				slowExecutionThreshold       : 1000,
+				"slowExecutionThreshold"       : 1000,
 				// How many tracking profilers to keep in stack
-				maxProfilers                 : 50,
+				"maxProfilers"                 : 50,
 				// If enabled, the debugger will monitor the creation time of CFC objects via WireBox
-				profileWireBoxObjectCreation : false,
+				"profileWireBoxObjectCreation" : false,
 				// Profile model objects annotated with the `profile` annotation
-				profileObjects               : false,
+				"profileObjects"               : false,
 				// If enabled, will trace the results of any methods that are being profiled
-				traceObjectResults           : false,
+				"traceObjectResults"           : false,
 				// Profile Custom or Core interception points
-				profileInterceptions         : false,
+				"profileInterceptions"         : false,
 				// By default all interception events are excluded, you must include what you want to profile
-				includedInterceptions        : [],
+				"includedInterceptions"        : [],
 				// Control the execution timers
-				executionTimers              : {
-					expanded           : true,
+				"executionTimers"              : {
+					"expanded"           : true,
 					// Slow transaction timers in milliseconds, if execution time of the timer is above it, we mark it
-					slowTimerThreshold : 250
+					"slowTimerThreshold" : 250
 				},
 				// Control the coldbox info reporting
-				coldboxInfo : { expanded : false },
+				"coldboxInfo" : { "expanded" : false },
 				// Control the http request reporting
-				httpRequest : {
-					expanded        : false,
+				"httpRequest" : {
+					"expanded"        : false,
 					// If enabled, we will profile HTTP Body content, disabled by default as it contains lots of data
-					profileHTTPBody : false
+					"profileHTTPBody" : false
 				}
 			},
 			// ColdBox Tracer Appender Messages
-			tracers     : { enabled : true, expanded : false },
+			"tracers"     : { "enabled" : false, "expanded" : false },
 			// Request Collections Reporting
-			collections : {
+			"collections" : {
 				// Enable tracking
-				enabled      : false,
+				"enabled"      : false,
 				// Expanded panel or not
-				expanded     : false,
+				"expanded"     : false,
 				// How many rows to dump for object collections
-				maxQueryRows : 50,
+				"maxQueryRows" : 50,
 				// How many levels to output on dumps for objects
-				maxDumpTop   : 5
+				"maxDumpTop"   : 5
 			},
 			// CacheBox Reporting
-			cachebox : { enabled : false, expanded : false },
+			"cachebox" : { "enabled" : false, "expanded" : false },
 			// Modules Reporting
-			modules  : { enabled : false, expanded : false },
+			"modules"  : { "enabled" : false, "expanded" : false },
 			// Quick and QB Reporting
-			qb       : {
-				enabled   : false,
-				expanded  : false,
+			"qb"       : {
+				"enabled"   : false,
+				"expanded"  : false,
 				// Log the binding parameters
-				logParams : true
+				"logParams" : true
 			},
 			// cborm Reporting
-			cborm : {
-				enabled   : false,
-				expanded  : false,
+			"cborm" : {
+				"enabled"   : false,
+				"expanded"  : false,
 				// Log the binding parameters
-				logParams : true
+				"logParams" : true
 			},
 			// Adobe ColdFusion SQL Collector
-			acfSql   : { enabled : false, expanded : false, logParams : true },
+			"acfSql"   : { "enabled" : false, "expanded" : false, "logParams" : true },
 			// Lucee SQL Collector
-			luceeSQL : { enabled : false, expanded : false, logParams : true },
+			"luceeSQL" : { "enabled" : false, "expanded" : false, "logParams" : true },
 			// Async Manager Collector
-			async    : { enabled : true, expanded : false },
+			"async"    : { "enabled" : true, "expanded" : false },
 			// Hyper Collector
-			hyper    : {
-				enabled         : false,
-				expanded        : false,
-				logResponseData : false,
-				logRequestBody  : false
+			"hyper"    : {
+				"enabled"         : false,
+				"expanded"        : false,
+				"logResponseData" : false,
+				"logRequestBody"  : false
 			}
 		};
 
@@ -139,7 +139,7 @@ component {
 		 * Custom Interception Points
 		 */
 		variables.interceptorSettings = {
-			customInterceptionPoints : [
+			"customInterceptionPoints" : [
 				// Before the debugger panel is rendered
 				"beforeDebuggerPanel",
 				// After the last debugger panel is rendered
@@ -172,10 +172,11 @@ component {
 	 */
 	function onLoad(){
 		variables.settings.menu = [
-			{"name": 'Timers', "enabled": true, 'key':'timers'},
-			{"name": 'Exceptions',  "enabled": true, 'key':'exceptions'},
+			{"name": 'Request', "enabled": true, 'key':'request'},
+			{"name": 'Timers', "enabled": true, 'key':'timer'},
+			{"name": 'Exceptions',  "enabled": true, 'key':'exception'},
 			{"name": 'HTTP', "enabled": true, 'key':'http'},
-			{"name": 'Tracer', "enabled": true, 'key':'tracers'},
+			{"name": 'Tracer', "enabled": true, 'key':'tracer'},
 		];
 		// Only activate interceptions and collectors if master switch is on or in test mode disable it
 		// And you must not be in testing mode
@@ -250,45 +251,16 @@ component {
 			}
 
 			/******************** QB COLLECTOR ************************************/
-			var qbMenu = {"name": 'QB',  "enabled": false, 'key':'cfquery' };
 			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "qb" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.QBCollector",
 					interceptorName  = "QBCollector@cbdebugger"
 				);
-				qbMenu.enabled = true;
 			}
-			variables.settings.menu.append(qbMenu);
 
-
-			/******************** QUICK COLLECTOR ************************************/
-
-			var quickMenu = {"name": 'Quick',  "enabled": false, 'key':'quick'};
-			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
-				interceptorService.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
-					interceptorName  = "QuickCollector@cbdebugger"
-				);
-
-				quickMenu.enabled = true;
-			}
-			variables.settings.menu.append(quickMenu);
-
-			/******************** CBORM COLLECTOR ************************************/
-
-
-			var cbormMenu = {"name": 'CBORM', "enabled": false, 'key':'cborm'};
-			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
-				interceptorService.registerInterceptor(
-					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
-					interceptorName  = "CBOrmCollector@cbdebugger"
-				);
-				cbormMenu.enabled = true;
-			}
-			variables.settings.menu.append(cbormMenu);
 			/******************** ACFSQL COLLECTOR ************************************/
 
-			var SqlMenu = {"name": 'DB',  "enabled": false, 'key':'cfquery'};
+			var SqlMenu = {"name": 'Database',  "enabled": false, 'key':'cfquery'};
 			if ( variables.settings.acfSql.enabled && !server.keyExists( "lucee" ) ) {
 				interceptorService.registerInterceptor(
 					interceptorClass = "#moduleMapping#.interceptors.ACFSqlCollector",
@@ -325,6 +297,34 @@ component {
 				luceeSQLMenu.enabled = true;
 			}
 			variables.settings.menu.append(hyperMenu);
+
+
+
+			/******************** QUICK COLLECTOR ************************************/
+
+			var quickMenu = {"name": 'Quick',  "enabled": false, 'key':'quick'};
+			if ( variables.settings.qb.enabled && controller.getModuleService().isModuleRegistered( "quick" ) ) {
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.QuickCollector",
+					interceptorName  = "QuickCollector@cbdebugger"
+				);
+
+				quickMenu.enabled = true;
+			}
+			variables.settings.menu.append(quickMenu);
+
+			/******************** CBORM COLLECTOR ************************************/
+
+
+			var cbormMenu = {"name": 'CBORM', "enabled": false, 'key':'cborm'};
+			if ( variables.settings.cborm.enabled && controller.getModuleService().isModuleRegistered( "cborm" ) ) {
+				interceptorService.registerInterceptor(
+					interceptorClass = "#moduleMapping#.interceptors.CBOrmCollector",
+					interceptorName  = "CBOrmCollector@cbdebugger"
+				);
+				cbormMenu.enabled = true;
+			}
+			variables.settings.menu.append(cbormMenu);
 
 			// Announce debugger loaded
 			interceptorService.announce( "onDebuggerLoad" );
