@@ -81,17 +81,17 @@
 						<div class="flex items-center">
 							<ul v-if="configStore.config" class="flex flex-row font-medium text-sm divide-x  divide-gray-800">
 								<template v-for="tab in configStore.config.MENU" :key="tab.key">
-									<template v-if="requestStore.getSelectedRequest.stats.hasOwnProperty(tab.key)">
 									<li>
 										<button @click="showTabDetail(tab.key)" :class="{ 'bg-gray-200 dark:bg-gray-600': tab.key == selectedTab}"
-										class="py-1 px-2 text-gray-900 dark:text-white hover:dark:bg-gray-600" 
+										class="py-1 px-2 text-gray-900 dark:text-white hover:dark:bg-gray-600"
 										aria-current="page">
-										{{tab.name}} 
-										<span class="text-xs">({{requestStore.getSelectedRequest.stats[tab.key].count}})</span>
-										<div class="text-xs">{{eventStore.getLargestTime(requestStore.getSelectedRequest.stats[tab.key].duration)}}</div>
+										{{tab.name}}
+										<template v-if="requestStore.getSelectedRequest.stats.hasOwnProperty(tab.key)">
+											<span class="text-xs">({{requestStore.getSelectedRequest.stats[tab.key].count}})</span>
+											<div class="text-xs">{{eventStore.getLargestTime(requestStore.getSelectedRequest.stats[tab.key].duration)}}</div>
+										</template>
 									</button>
 									</li>
-									</template>
 								</template>
 							</ul>
 						</div>
@@ -112,6 +112,7 @@
 					<template v-if="selectedTab == 'qb'"><QBPanel /></template>
 					<template v-if="selectedTab == 'exception'"><ExceptionPanel /></template>
 					<template v-if="selectedTab == 'timer'"><TimerPanel /></template>
+					<template v-if="selectedTab == 'request'"><RequestPanel/></template>
 					<!-- <template v-else><VueJsonView theme="chalk" :src="eventStore.filteredEvents" collapsed sortKeys /></template> -->
 
 					<!-- <div v-for="event in eventStore.filteredEvents" :key="event.EVENTID">
@@ -146,6 +147,7 @@ import CachePanel from './panels/CachePanel.vue'
 import CbormPanel from './panels/CbormPanel.vue'
 import ExceptionPanel from './panels/ExceptionPanel.vue'
 import TimerPanel from './panels/TimerPanel.vue'
+import RequestPanel from './panels/RequestPanel.vue'
 
 const props = defineProps({
 	baselink: String

@@ -1,202 +1,110 @@
 <template>
-	<div v-show="active">
-		<div class="counters-row performance-metrics">
-			<div class="counter" v-if="$request.responseDurationRounded">
-				<div class="counter-value">{{$request.responseDurationRounded}} ms</div>
-				<div class="counter-title">Response time</div>
-			</div>
-			<div class="counter" v-if="$request.memoryUsage">
-				<div class="counter-value">{{$request.memoryUsageFormatted}}</div>
-				<div class="counter-title">Memory</div>
-			</div>
-			<div class="counters-group right-aligned">
-				<div v-for="metric, index in $request.performanceMetrics" class="counter performance-chart-legend" :key="`${$request.id}-${index}`">
-					<div class="counter-value">{{metric.value}} ms</div>
-					<div class="counter-title has-mark" :class="`mark-${metric.color}`">{{metric.name}}</div>
+	<div class="grid grid-cols-1 gap-2 lg:grid-cols-3 lg:gap-4">
+	  <div class="h-32 rounded-lg bg-gray-200 lg:col-span-2 dark:bg-gray-700">
+		<div class="overflow-x-auto">
+		  <div class="flex flex-col px-4 py-3 space-y-3 lg:flex-row lg:items-center lg:justify-between lg:space-y-0 lg:space-x-4">
+              <div class="flex items-center flex-1 space-x-4">
+                  <h5>
+                      <span class="text-gray-500 pr-1">Total Timers:</span>
+                      <span class="dark:text-white"> {{ eventStore.totalEventCount}}</span>
+                  </h5>
+                  <h5>
+                      <span class="text-gray-500 pr-1">Total Time:</span>
+                      <span class="dark:text-white"> {{ eventStore.totalEventTime }}</span>
+                  </h5>
+              </div>
+              <div class="flex flex-col flex-shrink-0 space-y-3 md:flex-row md:items-center lg:justify-end md:space-y-0 md:space-x-3">
+                <label for="table-search" class="sr-only">Search</label>
+				<div class="relative">
+					<div class="absolute inset-y-0 rtl:inset-r-0 start-0 flex items-center ps-3 pointer-events-none">
+						<svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+							<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+						</svg>
+					</div>
+					<input type="text" v-model="eventStore.searchFilter" class="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search">
 				</div>
-			</div>
+				<button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                      <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                      </svg>
+                      Export
+                  </button>
+              </div>
+          </div>
+          <div class="">
+			<table class="table-auto w-full text-sm text-left text-gray-500 dark:text-gray-200">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-200 ">
+					<tr class="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+						<th width="120"  	scope="col" class="px-4 py-1">	Type</th>
+						<th width="100"  	scope="col" class="px-4 py-1">	Start</th>
+						<th width="50" 		scope="col" class="px-4 py-1">	End	</th>
+						<th width="50"				scope="col" class="px-4 py-1">Duration</th>
+						<th width="50"  	scope="col" class="px-4 py-1">	Count	</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template v-for="(eventType, eventTypeName) in requestStore.getSelectedRequest.stats">
+						<tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+
+							<td  class="px-4 py-1">{{(eventTypeName)}}</td>
+							<td  class="px-4 py-1">{{(eventType.first)}}</td>
+							<td  class="px-4 py-1">{{(eventType.last)}}</td>
+							<td  class="px-4 py-1">{{eventType.duration}}</td>
+							<td  class="px-4 py-1">{{eventType.count}}</td>
+						</tr>
+					</template>
+				</tbody>
+			</table>
 		</div>
-
-		<performance-chart :metrics="$request.performanceMetrics"></performance-chart>
-
-		<div tabs="performance">
-			<div class="performance-tabs">
-				<a class="performance-tab" :class="{ 'active': isTabActive('issues') }" href="#" @click.prevent="showTab('issues')" v-if="databaseSlowQueries.length || performanceIssues.length">
-					<icon name="alert-triangle"></icon> Issues
-				</a>
-				<a class="performance-tab" :class="{ 'active': isTabActive('timeline') }" href="#" @click.prevent="showTab('timeline')">
-					<icon name="pie-chart"></icon> Timeline
-				</a>
-				<a class="performance-tab" :class="{ 'active': isTabActive('client-side') }" href="#" @click.prevent="showTab('client-side')" v-if="isClientSideTabAvailable">
-					<icon name="smile"></icon> Client-side
-				</a>
-				<a class="performance-tab" :class="{ 'active': isTabActive('profiler') }" href="#" @click.prevent="showTab('profiler')" v-show="$platform.hasFeature('profiler')">
-					<icon name="clock"></icon> Profiler
-				</a>
 			</div>
-
-			<performance-log :issues="performanceIssues" :slow-queries="databaseSlowQueries" v-show="isTabActive('issues')"></performance-log>
-			<timeline name="performance" :timeline="$request.timeline" :tags="timelineTags" v-show="isTabActive('timeline')"></timeline>
-			<performance-client-side :metrics="$request.clientMetrics" :vitals="$request.webVitals" v-show="isTabActive('client-side')"></performance-client-side>
-			<profiler v-show="isTabActive('profiler')"></profiler>
-		</div>
+	  </div>
+	  <div class="h-32 rounded-lg bg-gray-800 dark:bg-gray-700">
+		<DetailDrawer title="Request Context" :items="eventStore.filteredEvents[0].extraInfo.rc"></DetailDrawer>
+		<DetailDrawer title="Private Request Context" :items="eventStore.filteredEvents[0].extraInfo.prc"></DetailDrawer>
+		<DetailDrawer title="HTTP Request" :items="eventStore.filteredEvents[0].extraInfo.requestData"></DetailDrawer>
+		<DetailDrawer title="HTTP Response" :items="eventStore.filteredEvents[0].extraInfo.response"></DetailDrawer>
+	  </div>
 	</div>
-</template>
+  </template>
+  <script setup>
+  import { ref, onMounted } from 'vue'
+  import { useEventStore } from "@/stores/EventStore.js";
+  import { useRequestStore } from "@/stores/RequestStore.js";
+  import DetailDrawer from '@/components/helpers/DetailDrawer.vue'
 
-<script>
-import Timeline from './Performance/Timeline'
+  import 'vue-highlight-code/dist/style.css'
 
-import Filter from '../../features/filter'
+  const eventStore = useEventStore();
+  const requestStore = useRequestStore();
+  onMounted(async () => {
+	await eventStore.fetchEvents();
+});
 
-import extend from 'just-extend'
-import omit from 'just-omit'
+  const formatTime = (timestamp) => {
+	  return new Date(timestamp).toLocaleTimeString()
+  }
 
-export default {
-	name: 'PerformanceTab',
-	components: { PerformanceChart, PerformanceClientSide, PerformanceLog, Profiler, Timeline },
-	props: [ 'active' ],
-	data: () => ({
-		selectedPerformanceTab: null,
-		timelineTags: [
-			{ tag: 'events', icon: 'zap', title: 'Events' },
-			{ tag: 'databaseQueries', icon: 'database', title: 'Database' },
-			{ tag: 'cacheQueries', icon: 'paperclip', title: 'Cache' },
-			{ tag: 'redisCommands', icon: 'layers', title: 'Redis' },
-			{ tag: 'queueJobs', icon: 'clock', title: 'Queue' },
-			{ tag: 'httpRequests', icon: 'compass', title: 'HTTP Requests' },
-			{ tag: 'views', icon: 'image', title: 'Views' },
-			{ tag: 'notifications', icon: 'mail', title: 'Notifications' }
-		]
-	}),
-	computed: {
-		activePerformanceTab() {
-			let activeTab = this.selectedPerformanceTab || 'issues'
 
-			if (activeTab == 'issues' && ! this.databaseSlowQueries.length && ! this.performanceIssues.length) return 'timeline'
-			if (activeTab == 'client-side' && ! this.isClientSideTabAvailable) return 'timeline'
+  const isValidJSON = val => {
+	   console.log(val, typeof val);
+	return typeof val === 'object' || typeof val === 'array'
+  };
 
-			return activeTab
-		},
+  </script>
+  <style scoped>
+  @import 'tailwindcss/base';
+  @import 'tailwindcss/components';
+  @import 'tailwindcss/utilities';
 
-		databaseSlowQueries() {
-			return this.$request.databaseQueries.filter(query => query.tags.includes('slow'))
-		},
+  .status_badge {
+	  @apply inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full
+  }
+  .status_indicator{
+	  @apply w-2 h-2 me-1 rounded-full;
+  }
+  .status_active {@apply status_badge  bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300;}
+  .status_active .indicator {@apply status_indicator bg-green-100 text-green-800;}
 
-		isClientSideTabAvailable() {
-			return this.$request.clientMetrics.filter(m => m.value).length
-				|| Object.values(this.$request.webVitals).filter(v => v.value).length
-		},
-
-		performanceIssues() {
-			return this.$request.log.filter(message => message.context?.performance).map(message => {
-				return extend({}, message, { context: omit(message.context, [ 'performance', 'trace' ]) })
-			})
-		}
-	},
-	methods: {
-		isTabActive(tab) { return this.activePerformanceTab == tab },
-		showTab(tab) {
-			this.selectedPerformanceTab = tab
-
-			if (tab == 'profiler') this.$profiler.loadRequest(this.$request)
-		},
-
-		refreshRequest() {
-			if (! this.active || ! this.$request) return
-
-			if (this.$platform.hasFeature('load-client-metrics')) this.$request.loadClientMetrics(this.$requests)
-
-			if (this.activePerformanceTab == 'profiler') this.$profiler.loadRequest(this.$request)
-		}
-	},
-	watch: {
-		active() { this.refreshRequest() },
-		$request() { this.refreshRequest() }
-	}
-}
-</script>
-
-<style lang="scss">
-@import '../../mixins.scss';
-
-$performance-colors-light: (
-	blue:   hsl(212, 89%, 55%),
-	red:    hsl(359, 57%, 55%),
-	green:  hsl(109, 52%, 45%),
-	purple: hsl(273, 57%, 55%),
-	grey:   hsl(240, 5, 27)
-);
-
-$performance-colors-dark: (
-	blue:   hsl(212, 76%, 60%),
-	red:    hsl(359, 45%, 60%),
-	green:  hsl(109, 40%, 50%),
-	purple: hsl(273, 45%, 60%),
-	grey:   hsl(240, 5, 60)
-);
-
-.performance-metrics {
-	margin-bottom: 15px !important;
-}
-
-.performance-chart-legend {
-	@each $color, $value in $performance-colors-light {
-		.mark-#{$color}:before {
-			background: $value;
-		}
-	}
-
-	@include dark {
-		@each $color, $value in $performance-colors-dark {
-			.mark-#{$color}:before {
-				background: $value;
-			}
-		}
-	}
-}
-
-.performance-tabs {
-	display: flex;
-	flex: 1;
-	justify-content: center;
-	margin-bottom: 10px;
-	margin-top: 30px;
-
-	.performance-tab {
-		align-items: center;
-	    border-radius: 12px;
-		color: rgb(64, 64, 64);
-		cursor: default;
-		display: flex;
-		font-size: 12px;
-		line-height: 26px;
-		padding: 0 26px;
-		text-align: center;
-		text-decoration: none;
-
-		@include dark {
-			color: rgb(158, 158, 158);
-		}
-
-		&:hover {
-			color: #258cdb;
-
-			@include dark { color: #f27e02; }
-		}
-
-		&.active {
-		    background: rgb(39, 134, 243);
-		    color: #f5f5f5;
-
-			@include dark {
-				background: hsl(31, 98%, 42%);
-				color: #fff;
-			}
-		}
-
-		.ui-icon {
-		    margin-right: 5px;
-		}
-	}
-}
-</style>
+  .status_inactive {@apply status_badge  bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300;}
+  .status_inactive .indicator {@apply status_indicator bg-red-100 text-red-800;}
+  </style>

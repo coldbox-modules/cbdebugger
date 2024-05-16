@@ -31,8 +31,6 @@
 			<TimeSeriesChart ref="chart1"/>
 			<TimeSeriesChart ref="chart2"/>
 			<TimeSeriesChart ref="chart3"/>
-			<TimeSeriesChart ref="chart4"/>
-			<TimeSeriesChart ref="chart5"/>
         </div>
 </div>
 
@@ -53,12 +51,13 @@ const chart5 = ref(null);
 
 onMounted(async () => {
   setInterval(() => {
-    fetchSystemStats();
+    //fetchSystemStats();
   }, 1000); // Add data point every second
   await cacheStore.fetchCache();
 });
 
 const fetchSystemStats = async function() {
+	if(!chart1.value || !chart2.value || !chart3.value) return;
 	try {
 		const response = await fetch( `${window.location.origin}/cbDebugger/getJVMReport`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
 		if (!response.ok) throw new Error('Failed to fetch stats');

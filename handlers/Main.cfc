@@ -229,7 +229,7 @@ component extends="coldbox.system.RestHandler" {
 					"duration": 0
 				};
 				acc[row.eventType].count++;
-				acc[row.eventType].last = timeformat(max(acc[row.eventType].last,row.timestamp),'hh:mm:ss tt');
+				acc[row.eventType].last = timeformat(max(acc[row.eventType].last,row.timestamp  + row.executionTimeMillis),'hh:mm:ss tt');
 				acc[row.eventType].first = timeformat(min(acc[row.eventType].first,row.timestamp),'hh:mm:ss tt');
 				acc[row.eventType].duration += row.executionTimeMillis;
 				return acc;
