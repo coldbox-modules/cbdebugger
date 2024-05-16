@@ -27,9 +27,9 @@ component singleton {
 	 *
 	 * @return The absolute path to the generated heap dump
 	 */
-	string function generateHeapDump( directoryPath ){
+	string function generateHeapDump( directoryPath = getTempDirectory() ){
 		// Create it if it doesn't exist
-		if ( !directoryExists( arguments.directoryPath = getTempDirectory() ) ) {
+		if ( !directoryExists( arguments.directoryPath ) ) {
 			directoryCreate( arguments.directoryPath );
 		}
 
