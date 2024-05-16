@@ -79,11 +79,11 @@
 				<nav class="bg-gray-50 dark:bg-gray-700">
 					<div class="max-w-screen-xl  mx-auto">
 						<div class="flex items-center">
-							<ul v-if="configStore.config" class="flex flex-row font-medium text-sm divide-x  divide-gray-800">
+							<ul v-if="configStore.config" class="flex flex-row font-medium text-sm divide-x divide-gray-800">
 								<template v-for="tab in configStore.config.MENU" :key="tab.key">
-									<li>
+									<li class="hover:dark:bg-gray-600">
 										<button @click="showTabDetail(tab.key)" :class="{ 'bg-gray-200 dark:bg-gray-600': tab.key == selectedTab}"
-										class="py-1 px-2 text-gray-900 dark:text-white hover:dark:bg-gray-600"
+										class="py-1 px-2 text-gray-900 dark:text-white"
 										aria-current="page">
 										{{tab.name}}
 										<template v-if="requestStore.getSelectedRequest.stats.hasOwnProperty(tab.key)">
