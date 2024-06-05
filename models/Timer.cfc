@@ -73,22 +73,21 @@ component accessors="true" singleton threadsafe {
 		parent          = ""
 	){
 		var timerId = variables.debuggerService.randomUUID();
-		getTimers().insert(
-			arguments.label,
-			{
-				"id"            : timerId,
-				"startedAt"     : now(),
-				"startCount"    : getTickCount(),
-				"method"        : arguments.label,
-				"stoppedAt"     : "",
-				"executionTime" : 0,
-				"metadata"      : arguments.metadata,
-				"parent"        : arguments.parent,
-				"type"          : arguments.type,
-				"times"         : 1
-			},
-			true
-		);
+		var timerInfo =
+		{
+			"id"            : timerId,
+			"startedAt"     : now(),
+			"startCount"    : getTickCount(),
+			"method"        : arguments.label,
+			"stoppedAt"     : "",
+			"executionTime" : 0,
+			"metadata"      : arguments.metadata,
+			"parent"        : arguments.parent,
+			"type"          : arguments.type,
+			"times"         : 1
+		}
+		getTimers().insert( arguments.label, timerInfo, true);
+
 		return timerId;
 	}
 
@@ -104,6 +103,7 @@ component accessors="true" singleton threadsafe {
 			timer.stoppedAt     = now();
 			timer.executionTime = getTickCount() - timer.startCount;
 			timer.metadata.append( arguments.metadata );
+
 		}
 		return this;
 	}

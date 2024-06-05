@@ -43,6 +43,7 @@ component extends="coldbox.system.Interceptor" {
 	 * Listen when request tracker is being recorded
 	 */
 	function onDebuggerProfilerRecording( event, interceptData, rc, prc ){
+
 		var requestTracker           = arguments.interceptData.requestTracker;
 		// Get the query tracker data
 		requestTracker.cfQueries.all = variables.acfDebugger
@@ -64,6 +65,18 @@ component extends="coldbox.system.Interceptor" {
 			}
 			requestTracker.cfqueries.grouped[ sqlHash ].count++;
 			requestTracker.cfqueries.grouped[ sqlHash ].records.append( row );
+
+
+			variables.debuggerService.pushEvent(
+				"transactionId": requestTracker.id,
+				"eventType": 'cfquery',
+				"timestamp": row.timestamp,
+				"details": row.body,
+				"executionTimeMillis": row.executionTime,
+				"extraInfo": row,
+				"caller": row.caller
+			);
+
 		} );
 
 		// Store total number of queries executed

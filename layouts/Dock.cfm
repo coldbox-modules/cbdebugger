@@ -3,25 +3,8 @@
 <!--- Head Assets --->
 <cfinclude template="includes/head.cfm">
 
-<div
-	x-data = "{
-		appUrl : '#encodeForJavaScript( event.buildLink( '' ) )#'
-	}"
-	class="cbd-debugger cbd-dock"
-	id="cbd-debugger"
-	data-appurl="#event.buildLink( '' )#"
->
-	#announce( "beforeDebuggerPanel", {
-		debuggerConfig : args.debuggerConfig,
-		debuggerService : args.debuggerService
-	} )#
-
-	#view()#
-
-	#announce( "afterDebuggerPanel", {
-		debuggerConfig : args.debuggerConfig,
-		debuggerService : args.debuggerService
-	} )#
+<div id="cbdebug-dock" :baselink="#encodeForJavaScript( event.buildLink( '' ) )#">
+	hello
 </div>
 
 <!--- JS Assets --->

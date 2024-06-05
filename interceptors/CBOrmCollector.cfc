@@ -177,6 +177,16 @@ component extends="coldbox.system.Interceptor" {
 
 		// Log by timeline
 		requestTracker.cborm.all.append( logData );
+
+		variables.debuggerService.pushEvent(
+			"transactionId": requestTracker.id,
+			"eventType": 'cborm',
+			"timestamp": logData.timestamp,
+			"details": logData.sql,
+			"executionTimeMillis": logData.executionTime,
+			"extraInfo": logData,
+			"caller": logData.caller
+		);
 	}
 
 }

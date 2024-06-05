@@ -15,5 +15,11 @@
 			"directoryPath": "./",
 			"isPhysicalDirectoryPath": false
 		}
-	]
+	],
+	"css.customData": [
+		".vscode/tailwind.json"
+	],
+	"css.lint.unknownAtRules": "ignore",
+	"less.lint.unknownAtRules": "ignore",
+	"scss.lint.unknownAtRules": "ignore"
 }

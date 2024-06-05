@@ -1,6 +1,6 @@
-component extends="coldbox.system.RestHandler"{
+component extends="coldbox.system.RestHandler" profile{
 
-	any function index( event, rc, prc ){
+	any function index( event, rc, prc ) profile {
 		sleep( randRange(100,2000 ) );
 		event.getResponse()
 			.setData(
@@ -19,7 +19,13 @@ component extends="coldbox.system.RestHandler"{
 	}
 
 	any function person( event, rc, prc ){
-		sleep( randRange(100,2000 ) );
+		startCBTimer( "sleep" );
+		cbTimeIt( "sleep", ()=>{
+			sleep( randRange(100,2000 ) );
+
+		},{
+			"message" = "Sleeping"
+		});
 		event.getResponse()
 			.setData(
 				getInstance( "MockData@MockDataCFC" )
@@ -34,6 +40,7 @@ component extends="coldbox.system.RestHandler"{
 						profileUrl = "imageURL"
 					)
 			);
+			stopCBTimer( "sleep" );
 	}
 
 }

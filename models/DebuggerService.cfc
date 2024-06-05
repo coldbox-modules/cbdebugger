@@ -72,6 +72,8 @@ component
 		variables.secretKey      = "";
 		// Create persistent profilers
 		variables.profilers      = [];
+		// Create persistent events
+		variables.events      = [];
 		// Runtime
 		variables.jvmRuntime     = createObject( "java", "java.lang.Runtime" ).getRuntime();
 		variables.Thread         = createObject( "java", "java.lang.Thread" );
@@ -182,6 +184,34 @@ component
 		return this;
 	}
 
+
+	/**
+	 * Load the vite manifest, it caches it in the `default` cache for 1 day once loaded.
+	 * You can remove it by reiniting your application or using the force argument.
+	 *
+	 * @manifest The location of the manifest, defaults to `includes/js/manifest.json`
+	 * @force Force load the manifest even if cached.
+	 */
+	function loadViteManifest( manifest, boolean force = false ){
+		param arguments.manifest = "#event.getModuleRoot( "cbDebugger" )#includes/js/manifest.json";
+
+		var cacheKey = "vite-manifest-#controller.getAppHash()#";
+		var cache = getCacheRegion();
+
+		if( arguments.force ){
+			cache.clear( cacheKey );
+		}
+
+		return cache.getOrSet(
+			cacheKey,
+			function(){
+				return fileExists( manifest ) ? deserializeJSON( fileRead( manifest ) ) : {};
+			},
+			1440, // 1 day
+			0
+		);
+	}
+
 	/**
 	 * Create a new request tracking structure. Called by the Request collector when it's ready
 	 * to start tracking
@@ -241,13 +271,22 @@ component
 	}
 
 	/**
+	 * Get the key used in the off heap storage
+	 */
+	function getEventStorageKey(){
+		return "cbDebugger-events-#variables.environment.appName.replace( " ", "-", "all" )#";
+	}
+
+	/**
 	 * Reset the request tracking profilers
 	 */
 	DebuggerService function resetProfilers(){
 		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
 			getCacheRegion().set( getStorageKey(), [], 0, 0 );
+			getCacheRegion().set( getEventStorageKey(), [], 0, 0 );
 		} else {
 			variables.profilers = [];
+			variables.events = [];
 		}
 		return this;
 	}
@@ -351,6 +390,23 @@ component
 	}
 
 	/**
+	 * Get the profiler storage array depending on the storage options
+	 */
+	array function getEventStorage(){
+		if ( variables.debuggerConfig.requestTracker.storage eq "cachebox" ) {
+			return getCacheRegion().getOrSet(
+				getEventStorageKey(),
+				function(){
+					return [];
+				},
+				0
+			);
+		} else {
+			return variables.events;
+		}
+	}
+
+	/**
 	 * Record a profiler and it's timers internally
 	 *
 	 * @event         The request context that requested the record
@@ -382,12 +438,15 @@ component
 				"type"            : arguments.exception.type ?: "",
 				"where"           : arguments.exception.where ?: ""
 			};
+
+
 		}
 
 		// Verify we have the tracking struct, we might not have it due to exceptions
 		if ( !request.keyExists( "cbDebugger" ) ) {
 			createRequestTracker( arguments.event );
 		}
+
 
 		// Event before recording
 		variables.interceptorService.announce(
@@ -439,6 +498,65 @@ component
 			storageSizeCheck();
 		} );
 
+		var requestInfo = {
+			"coldbox": request.cbdebugger.coldbox,
+			"endFreeMemory": request.cbdebugger.endFreeMemory,
+			"executionTime": request.cbdebugger.executionTime,
+			"formData": request.cbdebugger.formData,
+			"fullUrl": request.cbdebugger.fullUrl,
+			"httpHost": request.cbdebugger.httpHost,
+			"httpReferer": request.cbdebugger.httpReferer,
+			"id": request.cbdebugger.id,
+			"inetHost": request.cbdebugger.inetHost,
+			"ip": request.cbdebugger.ip,
+			"localIp": request.cbdebugger.localIp,
+			"queryString": request.cbdebugger.queryString,
+			"requestData": request.cbdebugger.requestData,
+			"response": request.cbdebugger.response,
+			"startCount": request.cbdebugger.startCount,
+			"startFreeMemory": request.cbdebugger.startFreeMemory,
+			"threadInfo": request.cbdebugger.threadInfo,
+			"timestamp": request.cbdebugger.timestamp,
+			"fwexectime": request.fwexectime,
+			"module_name": request.module_name ?: "",
+			"rc": makeCollectionSafe(request.cb_requestcontext.getCollection()),
+			"prc": makeCollectionSafe(request.cb_requestcontext.getPrivateCollection())
+		};
+
+
+		if(!structIsEmpty(exceptionData)){
+			pushEvent(
+				"transactionId": request.cbdebugger.id,
+				"eventType": 'exception',
+				"timestamp": now(),
+				"details": exceptionData.detail,
+				"executionTimeMillis": executionTime,
+				"extraInfo": exceptionData,
+				"caller": exceptionData.stackTrace
+			);
+		}
+		if(request.cbdebugger.keyExists("timers")){
+			request.cbdebugger.timers.each((timerName, timer) => {
+				pushEvent(
+					"transactionId": request.cbdebugger.id,
+					"eventType": 'timer',
+					"timestamp": timer.startedAt,
+					"details": timerName,
+					"executionTimeMillis": timer.executionTime,
+					"extraInfo": timer
+				);
+			});
+		}
+
+		pushEvent(
+			"transactionId": requestInfo.id,
+			"eventType": 'request',
+			"timestamp": requestInfo.timestamp,
+			"details": requestInfo.fullUrl,
+			"executionTimeMillis": requestInfo.executionTime,
+			"extraInfo": requestInfo
+		);
+
 		return this;
 	}
 
@@ -451,6 +569,42 @@ component
 			arrayDeleteAt( targetStorage, arrayLen( targetStorage ) );
 		}
 	}
+
+	function makeCollectionSafe( required scope, depth = 1, maxDepth = 4 ){
+		var list = {};
+
+		if(arguments.depth > arguments.maxDepth){
+			return '{Max Depth}';
+		}
+		if(isSimpleValue(arguments.scope)){
+			return arguments.scope
+		} else if (isObject(arguments.scope)){
+			return 'Object Def'
+		}  else if (isCustomFunction(arguments.scope)){
+			return 'Function Def'
+		} else if (isStruct(arguments.scope)){
+			for( var i in arguments.scope){
+				list[i] = makeCollectionSafe( arguments.scope[i], 1+arguments.depth, arguments.maxDepth )
+			}
+		} else if (isArray(arguments.scope)){
+			for( var i = 1; i < arrayLen(arguments.scope); i++){
+				list[i] = makeCollectionSafe( arguments.scope[i], 1+arguments.depth, arguments.maxDepth )
+				if(i > arguments.maxDepth){
+					list[i+1] = '{Max Limit}'
+					break;
+				}
+			}
+
+		} else {
+			return getMetadata(arguments.scope);
+		}
+
+
+
+		return list;
+	}
+
+
 
 	/**
 	 * Retrieve the profiler by incoming id
@@ -498,6 +652,15 @@ component
 		// Push it
 		request.cbDebugger.tracers.append( arguments );
 
+		pushEvent(
+			"transactionId" = request.cbDebugger.id,
+			"eventType" = 'tracer',
+			"timestamp" = now(),
+			"details" = arguments.message,
+			"executionTimeMillis" = 0,
+			"extraInfo" = arguments
+		)
+
 		return this;
 	}
 
@@ -516,6 +679,55 @@ component
 		param request.cbDebugger.tracers = [];
 		return request.cbDebugger.tracers;
 	}
+
+
+
+	/**
+	 * Push a new tracer into the debugger. This comes from LogBox, so we follow
+	 * the same patterns
+	 *
+	 * @message   The message to trace
+	 * @severity  The severity of the message
+	 * @category  The tracking category the message came from
+	 * @timestamp The timestamp of the message
+	 * @extraInfo Extra info to store in the tracer
+	 */
+	DebuggerService function pushEvent(
+		transactionId = "",
+		eventType = "",
+		timestamp = now(),
+		details  = "",
+		executionTimeMillis  = 0,
+		extraInfo  = ""
+
+	){
+		arguments.eventId = variables.uuid.randomUUID().toString();
+
+		// Ensure we have the tracers array for the request
+		param variables.events = [];
+
+		// Push it
+		variables.events.append( arguments );
+
+		return this;
+	}
+
+	/**
+	 * Reset all events
+	 */
+	DebuggerService function resetEvents(){
+		variables.events = [];
+		return this;
+	}
+
+	/**
+	 * Get all the events array
+	 */
+	array function getEvents(){
+		param variables.events = [];
+		return variables.events;
+	}
+
 
 	/**
 	 * Get the hostname of the executing machine.

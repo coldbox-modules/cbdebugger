@@ -59,6 +59,16 @@ component extends="coldbox.system.Interceptor" {
 
 		// Log by timeline
 		requestTracker.qbQueries.all.append( logData );
+
+		variables.debuggerService.pushEvent(
+			"transactionId": requestTracker.id,
+			"eventType": 'qb',
+			"timestamp": logData.timestamp,
+			"details": logData.sql,
+			"executionTimeMillis": logData.executionTime,
+			"extraInfo": logData,
+			"caller": logData.caller
+		);
 	}
 
 }
