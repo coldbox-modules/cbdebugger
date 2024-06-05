@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useEventStore = defineStore('event_type', {
+export const useEventTypeStore = defineStore('event_type', {
   state: () => ({
     events: [],
     searchFilter: '',
@@ -11,13 +11,14 @@ export const useEventStore = defineStore('event_type', {
 
   }),
   actions: {
-    async fetchEvents( ) {
-		if( !this.transactionID ) return console.error( "No transaction ID set" );
+    async fetchEvents( eventType ) {
+		console.log( eventType );
+		if( !eventType ) return console.error( "No type ID set" );
 		try {
-			const response = await fetch( `${window.location.origin}/cbDebugger/getDebuggerEvents?type=${this.transactionID}&sortKey=${this.sortKey}&sortDir=${test.sortDir}`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
+			const response = await fetch( `${window.location.origin}/cbDebugger/getDebuggerEvents?type=${eventType}&sortKey=${this.sortKey}&sortDir=${this.sortDir}`, { headers: { "x-Requested-With": "XMLHttpRequest" } } )
 			if (!response.ok) throw new Error('Failed to fetch events');
 			const data = await response.json();
-			this.events = data.data;
+			return data.data;
 		} catch (error) {
 			console.error('Error fetching events:', error);
 		}
