@@ -47,13 +47,12 @@
 				display: false
 			},
 			y: {
-				display: true
+				display: false
 			}
 		}
 	}
 
 	function addDataPoint(newPoint) {
-		console.log('Adding data point:', newPoint);
 		if (dataPoints.length >= maxItems) {
 			dataPoints.shift();
 		}
@@ -64,7 +63,7 @@
 				{
 					label: 'Data One',
 					backgroundColor: 'rgba(255, 99, 132, 0.5)',
-					borderColor: 'rgb(255, 99, 132)',
+					borderColor: 'rgb(69, 222, 69)',
 					tension: 0.5, // Adds curviness to the lines
 					pointRadius: 0, // Removes the dots
 					borderWidth: 1.5,
