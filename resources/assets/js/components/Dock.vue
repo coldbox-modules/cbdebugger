@@ -88,7 +88,13 @@
 										{{tab.name}}
 										<template v-if="requestStore.getSelectedRequest.stats.hasOwnProperty(tab.key)">
 											<span class="text-xs">({{requestStore.getSelectedRequest.stats[tab.key].count}})</span>
-											<div class="text-xs">{{eventStore.getLargestTime(requestStore.getSelectedRequest.stats[tab.key].duration)}}</div>
+											<div>
+
+												<span :class="timeBadgeClass(requestStore.getSelectedRequest.stats[tab.key].duration)">
+													<span class="indicator"></span>
+													<div class="text-xs">{{eventStore.getLargestTime(requestStore.getSelectedRequest.stats[tab.key].duration)}}</div>
+												</span>
+											</div>
 										</template>
 									</button>
 									</li>
@@ -181,6 +187,19 @@ const cleanURL = (url) => {
 const statusBadgeClass = (statusCode) => {
   let statusCodeRange = statusCode.toString().charAt(0) + '00';
   return `status_${statusCodeRange}`;
+}
+
+const timeBadgeClass = (millis) => {
+	if(millis > 10000){
+		return 'status_500';
+	}
+	if(millis > 5000){
+		return 'status_400';
+	}
+	if(millis > 3000){
+		return 'status_300';
+	}
+	return 'status_200';
 }
 
 const loadRequest = (request) => {
