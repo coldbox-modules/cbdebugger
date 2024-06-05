@@ -243,16 +243,70 @@ component extends="coldbox.system.RestHandler" {
 	 * Get a profiler report via ajax
 	 */
 	function getDebuggerEvents( event, rc, prc ){
-		var transactionEvents = variables.debuggerService.getEvents(  )
-		//|| ['tracer'].find(row.eventType)
-		.filter((row)=> {return row.transactionId == rc.id  })
-		.map((row)=>{
+		var transactionEvents = variables.debuggerService.getEvents(  );
+		if(rc.keyExists('id')){
+			transactionEvents = transactionEvents.filter((row)=> {return row.transactionId == rc.id  })
+		}
+		else if (rc.keyExists('type')) {
+			transactionEvents = transactionEvents
+				.filter((row)=> {return row.eventType == rc.type  })
+				.sort((a,b)=>{
+					if(rc.sortDir == 'asc'){
+						return a[rc.sortKey] - b[rc.sortKey];
+					}
+					return b[rc.sortKey] - a[rc.sortKey];
+				})
+				.filter((row,idx)=> {return idx < 10  })
+
+		}
+		transactionEvents = transactionEvents.map((row)=>{
 			row['linkToFile'] = '';
 			if(row.keyExists('extraInfo') && row.extraInfo.keyExists('caller')){
 				row['linkToFile'] = variables.debuggerService.openInEditorURL(event,row.extraInfo.caller);
 			}
 			return row;
 		})
+		arguments.event.getResponse().setData( transactionEvents );
+	}
+
+
+	/**
+	 * Get a profiler report via ajax
+	 */
+	function getDebuggerRequestEvents( event, rc, prc ){
+		var transactionEvents = variables.debuggerService.getEvents(  )
+					.filter((row)=> {return row.eventType == 'request'  });
+
+		 if (rc.keyExists('type')) {
+			transactionEvents = transactionEvents
+				.filter((row)=> {return row.extraInfo.response.statusCode == rc.type  })
+
+		}
+		transactionEvents = transactionEvents.map((row)=>{
+			var temp = duplicate(row);
+			temp['time'] = timeFormat(temp.timestamp,'HH:mm:ss tt');
+			temp['statusCode'] = temp.extraInfo.response.statusCode;
+			temp['method'] = temp.extraInfo.requestData.method;
+			temp.delete('extraInfo');
+			return temp;
+		})
+		.reduce((acc,row)=>{
+			if(!acc.keyExists(row.details)) {
+				acc[row.details] = duplicate(row);
+				acc[row.details]['count'] = 0;
+			}
+			acc[row.details]['count']++;
+			return acc;
+		},{})
+
+		transactionEvents = StructValueArray(transactionEvents)
+		.sort((a,b)=>{
+			if(rc.sortDir == 'asc'){
+				return a[rc.sortKey] - b[rc.sortKey];
+			}
+			return b[rc.sortKey] - a[rc.sortKey];
+		})
+		.filter((row,idx)=> {return idx < 10  })
 		arguments.event.getResponse().setData( transactionEvents );
 	}
 
