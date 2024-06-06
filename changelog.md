@@ -9,8 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Addded
+
+- Lucee 6 Certification
+- BoxLang additions
+
 ### Fixed
 
+- Alias for testing mode in CommandBox 6
 - JVMUtil wrong location for the temp directory for producing heap dumps
 
 ## [4.2.0] - 2024-01-10

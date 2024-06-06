@@ -69,6 +69,7 @@ Apache License, Version 2.0.
 - Lucee 5+
 - ColdFusion 2018+
 - ColdBox 6+
+- CommandBox 6 For Development
 
 ## Optional Requirements
 

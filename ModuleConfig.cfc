@@ -32,6 +32,13 @@ component {
 		 * Settings
 		 */
 		variables.settings = {
+			// Internal engine flags
+			engine : {
+				isLucee = server.keyExists( "lucee" ),
+				isBoxLang = server.keyExists( "boxlang" ),
+				isAdobe = server.keyExists( "coldfusion" ) && server.coldfusion.productName.findNoCase( "ColdFusion" )
+			},
+
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
 			enabled          : true,
