@@ -13,14 +13,14 @@
         },
         "webroot":"test-harness",
         "aliases":{
-            "/moduleroot/cbdebugger":"../"
+            "/moduleroot/cbdebugger":"./"
         }
     },
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
     },
-	"env":{
+    "env":{
         "lucee-extensions":"D062D72F-F8A2-46F0-8CBC91325B2F067B"
     }
 }

@@ -1,8 +1,8 @@
 {
-    "name":"cbdebugger-adobe@2018",
+    "name":"cbdebugger-boxlang@1",
     "app":{
-        "serverHomeDirectory":".engine/adobe2018",
-        "cfengine":"adobe@2018"
+        "serverHomeDirectory":".engine/boxlang",
+        "cfengine":"boxlang@1"
     },
     "web":{
         "http":{
@@ -19,5 +19,11 @@
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
-    }
+    },
+	"env":{
+
+    },
+	"scripts" : {
+		"onServerInitialInstall":"install bx-compat"
+	}
 }

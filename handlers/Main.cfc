@@ -30,11 +30,21 @@ component extends="coldbox.system.RestHandler" {
 	 * Debugger disabled event
 	 */
 	function disabled( event, rc, prc ){
+		var data = "Page Not Found";
+
+		if ( getSetting( "environment" ) == "DEVELOPMENT" ) {
+			data = " isDebugCookieValid defined: " & debuggerService.isDebugCookieValid();
+			data &= ", secretKey defined: " & debuggerService.isSecretKeyDefined();
+			data &= ", doesCookieMatchesSecretKey: " & debuggerService.doesCookieMatchesSecretKey();
+
+			data &= ", debugMode: " & debuggerService.getDebugMode();
+		}
+
 		event.renderData(
 			statusCode = 404,
 			statusText = "Not Found",
 			type       = "text",
-			data       = "Page Not Found"
+			data       = data
 		);
 	}
 
