@@ -32,12 +32,12 @@ component extends="coldbox.system.RestHandler" {
 	function disabled( event, rc, prc ){
 		var data = "Page Not Found";
 
-		if ( getSetting("environment") == "DEVELOPMENT" ){
-			data = ' isDebugCookieValid defined: ' &  debuggerService.isDebugCookieValid() ;
-			data &= ', secretKey defined: ' &  debuggerService.isSecretKeyDefined() ;
-			data &= ', doesCookieMatchesSecretKey: ' &  debuggerService.doesCookieMatchesSecretKey() ;
+		if ( getSetting( "environment" ) == "DEVELOPMENT" ) {
+			data = " isDebugCookieValid defined: " & debuggerService.isDebugCookieValid();
+			data &= ", secretKey defined: " & debuggerService.isSecretKeyDefined();
+			data &= ", doesCookieMatchesSecretKey: " & debuggerService.doesCookieMatchesSecretKey();
 
-			data &= ', debugMode: ' & debuggerService.getDebugMode();
+			data &= ", debugMode: " & debuggerService.getDebugMode();
 		}
 
 		event.renderData(

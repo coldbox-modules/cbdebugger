@@ -158,13 +158,13 @@ component
 		// If there is no cookie, then use default to app setting
 		return variables.debugMode;
 	}
-	
+
 	/**
-	 * returns boolean if secret key is defined 
+	 * returns boolean if secret key is defined
 	 * init() will set secret key
 	 */
 	boolean function isSecretKeyDefined(){
-		return javacast('Boolean',len( variables.secretKey ));
+		return javacast( "Boolean", len( variables.secretKey ) );
 	}
 
 	/**
