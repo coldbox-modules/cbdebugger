@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- CBDEBUGGER-25 - Account for null datasource in QoQ
 - Alias for testing mode in CommandBox 6
 - JVMUtil wrong location for the temp directory for producing heap dumps
 
