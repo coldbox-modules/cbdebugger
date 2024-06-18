@@ -31,7 +31,7 @@
 				</td>
 
 				<td align="center">
-					#q.datasource#
+					#( q.datasource ?: "QoQ" )#
 				</td>
 
 				<td>
