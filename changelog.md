@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Lucee 6 Certification
 - BoxLang additions
+- Better information in dev env, if debugger is not accessible
 
 ### Fixed
 
