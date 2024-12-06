@@ -16,6 +16,11 @@
             "/moduleroot/cbdebugger":"./"
         }
     },
+    "JVM":{
+        "heapSize":"1024",
+        "javaVersion":"openjdk21_jdk",
+        "args":"-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9999"
+    },
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
