@@ -9,13 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2024-06-18
+
 ### Addded
 
 - Lucee 6 Certification
 - BoxLang additions
+- Better information in dev env, if debugger is not accessible
 
 ### Fixed
 
+- CBDEBUGGER-25 - Account for null datasource in QoQ
 - Alias for testing mode in CommandBox 6
 - JVMUtil wrong location for the temp directory for producing heap dumps
 
@@ -45,7 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dumb whitespace added by CFML engines when doing inline `<pre>#method()#</pre>` calls.
 - Better error handling when Debugger assets are not compiled instead of a cryptic error message:
-    `The parameter [str] to function [closure_m] is required but was not passed in.`
+      `The parameter [str] to function [closure_m] is required but was not passed in.`
 
 ## [4.1.0] - 2023-04-17
 
@@ -297,7 +301,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - <https://ortussolutions.atlassian.net/browse/CCM-25> Lucee support
 - <https://ortussolutions.atlassian.net/browse/CCM-24> Added names of rendered
 - Unloading of helpers on unload
-      views and layouts
+        views and layouts
 - Updated production ignore lists
 
 ## [1.0.1]
@@ -308,7 +312,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Create first module version
 
-[Unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.2.0...HEAD
+[Unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.3.0...HEAD
+
+[4.3.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.2.0...v4.3.0
 
 [4.2.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.1.0...v4.2.0
 

@@ -146,21 +146,32 @@ component
 	 */
 	boolean function getDebugMode(){
 		// If no secretKey has been set, don't allow debug mode
-		if ( not ( len( variables.secretKey ) ) ) {
+		if ( not ( isSecretKeyDefined() ) ) {
 			return false;
 		}
 		// If Cookie exists, it's value is used.
 		if ( isDebugCookieValid() ) {
 			// Must be equal to the current secret key
-			if ( cookie[ variables.cookieName ] == variables.secretKey ) {
-				return true;
-			} else {
-				return false;
-			}
+			return doesCookieMatchesSecretKey()
 		}
 
 		// If there is no cookie, then use default to app setting
 		return variables.debugMode;
+	}
+
+	/**
+	 * returns boolean if secret key is defined
+	 * init() will set secret key
+	 */
+	boolean function isSecretKeyDefined(){
+		return javacast( "Boolean", len( variables.secretKey ) );
+	}
+
+	/**
+	 * checks if cookie matches secret key
+	 */
+	boolean function doesCookieMatchesSecretKey(){
+		return cookie[ variables.cookieName ] == variables.secretKey;
 	}
 
 	/**

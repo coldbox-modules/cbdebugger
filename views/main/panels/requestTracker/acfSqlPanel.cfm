@@ -182,7 +182,7 @@
 														#numberFormat( q.endTime - q.startTime )# ms
 													</td>
 													<td align="center">
-														#q.datasource#
+														#( q.datasource ?: "QoQ" )#
 													</td>
 													<td>
 														<cfif q.template.len()>

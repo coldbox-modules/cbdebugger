@@ -197,7 +197,7 @@
 														#numberFormat( q.executionTime / 1000000 )# ms
 													</td>
 													<td align="center">
-														#q.datasource#
+														#( q.datasource ?: "QoQ" )#
 													</td>
 													<td>
 														<cfif q.src.len()>

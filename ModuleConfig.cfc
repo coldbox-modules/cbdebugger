@@ -34,11 +34,12 @@ component {
 		variables.settings = {
 			// Internal engine flags
 			engine : {
-				isLucee = server.keyExists( "lucee" ),
-				isBoxLang = server.keyExists( "boxlang" ),
-				isAdobe = server.keyExists( "coldfusion" ) && server.coldfusion.productName.findNoCase( "ColdFusion" )
+				isLucee   : server.keyExists( "lucee" ),
+				isBoxLang : server.keyExists( "boxlang" ),
+				isAdobe   : server.keyExists( "coldfusion" ) && server.coldfusion.productName.findNoCase(
+					"ColdFusion"
+				)
 			},
-
 			// This flag enables/disables the tracking of request data to our storage facilities
 			// To disable all tracking, turn this master key off
 			enabled          : true,
@@ -46,6 +47,9 @@ component {
 			// The debugger will still track requests even in non debug mode.
 			debugMode        : controller.getSetting( name = "environment", defaultValue = "production" ) == "development",
 			// The URL password to use to activate it on demand
+			// if set to cb:null, will generate random password
+			// to enable debugger in dev environment set to empty or custom password
+			// in live environment leave cb:null or set your own password
 			debugPassword    : "cb:null",
 			// This flag enables/disables the end of request debugger panel docked to the bottem of the page.
 			// If you disable i, then the only way to visualize the debugger is via the `/cbdebugger` endpoint
