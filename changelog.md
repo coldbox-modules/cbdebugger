@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.0] - 2025-02-19
+
 ## [4.3.0] - 2024-06-18
 
 ### Addded
@@ -312,10 +314,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Create first module version
 
-[Unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.3.0...HEAD
-
+[unreleased]: https://github.com/coldbox-modules/cbdebugger/compare/v4.4.0...HEAD
+[4.4.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.3.0...v4.4.0
 [4.3.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.2.0...v4.3.0
-
 [4.2.0]: https://github.com/coldbox-modules/cbdebugger/compare/v4.1.0...v4.2.0
-
 [4.1.0]: https://github.com/coldbox-modules/cbdebugger/compare/b070b77d9edee7725c052eab41bf3513a3a9f6d8...v4.1.0
