@@ -10,7 +10,7 @@ on:
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     env:
       DB_USER: root
       DB_PASSWORD: root
@@ -18,9 +18,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cfengine: [ "lucee@5", "lucee@6", "adobe@2018", "adobe@2021", "adobe@2023" ]
-        coldboxVersion: [ "^6.0.0", "^7.0.0" ]
+        cfengine: [ "lucee@5", "adobe@2021", "adobe@2023" ]
+        coldboxVersion: [ "^7.0.0" ]
         experimental: [ false ]
+        # Experimental: ColdBox BE vs All Engines
         include:
           - coldboxVersion: "be"
             cfengine: "lucee@5"
@@ -29,24 +30,23 @@ jobs:
             cfengine: "lucee@6"
             experimental: true
           - coldboxVersion: "be"
-            cfengine: "adobe@2018"
-            experimental: true
-          - coldboxVersion: "be"
             cfengine: "adobe@2021"
             experimental: true
           - coldboxVersion: "be"
             cfengine: "adobe@2023"
             experimental: true
+          - coldboxVersion: "be"
+            cfengine: "boxlang-cfml@1"
+            experimental: true
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: "11"
+          java-version: "21"
 
       - name: Setup Database and Fixtures
         run: |
