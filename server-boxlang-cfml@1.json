@@ -28,6 +28,6 @@
     "env":{
     },
     "scripts":{
-        "onServerInitialInstall":"install bx-compat-cfml --noSave"
+        "onServerInitialInstall":"install bx-compat-cfml,bx-orm --noSave"
     }
 }
