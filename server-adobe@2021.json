@@ -16,6 +16,10 @@
             "/moduleroot/cbdebugger":"./"
         }
     },
+	"jvm":{
+        "heapSize":"1024",
+        "javaVersion":"openjdk11_jre"
+    },
     "openBrowser":"false",
     "cfconfig":{
         "file":".cfconfig.json"
