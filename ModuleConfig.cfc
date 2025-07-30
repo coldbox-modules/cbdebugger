@@ -345,11 +345,9 @@ component {
 			var logBox = controller.getLogBox();
 			logBox.registerAppender( "tracer", "cbdebugger.appenders.TracerAppender" );
 			var appenders = logBox.getAppendersMap( "tracer" );
-			// Register the appender with the root loggger, and turn the logger on.
+			// Register the appender with the root logger, and turn the logger on.
 			var root      = logBox.getRootLogger();
-			root.addAppender( appenders[ "tracer" ] );
-			root.setLevelMax( 4 );
-			root.setLevelMin( 0 );
+			root.addAppender( appenders[ "tracer" ].setLevelMin( 0 ).setLevelMax( 4 ) );
 		}
 	}
 
