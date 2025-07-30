@@ -33,20 +33,20 @@ Request Tracker Collapsed
 
 ## Capabilities
 
-The ColdBox debugger is a light-weigth performance monitor and profiler for your ColdBox applications.  It tracks your requests, whether Ajax, traditional or REST, it's environment, execution and much more.  Here is a listing of some of the capabilities you get with the ColdBox Debugger:
+The ColdBox debugger is a light-weight performance monitor and profiler for your ColdBox applications.  It tracks your requests, whether Ajax, traditional or REST, its environment, execution and much more.  Here is a listing of some of the capabilities you get with the ColdBox Debugger:
 
 - Track all incoming requests to your applications
 - Track exceptions and execution environment
 - Track incoming HTTP requests, parameters, body, and much more
 - Track final request collections
-- Track Hibernate and cborm queries, criteria queries, and session stats
-- Track qb and quick queries, entities, and stats
+- Track Hibernate and CBORM queries, criteria queries, and session stats
+- Track QB and Quick queries, entities, and stats
 - Tap into LogBox via our Tracer messages and discover logging on a per-request basis
 - Profile execution and results of ANY model object
 - Profile execution of ANY ColdBox interception point
 - Custom Timer helpers for adding timing methods and annotations anywhere in your code
 - Profile your production or development apps with ease
-- Track ColdBox modules and lifecycles
+- Track ColdBox modules and life-cycles
 - Track Hyper HTTP/S calls
 - Track Adobe ColdFusion Queries (ColdFusion 2018+)
 - Track Lucee Queries
@@ -81,7 +81,7 @@ https://cbdebugger.ortusbooks.com/essentials/installation
 
 ## Settings
 
-The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add neglible performance to your applications.
+The debugger is highly configurable and we have tons of settings to assist you in your development adventures and also in your performance tuning. Please note that the more collectors you activate, the **slower** your application can become.  By default we have pre-selected defaults which add negligible performance to your applications.
 
 You can find how to configure the debugger here:
 https://cbdebugger.ortusbooks.com/essentials/configuration
