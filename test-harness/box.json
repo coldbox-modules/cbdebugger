@@ -6,7 +6,7 @@
     "description":"",
     "dependencies":{
         "coldbox":"^7.0.0",
-        "quick":"^4.2.4",
+        "quick":"^12",
         "cborm":"^4.0.0",
         "cbmailservices":"^2.7.1+112",
         "hyper":"^7.1.0",
