@@ -2,8 +2,6 @@
 <cfparam name="args.debuggerConfig">
 <cfparam name="args.debuggerService">
 <cfscript>
-	formatter = args.debuggerService.getFormatter();
-	appPath = getSetting( "ApplicationPath" );
 	totalExecutionTime = numberFormat( args.profiler.cfQueries.totalExecutionTime / 1000000 );
 </cfscript>
 
@@ -11,17 +9,37 @@
 <!--- Panel Component --->
 <div
 	id="cbd-luceeSql-panel"
+	data-profiler-id="#args.profiler.id#"
 	x-data="{
 		panelOpen : #args.debuggerConfig.luceeSql.expanded ? 'true' : 'false'#,
-		queryView : 'grouped',
-		isGroupView(){
-			return this.queryView == 'grouped'
-		},
-		isTimelineView(){
-			return this.queryView == 'timeline'
-		},
-		isSlowestView(){
-			return this.queryView == 'slowest'
+		queryView : 'none',
+		loadedViews : {},
+		isLoadingSql : false,
+		switchView( viewType ){
+			if( this.queryView === viewType ){
+				this.queryView = 'none';
+				return;
+			}
+			this.queryView = viewType;
+			if( this.loadedViews[ viewType ] ) return;
+			this.isLoadingSql = true;
+			var self = this;
+			var pid = this.$root.dataset.profilerId;
+			fetch( this.appUrl + 'cbDebugger/renderLuceeSqlView', {
+				method : 'POST',
+				headers : { 'x-Requested-With' : 'XMLHttpRequest' },
+				body : JSON.stringify({ id : pid, viewType : viewType })
+			})
+			.then( function( resp ){ return resp.text(); })
+			.then( function( html ){
+				self.$refs[ 'sqlView-' + viewType ].innerHTML = html;
+				self.loadedViews[ viewType ] = true;
+				self.isLoadingSql = false;
+			})
+			.catch( function(){
+				self.$refs[ 'sqlView-' + viewType ].innerHTML = 'Error loading SQL view';
+				self.isLoadingSql = false;
+			});
 		}
 	}"
 >
@@ -82,8 +100,8 @@
 		<div class="p10">
 			<!--- Grouped --->
 			<button
-				:class="{ 'cbd-selected' : isGroupView() }"
-				@click="queryView='grouped'"
+				:class="{ 'cbd-selected' : queryView === 'grouped' }"
+				@click="switchView('grouped')"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -92,8 +110,8 @@
 			</button>
 			<!--- Timeline --->
 			<button
-				:class="{ 'cbd-selected' : isTimelineView() }"
-				@click="queryView='timeline'"
+				:class="{ 'cbd-selected' : queryView === 'timeline' }"
+				@click="switchView('timeline')"
 			>
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 17h8m0 0V9m0 8l-8-8-4 4-6-6" />
@@ -102,12 +120,17 @@
 			</button>
 			<!--- Slowest --->
 			<button
-				:class="{ 'cbd-selected' : isSlowestView() }"
-				@click="queryView='slowest'"
+				:class="{ 'cbd-selected' : queryView === 'slowest' }"
+				@click="switchView('slowest')"
 			>
 				<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
 				Slowest
 			</button>
+
+			<!--- Loading indicator --->
+			<span x-show="isLoadingSql" x-cloak class="cbd-text-muted" style="margin-left: 10px;">
+				Loading...
+			</span>
 		</div>
 
 		<!--- Are we Enabled --->
@@ -121,160 +144,40 @@
 			</div>
 		</cfif>
 
-		<!--- Query Views --->
+		<!--- Query Views (lazy loaded via AJAX) --->
 		<cfif args.profiler.cfQueries.totalQueries EQ 0>
 			<div class="cbd-text-muted">
 				<em>No queries executed</em>
 			</div>
 		<cfelse>
-			<!--- Grouped Queries --->
+			<!--- Hint when no view selected --->
 			<div
-				x-show="isGroupView"
-				x-transition
+				x-show="queryView === 'none'"
+				class="cbd-text-muted mt10"
 			>
-				<table
-					border="0"
-					align="center"
-					cellpadding="0"
-					cellspacing="1"
-					class="cbd-tables">
-					<thead>
-						<tr>
-							<th width="5%">Count</th>
-							<th>Query</th>
-						</tr>
-					</thead>
-					<tbody>
-						<cfloop array="#args.profiler.cfQueries.grouped.keyArray()#" index="sqlHash">
-							<tr>
-								<td align="center">
-									<div class="cbd-badge-light">
-										#args.profiler.cfQueries.grouped[ sqlHash ].count#
-									</div>
-								</td>
-								<td>
-									<code id="acfSql-groupsql-#sqlHash#">
-										<svg
-											xmlns="http://www.w3.org/2000/svg"
-											class="h-6 w-6 cbd-floatRight cbd-text-pre mt5"
-											fill="none"
-											viewBox="0 0 24 24"
-											stroke="currentColor"
-											title="Copy SQL to Clipboard"
-											style="width: 50px; height: 50px; cursor: pointer;"
-											onclick="coldboxDebugger.copyToClipboard( 'acfSql-groupsql-#sqlHash#' )"
-										>
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-										</svg>
-										<cfset withoutDumbWhitespace = formatter.prettySql( args.profiler.cfQueries.grouped[ sqlHash ].sql )>
-										<pre>#withoutDumbWhitespace#</pre>
-									</code>
-								</td>
-							</tr>
-							<tr>
-								<td></td>
-								<td>
-									<table border="0" align="center" cellpadding="0" cellspacing="1" class="cbd-tables">
-										<thead>
-											<tr>
-												<th width="15%">Timestamp</th>
-												<th width="15%">Execution Time</th>
-												<th width="15%">Datasource</th>
-												<th>Source/Params</th>
-											</tr>
-										</thead>
-										<tbody>
-											<cfloop array="#args.profiler.cfQueries.grouped[ sqlHash ].records#" index="q">
-												<cfset rowId = createUUID()>
-												<tr>
-													<td align="center">
-														#timeFormat(
-															args.debuggerService.fromEpoch( q.startTime ),
-															"hh:MM:SS.l tt"
-														)#
-													</td>
-													<td align="center">
-														#numberFormat( q.executionTime / 1000000 )# ms
-													</td>
-													<td align="center">
-														#( q.datasource ?: "QoQ" )#
-													</td>
-													<td>
-														<cfif q.src.len()>
-															<div class="mb10 mt10 cbd-params">
-																<!--- Title --->
-																<strong>Called From: </strong>
-																<!--- Open in Editor--->
-																<cfif args.debuggerService.openInEditorURL( event, q.src ) NEQ "">
-																	<div class="cbd-floatRight">
-																		<a
-																			class="cbd-button"
-																			target="_self"
-																			rel   ="noreferrer noopener"
-																			title="Open in Editor"
-																			href="#args.debuggerService.openInEditorURL( event, q.src )#"
-																		>
-																			<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-																				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-																			</svg>
-																		</a>
-																	</div>
-																</cfif>
-																<!--- Template Path --->
-																<div>
-																	<strong>
-																		#q.src#
-																	</strong>
-																</div>
-															</div>
-														</cfif>
-													</td>
-												</tr>
-											</cfloop>
-										</tbody>
-									</table>
-								</td>
-							</tr>
-						</cfloop>
-					</tbody>
-				</table>
+				<em>Select a view above to load SQL queries</em>
 			</div>
 
-			<!--- Timeline Queries --->
+			<!--- Grouped Queries Container --->
 			<div
-				x-show="isTimelineView"
+				x-show="queryView === 'grouped'"
 				x-transition
-			>
-				#view(
-					view : "main/panels/requestTracker/luceeSqlTable",
-					module : "cbdebugger",
-					args : {
-						sqlData			: args.profiler.cfQueries.all,
-						debuggerService : args.debuggerService,
-						formatter 		: formatter,
-						appPath			: appPath
-					},
-					prePostExempt : true
-				)#
-			</div>
+				x-ref="sqlView-grouped"
+			></div>
 
-			<!--- Slowest Queries --->
+			<!--- Timeline Queries Container --->
 			<div
-				x-show="isSlowestView"
+				x-show="queryView === 'timeline'"
 				x-transition
-			>
-				#view(
-					view : "main/panels/requestTracker/luceeSqlTable",
-					module : "cbdebugger",
-					args : {
-						sqlData			: args.profiler.cfQueries.all.sort( ( a, b ) => a.executionTime < b.executionTime ? 1 : -1 ),
-						debuggerService : args.debuggerService,
-						formatter 		: formatter,
-						appPath			: appPath
-					},
-					prePostExempt : true
-				)#
-			</div>
+				x-ref="sqlView-timeline"
+			></div>
+
+			<!--- Slowest Queries Container --->
+			<div
+				x-show="queryView === 'slowest'"
+				x-transition
+				x-ref="sqlView-slowest"
+			></div>
 		</cfif>
 	</div>
 
