@@ -7,22 +7,22 @@
 
 <cfoutput>
 <!--- Panel Component --->
-<div
+	<div
 	id="cbd-luceeSql-panel"
-	data-profiler-id="#args.profiler.id#"
+	data-profiler-id="#encodeForHTMLAttribute( args.profiler.id )#"
 	x-data="{
 		panelOpen : #args.debuggerConfig.luceeSql.expanded ? 'true' : 'false'#,
 		queryView : 'none',
 		loadedViews : {},
-		isLoadingSql : false,
+		loadingViews : {},
 		switchView( viewType ){
 			if( this.queryView === viewType ){
 				this.queryView = 'none';
 				return;
 			}
 			this.queryView = viewType;
-			if( this.loadedViews[ viewType ] ) return;
-			this.isLoadingSql = true;
+			if( this.loadedViews[ viewType ] || this.loadingViews[ viewType ] ) return;
+			this.loadingViews[ viewType ] = true;
 			var self = this;
 			var pid = this.$root.dataset.profilerId;
 			fetch( this.appUrl + 'cbDebugger/renderLuceeSqlView', {
@@ -34,12 +34,15 @@
 			.then( function( html ){
 				self.$refs[ 'sqlView-' + viewType ].innerHTML = html;
 				self.loadedViews[ viewType ] = true;
-				self.isLoadingSql = false;
+				self.loadingViews[ viewType ] = false;
 			})
 			.catch( function(){
 				self.$refs[ 'sqlView-' + viewType ].innerHTML = 'Error loading SQL view';
-				self.isLoadingSql = false;
+				self.loadingViews[ viewType ] = false;
 			});
+		},
+		isLoadingSql(){
+			return !!this.loadingViews[ this.queryView ];
 		}
 	}"
 >
@@ -128,7 +131,7 @@
 			</button>
 
 			<!--- Loading indicator --->
-			<span x-show="isLoadingSql" x-cloak class="cbd-text-muted" style="margin-left: 10px;">
+			<span x-show="isLoadingSql()" x-cloak class="cbd-text-muted" style="margin-left: 10px;">
 				Loading...
 			</span>
 		</div>

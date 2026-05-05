@@ -242,7 +242,9 @@ component extends="coldbox.system.RestHandler" {
 				view          : "main/panels/requestTracker/luceeSqlTable",
 				module        : "cbdebugger",
 				args          : {
-					sqlData         : profiler.cfQueries.all.sort( function( a, b ){ return a.executionTime < b.executionTime ? 1 : -1; } ),
+					sqlData         : duplicate( profiler.cfQueries.all ).sort( function( a, b ){
+						return a.executionTime < b.executionTime ? 1 : -1;
+					} ),
 					debuggerService : variables.debuggerService,
 					formatter       : formatter,
 					appPath         : appPath

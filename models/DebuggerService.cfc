@@ -80,6 +80,8 @@ component
 		variables.debugPassword  = variables.debuggerConfig.debugPassword;
 		// uuid helper
 		variables.uuid           = createObject( "java", "java.util.UUID" );
+		// Cache source lookups to avoid reading files for every SQL row.
+		variables.sourceFunctionCache = {};
 
 		// Store Environment struct
 		variables.environment = {
@@ -643,6 +645,65 @@ component
 		}
 
 		return getExceptionBean().openInEditorURL( argumentCollection = arguments );
+	}
+
+	/**
+	 * Resolve the function name that contains a source location like path.cfc:123.
+	 */
+	string function getFunctionNameForSource( required string source ){
+		if ( !len( arguments.source ) ) {
+			return "";
+		}
+
+		if ( variables.sourceFunctionCache.keyExists( arguments.source ) ) {
+			return variables.sourceFunctionCache[ arguments.source ];
+		}
+
+		var result = "";
+
+		try {
+			var lineMatch = arguments.source.reFind( ":([0-9]+)$", 1, true );
+
+			if ( !lineMatch.len.len() || lineMatch.len[ 2 ] == 0 ) {
+				variables.sourceFunctionCache[ arguments.source ] = result;
+				return result;
+			}
+
+			var lineNumber = arguments.source.mid( lineMatch.pos[ 2 ], lineMatch.len[ 2 ] );
+			var template   = arguments.source.left( lineMatch.pos[ 1 ] - 1 );
+
+			if ( !fileExists( template ) ) {
+				var normalizedTemplate = template.replace( "\root\", "\", "one" ).replace( "/root/", "/", "one" );
+
+				if ( fileExists( normalizedTemplate ) ) {
+					template = normalizedTemplate;
+				}
+			}
+
+			if ( !fileExists( template ) || !isNumeric( lineNumber ) ) {
+				variables.sourceFunctionCache[ arguments.source ] = result;
+				return result;
+			}
+
+			var lines      = fileRead( template ).listToArray( chr( 10 ), true );
+			var startLine  = min( val( lineNumber ), lines.len() );
+			var functionRE = "(^|\s)(private|public|remote|package)?\s*([\w\.\[\]]+\s+)?function\s+([A-Za-z_$][\w$]*)\s*\(";
+
+			for ( var i = startLine; i >= 1; i-- ) {
+				var declaration = lines[ i ].replace( chr( 13 ), "", "all" ).trim();
+				var match       = declaration.reFindNoCase( functionRE, 1, true );
+
+				if ( match.len.len() >= 5 && match.len[ 5 ] > 0 ) {
+					result = declaration.mid( match.pos[ 5 ], match.len[ 5 ] );
+					break;
+				}
+			}
+		} catch ( any e ) {
+			result = "";
+		}
+
+		variables.sourceFunctionCache[ arguments.source ] = result;
+		return result;
 	}
 
 	/**
