@@ -59,7 +59,7 @@ We are big on coding styles and have included a `.cfformat.json` in the root of 
 box run-script format
 
 # Start a watcher, type away, save and auto-format for you
-box run-script format: watch
+box run-script format:watch
 ```
 
 We recommend that anytime you hack on the core you start the formatter watcher (`box run-script format:watch`). This will monitor your changes and auto-format your code for you.
