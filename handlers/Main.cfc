@@ -211,6 +211,62 @@ component extends="coldbox.system.RestHandler" {
 	}
 
 	/**
+	 * Render a specific Lucee SQL view (grouped/timeline/slowest) for lazy loading
+	 */
+	function renderLuceeSqlView( event, rc, prc ){
+		event.paramValue( "viewType", "timeline" );
+		var profiler = variables.debuggerService.getProfilerById( rc.id );
+
+		if ( profiler.isEmpty() || !profiler.keyExists( "cfQueries" ) ) {
+			return "<div class='cbd-text-red'>Profiler not found or no SQL data</div>";
+		}
+
+		var formatter = variables.debuggerService.getFormatter();
+		var appPath   = getSetting( "ApplicationPath" );
+
+		if ( rc.viewType == "grouped" ) {
+			return view(
+				view          : "main/panels/requestTracker/luceeSqlGrouped",
+				module        : "cbdebugger",
+				args          : {
+					profiler        : profiler,
+					debuggerService : variables.debuggerService,
+					debuggerConfig  : variables.debuggerConfig,
+					formatter       : formatter,
+					appPath         : appPath
+				},
+				prePostExempt : true
+			);
+		} else if ( rc.viewType == "slowest" ) {
+			return view(
+				view          : "main/panels/requestTracker/luceeSqlTable",
+				module        : "cbdebugger",
+				args          : {
+					sqlData         : duplicate( profiler.cfQueries.all ).sort( function( a, b ){
+						return a.executionTime < b.executionTime ? 1 : -1;
+					} ),
+					debuggerService : variables.debuggerService,
+					formatter       : formatter,
+					appPath         : appPath
+				},
+				prePostExempt : true
+			);
+		} else {
+			return view(
+				view          : "main/panels/requestTracker/luceeSqlTable",
+				module        : "cbdebugger",
+				args          : {
+					sqlData         : profiler.cfQueries.all,
+					debuggerService : variables.debuggerService,
+					formatter       : formatter,
+					appPath         : appPath
+				},
+				prePostExempt : true
+			);
+		}
+	}
+
+	/**
 	 * Export a profiler report as json
 	 */
 	function exportProfilerReport( event, rc, prc ){

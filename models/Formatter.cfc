@@ -45,11 +45,7 @@ component singleton {
 			.listToArray( variables.NEW_LINE )
 			.map( ( item ) => item.trim() )
 			// comma spacing
-			.map( ( item ) => item.reReplace(
-				"\s*(?![^()]*\))(,)\s*",
-				",#variables.NEW_LINE##indent#",
-				"all"
-			) )
+			.map( ( item ) => breakOnCommasOutsideParentheses( item, indent ) )
 			// Parenthesis spacing
 			.map( ( item ) => item.reReplace( "\((\w)", "( \1", "all" ) )
 			.map( ( item ) => item.reReplace( "(\w)\)", "\1 )", "all" ) )
@@ -70,6 +66,39 @@ component singleton {
 				)
 			} )
 			.toList( variables.NEW_LINE );
+	}
+
+	/**
+	 * Regex lookaheads are too expensive for large SQL strings on Lucee 7.
+	 */
+	private string function breakOnCommasOutsideParentheses( required string target, required string indent ){
+		var result = [];
+		var depth  = 0;
+		var length = arguments.target.len();
+
+		for ( var i = 1; i <= length; i++ ) {
+			var char = arguments.target.mid( i, 1 );
+
+			if ( char == "(" ) {
+				depth++;
+			} else if ( char == ")" && depth > 0 ) {
+				depth--;
+			}
+
+			if ( char == "," && depth == 0 ) {
+				result.append( ",#variables.NEW_LINE##arguments.indent#" );
+
+				while ( i < length && arguments.target.mid( i + 1, 1 ).reFind( "\s" ) ) {
+					i++;
+				}
+
+				continue;
+			}
+
+			result.append( char );
+		}
+
+		return result.toList( "" );
 	}
 
 	/**
